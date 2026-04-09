@@ -24,51 +24,58 @@ export const hostData: Record<string, HostData> = {
 export const itemsList: PhotoCardItem[] = [
   {
     name: "TV set",
-    timestamp: "2026-04-05T15:00",
+    timestamp: "2026-04-09T12:00",
     photoUrl:
-      "https://a0.muscache.com/im/pictures/miso/Hosting-687575486557684652/original/fed09d3c-deb2-4335-977e-c5918a7afe75.jpeg?im_w=720",
+      "https://i.postimg.cc/gkRZ83kg/tv_komoda_i_ormar.jpg",
     location: "In the living room",
   },
   {
-    name: "White closet/cabinet",
-    timestamp: "2026-04-05T15:00",
+    name: "Window blinds",
+    timestamp: "2026-04-09T12:00",
     photoUrl:
-      "https://a0.muscache.com/im/pictures/miso/Hosting-687575486557684652/original/fed09d3c-deb2-4335-977e-c5918a7afe75.jpeg?im_w=720",
+      "https://i.postimg.cc/sxJRCn4J/roletne.jpg",
+    location: "In the living room",
+  },
+  {
+    name: "White closet and cabinet",
+    timestamp: "2026-04-09T12:00",
+    photoUrl:
+      "https://i.postimg.cc/gkRZ83kg/tv_komoda_i_ormar.jpg",
     location: "In the living room",
   },
   {
     name: "Bed",
-    timestamp: "2026-04-05T15:00",
+    timestamp: "2026-04-09T12:00",
     photoUrl:
-      "https://a0.muscache.com/im/pictures/miso/Hosting-687575486557684652/original/fb19e7d6-e335-4c47-ab62-8e1d9df4cdcc.jpeg?im_w=720",
+      "https://i.postimg.cc/Xqg062kL/krevet.jpg",
     location: "In the living room",
   },
   {
-    name: "Washing machine",
-    timestamp: "2026-04-05T15:00",
+    name: "Terrace table and chairs",
+    timestamp: "2026-04-09T12:00",
     photoUrl:
-      "https://a0.muscache.com/im/pictures/miso/Hosting-687575486557684652/original/3c0cb6df-be9b-4743-93b0-a62edc54f3ea.jpeg?im_w=720",
-    location: "In the bathroom",
+      "https://i.postimg.cc/6qhNxHfH/terasa.jpg",
+    location: "In the terrace",
   },
   {
     name: "Shower cabin",
-    timestamp: "2026-04-05T15:00",
+    timestamp: "2026-04-09T12:00",
     photoUrl:
-      "https://a0.muscache.com/im/pictures/miso/Hosting-687575486557684652/original/30db820f-aa48-4b5d-af77-0d7efdb22e82.jpeg?im_w=720",
+      "https://i.postimg.cc/kGydPjv1/tus_kabina.jpg",
     location: "In the bathroom",
   },
   {
-    name: "Dishwasher",
-    timestamp: "2026-04-05T15:00",
+    name: "Kitchen counter top",
+    timestamp: "2026-04-09T12:00",
     photoUrl:
-      "https://a0.muscache.com/im/pictures/miso/Hosting-687575486557684652/original/d84b6e0b-a27d-46f1-b859-e84e72d970f3.jpeg?im_w=720",
+      "https://i.postimg.cc/vTvdwPtz/kuhinjska_radna_povrsina_frizider_i_sporet.jpg",
     location: "In the kitchen",
   },
   {
     name: "Microwave",
-    timestamp: "2026-04-05T15:00",
+    timestamp: "2026-04-09T12:000",
     photoUrl:
-      "https://a0.muscache.com/im/pictures/miso/Hosting-687575486557684652/original/d84b6e0b-a27d-46f1-b859-e84e72d970f3.jpeg?im_w=720",
+      "https://i.postimg.cc/0jCq1t0G/microwave.jpg",
     location: "In the kitchen",
   },
 ];
