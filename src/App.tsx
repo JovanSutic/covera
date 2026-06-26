@@ -1,14 +1,41 @@
-import './App.scss';
-import {Routes, Route} from 'react-router';
-import FormPage from './pages/FormPage.tsx';
+import "./App.scss";
+import { createBrowserRouter, redirect } from "react-router";
+import FormPage from "./pages/FormPage.tsx";
+import LoginPage from "./pages/LoginPage.tsx";
+import { supabase } from "./lib/supabase.ts";
+import DashboardPage from "./pages/DashboardPage.tsx";
+/* import { supabase } from './lib/supabase'; */
 
-export default function App() {
-    return (
-        <>
-            <Routes>
-                <Route path="/" element={<FormPage/>}/>
-                <Route path="/form" element={<FormPage/>}/>
-            </Routes>
-        </>
-    )
-}
+export const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/",
+    element: <FormPage />,
+  },
+  {
+    path: "/form",
+    element: <FormPage />,
+  },
+  {
+    path: "/dashboard",
+    async loader() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        return redirect("/login");
+      }
+      return null;
+    },
+    children: [
+      {
+        path: "",
+        element: <DashboardPage />,
+      },
+    ],
+  },
+]);
