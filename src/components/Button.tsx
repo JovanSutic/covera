@@ -13,7 +13,7 @@ function Button({
   return (
     <button
       className={cn(
-        "px-4 py-2 rounded-lg font-medium transition active:scale-95",
+        "px-4 py-2 rounded-lg font-medium transition active:scale-95 cursor-pointer",
         variant === "primary" &&
           "bg-primary text-white hover:bg-primaryDark",
         variant === "secondary" &&
