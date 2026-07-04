@@ -4,7 +4,9 @@ import FormPage from "./pages/FormPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import { supabase } from "./lib/supabase.ts";
 import DashboardPage from "./pages/DashboardPage.tsx";
-/* import { supabase } from './lib/supabase'; */
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +33,11 @@ export const router = createBrowserRouter([
       }
       return null;
     },
+    element: (
+      <QueryClientProvider client={queryClient}>
+        <DashboardPage />
+      </QueryClientProvider>
+    ),
     children: [
       {
         path: "",
