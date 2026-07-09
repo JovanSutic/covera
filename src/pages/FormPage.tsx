@@ -1,4 +1,4 @@
-import PageLayout from "@/components/PageLayout";
+import PageLayout from "@/components/layout/PageLayout";
 import Typography from "../components/Typography";
 import Stack from "@/components/Stack";
 import PhotoCard from "@/components/PhotoCard";
