@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { supabase } from "./supabase";
+import { supabase } from "../supabase";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export function publicApi(extraOptions: Record<string, any> = {}) {

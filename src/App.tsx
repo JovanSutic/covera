@@ -1,10 +1,12 @@
 import "./App.scss";
-import { createBrowserRouter, redirect } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import FormPage from "./pages/FormPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
-import { supabase } from "./lib/supabase.ts";
-import DashboardPage from "./pages/DashboardPage.tsx";
+import { requireRoleGuard } from "./lib/auth.ts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import AdminDashboard from "./pages/admin/Dashboard.tsx";
+import HostDashboard from "./pages/host/Dashboard.tsx";
 
 const queryClient = new QueryClient();
 
@@ -22,26 +24,36 @@ export const router = createBrowserRouter([
     element: <FormPage />,
   },
   {
-    path: "/dashboard",
+    path: "/admin",
     async loader() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        return redirect("/login");
-      }
-      return null;
+      return requireRoleGuard("admin");
     },
     element: (
       <QueryClientProvider client={queryClient}>
-        <DashboardPage />
+        <Outlet />
       </QueryClientProvider>
     ),
     children: [
       {
-        path: "",
-        element: <DashboardPage />,
+        path: "dashboard",
+        element: <AdminDashboard />,
+      },
+    ],
+  },
+  {
+    path: "/host",
+    async loader() {
+      return requireRoleGuard("host");
+    },
+    element: (
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    ),
+    children: [
+      {
+        path: "dashboard",
+        element: <HostDashboard />,
       },
     ],
   },

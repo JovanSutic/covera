@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
+import Input from "@/components/formItems/Input";
+import Button from "@/components/formItems/Button";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseTask } from "@/hooks/supabase";
+import { getAuthRole } from "@/lib/auth";
 import { useNavigate } from "react-router";
 
 const loginSchema = z.object({
@@ -25,6 +26,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -37,19 +39,25 @@ export default function LoginForm() {
     },
   });
   const { execute, isLoading } = useSupabaseTask();
-  const navigate = useNavigate();
 
   const onSubmit = async (formData: LoginFormValues) => {
     const sessionData = await execute(
-      () => supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      }),
-      { successMessage: "Welcome back!" }
+      () =>
+        supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        }),
+      { successMessage: "Welcome back!" },
     );
 
     if (sessionData) {
-      navigate("/dashboard");
+      const role = await getAuthRole();
+      if (role !== 'guest') {
+        console.log('alo bre')
+        navigate(`/${role}/dashboard`);
+      } else {
+        navigate("/");
+      }
     }
   };
 
