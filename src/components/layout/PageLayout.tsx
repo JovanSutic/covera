@@ -19,7 +19,7 @@ type PageLayoutProps = {
 function PageLayout({ 
   children, 
   className, 
-  size = "lg"
+  size = "sm"
 }: PageLayoutProps) {
   return (
     <main className="w-full">
