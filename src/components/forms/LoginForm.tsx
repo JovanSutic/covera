@@ -53,7 +53,6 @@ export default function LoginForm() {
     if (sessionData) {
       const role = await getAuthRole();
       if (role !== 'guest') {
-        console.log('alo bre')
         navigate(`/${role}/dashboard`);
       } else {
         navigate("/");

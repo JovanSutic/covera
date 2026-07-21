@@ -30,8 +30,6 @@ export async function getAuthUserFromJwt(): Promise<AuthenticatedUser | null> {
 
   try {
     const decoded = jwtDecode<CustomJwtPayload>(session.access_token);
-
-    console.log(decoded);
     
     return {
       id: session.user.id,
