@@ -1,7 +1,4 @@
 import { useNavigate } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "@/api/generated/requests/services.gen";
-import { withAuth } from "@/lib/api/api";
 import { useSupabaseTask } from "@/hooks/supabase";
 import { supabase } from "@/lib/supabase";
 import PageLayout from "@/components/layout/PageLayout";
@@ -10,18 +7,6 @@ import Button from "@/components/formItems/Button";
 export default function DashboardPage() {
   const navigate = useNavigate();
 
-  const { data: users, isLoading: usersIsLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: async ({ signal }) => {
-      const config = await withAuth({ signal });
-      const response = await getUsers(config);
-      
-      return response.data;
-    },
-  });
-
-  console.log(users);
-  console.log(usersIsLoading);
   
   const { execute, isLoading } = useSupabaseTask();
 

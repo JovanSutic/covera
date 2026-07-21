@@ -24,3 +24,5 @@ export interface TabsProps {
   onChange?: (tabId: string) => void;
   containerClassName?: string;
 }
+
+export interface SelectOption { value: string; label: string };

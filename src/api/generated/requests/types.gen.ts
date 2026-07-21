@@ -69,7 +69,20 @@ export type CreateLocation = {
 export type GetUsersData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Search by first name, last name, or email
+         */
+        search?: string;
+        /**
+         * Filter users by system access role
+         */
+        role?: 'admin' | 'host' | 'guest';
+        /**
+         * Filter users by status
+         */
+        status?: 'created' | 'invited' | 'confirmed' | 'disabled';
+    };
     url: '/users';
 };
 
