@@ -136,16 +136,16 @@ export type PostUsersResponses = {
 
 export type PostUsersResponse = PostUsersResponses[keyof PostUsersResponses];
 
-export type GetUsersIdData = {
+export type GetUsersByIdData = {
     body?: never;
     path: {
         id: string;
     };
     query?: never;
-    url: '/users/:id';
+    url: '/users/{id}';
 };
 
-export type GetUsersIdErrors = {
+export type GetUsersByIdErrors = {
     /**
      * Bad Request: One or more parameters failed validation.
      */
@@ -168,27 +168,27 @@ export type GetUsersIdErrors = {
     500: StandardError;
 };
 
-export type GetUsersIdError = GetUsersIdErrors[keyof GetUsersIdErrors];
+export type GetUsersByIdError = GetUsersByIdErrors[keyof GetUsersByIdErrors];
 
-export type GetUsersIdResponses = {
+export type GetUsersByIdResponses = {
     /**
      * Get user by id
      */
     200: User;
 };
 
-export type GetUsersIdResponse = GetUsersIdResponses[keyof GetUsersIdResponses];
+export type GetUsersByIdResponse = GetUsersByIdResponses[keyof GetUsersByIdResponses];
 
-export type PostUsersIdInviteData = {
+export type PostUsersByIdInviteData = {
     body?: never;
     path: {
         id: string;
     };
     query?: never;
-    url: '/users/:id/invite';
+    url: '/users/{id}/invite';
 };
 
-export type PostUsersIdInviteErrors = {
+export type PostUsersByIdInviteErrors = {
     /**
      * Bad Request: One or more parameters failed validation.
      */
@@ -211,9 +211,9 @@ export type PostUsersIdInviteErrors = {
     500: StandardError;
 };
 
-export type PostUsersIdInviteError = PostUsersIdInviteErrors[keyof PostUsersIdInviteErrors];
+export type PostUsersByIdInviteError = PostUsersByIdInviteErrors[keyof PostUsersByIdInviteErrors];
 
-export type PostUsersIdInviteResponses = {
+export type PostUsersByIdInviteResponses = {
     /**
      * Invitation link generated and dispatched successfully
      */
@@ -223,7 +223,7 @@ export type PostUsersIdInviteResponses = {
     };
 };
 
-export type PostUsersIdInviteResponse = PostUsersIdInviteResponses[keyof PostUsersIdInviteResponses];
+export type PostUsersByIdInviteResponse = PostUsersByIdInviteResponses[keyof PostUsersByIdInviteResponses];
 
 export type PostUsersUpdatePasswordData = {
     body?: {

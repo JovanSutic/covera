@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsResponses, GetLocationsData, GetLocationsResponses, GetReservationsByIdData, GetReservationsByIdErrors, GetReservationsByIdResponses, GetReservationsData, GetReservationsResponses, GetUsersData, GetUsersIdData, GetUsersIdErrors, GetUsersIdResponses, GetUsersResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostLocationsData, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersData, PostUsersErrors, PostUsersIdInviteData, PostUsersIdInviteErrors, PostUsersIdInviteResponses, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses } from './types.gen';
+import type { GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsResponses, GetLocationsData, GetLocationsResponses, GetReservationsByIdData, GetReservationsByIdErrors, GetReservationsByIdResponses, GetReservationsData, GetReservationsResponses, GetUsersByIdData, GetUsersByIdErrors, GetUsersByIdResponses, GetUsersData, GetUsersResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostLocationsData, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersByIdInviteData, PostUsersByIdInviteErrors, PostUsersByIdInviteResponses, PostUsersData, PostUsersErrors, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -29,9 +29,9 @@ export const postUsers = <ThrowOnError extends boolean = false>(options?: Option
     }
 });
 
-export const getUsersId = <ThrowOnError extends boolean = false>(options: Options<GetUsersIdData, ThrowOnError>) => (options.client ?? client).get<GetUsersIdResponses, GetUsersIdErrors, ThrowOnError>({ url: '/users/:id', ...options });
+export const getUsersById = <ThrowOnError extends boolean = false>(options: Options<GetUsersByIdData, ThrowOnError>) => (options.client ?? client).get<GetUsersByIdResponses, GetUsersByIdErrors, ThrowOnError>({ url: '/users/{id}', ...options });
 
-export const postUsersIdInvite = <ThrowOnError extends boolean = false>(options: Options<PostUsersIdInviteData, ThrowOnError>) => (options.client ?? client).post<PostUsersIdInviteResponses, PostUsersIdInviteErrors, ThrowOnError>({ url: '/users/:id/invite', ...options });
+export const postUsersByIdInvite = <ThrowOnError extends boolean = false>(options: Options<PostUsersByIdInviteData, ThrowOnError>) => (options.client ?? client).post<PostUsersByIdInviteResponses, PostUsersByIdInviteErrors, ThrowOnError>({ url: '/users/{id}/invite', ...options });
 
 export const postUsersUpdatePassword = <ThrowOnError extends boolean = false>(options?: Options<PostUsersUpdatePasswordData, ThrowOnError>) => (options?.client ?? client).post<PostUsersUpdatePasswordResponses, PostUsersUpdatePasswordErrors, ThrowOnError>({
     url: '/users/update-password',
