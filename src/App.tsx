@@ -2,6 +2,7 @@ import "./App.scss";
 import { createBrowserRouter, Outlet } from "react-router";
 import FormPage from "./pages/FormPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
+import PassUpdatePage from "./pages/PassUpdatePage.tsx";
 import { requireRoleGuard } from "./lib/auth.ts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -14,6 +15,10 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+   {
+    path: "/update-password",
+    element: <PassUpdatePage />,
   },
   {
     path: "/",

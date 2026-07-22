@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "@/api/generated/requests/services.gen";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getUsers,
+  postUsersByIdInvite,
+} from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { DataTable } from "@/components/DataTable";
 import Drawer from "@/components/Drawer";
@@ -11,6 +15,8 @@ import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 
 export default function UsersSection() {
   const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
+  const [invitingUserId, setInvitingUserId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: users, isLoading: usersIsLoading } = useQuery({
     queryKey: [...QUERY_ACTIONS.USERS_GET_ALL],
@@ -20,6 +26,38 @@ export default function UsersSection() {
       return response.data;
     },
   });
+
+ const sendInviteMutation = useMutation({
+  mutationFn: async (userId: string) => {
+    setInvitingUserId(userId);
+    const config = await withAuth();
+
+    const response = await postUsersByIdInvite({
+      path: { id: userId },
+      headers: config.headers,
+    });
+
+    if ("error" in response && response.error) {
+      throw new Error(
+        (response.error as any)?.message || "Failed to send invite"
+      );
+    }
+
+    if (!response.data) {
+      throw new Error("No data returned from invite endpoint");
+    }
+
+    return response.data;
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({
+      queryKey: [...QUERY_ACTIONS.USERS_GET_ALL],
+    });
+  },
+  onSettled: () => {
+    setInvitingUserId(null);
+  },
+});
 
   const columns: ColumnDef<User>[] = [
     {
@@ -53,7 +91,9 @@ export default function UsersSection() {
           disabled: "bg-rose-50 text-rose-700 border-rose-200",
         };
         return (
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${colors[row.status] || colors.created}`}>
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${colors[row.status] || colors.created}`}
+          >
             {row.status}
           </span>
         );
@@ -69,6 +109,29 @@ export default function UsersSection() {
         });
       },
       className: "text-gray-400 text-xs",
+    },
+    {
+      header: "Actions",
+      accessorKey: (row) => {
+        const isInvitingThisUser = invitingUserId === row.id;
+        const canSendInvite =
+          row.status === "invited" || row.status === "created";
+
+        if (!canSendInvite) {
+          return <span className="text-xs text-gray-400">—</span>;
+        }
+
+        return (
+          <button
+            type="button"
+            disabled={isInvitingThisUser}
+            onClick={() => sendInviteMutation.mutate(row.id)}
+            className="text-xs font-medium text-gray-700 hover:text-gray-900 border border-gray-300 hover:border-gray-400 rounded-md px-2.5 py-1 transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {isInvitingThisUser ? "Sending..." : "Send Invite"}
+          </button>
+        );
+      },
     },
   ];
 
@@ -95,7 +158,12 @@ export default function UsersSection() {
         onClose={() => setIsUserDrawerOpen(false)}
         title="Create New User"
       >
-        <CreateUserForm onSuccess={() => {setIsUserDrawerOpen(false)}} isOpen={isUserDrawerOpen} />
+        <CreateUserForm
+          onSuccess={() => {
+            setIsUserDrawerOpen(false);
+          }}
+          isOpen={isUserDrawerOpen}
+        />
       </Drawer>
     </div>
   );
