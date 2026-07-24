@@ -13,26 +13,6 @@ const queryClient = new QueryClient();
 
 export const router = createBrowserRouter([
   {
-    path: "/login",
-    element: <LoginPage />,
-  },
-   {
-    path: "/update-password",
-    element: <PassUpdatePage />,
-  },
-  {
-    path: "/",
-    element: <FormPage />,
-  },
-  {
-    path: "/form",
-    element: <FormPage />,
-  },
-  {
-    path: "/admin",
-    async loader() {
-      return requireRoleGuard("admin");
-    },
     element: (
       <QueryClientProvider client={queryClient}>
         <Outlet />
@@ -40,25 +20,44 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "dashboard",
-        element: <AdminDashboard />,
+        path: "/login",
+        element: <LoginPage />,
       },
-    ],
-  },
-  {
-    path: "/host",
-    async loader() {
-      return requireRoleGuard("host");
-    },
-    element: (
-      <QueryClientProvider client={queryClient}>
-        <Outlet />
-      </QueryClientProvider>
-    ),
-    children: [
       {
-        path: "dashboard",
-        element: <HostDashboard />,
+        path: "/update-password",
+        element: <PassUpdatePage />,
+      },
+      {
+        path: "/",
+        element: <FormPage />,
+      },
+      {
+        path: "/form",
+        element: <FormPage />,
+      },
+      {
+        path: "/admin",
+        async loader() {
+          return requireRoleGuard("admin");
+        },
+        children: [
+          {
+            path: "dashboard",
+            element: <AdminDashboard />,
+          },
+        ],
+      },
+      {
+        path: "/host",
+        async loader() {
+          return requireRoleGuard("host");
+        },
+        children: [
+          {
+            path: "dashboard",
+            element: <HostDashboard />,
+          },
+        ],
       },
     ],
   },
