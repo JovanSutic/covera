@@ -6,7 +6,7 @@ import PassUpdateForm from "@/components/forms/PassUpdateForm";
 import Button from "@/components/formItems/Button";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseTask } from "@/hooks/supabase";
-import { getAuthUserFromJwt } from "@/lib/auth"; // Adjust path to match your helper's location
+import { getAuthUserFromJwt } from "@/lib/auth";
 
 export default function PassUpdatePage() {
   const navigate = useNavigate();
