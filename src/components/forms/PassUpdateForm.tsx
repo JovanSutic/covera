@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import Input from "@/components/formItems/Input";
 import Button from "@/components/formItems/Button";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseTask } from "@/hooks/supabase";
+import { postUsersUpdatePassword } from "@/api/generated/requests/services.gen";
+import { withAuth } from "@/lib/api/api";
 import { getAuthRole } from "@/lib/auth";
 
 const passwordSchema = z
@@ -34,11 +37,11 @@ type UpdatePasswordFormValues = z.infer<typeof updatePasswordSchema>;
 
 export default function PassUpdateForm() {
   const navigate = useNavigate();
-  const { execute, isLoading } = useSupabaseTask();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<UpdatePasswordFormValues>({
     resolver: zodResolver(updatePasswordSchema),
@@ -48,23 +51,39 @@ export default function PassUpdateForm() {
     },
   });
 
-  const onSubmit = async (formData: UpdatePasswordFormValues) => {
-    const result = await execute(
-      () =>
-        supabase.auth.updateUser({
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (formData: UpdatePasswordFormValues) => {
+      const config = await withAuth();
+      const response = await postUsersUpdatePassword({
+        ...config,
+        body: {
           password: formData.password,
-        }),
-      { successMessage: "Password updated successfully!" }
-    );
+          confirmPassword: formData.password,
+        },
+      });
+      return response.data;
+    },
+    onSuccess: async () => {
+      toast.success("Password updated successfully!");
+      reset();
 
-    if (result) {
       const role = await getAuthRole();
       if (role !== "guest") {
         navigate(`/${role}/dashboard`);
       } else {
         navigate("/");
       }
-    }
+    },
+    onError: (error: any) => {
+      console.error("Mutation failed:", error);
+      toast.error(
+        error?.error?.message || "An error occurred updating the password.",
+      );
+    },
+  });
+
+  const onSubmit = (formData: UpdatePasswordFormValues) => {
+    mutate(formData);
   };
 
   return (
@@ -89,9 +108,9 @@ export default function PassUpdateForm() {
       <Button
         type="submit"
         className="w-full py-3 mt-2"
-        disabled={isSubmitting || isLoading}
+        disabled={isSubmitting || isPending}
       >
-        {isSubmitting || isLoading ? "Updating..." : "Set Password"}
+        {isSubmitting || isPending ? "Updating..." : "Set Password"}
       </Button>
     </form>
   );
