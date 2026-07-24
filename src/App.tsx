@@ -1,22 +1,19 @@
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
 import "./App.scss";
-import { createBrowserRouter, Outlet } from "react-router";
-import FormPage from "./pages/FormPage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
-import PassUpdatePage from "./pages/PassUpdatePage.tsx";
-import { requireRoleGuard } from "./lib/auth.ts";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import AdminDashboard from "./pages/admin/Dashboard.tsx";
-import HostDashboard from "./pages/host/Dashboard.tsx";
+import FormPage from "./pages/FormPage";
+import LoginPage from "./pages/LoginPage";
+import PassUpdatePage from "./pages/PassUpdatePage";
+import AdminDashboard from "./pages/admin/Dashboard";
+import HostDashboard from "./pages/host/Dashboard";
+import { requireRoleGuard } from "./lib/auth";
 
-const queryClient = new QueryClient();
-
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
   },
-   {
+  {
     path: "/update-password",
     element: <PassUpdatePage />,
   },
@@ -33,11 +30,7 @@ export const router = createBrowserRouter([
     async loader() {
       return requireRoleGuard("admin");
     },
-    element: (
-      <QueryClientProvider client={queryClient}>
-        <Outlet />
-      </QueryClientProvider>
-    ),
+    element: <Outlet />,
     children: [
       {
         path: "dashboard",
@@ -50,11 +43,7 @@ export const router = createBrowserRouter([
     async loader() {
       return requireRoleGuard("host");
     },
-    element: (
-      <QueryClientProvider client={queryClient}>
-        <Outlet />
-      </QueryClientProvider>
-    ),
+    element: <Outlet />,
     children: [
       {
         path: "dashboard",
@@ -63,3 +52,7 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
+}
