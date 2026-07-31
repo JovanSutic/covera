@@ -210,6 +210,46 @@ export const CreateApartmentSchema = {
     ]
 } as const;
 
+export const ApartmentWithLocationSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        owner: {
+            type: 'string',
+            format: 'uuid'
+        },
+        location: {
+            $ref: '#/components/schemas/Location'
+        },
+        name: {
+            type: 'string'
+        },
+        address: {
+            type: 'string'
+        },
+        externalId: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'owner',
+        'location',
+        'name',
+        'address',
+        'externalId',
+        'createdAt'
+    ]
+} as const;
+
 export const LocationSchema = {
     type: 'object',
     properties: {

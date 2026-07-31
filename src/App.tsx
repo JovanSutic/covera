@@ -6,11 +6,14 @@ import LoginPage from "./pages/LoginPage";
 import PassUpdatePage from "./pages/PassUpdatePage";
 import AdminDashboard from "./pages/admin/Dashboard";
 import HostDashboard from "./pages/host/Dashboard";
-import { requireRoleGuard } from "./lib/auth";
+import { redirectIfAuthenticated, requireRoleGuard } from "./lib/auth";
 
 const router = createBrowserRouter([
   {
     path: "/login",
+    async loader() {
+      return redirectIfAuthenticated();
+    },
     element: <LoginPage />,
   },
   {

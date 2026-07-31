@@ -130,7 +130,7 @@ export default function ApartmentsSection() {
           day: "numeric",
         });
       },
-      className: "text-gray-400 text-xs",
+      className: "text-xs",
     },
   ];
 

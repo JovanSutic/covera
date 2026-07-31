@@ -52,6 +52,16 @@ export type CreateApartment = {
     externalId?: string | null;
 };
 
+export type ApartmentWithLocation = {
+    id: string;
+    owner: string;
+    location: Location;
+    name: string;
+    address: string;
+    externalId: string | null;
+    createdAt: string;
+};
+
 export type Location = {
     id: string;
     name: string;
@@ -494,6 +504,47 @@ export type PostApartmentsByIdPhotosConfirmResponses = {
 };
 
 export type PostApartmentsByIdPhotosConfirmResponse = PostApartmentsByIdPhotosConfirmResponses[keyof PostApartmentsByIdPhotosConfirmResponses];
+
+export type GetApartmentsHostMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/apartments/host/me';
+};
+
+export type GetApartmentsHostMeErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Apartment could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Apartment already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type GetApartmentsHostMeError = GetApartmentsHostMeErrors[keyof GetApartmentsHostMeErrors];
+
+export type GetApartmentsHostMeResponses = {
+    /**
+     * List apartments owned by the logged-in host
+     */
+    200: Array<ApartmentWithLocation>;
+};
+
+export type GetApartmentsHostMeResponse = GetApartmentsHostMeResponses[keyof GetApartmentsHostMeResponses];
 
 export type GetReservationsData = {
     body?: never;
