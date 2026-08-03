@@ -62,3 +62,16 @@ export async function requireRoleGuard(allowedRole: UserRole) {
 
   return null;
 }
+
+export async function redirectIfAuthenticated() {
+  const user = await getAuthUserFromJwt();
+
+  if (user) {
+    if (user.role === "admin" || user.role === "host") {
+      return redirect(`/${user.role}/dashboard`);
+    }
+    return redirect("/");
+  }
+
+  return null;
+}
