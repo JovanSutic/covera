@@ -1,4 +1,5 @@
 import { withAuth } from "@/lib/api/api";
+import { Link } from "react-router";
 import { getApartmentsHostMe } from "@/api/generated/requests/sdk.gen";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
@@ -19,8 +20,14 @@ export default function ApartmentsSection() {
   const columns: ColumnDef<ApartmentWithLocation>[] = [
     {
       header: "Apartment Name",
-      accessorKey: "name",
-      className: "font-medium text-gray-900",
+      accessorKey: (row) => (
+        <Link
+          to={`/host/apartments/${row.id}`}
+          className="font-medium text-gray-900 hover:text-blue-600 hover:underline transition-colors"
+        >
+          {row.name}
+        </Link>
+      ),
     },
     {
       header: "Address",

@@ -34,23 +34,7 @@ export type CreateUser = {
     role: 'admin' | 'host' | 'guest';
 };
 
-export type Apartment = {
-    id: string;
-    owner: string;
-    location: string;
-    name: string;
-    address: string;
-    externalId: string | null;
-    createdAt: string;
-};
-
-export type CreateApartment = {
-    owner: string;
-    location: string;
-    name: string;
-    address: string;
-    externalId?: string | null;
-};
+export type ApartmentsList = Array<ApartmentWithLocation>;
 
 export type ApartmentWithLocation = {
     id: string;
@@ -58,6 +42,7 @@ export type ApartmentWithLocation = {
     location: Location;
     name: string;
     address: string;
+    currency: 'EUR' | 'USD' | 'GBP' | 'RSD' | 'CHF' | 'CAD' | 'AUD';
     externalId: string | null;
     createdAt: string;
 };
@@ -70,10 +55,51 @@ export type Location = {
     createdAt: string;
 };
 
+export type CreateApartment = {
+    owner: string;
+    location: string;
+    name: string;
+    address: string;
+    currency?: 'EUR' | 'USD' | 'GBP' | 'RSD' | 'CHF' | 'CAD' | 'AUD';
+    externalId?: string | null;
+};
+
 export type CreateLocation = {
     name: string;
     country: string;
     type: 'city' | 'region';
+};
+
+export type AssetsList = Array<Asset>;
+
+export type Asset = {
+    id: string;
+    apartmentId: string;
+    name: string;
+    category: string;
+    roomLocation: string;
+    description: string | null;
+    photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+    approximateValueCents: number | null;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type CreateAsset = {
+    apartmentId: string;
+    name: string;
+    category: string;
+    roomLocation: string;
+    description?: string | null;
+    photoProofRequirement?: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+    approximateValueCents?: number | null;
+    isActive?: boolean;
+};
+
+export type DeleteAssetResponse = {
+    success: boolean;
+    id: string;
 };
 
 export type GetUsersData = {
@@ -318,7 +344,7 @@ export type GetApartmentsResponses = {
     /**
      * List apartments
      */
-    200: Array<Apartment>;
+    200: ApartmentsList;
 };
 
 export type GetApartmentsResponse = GetApartmentsResponses[keyof GetApartmentsResponses];
@@ -359,7 +385,7 @@ export type PostApartmentsResponses = {
     /**
      * Apartment created
      */
-    201: Apartment;
+    201: ApartmentWithLocation;
 };
 
 export type PostApartmentsResponse = PostApartmentsResponses[keyof PostApartmentsResponses];
@@ -402,7 +428,7 @@ export type GetApartmentsByIdResponses = {
     /**
      * Apartment detail
      */
-    200: Apartment;
+    200: ApartmentWithLocation;
 };
 
 export type GetApartmentsByIdResponse = GetApartmentsByIdResponses[keyof GetApartmentsByIdResponses];
@@ -541,7 +567,7 @@ export type GetApartmentsHostMeResponses = {
     /**
      * List apartments owned by the logged-in host
      */
-    200: Array<ApartmentWithLocation>;
+    200: ApartmentsList;
 };
 
 export type GetApartmentsHostMeResponse = GetApartmentsHostMeResponses[keyof GetApartmentsHostMeResponses];
@@ -674,3 +700,130 @@ export type PostLocationsResponses = {
 };
 
 export type PostLocationsResponse = PostLocationsResponses[keyof PostLocationsResponses];
+
+export type GetAssetsApartmentByApartmentIdData = {
+    body?: never;
+    path: {
+        apartmentId: string;
+    };
+    query?: never;
+    url: '/assets/apartment/{apartmentId}';
+};
+
+export type GetAssetsApartmentByApartmentIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Asset could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Asset already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type GetAssetsApartmentByApartmentIdError = GetAssetsApartmentByApartmentIdErrors[keyof GetAssetsApartmentByApartmentIdErrors];
+
+export type GetAssetsApartmentByApartmentIdResponses = {
+    /**
+     * List all active assets for a specific apartment
+     */
+    200: AssetsList;
+};
+
+export type GetAssetsApartmentByApartmentIdResponse = GetAssetsApartmentByApartmentIdResponses[keyof GetAssetsApartmentByApartmentIdResponses];
+
+export type PostAssetsData = {
+    body?: CreateAsset;
+    path?: never;
+    query?: never;
+    url: '/assets';
+};
+
+export type PostAssetsErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Asset could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Asset already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type PostAssetsError = PostAssetsErrors[keyof PostAssetsErrors];
+
+export type PostAssetsResponses = {
+    /**
+     * Asset created successfully
+     */
+    201: Asset;
+};
+
+export type PostAssetsResponse = PostAssetsResponses[keyof PostAssetsResponses];
+
+export type DeleteAssetsByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/assets/{id}';
+};
+
+export type DeleteAssetsByIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Asset could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Asset already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type DeleteAssetsByIdError = DeleteAssetsByIdErrors[keyof DeleteAssetsByIdErrors];
+
+export type DeleteAssetsByIdResponses = {
+    /**
+     * Asset soft-deleted successfully
+     */
+    200: DeleteAssetResponse;
+};
+
+export type DeleteAssetsByIdResponse = DeleteAssetsByIdResponses[keyof DeleteAssetsByIdResponses];

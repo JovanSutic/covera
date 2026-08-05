@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsHostMeData, GetApartmentsHostMeErrors, GetApartmentsHostMeResponses, GetApartmentsResponses, GetLocationsData, GetLocationsResponses, GetReservationsByIdData, GetReservationsByIdErrors, GetReservationsByIdResponses, GetReservationsData, GetReservationsResponses, GetUsersByIdData, GetUsersByIdErrors, GetUsersByIdResponses, GetUsersData, GetUsersResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostLocationsData, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersByIdInviteData, PostUsersByIdInviteErrors, PostUsersByIdInviteResponses, PostUsersData, PostUsersErrors, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses } from './types.gen';
+import type { DeleteAssetsByIdData, DeleteAssetsByIdErrors, DeleteAssetsByIdResponses, GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsHostMeData, GetApartmentsHostMeErrors, GetApartmentsHostMeResponses, GetApartmentsResponses, GetAssetsApartmentByApartmentIdData, GetAssetsApartmentByApartmentIdErrors, GetAssetsApartmentByApartmentIdResponses, GetLocationsData, GetLocationsResponses, GetReservationsByIdData, GetReservationsByIdErrors, GetReservationsByIdResponses, GetReservationsData, GetReservationsResponses, GetUsersByIdData, GetUsersByIdErrors, GetUsersByIdResponses, GetUsersData, GetUsersResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostAssetsData, PostAssetsErrors, PostAssetsResponses, PostLocationsData, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersByIdInviteData, PostUsersByIdInviteErrors, PostUsersByIdInviteResponses, PostUsersData, PostUsersErrors, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -98,3 +98,16 @@ export const postLocations = <ThrowOnError extends boolean = false>(options?: Op
         ...options?.headers
     }
 });
+
+export const getAssetsApartmentByApartmentId = <ThrowOnError extends boolean = false>(options: Options<GetAssetsApartmentByApartmentIdData, ThrowOnError>) => (options.client ?? client).get<GetAssetsApartmentByApartmentIdResponses, GetAssetsApartmentByApartmentIdErrors, ThrowOnError>({ url: '/assets/apartment/{apartmentId}', ...options });
+
+export const postAssets = <ThrowOnError extends boolean = false>(options?: Options<PostAssetsData, ThrowOnError>) => (options?.client ?? client).post<PostAssetsResponses, PostAssetsErrors, ThrowOnError>({
+    url: '/assets',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const deleteAssetsById = <ThrowOnError extends boolean = false>(options: Options<DeleteAssetsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteAssetsByIdResponses, DeleteAssetsByIdErrors, ThrowOnError>({ url: '/assets/{id}', ...options });
