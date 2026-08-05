@@ -139,75 +139,11 @@ export const CreateUserSchema = {
     ]
 } as const;
 
-export const ApartmentSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        owner: {
-            type: 'string',
-            format: 'uuid'
-        },
-        location: {
-            type: 'string',
-            format: 'uuid'
-        },
-        name: {
-            type: 'string'
-        },
-        address: {
-            type: 'string'
-        },
-        externalId: {
-            type: 'string',
-            nullable: true
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'owner',
-        'location',
-        'name',
-        'address',
-        'externalId',
-        'createdAt'
-    ]
-} as const;
-
-export const CreateApartmentSchema = {
-    type: 'object',
-    properties: {
-        owner: {
-            type: 'string',
-            format: 'uuid'
-        },
-        location: {
-            type: 'string',
-            format: 'uuid'
-        },
-        name: {
-            type: 'string'
-        },
-        address: {
-            type: 'string'
-        },
-        externalId: {
-            type: 'string',
-            nullable: true
-        }
-    },
-    required: [
-        'owner',
-        'location',
-        'name',
-        'address'
-    ]
+export const ApartmentsListSchema = {
+    type: 'array',
+    items: {
+        $ref: '#/components/schemas/ApartmentWithLocation'
+    }
 } as const;
 
 export const ApartmentWithLocationSchema = {
@@ -230,6 +166,18 @@ export const ApartmentWithLocationSchema = {
         address: {
             type: 'string'
         },
+        currency: {
+            type: 'string',
+            enum: [
+                'EUR',
+                'USD',
+                'GBP',
+                'RSD',
+                'CHF',
+                'CAD',
+                'AUD'
+            ]
+        },
         externalId: {
             type: 'string',
             nullable: true
@@ -245,6 +193,7 @@ export const ApartmentWithLocationSchema = {
         'location',
         'name',
         'address',
+        'currency',
         'externalId',
         'createdAt'
     ]
@@ -284,6 +233,48 @@ export const LocationSchema = {
     ]
 } as const;
 
+export const CreateApartmentSchema = {
+    type: 'object',
+    properties: {
+        owner: {
+            type: 'string',
+            format: 'uuid'
+        },
+        location: {
+            type: 'string',
+            format: 'uuid'
+        },
+        name: {
+            type: 'string'
+        },
+        address: {
+            type: 'string'
+        },
+        currency: {
+            type: 'string',
+            enum: [
+                'EUR',
+                'USD',
+                'GBP',
+                'RSD',
+                'CHF',
+                'CAD',
+                'AUD'
+            ]
+        },
+        externalId: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'owner',
+        'location',
+        'name',
+        'address'
+    ]
+} as const;
+
 export const CreateLocationSchema = {
     type: 'object',
     properties: {
@@ -305,5 +296,146 @@ export const CreateLocationSchema = {
         'name',
         'country',
         'type'
+    ]
+} as const;
+
+export const AssetsListSchema = {
+    type: 'array',
+    items: {
+        $ref: '#/components/schemas/Asset'
+    }
+} as const;
+
+export const AssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        name: {
+            type: 'string',
+            maxLength: 255
+        },
+        category: {
+            type: 'string',
+            maxLength: 100
+        },
+        roomLocation: {
+            type: 'string',
+            maxLength: 100
+        },
+        description: {
+            type: 'string',
+            nullable: true
+        },
+        photoProofRequirement: {
+            type: 'string',
+            enum: [
+                'SWEEP_ONLY',
+                'CLOSEUP',
+                'FUNCTIONAL_ACTION'
+            ]
+        },
+        approximateValueCents: {
+            type: 'integer',
+            nullable: true,
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        isActive: {
+            type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'apartmentId',
+        'name',
+        'category',
+        'roomLocation',
+        'description',
+        'photoProofRequirement',
+        'approximateValueCents',
+        'isActive',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const;
+
+export const CreateAssetSchema = {
+    type: 'object',
+    properties: {
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        name: {
+            type: 'string',
+            maxLength: 255
+        },
+        category: {
+            type: 'string',
+            maxLength: 100
+        },
+        roomLocation: {
+            type: 'string',
+            maxLength: 100
+        },
+        description: {
+            type: 'string',
+            nullable: true
+        },
+        photoProofRequirement: {
+            type: 'string',
+            enum: [
+                'SWEEP_ONLY',
+                'CLOSEUP',
+                'FUNCTIONAL_ACTION'
+            ]
+        },
+        approximateValueCents: {
+            type: 'integer',
+            nullable: true,
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        isActive: {
+            type: 'boolean'
+        }
+    },
+    required: [
+        'apartmentId',
+        'name',
+        'category',
+        'roomLocation'
+    ]
+} as const;
+
+export const DeleteAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: [
+        'success',
+        'id'
     ]
 } as const;

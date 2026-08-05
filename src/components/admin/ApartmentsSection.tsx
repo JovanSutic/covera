@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import Button from "../formItems/Button";
 import type { SelectOption } from "@/types/component.types";
-import type { Apartment } from "@/api/generated/requests/types.gen";
+import type { ApartmentWithLocation } from "@/api/generated/requests/types.gen";
 import type { ColumnDef } from "@/types/component.types";
 import { DataTable } from "../DataTable";
 
@@ -84,7 +84,7 @@ export default function ApartmentsSection() {
     }));
   }, [users]);
 
-  const columns: ColumnDef<Apartment>[] = [
+  const columns: ColumnDef<ApartmentWithLocation>[] = [
     {
       header: "Apartment Name",
       accessorKey: "name",
@@ -97,7 +97,7 @@ export default function ApartmentsSection() {
     },
     {
       header: "Location",
-      accessorKey: (row) => locationMap.get(row.location) || "—",
+      accessorKey: (row) => locationMap.get(row.location.name) || "—",
       className: "text-gray-700 font-medium",
     },
     {

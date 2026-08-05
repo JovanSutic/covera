@@ -6,6 +6,9 @@ import LoginPage from "./pages/LoginPage";
 import PassUpdatePage from "./pages/PassUpdatePage";
 import AdminDashboard from "./pages/admin/Dashboard";
 import HostDashboard from "./pages/host/Dashboard";
+import ApartmentListPage from "./pages/host/ApartmentList";
+import IndividualApartmentPage from "./pages/host/IndividualApartment";
+
 import { redirectIfAuthenticated, requireRoleGuard } from "./lib/auth";
 
 const router = createBrowserRouter([
@@ -51,6 +54,14 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <HostDashboard />,
+      },
+      {
+        path: "apartments",
+        element: <ApartmentListPage />,
+      },
+      {
+        path: "apartments/:id",
+        element: <IndividualApartmentPage />,
       },
     ],
   },

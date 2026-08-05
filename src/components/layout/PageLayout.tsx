@@ -28,7 +28,7 @@ function PageLayout({
           "mx-auto w-full",
           MAX_WIDTH_MAP[size],
           "px-4 lg:px-8",
-          "pt-6 pb-8",
+          "pt-4 pb-8",
           className,
         )}
       >
