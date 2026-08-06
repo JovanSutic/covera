@@ -1,14 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
 import { useAuthUser } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
+import CustomSelect from "./formItems/Select";
+
+const LANGUAGES = [
+  { code: "en", label: "EN" },
+  { code: "de", label: "DE" },
+  { code: "sr", label: "SR" },
+];
 
 export default function Header() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useAuthUser();
+  const { i18n } = useTranslation();
+
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    i18n.changeLanguage(e.target.value);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -18,37 +32,53 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex h-12 max-w-7xl items-center justify-between">
-        
+      <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4">
         <div className="flex items-center">
           <span className="text-xl font-semibold tracking-tight text-gray-900">
             Covera
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {isLoading ? (
             <div className="h-9 w-9 animate-pulse rounded-full bg-gray-100" />
           ) : user ? (
-            <ProfileDropdown user={user} onLogout={handleLogout} />
+            <ProfileDropdown
+              user={user}
+              currentLang={i18n.language?.split("-")[0] || "en"}
+              onLanguageChange={handleLanguageChange}
+              onLogout={handleLogout}
+            />
           ) : null}
         </div>
-        
       </div>
     </header>
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ProfileDropdown({ user, onLogout }: { user: any; onLogout: () => void }) {
+function ProfileDropdown({
+  user,
+  currentLang,
+  onLanguageChange,
+  onLogout,
+}: {
+  user: any;
+  currentLang: string;
+  onLanguageChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onLogout: () => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+  const initials =
+    `${user.firstName?.charAt(0) || ""}${user.lastName?.charAt(0) || ""}`.toUpperCase();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -69,7 +99,9 @@ function ProfileDropdown({ user, onLogout }: { user: any; onLogout: () => void }
       <div
         className={cn(
           "absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-gray-100 bg-white p-1.5 shadow-xl transition-all duration-200 ease-in-out",
-          isOpen ? "visible opacity-100 translate-y-0" : "invisible opacity-0 -translate-y-1 pointer-events-none"
+          isOpen
+            ? "visible opacity-100 translate-y-0"
+            : "invisible opacity-0 -translate-y-1 pointer-events-none",
         )}
         role="menu"
       >
@@ -77,9 +109,39 @@ function ProfileDropdown({ user, onLogout }: { user: any; onLogout: () => void }
           <p className="text-sm font-semibold text-gray-900 truncate">
             {user.firstName} {user.lastName}
           </p>
-          <p className="text-xs text-gray-500 truncate mt-0.5">
-            {user.email}
-          </p>
+          <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
+        </div>
+
+        <div className="my-1 border-t border-gray-100" />
+
+        {/* Language Item */}
+        <div className="flex items-center justify-between px-3 py-1 text-sm font-medium text-gray-700">
+          <span className="flex items-center gap-2">
+            <svg
+              className="h-4 w-4 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+              />
+            </svg>
+            Language
+          </span>
+
+          <CustomSelect
+            value={currentLang}
+            onChange={onLanguageChange}
+            options={LANGUAGES.map((lang) => ({
+              value: lang.code,
+              label: lang.label,
+            }))}
+            containerClassName="w-20"
+          />
         </div>
 
         <div className="my-1 border-t border-gray-100" />
@@ -92,8 +154,17 @@ function ProfileDropdown({ user, onLogout }: { user: any; onLogout: () => void }
           className="flex w-full cursor-pointer items-center rounded-lg px-3 py-2 text-left text-sm font-medium text-rose-600 hover:bg-rose-50 transition-colors focus:outline-none"
           role="menuitem"
         >
-          <svg className="mr-2 h-4 w-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          <svg
+            className="mr-2 h-4 w-4 stroke-[2.5]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
           </svg>
           Sign out
         </button>

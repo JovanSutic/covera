@@ -9,7 +9,7 @@ export interface RichOption {
 }
 
 interface CustomSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  label: string;
+  label?: string;
   options: RichOption[];
   error?: string;
   containerClassName?: string;
@@ -162,7 +162,8 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
             aria-haspopup="listbox"
             aria-expanded={isOpen}
             className={cn(
-              "w-full text-left px-3 pt-6 pb-2 text-base text-black bg-transparent border-0 outline-none min-h-[56px] flex flex-col justify-center select-none pr-10 cursor-pointer",
+              "w-full text-left px-3 text-base text-black bg-transparent border-0 outline-none select-none pr-10 cursor-pointer flex flex-col justify-center",
+              label ? "pt-6 pb-2 min-h-[56px]" : "py-2 min-h-[38px]",
               className,
             )}
           >
@@ -175,18 +176,20 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
             )}
           </button>
 
-          <label
-            htmlFor={activeId}
-            className={cn(
-              "absolute left-3 transition-all duration-150 pointer-events-none origin-top-left",
-              selectedOption || isOpen
-                ? "top-4 -translate-y-3 scale-75 text-sm text-gray-500"
-                : "top-4 text-base text-gray-500 scale-100 translate-y-0",
-              isOpen && "text-black",
-            )}
-          >
-            {label}
-          </label>
+          {label && (
+            <label
+              htmlFor={activeId}
+              className={cn(
+                "absolute left-3 transition-all duration-150 pointer-events-none origin-top-left",
+                selectedOption || isOpen
+                  ? "top-4 -translate-y-3 scale-75 text-sm text-gray-500"
+                  : "top-4 text-base text-gray-500 scale-100 translate-y-0",
+                isOpen && "text-black",
+              )}
+            >
+              {label}
+            </label>
+          )}
 
           <div
             className={cn(

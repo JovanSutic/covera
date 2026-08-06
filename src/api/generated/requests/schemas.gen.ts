@@ -323,11 +323,54 @@ export const AssetSchema = {
         },
         category: {
             type: 'string',
-            maxLength: 100
+            enum: [
+                'ELECTRONICS',
+                'APPLIANCES_LARGE',
+                'APPLIANCES_SMALL',
+                'FURNITURE',
+                'STRUCTURAL_SURFACES',
+                'BATH_PLUMBING_FIXTURES',
+                'RUGS_CARPETS_TEXTILES',
+                'LIGHTING_FIXTURES',
+                'SAFETY_SECURITY',
+                'ENTERTAINMENT_RECREATION',
+                'DECOR_ART',
+                'UTILITIES_INFRASTRUCTURE',
+                'OUTDOOR_PATIO',
+                'OTHER'
+            ]
         },
         roomLocation: {
             type: 'string',
-            maxLength: 100
+            enum: [
+                'ENTRANCE_HALLWAY',
+                'STAIRCASE_CORRIDOR',
+                'LIVING_ROOM',
+                'DINING_ROOM',
+                'GAME_ENTERTAINMENT_ROOM',
+                'HOME_OFFICE_STUDY',
+                'KITCHEN',
+                'PANTRY_LAUNDRY_ROOM',
+                'BEDROOM_PRIMARY',
+                'BEDROOM_2',
+                'BEDROOM_3',
+                'BEDROOM_4',
+                'BEDROOM_5',
+                'BATHROOM_FULL_1',
+                'BATHROOM_FULL_2',
+                'BATHROOM_FULL_3',
+                'BATHROOM_HALF_POWDER',
+                'SAUNA_SPA_ROOM',
+                'GYM_FITNESS_ROOM',
+                'BALCONY_TERRACE',
+                'PATIO_DECK',
+                'GARDEN_YARD',
+                'SWIMMING_POOL_AREA',
+                'STORAGE_ROOM',
+                'GARAGE_PARKING',
+                'UTILITY_BOILER_ROOM',
+                'OTHER'
+            ]
         },
         description: {
             type: 'string',
@@ -387,11 +430,54 @@ export const CreateAssetSchema = {
         },
         category: {
             type: 'string',
-            maxLength: 100
+            enum: [
+                'ELECTRONICS',
+                'APPLIANCES_LARGE',
+                'APPLIANCES_SMALL',
+                'FURNITURE',
+                'STRUCTURAL_SURFACES',
+                'BATH_PLUMBING_FIXTURES',
+                'RUGS_CARPETS_TEXTILES',
+                'LIGHTING_FIXTURES',
+                'SAFETY_SECURITY',
+                'ENTERTAINMENT_RECREATION',
+                'DECOR_ART',
+                'UTILITIES_INFRASTRUCTURE',
+                'OUTDOOR_PATIO',
+                'OTHER'
+            ]
         },
         roomLocation: {
             type: 'string',
-            maxLength: 100
+            enum: [
+                'ENTRANCE_HALLWAY',
+                'STAIRCASE_CORRIDOR',
+                'LIVING_ROOM',
+                'DINING_ROOM',
+                'GAME_ENTERTAINMENT_ROOM',
+                'HOME_OFFICE_STUDY',
+                'KITCHEN',
+                'PANTRY_LAUNDRY_ROOM',
+                'BEDROOM_PRIMARY',
+                'BEDROOM_2',
+                'BEDROOM_3',
+                'BEDROOM_4',
+                'BEDROOM_5',
+                'BATHROOM_FULL_1',
+                'BATHROOM_FULL_2',
+                'BATHROOM_FULL_3',
+                'BATHROOM_HALF_POWDER',
+                'SAUNA_SPA_ROOM',
+                'GYM_FITNESS_ROOM',
+                'BALCONY_TERRACE',
+                'PATIO_DECK',
+                'GARDEN_YARD',
+                'SWIMMING_POOL_AREA',
+                'STORAGE_ROOM',
+                'GARAGE_PARKING',
+                'UTILITY_BOILER_ROOM',
+                'OTHER'
+            ]
         },
         description: {
             type: 'string',

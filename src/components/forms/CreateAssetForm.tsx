@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import Input from "@/components/formItems/Input";
 import Select from "@/components/formItems/Select";
 import Button from "@/components/formItems/Button";
@@ -10,8 +11,9 @@ import { postAssets } from "@/api/generated/requests/services.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import type { SelectOption } from "@/types/component.types";
+import { ASSET_CATEGORIES, ROOM_LOCATIONS } from "@/types/assets.types";
 
 const photoProofOptions: SelectOption[] = [
   { value: "SWEEP_ONLY", label: "Sweep Only" },
@@ -21,20 +23,20 @@ const photoProofOptions: SelectOption[] = [
 
 const createAssetSchema = z.object({
   name: z.string().min(1, "Asset name is required"),
-  category: z.string().min(1, "Category is required"),
-  roomLocation: z.string().min(1, "Room location is required"),
+  category: z.enum(ASSET_CATEGORIES, {
+    message: "Please select a valid category",
+  }),
+  roomLocation: z.enum(ROOM_LOCATIONS, {
+    message: "Please select a room location",
+  }),
   description: z.string().optional(),
-  photoProofRequirement: z.enum([
-    "SWEEP_ONLY",
-    "CLOSEUP",
-    "FUNCTIONAL_ACTION",
-  ]),
+  photoProofRequirement: z.enum(["SWEEP_ONLY", "CLOSEUP", "FUNCTIONAL_ACTION"]),
   approximateValue: z
     .string()
     .optional()
     .refine(
       (val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
-      "Value must be a valid non-negative number"
+      "Value must be a valid non-negative number",
     ),
 });
 
@@ -51,6 +53,27 @@ export default function CreateAssetForm({
   isOpen,
   apartmentId,
 }: CreateAssetFormProps) {
+  const { t } = useTranslation("assets");
+
+  // Dynamically generate translated options whenever language changes
+  const categoryOptions: SelectOption[] = useMemo(
+    () =>
+      ASSET_CATEGORIES.map((cat) => ({
+        value: cat,
+        label: t(`categories.${cat}`, cat),
+      })),
+    [t]
+  );
+
+  const roomLocationOptions: SelectOption[] = useMemo(
+    () =>
+      ROOM_LOCATIONS.map((room) => ({
+        value: room,
+        label: t(`roomLocations.${room}`, room),
+      })),
+    [t]
+  );
+
   const {
     register,
     handleSubmit,
@@ -60,8 +83,8 @@ export default function CreateAssetForm({
     resolver: zodResolver(createAssetSchema),
     defaultValues: {
       name: "",
-      category: "",
-      roomLocation: "",
+      category: undefined,
+      roomLocation: undefined,
       description: "",
       photoProofRequirement: "SWEEP_ONLY",
       approximateValue: "",
@@ -104,7 +127,7 @@ export default function CreateAssetForm({
     onError: (error: any) => {
       console.error("Mutation failed:", error);
       toast.error(
-        error?.error?.message || "An error occurred creating the asset."
+        error?.error?.message || "An error occurred creating the asset.",
       );
     },
   });
@@ -117,8 +140,8 @@ export default function CreateAssetForm({
     if (!isOpen && isDirty) {
       reset({
         name: "",
-        category: "",
-        roomLocation: "",
+        category: undefined,
+        roomLocation: undefined,
         description: "",
         photoProofRequirement: "SWEEP_ONLY",
         approximateValue: "",
@@ -139,18 +162,16 @@ export default function CreateAssetForm({
         {...register("name")}
       />
 
-      <Input
+      <Select
         label="Category"
-        type="text"
-        placeholder="Electronics, Furniture, Appliance..."
+        options={categoryOptions}
         error={errors.category?.message}
         {...register("category")}
       />
 
-      <Input
+      <Select
         label="Room Location"
-        type="text"
-        placeholder="Living Room, Kitchen, Bedroom 1..."
+        options={roomLocationOptions}
         error={errors.roomLocation?.message}
         {...register("roomLocation")}
       />
