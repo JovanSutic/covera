@@ -1,13 +1,10 @@
 import { useState } from "react";
-import {
-  Check,
-  Trash2,
-  Tag,
-  MapPin,
-  Camera,
-  FileText,
-} from "lucide-react";
-import type { Asset, ApartmentWithLocation } from "@/api/generated/requests/types.gen";
+import { Check, Trash2, Tag, MapPin, Camera, FileText } from "lucide-react";
+import type {
+  Asset,
+  ApartmentWithLocation,
+} from "@/api/generated/requests/types.gen";
+import { useTranslation } from "react-i18next";
 import Typography from "../Typography";
 
 const photoProofLabels: Record<Asset["photoProofRequirement"], string> = {
@@ -56,6 +53,7 @@ export function AssetItemCard({
   currency?: ApartmentWithLocation["currency"];
   onDeleteAsset: (assetId: string) => Promise<void> | void;
 }) {
+  const { t } = useTranslation("assets");
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -121,14 +119,14 @@ export function AssetItemCard({
           {asset.category && (
             <span className="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">
               <Tag className="h-3 w-3 text-gray-400" />
-              {asset.category}
+              {t(`categories.${asset.category}`, asset.category)}
             </span>
           )}
 
           {asset.roomLocation && (
             <span className="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">
               <MapPin className="h-3 w-3 text-gray-400" />
-              {asset.roomLocation}
+              {t(`roomLocations.${asset.roomLocation}`, asset.roomLocation)}
             </span>
           )}
 

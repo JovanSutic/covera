@@ -3,6 +3,7 @@ import { Sofa, Package, ChevronDown } from "lucide-react";
 import type { Asset } from "@/api/generated/requests/types.gen";
 import { AssetItemCard } from "./AssetItemCard";
 import Typography from "../Typography";
+import { useTranslation } from "react-i18next";
 
 interface RoomAssetsManagerProps {
   assets?: Asset[];
@@ -19,23 +20,22 @@ function RoomCard({
   assets: Asset[];
   onDeleteAsset: (assetId: string) => Promise<void> | void;
 }) {
+  const { t } = useTranslation("assets");
   const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className="rounded-xl bg-white border border-gray-100 shadow-2xs overflow-hidden">
-      {/* Room Header */}
       <div className="flex items-center justify-between p-4 sm:px-6 bg-white border-b border-gray-100">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity"
+          className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity cursor-pointer"
         >
-          {/* Distinct Room Icon: Indigo/Violet Theme (h-9 w-9, icon h-4 w-4) */}
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50/80 text-indigo-600 border border-indigo-100/70 shrink-0">
             <Sofa className="h-4 w-4" />
           </div>
           <div>
             <Typography type="h4" className="text-gray-900 font-semibold">
-              {roomName}
+              {t(`roomLocations.${roomName}`, roomName)}
             </Typography>
             <Typography type="caption" className="text-gray-500 mt-0.5 block">
               {assets.length} {assets.length === 1 ? "asset" : "assets"}
