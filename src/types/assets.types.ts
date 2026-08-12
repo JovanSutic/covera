@@ -46,3 +46,6 @@ export const ROOM_LOCATIONS = [
   "UTILITY_BOILER_ROOM",
   "OTHER",
 ] as const satisfies readonly Asset["roomLocation"][];
+
+
+export const SHOT_TYPES = ["SWEEP_ONLY", "CLOSEUP", "FUNCTIONAL_ACTION"] as const satisfies readonly Asset["photoProofRequirement"][];

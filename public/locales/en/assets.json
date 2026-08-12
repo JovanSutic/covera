@@ -43,5 +43,10 @@
     "UTILITIES_INFRASTRUCTURE": "Utilities & Infrastructure",
     "OUTDOOR_PATIO": "Outdoor & Patio",
     "OTHER": "Other"
+  },
+  "photoProofs": {
+    "SWEEP_ONLY": "Sweep Only",
+    "CLOSEUP": "Close-up Photo",
+    "FUNCTIONAL_ACTION": "Functional Action"
   }
 }

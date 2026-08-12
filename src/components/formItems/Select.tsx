@@ -8,7 +8,8 @@ export interface RichOption {
   subLabel?: string;
 }
 
-interface CustomSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface CustomSelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   options: RichOption[];
   error?: string;
@@ -36,53 +37,17 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
 
     const [isOpen, setIsOpen] = useState(false);
     const [internalValue, setInternalValue] = useState<string>(
-      (value || defaultValue || "") as string,
+      (value !== undefined ? value : defaultValue || "") as string,
     );
 
+    // Sync external value changes into internal state
     useEffect(() => {
       if (value !== undefined) {
         setInternalValue(value as string);
       }
     }, [value]);
 
-    useEffect(() => {
-      const nativeSelect = nativeSelectRef.current;
-      if (!nativeSelect) return;
-
-      const handleNativeChange = () => {
-        setInternalValue(nativeSelect.value);
-      };
-
-      nativeSelect.addEventListener("change", handleNativeChange);
-
-      const valueDescriptor = Object.getOwnPropertyDescriptor(
-        HTMLSelectElement.prototype,
-        "value",
-      );
-
-      if (valueDescriptor && valueDescriptor.set) {
-        const originalSet = valueDescriptor.set;
-
-        Object.defineProperty(nativeSelect, "value", {
-          configurable: true,
-          get() {
-            return valueDescriptor.get?.call(this);
-          },
-          set(val) {
-            originalSet.call(this, val);
-            setInternalValue(val);
-          },
-        });
-      }
-
-      return () => {
-        nativeSelect.removeEventListener("change", handleNativeChange);
-        if (valueDescriptor) {
-          Object.defineProperty(nativeSelect, "value", valueDescriptor);
-        }
-      };
-    }, []);
-
+    // Handle click outside to close dropdown
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (
@@ -111,14 +76,25 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
       setIsOpen(false);
 
       if (nativeSelectRef.current) {
-        nativeSelectRef.current.value = selectedValue;
+        // Native React tracker trigger for form libraries (React Hook Form / Formik)
+        const nativeSelect = nativeSelectRef.current;
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLSelectElement.prototype,
+          "value",
+        )?.set;
+
+        if (nativeInputValueSetter) {
+          nativeInputValueSetter.call(nativeSelect, selectedValue);
+        } else {
+          nativeSelect.value = selectedValue;
+        }
 
         const event = new Event("change", { bubbles: true });
-        nativeSelectRef.current.dispatchEvent(event);
+        nativeSelect.dispatchEvent(event);
 
         if (onChange) {
           onChange({
-            target: nativeSelectRef.current,
+            target: nativeSelect,
             type: "change",
           } as React.ChangeEvent<HTMLSelectElement>);
         }

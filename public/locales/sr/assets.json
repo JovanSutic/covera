@@ -43,5 +43,10 @@
     "UTILITIES_INFRASTRUCTURE": "Комуналне услуге и инфраструктура",
     "OUTDOOR_PATIO": "Оутдоор & Патио",
     "OTHER": "Остало"
+  },
+  "photoProofs": {
+    "SWEEP_ONLY": "Свееп Онли",
+    "CLOSEUP": "Цлосе-уп Пхото",
+    "FUNCTIONAL_ACTION": "Функционална акција"
   }
 }
