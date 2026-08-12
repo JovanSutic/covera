@@ -43,5 +43,10 @@
     "UTILITIES_INFRASTRUCTURE": "Versorgungsunternehmen und Infrastruktur",
     "OUTDOOR_PATIO": "Außenbereich und Terrasse",
     "OTHER": "Andere"
+  },
+  "photoProofs": {
+    "SWEEP_ONLY": "Nur Sweep",
+    "CLOSEUP": "Nahaufnahmefoto",
+    "FUNCTIONAL_ACTION": "Funktionale Aktion"
   }
 }

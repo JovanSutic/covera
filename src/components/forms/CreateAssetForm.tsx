@@ -13,13 +13,11 @@ import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { toast } from "sonner";
 import { useEffect, useMemo } from "react";
 import type { SelectOption } from "@/types/component.types";
-import { ASSET_CATEGORIES, ROOM_LOCATIONS } from "@/types/assets.types";
-
-const photoProofOptions: SelectOption[] = [
-  { value: "SWEEP_ONLY", label: "Sweep Only" },
-  { value: "CLOSEUP", label: "Close-up Photo" },
-  { value: "FUNCTIONAL_ACTION", label: "Functional Action" },
-];
+import {
+  ASSET_CATEGORIES,
+  ROOM_LOCATIONS,
+  SHOT_TYPES,
+} from "@/types/assets.types";
 
 const createAssetSchema = z.object({
   name: z.string().min(1, "Asset name is required"),
@@ -48,6 +46,15 @@ interface CreateAssetFormProps {
   apartmentId: string;
 }
 
+const DEFAULT_FORM_VALUES: CreateAssetFormValues = {
+  name: "",
+  category: "" as any, // Use empty string instead of undefined for controlled selects
+  roomLocation: "" as any,
+  description: "",
+  photoProofRequirement: "SWEEP_ONLY",
+  approximateValue: "",
+};
+
 export default function CreateAssetForm({
   onSuccess,
   isOpen,
@@ -55,14 +62,22 @@ export default function CreateAssetForm({
 }: CreateAssetFormProps) {
   const { t } = useTranslation("assets");
 
-  // Dynamically generate translated options whenever language changes
+  const photoProofOptions: SelectOption[] = useMemo(
+    () =>
+      SHOT_TYPES.map((type) => ({
+        value: type,
+        label: t(`photoProofs.${type}`, type),
+      })),
+    [t],
+  );
+
   const categoryOptions: SelectOption[] = useMemo(
     () =>
       ASSET_CATEGORIES.map((cat) => ({
         value: cat,
         label: t(`categories.${cat}`, cat),
       })),
-    [t]
+    [t],
   );
 
   const roomLocationOptions: SelectOption[] = useMemo(
@@ -71,24 +86,17 @@ export default function CreateAssetForm({
         value: room,
         label: t(`roomLocations.${room}`, room),
       })),
-    [t]
+    [t],
   );
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isDirty, isValid },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<CreateAssetFormValues>({
     resolver: zodResolver(createAssetSchema),
-    defaultValues: {
-      name: "",
-      category: undefined,
-      roomLocation: undefined,
-      description: "",
-      photoProofRequirement: "SWEEP_ONLY",
-      approximateValue: "",
-    },
+    defaultValues: DEFAULT_FORM_VALUES,
   });
 
   const queryClient = useQueryClient();
@@ -121,7 +129,7 @@ export default function CreateAssetForm({
       });
 
       toast.success("Asset created successfully!");
-      reset();
+      reset(DEFAULT_FORM_VALUES);
       if (onSuccess) onSuccess();
     },
     onError: (error: any) => {
@@ -136,18 +144,12 @@ export default function CreateAssetForm({
     mutate(formData);
   };
 
+  // Reset form when drawer closes
   useEffect(() => {
-    if (!isOpen && isDirty) {
-      reset({
-        name: "",
-        category: undefined,
-        roomLocation: undefined,
-        description: "",
-        photoProofRequirement: "SWEEP_ONLY",
-        approximateValue: "",
-      });
+    if (!isOpen) {
+      reset(DEFAULT_FORM_VALUES);
     }
-  }, [isOpen, reset, isDirty]);
+  }, [isOpen, reset]);
 
   return (
     <form

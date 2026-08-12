@@ -525,3 +525,189 @@ export const DeleteAssetResponseSchema = {
         'id'
     ]
 } as const;
+
+export const ApartmentShotsListSchema = {
+    type: 'array',
+    items: {
+        $ref: '#/components/schemas/ApartmentShot'
+    }
+} as const;
+
+export const ApartmentShotSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        roomLocation: {
+            type: 'string',
+            enum: [
+                'ENTRANCE_HALLWAY',
+                'STAIRCASE_CORRIDOR',
+                'LIVING_ROOM',
+                'DINING_ROOM',
+                'GAME_ENTERTAINMENT_ROOM',
+                'HOME_OFFICE_STUDY',
+                'KITCHEN',
+                'PANTRY_LAUNDRY_ROOM',
+                'BEDROOM_PRIMARY',
+                'BEDROOM_2',
+                'BEDROOM_3',
+                'BEDROOM_4',
+                'BEDROOM_5',
+                'BATHROOM_FULL_1',
+                'BATHROOM_FULL_2',
+                'BATHROOM_FULL_3',
+                'BATHROOM_HALF_POWDER',
+                'SAUNA_SPA_ROOM',
+                'GYM_FITNESS_ROOM',
+                'BALCONY_TERRACE',
+                'PATIO_DECK',
+                'GARDEN_YARD',
+                'SWIMMING_POOL_AREA',
+                'STORAGE_ROOM',
+                'GARAGE_PARKING',
+                'UTILITY_BOILER_ROOM',
+                'OTHER'
+            ]
+        },
+        shotType: {
+            type: 'string',
+            enum: [
+                'SWEEP_ONLY',
+                'CLOSEUP',
+                'FUNCTIONAL_ACTION'
+            ]
+        },
+        title: {
+            type: 'string',
+            minLength: 1,
+            maxLength: 255
+        },
+        instructions: {
+            type: 'string',
+            minLength: 1
+        },
+        assetIds: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'uuid'
+            }
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'apartmentId',
+        'roomLocation',
+        'shotType',
+        'title',
+        'instructions',
+        'assetIds',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const;
+
+export const SyncApartmentShotsSchema = {
+    type: 'object',
+    properties: {
+        shots: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/SyncShotItem'
+            }
+        }
+    },
+    required: [
+        'shots'
+    ]
+} as const;
+
+export const SyncShotItemSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        roomLocation: {
+            type: 'string',
+            enum: [
+                'ENTRANCE_HALLWAY',
+                'STAIRCASE_CORRIDOR',
+                'LIVING_ROOM',
+                'DINING_ROOM',
+                'GAME_ENTERTAINMENT_ROOM',
+                'HOME_OFFICE_STUDY',
+                'KITCHEN',
+                'PANTRY_LAUNDRY_ROOM',
+                'BEDROOM_PRIMARY',
+                'BEDROOM_2',
+                'BEDROOM_3',
+                'BEDROOM_4',
+                'BEDROOM_5',
+                'BATHROOM_FULL_1',
+                'BATHROOM_FULL_2',
+                'BATHROOM_FULL_3',
+                'BATHROOM_HALF_POWDER',
+                'SAUNA_SPA_ROOM',
+                'GYM_FITNESS_ROOM',
+                'BALCONY_TERRACE',
+                'PATIO_DECK',
+                'GARDEN_YARD',
+                'SWIMMING_POOL_AREA',
+                'STORAGE_ROOM',
+                'GARAGE_PARKING',
+                'UTILITY_BOILER_ROOM',
+                'OTHER'
+            ]
+        },
+        shotType: {
+            type: 'string',
+            enum: [
+                'SWEEP_ONLY',
+                'CLOSEUP',
+                'FUNCTIONAL_ACTION'
+            ]
+        },
+        title: {
+            type: 'string',
+            minLength: 1,
+            maxLength: 255
+        },
+        instructions: {
+            type: 'string',
+            minLength: 1
+        },
+        assetIds: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'uuid'
+            },
+            minItems: 1
+        }
+    },
+    required: [
+        'roomLocation',
+        'shotType',
+        'title',
+        'instructions',
+        'assetIds'
+    ]
+} as const;

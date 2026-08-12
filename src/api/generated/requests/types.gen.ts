@@ -102,6 +102,33 @@ export type DeleteAssetResponse = {
     id: string;
 };
 
+export type ApartmentShotsList = Array<ApartmentShot>;
+
+export type ApartmentShot = {
+    id: string;
+    apartmentId: string;
+    roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+    shotType: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+    title: string;
+    instructions: string;
+    assetIds: Array<string>;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type SyncApartmentShots = {
+    shots: Array<SyncShotItem>;
+};
+
+export type SyncShotItem = {
+    id?: string | null;
+    roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+    shotType: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+    title: string;
+    instructions: string;
+    assetIds: Array<string>;
+};
+
 export type GetUsersData = {
     body?: never;
     path?: never;
@@ -827,3 +854,89 @@ export type DeleteAssetsByIdResponses = {
 };
 
 export type DeleteAssetsByIdResponse = DeleteAssetsByIdResponses[keyof DeleteAssetsByIdResponses];
+
+export type GetApartmentShotsApartmentByApartmentIdData = {
+    body?: never;
+    path: {
+        apartmentId: string;
+    };
+    query?: never;
+    url: '/apartment-shots/apartment/{apartmentId}';
+};
+
+export type GetApartmentShotsApartmentByApartmentIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested ApartmentShot could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This ApartmentShot already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type GetApartmentShotsApartmentByApartmentIdError = GetApartmentShotsApartmentByApartmentIdErrors[keyof GetApartmentShotsApartmentByApartmentIdErrors];
+
+export type GetApartmentShotsApartmentByApartmentIdResponses = {
+    /**
+     * List all configured shots for an apartment with their attached assets
+     */
+    200: ApartmentShotsList;
+};
+
+export type GetApartmentShotsApartmentByApartmentIdResponse = GetApartmentShotsApartmentByApartmentIdResponses[keyof GetApartmentShotsApartmentByApartmentIdResponses];
+
+export type PutApartmentShotsApartmentByApartmentIdData = {
+    body?: SyncApartmentShots;
+    path: {
+        apartmentId: string;
+    };
+    query?: never;
+    url: '/apartment-shots/apartment/{apartmentId}';
+};
+
+export type PutApartmentShotsApartmentByApartmentIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested ApartmentShot could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This ApartmentShot already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type PutApartmentShotsApartmentByApartmentIdError = PutApartmentShotsApartmentByApartmentIdErrors[keyof PutApartmentShotsApartmentByApartmentIdErrors];
+
+export type PutApartmentShotsApartmentByApartmentIdResponses = {
+    /**
+     * Full apartment shot-to-asset matrix synced successfully
+     */
+    200: ApartmentShotsList;
+};
+
+export type PutApartmentShotsApartmentByApartmentIdResponse = PutApartmentShotsApartmentByApartmentIdResponses[keyof PutApartmentShotsApartmentByApartmentIdResponses];
