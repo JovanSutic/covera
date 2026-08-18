@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { Modal } from "../Modal";
 import { ShotStudioFlow } from "./ShotStudioFlow";
 import type { SyncShotItem, Asset } from "@/api/generated/requests/types.gen";
-import { addClientId, removeClientId, type WithClientId } from "@/lib/helpers/uuid";
+import {
+  addClientId,
+  removeClientId,
+  type WithClientId,
+} from "@/lib/helpers/uuid";
 
 interface ShotStudioModalProps {
   isOpen: boolean;
@@ -20,7 +24,7 @@ export function ShotStudioModal({
   onSave,
 }: ShotStudioModalProps) {
   const [shots, setShots] = useState<WithClientId<SyncShotItem>[]>(() =>
-    addClientId(initialShots)
+    addClientId(initialShots),
   );
   const [isSaving, setIsSaving] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -62,7 +66,11 @@ export function ShotStudioModal({
           )}
         </div>
       }
-      subtitle="Define verification shot requirements and map uploaded media assets."
+      subtitle={
+        <span className="hidden sm:inline">
+          Define verification shot requirements and map uploaded media assets.
+        </span>
+      }
       footer={
         <>
           <button
