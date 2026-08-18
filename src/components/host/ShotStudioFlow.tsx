@@ -24,7 +24,6 @@ export function ShotStudioFlow({
 }: ShotStudioFlowProps) {
   const { t } = useTranslation("assets");
 
-  // Selection tracked by client key instead of array index to prevent shifting bugs
   const [selectedClientId, setSelectedClientId] = useState<string | null>(
     shots.length > 0 ? shots[0]._clientId : null,
   );
@@ -121,9 +120,17 @@ export function ShotStudioFlow({
     [shots, selectedClientId],
   );
 
+  // Helper flags for clean layout conditioning
+  const hasSelectedShot = Boolean(activeShot) && !isCreatingNew;
+
   return (
     <div className="h-full flex flex-col md:flex-row min-h-0 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-800 overflow-hidden">
-      <div className="w-full md:w-5/12 p-4 flex flex-col gap-3 max-h-[45vh] md:max-h-none overflow-y-auto bg-white dark:bg-gray-900 shrink-0">
+      {/* Left Panel: Takes full height on mobile when creating or when no shot is selected */}
+      <div
+        className={`w-full md:w-5/12 p-4 flex flex-col gap-3 overflow-y-auto bg-white dark:bg-gray-900 shrink-0 ${
+          hasSelectedShot ? "max-h-[35vh] md:max-h-none" : "h-full max-h-none"
+        }`}
+      >
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
             Shots List ({shots.length})
@@ -157,7 +164,7 @@ export function ShotStudioFlow({
                 required
                 placeholder="e.g. TV & Soundbar"
                 value={newShotForm.title}
-                onChange={(e) =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setNewShotForm({ ...newShotForm, title: e.target.value })
                 }
               />
@@ -168,7 +175,7 @@ export function ShotStudioFlow({
                 label="Room"
                 value={newShotForm.roomLocation}
                 options={roomOptions}
-                onChange={(e) =>
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                   setNewShotForm({
                     ...newShotForm,
                     roomLocation: e.target.value as Asset["roomLocation"],
@@ -180,7 +187,7 @@ export function ShotStudioFlow({
                 label="Type"
                 value={newShotForm.shotType}
                 options={typeOptions}
-                onChange={(e) =>
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                   setNewShotForm({
                     ...newShotForm,
                     shotType: e.target.value as Asset["photoProofRequirement"],
@@ -198,7 +205,7 @@ export function ShotStudioFlow({
                 rows={2}
                 placeholder="Take shot of TV and soundbar together"
                 value={newShotForm.instructions}
-                onChange={(e) =>
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                   setNewShotForm({
                     ...newShotForm,
                     instructions: e.target.value,
@@ -227,11 +234,11 @@ export function ShotStudioFlow({
 
         {/* Empty State when no shots exist */}
         {shots.length === 0 && !isCreatingNew && (
-          <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg p-6 text-center">
+          <div className="flex-1 min-h-[200px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg p-4 text-center">
             <p className="text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">
               No shots defined yet
             </p>
-            <p className="text-xs text-gray-500 mb-4 max-w-xs">
+            <p className="text-xs text-gray-500 mb-3 max-w-xs">
               Create verification shot items to map against your apartment
               assets.
             </p>
@@ -287,7 +294,12 @@ export function ShotStudioFlow({
         })}
       </div>
 
-      <div className="w-full md:w-7/12 p-4 flex flex-col max-h-[50vh] md:max-h-none overflow-y-auto bg-gray-50 dark:bg-gray-950">
+      {/* Right Panel: Hidden on mobile when creating or when no shot is selected */}
+      <div
+        className={`w-full md:w-7/12 p-4 flex-col flex-1 min-h-0 overflow-y-auto bg-gray-50 dark:bg-gray-950 ${
+          hasSelectedShot ? "flex" : "hidden md:flex"
+        }`}
+      >
         {activeShot && !isCreatingNew ? (
           <>
             <div className="mb-4">

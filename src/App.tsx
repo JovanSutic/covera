@@ -1,14 +1,6 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
 import "./App.scss";
 
-import FormPage from "./pages/FormPage";
-import LoginPage from "./pages/LoginPage";
-import PassUpdatePage from "./pages/PassUpdatePage";
-import AdminDashboard from "./pages/admin/Dashboard";
-import HostDashboard from "./pages/host/Dashboard";
-import ApartmentListPage from "./pages/host/ApartmentList";
-import IndividualApartmentPage from "./pages/host/IndividualApartment";
-
 import { redirectIfAuthenticated, requireRoleGuard } from "./lib/auth";
 
 const router = createBrowserRouter([
@@ -17,19 +9,31 @@ const router = createBrowserRouter([
     async loader() {
       return redirectIfAuthenticated();
     },
-    element: <LoginPage />,
+    lazy: async () => {
+      const { default: Component } = await import("./pages/LoginPage");
+      return { Component };
+    },
   },
   {
     path: "/update-password",
-    element: <PassUpdatePage />,
+    lazy: async () => {
+      const { default: Component } = await import("./pages/PassUpdatePage");
+      return { Component };
+    },
   },
   {
     path: "/",
-    element: <FormPage />,
+    lazy: async () => {
+      const { default: Component } = await import("./pages/FormPage");
+      return { Component };
+    },
   },
   {
     path: "/form",
-    element: <FormPage />,
+    lazy: async () => {
+      const { default: Component } = await import("./pages/FormPage");
+      return { Component };
+    },
   },
   {
     path: "/admin",
@@ -40,7 +44,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "dashboard",
-        element: <AdminDashboard />,
+        lazy: async () => {
+          const { default: Component } = await import("./pages/admin/Dashboard");
+          return { Component };
+        },
       },
     ],
   },
@@ -53,15 +60,26 @@ const router = createBrowserRouter([
     children: [
       {
         path: "dashboard",
-        element: <HostDashboard />,
+        lazy: async () => {
+          const { default: Component } = await import("./pages/host/Dashboard");
+          return { Component };
+        },
       },
       {
         path: "apartments",
-        element: <ApartmentListPage />,
+        lazy: async () => {
+          const { default: Component } = await import("./pages/host/ApartmentList");
+          return { Component };
+        },
       },
       {
         path: "apartments/:id",
-        element: <IndividualApartmentPage />,
+        lazy: async () => {
+          const { default: Component } = await import(
+            "./pages/host/IndividualApartment"
+          );
+          return { Component };
+        },
       },
     ],
   },
