@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Trash2, Tag, MapPin, Camera, FileText } from "lucide-react";
+import { Check, Trash2, Tag, MapPin, Camera, FileText, AlertCircle } from "lucide-react";
 import type {
   Asset,
   ApartmentWithLocation,
@@ -46,10 +46,12 @@ function DescriptionTooltip({ content }: { content: string }) {
 
 export function AssetItemCard({
   asset,
+  isCovered = true,
   onDeleteAsset,
   currency = "EUR",
 }: {
   asset: Asset;
+  isCovered?: boolean;
   currency?: ApartmentWithLocation["currency"];
   onDeleteAsset: (assetId: string) => Promise<void> | void;
 }) {
@@ -73,7 +75,13 @@ export function AssetItemCard({
       : null;
 
   return (
-    <div className="group relative flex flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-2xs hover:border-gray-300 transition-all">
+    <div
+      className={`group relative flex flex-col justify-between rounded-lg border bg-white p-4 shadow-2xs transition-all ${
+        !isCovered
+          ? "border-amber-200 bg-amber-50/20"
+          : "border-gray-200 hover:border-gray-300"
+      }`}
+    >
       <div>
         <div className="flex items-center justify-between gap-2">
           <h4 className="font-medium text-gray-900 text-sm leading-snug line-clamp-1">
@@ -135,21 +143,22 @@ export function AssetItemCard({
             {photoProofLabels[asset.photoProofRequirement] ||
               asset.photoProofRequirement}
           </span>
+
+          {!isCovered && (
+            <span className="inline-flex items-center gap-1 rounded-md bg-amber-100/80 px-2 py-0.5 text-[11px] font-medium text-amber-800 border border-amber-200">
+              <AlertCircle className="h-3 w-3 text-amber-600" />
+              Missing shot
+            </span>
+          )}
         </div>
       </div>
 
       {formattedAmount && (
         <div className="mt-3 border-t border-gray-100 pt-2">
-          <Typography
-            type="caption"
-            className="text-gray-400 block text-[11px]"
-          >
+          <Typography type="caption" className="text-gray-400 block text-[11px]">
             Approx. value
           </Typography>
-          <Typography
-            type="body-sm"
-            className="font-semibold text-emerald-700 mt-0.5"
-          >
+          <Typography type="body-sm" className="font-semibold text-emerald-700 mt-0.5">
             {formattedAmount} {currency}
           </Typography>
         </div>

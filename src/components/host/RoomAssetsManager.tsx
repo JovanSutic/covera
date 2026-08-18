@@ -6,7 +6,8 @@ import Typography from "../Typography";
 import { useTranslation } from "react-i18next";
 
 interface RoomAssetsManagerProps {
-  assets?: Asset[];
+  assets: Asset[];
+  uncoveredAssetIds: string[];
   isLoading?: boolean;
   onDeleteAsset: (assetId: string) => Promise<void> | void;
 }
@@ -14,10 +15,12 @@ interface RoomAssetsManagerProps {
 function RoomCard({
   roomName,
   assets,
+  uncoveredSet,
   onDeleteAsset,
 }: {
   roomName: string;
   assets: Asset[];
+  uncoveredSet: Set<string>;
   onDeleteAsset: (assetId: string) => Promise<void> | void;
 }) {
   const { t } = useTranslation("assets");
@@ -56,7 +59,6 @@ function RoomCard({
         </button>
       </div>
 
-      {/* Assets Grid */}
       {isOpen && (
         <div className="p-4 sm:p-6 bg-gray-50/50">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -64,6 +66,7 @@ function RoomCard({
               <AssetItemCard
                 key={asset.id}
                 asset={asset}
+                isCovered={!uncoveredSet.has(asset.id)}
                 onDeleteAsset={onDeleteAsset}
               />
             ))}
@@ -101,9 +104,15 @@ function AssetsSkeleton() {
 
 export function RoomAssetsManager({
   assets = [],
+  uncoveredAssetIds = [],
   isLoading,
   onDeleteAsset,
 }: RoomAssetsManagerProps) {
+  const uncoveredSet = useMemo(
+    () => new Set(uncoveredAssetIds),
+    [uncoveredAssetIds],
+  );
+
   const groupedAssets = useMemo(() => {
     const groups: Record<string, { roomName: string; items: Asset[] }> = {};
 
@@ -118,9 +127,7 @@ export function RoomAssetsManager({
     return Object.values(groups);
   }, [assets]);
 
-  if (isLoading) {
-    return <AssetsSkeleton />;
-  }
+  if (isLoading) return <AssetsSkeleton />;
 
   if (assets.length === 0) {
     return (
@@ -132,8 +139,7 @@ export function RoomAssetsManager({
           No assets registered
         </h3>
         <p className="mt-1 text-xs text-gray-500 max-w-xs">
-          This apartment doesn't have any assets assigned yet. Use the drawer
-          above to add your first item.
+          This apartment doesn't have any assets assigned yet.
         </p>
       </div>
     );
@@ -146,6 +152,7 @@ export function RoomAssetsManager({
           key={group.roomName}
           roomName={group.roomName}
           assets={group.items}
+          uncoveredSet={uncoveredSet}
           onDeleteAsset={onDeleteAsset}
         />
       ))}
