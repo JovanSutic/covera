@@ -64,6 +64,49 @@ export type CreateApartment = {
     externalId?: string | null;
 };
 
+export type ReservationsList = Array<Reservation>;
+
+export type Reservation = {
+    id: string;
+    apartmentId: string;
+    platformReservationId: string | null;
+    guestName: string;
+    guestEmail: string | null;
+    checkInDatetime: string;
+    checkOutDatetime: string;
+    status: 'UPCOMING' | 'CHECK_IN_DUE' | 'ACTIVE' | 'CHECK_OUT_DUE' | 'CLOSED' | 'DISPUTED';
+    proofWindowHours: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type CreateReservation = {
+    apartmentId: string;
+    platformReservationId?: string | null;
+    guestName: string;
+    guestEmail?: string | null;
+    checkInDatetime: string | null;
+    checkOutDatetime: string | null;
+    status?: 'UPCOMING' | 'CHECK_IN_DUE' | 'ACTIVE' | 'CHECK_OUT_DUE' | 'CLOSED' | 'DISPUTED';
+    proofWindowHours?: number;
+};
+
+export type UpdateReservation = {
+    apartmentId?: string;
+    platformReservationId?: string | null;
+    guestName?: string;
+    guestEmail?: string | null;
+    checkInDatetime?: string | null;
+    checkOutDatetime?: string | null;
+    status?: 'UPCOMING' | 'CHECK_IN_DUE' | 'ACTIVE' | 'CHECK_OUT_DUE' | 'CLOSED' | 'DISPUTED';
+    proofWindowHours?: number;
+};
+
+export type DeleteReservationResponse = {
+    success: boolean;
+    id: string;
+};
+
 export type CreateLocation = {
     name: string;
     country: string;
@@ -512,6 +555,9 @@ export type PostApartmentsByIdPhotosUploadTokensResponse = PostApartmentsByIdPho
 
 export type PostApartmentsByIdPhotosConfirmData = {
     body?: {
+        shotId: string;
+        reservationId: string;
+        type?: 'checkin_state' | 'damage';
         uploadedKeys: Array<string>;
     };
     path: {
@@ -599,35 +645,51 @@ export type GetApartmentsHostMeResponses = {
 
 export type GetApartmentsHostMeResponse = GetApartmentsHostMeResponses[keyof GetApartmentsHostMeResponses];
 
-export type GetReservationsData = {
+export type GetReservationsApartmentByApartmentIdData = {
     body?: never;
-    path?: never;
-    query?: never;
-    url: '/reservations';
-};
-
-export type GetReservationsResponses = {
-    /**
-     * List reservations
-     */
-    200: Array<{
-        id: string;
+    path: {
         apartmentId: string;
-        guestUserId: string;
-        startDate: string;
-        endDate: string;
-        status: 'pending' | 'confirmed' | 'cancelled';
-    }>;
+    };
+    query?: never;
+    url: '/reservations/apartment/{apartmentId}';
 };
 
-export type GetReservationsResponse = GetReservationsResponses[keyof GetReservationsResponses];
+export type GetReservationsApartmentByApartmentIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Reservation could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Reservation already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type GetReservationsApartmentByApartmentIdError = GetReservationsApartmentByApartmentIdErrors[keyof GetReservationsApartmentByApartmentIdErrors];
+
+export type GetReservationsApartmentByApartmentIdResponses = {
+    /**
+     * List all reservations for a specific apartment
+     */
+    200: ReservationsList;
+};
+
+export type GetReservationsApartmentByApartmentIdResponse = GetReservationsApartmentByApartmentIdResponses[keyof GetReservationsApartmentByApartmentIdResponses];
 
 export type PostReservationsData = {
-    body?: {
-        apartmentId: string;
-        startDate: string;
-        endDate: string;
-    };
+    body?: CreateReservation;
     path?: never;
     query?: never;
     url: '/reservations';
@@ -635,32 +697,39 @@ export type PostReservationsData = {
 
 export type PostReservationsErrors = {
     /**
-     * Bad request
+     * Bad Request: One or more parameters failed validation.
      */
-    400: {
-        message: string;
-    };
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Reservation could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Reservation already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
 };
 
 export type PostReservationsError = PostReservationsErrors[keyof PostReservationsErrors];
 
 export type PostReservationsResponses = {
     /**
-     * Created reservation
+     * Reservation created successfully
      */
-    201: {
-        id: string;
-        apartmentId: string;
-        guestUserId: string;
-        startDate: string;
-        endDate: string;
-        status: 'pending' | 'confirmed' | 'cancelled';
-    };
+    201: Reservation;
 };
 
 export type PostReservationsResponse = PostReservationsResponses[keyof PostReservationsResponses];
 
-export type GetReservationsByIdData = {
+export type DeleteReservationsByIdData = {
     body?: never;
     path: {
         id: string;
@@ -669,32 +738,82 @@ export type GetReservationsByIdData = {
     url: '/reservations/{id}';
 };
 
-export type GetReservationsByIdErrors = {
+export type DeleteReservationsByIdErrors = {
     /**
-     * Not found
+     * Bad Request: One or more parameters failed validation.
      */
-    404: {
-        message: string;
-    };
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Reservation could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Reservation already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
 };
 
-export type GetReservationsByIdError = GetReservationsByIdErrors[keyof GetReservationsByIdErrors];
+export type DeleteReservationsByIdError = DeleteReservationsByIdErrors[keyof DeleteReservationsByIdErrors];
 
-export type GetReservationsByIdResponses = {
+export type DeleteReservationsByIdResponses = {
     /**
-     * Reservation detail
+     * Reservation deleted successfully
      */
-    200: {
+    200: DeleteReservationResponse;
+};
+
+export type DeleteReservationsByIdResponse = DeleteReservationsByIdResponses[keyof DeleteReservationsByIdResponses];
+
+export type PatchReservationsByIdData = {
+    body?: UpdateReservation;
+    path: {
         id: string;
-        apartmentId: string;
-        guestUserId: string;
-        startDate: string;
-        endDate: string;
-        status: 'pending' | 'confirmed' | 'cancelled';
     };
+    query?: never;
+    url: '/reservations/{id}';
 };
 
-export type GetReservationsByIdResponse = GetReservationsByIdResponses[keyof GetReservationsByIdResponses];
+export type PatchReservationsByIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Reservation could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Reservation already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type PatchReservationsByIdError = PatchReservationsByIdErrors[keyof PatchReservationsByIdErrors];
+
+export type PatchReservationsByIdResponses = {
+    /**
+     * Reservation updated successfully
+     */
+    200: Reservation;
+};
+
+export type PatchReservationsByIdResponse = PatchReservationsByIdResponses[keyof PatchReservationsByIdResponses];
 
 export type GetLocationsData = {
     body?: never;

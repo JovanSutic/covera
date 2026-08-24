@@ -275,6 +275,209 @@ export const CreateApartmentSchema = {
     ]
 } as const;
 
+export const ReservationsListSchema = {
+    type: 'array',
+    items: {
+        $ref: '#/components/schemas/Reservation'
+    }
+} as const;
+
+export const ReservationSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        platformReservationId: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        guestName: {
+            type: 'string',
+            maxLength: 255
+        },
+        guestEmail: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        checkInDatetime: {
+            type: 'string',
+            format: 'date-time'
+        },
+        checkOutDatetime: {
+            type: 'string',
+            format: 'date-time'
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'UPCOMING',
+                'CHECK_IN_DUE',
+                'ACTIVE',
+                'CHECK_OUT_DUE',
+                'CLOSED',
+                'DISPUTED'
+            ]
+        },
+        proofWindowHours: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'apartmentId',
+        'platformReservationId',
+        'guestName',
+        'guestEmail',
+        'checkInDatetime',
+        'checkOutDatetime',
+        'status',
+        'proofWindowHours',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const;
+
+export const CreateReservationSchema = {
+    type: 'object',
+    properties: {
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        platformReservationId: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        guestName: {
+            type: 'string',
+            maxLength: 255
+        },
+        guestEmail: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        checkInDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        checkOutDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'UPCOMING',
+                'CHECK_IN_DUE',
+                'ACTIVE',
+                'CHECK_OUT_DUE',
+                'CLOSED',
+                'DISPUTED'
+            ]
+        },
+        proofWindowHours: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        }
+    },
+    required: [
+        'apartmentId',
+        'guestName',
+        'checkInDatetime',
+        'checkOutDatetime'
+    ]
+} as const;
+
+export const UpdateReservationSchema = {
+    type: 'object',
+    properties: {
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        platformReservationId: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        guestName: {
+            type: 'string',
+            maxLength: 255
+        },
+        guestEmail: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        checkInDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        checkOutDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'UPCOMING',
+                'CHECK_IN_DUE',
+                'ACTIVE',
+                'CHECK_OUT_DUE',
+                'CLOSED',
+                'DISPUTED'
+            ]
+        },
+        proofWindowHours: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        }
+    }
+} as const;
+
+export const DeleteReservationResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: [
+        'success',
+        'id'
+    ]
+} as const;
+
 export const CreateLocationSchema = {
     type: 'object',
     properties: {
