@@ -13,10 +13,10 @@ import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Navigate, useParams } from "react-router";
-import { RoomAssetsManager } from "@/components/host/RoomAssetsManager";
+import { ApartmentAssetsManager } from "@/components/host/ApartmentAssetsManager";
+import { ApartmentReservationsManager } from "@/components/host/ReservationsSection";
 import { useMemo, useState } from "react";
 import Drawer from "@/components/Drawer";
-import Typography from "@/components/Typography";
 import CreateAssetForm from "@/components/forms/CreateAssetForm";
 import { toast } from "sonner";
 import { ShotStudioModal } from "@/components/host/ShotStudioModal";
@@ -24,9 +24,13 @@ import type { SyncShotItem } from "@/api/generated/requests/types.gen";
 import { addClientId } from "@/lib/helpers/uuid";
 import { validateAssetShotCoverage } from "@/lib/validations/shots";
 import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
+import CreateReservationForm from "@/components/forms/CreateReservationForm";
 
 export default function IndividualApartmentPage() {
-  const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"reservations" | "assets">(
+    "reservations",
+  );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isShotStudioOpen, setIsShotStudioOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
@@ -140,6 +144,8 @@ export default function IndividualApartmentPage() {
     [coverageSummary],
   );
 
+  const unmatchedCount = coverageSummary?.uncoveredAssets?.length || 0;
+
   if (!id || (!apartment && !apartmentLoading)) {
     return <Navigate to="/apartments" />;
   }
@@ -152,51 +158,84 @@ export default function IndividualApartmentPage() {
         isLoading={apartmentLoading || apartmentFetching}
       />
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-8 mb-4">
-        <Typography type="h3">Assets & Verification Shots</Typography>
+      {/* Primary Workspace Navigation Tabs */}
+      <div className="border-b border-gray-200 dark:border-gray-800 mt-6 mb-6">
+        <nav className="-mb-px flex space-x-8" aria-label="Apartment Sections">
+          <button
+            onClick={() => setActiveTab("reservations")}
+            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
+              activeTab === "reservations"
+                ? "border-gray-900 text-gray-900 dark:border-white dark:text-white"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+            }`}
+          >
+            Reservations
+          </button>
 
-        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
           <button
-            onClick={() => setIsShotStudioOpen(true)}
-            className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors cursor-pointer dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
+            onClick={() => setActiveTab("assets")}
+            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer flex items-center gap-2 ${
+              activeTab === "assets"
+                ? "border-gray-900 text-gray-900 dark:border-white dark:text-white"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+            }`}
           >
-            Shot Studio
+            <span>Assets & Verification Shots</span>
+            {unmatchedCount > 0 && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400">
+                {unmatchedCount}
+              </span>
+            )}
           </button>
-          <button
-            onClick={() => setIsUserDrawerOpen(true)}
-            className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-lg shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors cursor-pointer"
-          >
-            Add New Asset
-          </button>
-        </div>
+        </nav>
       </div>
 
       <UnmatchedAssetsBanner
-        unmatchedCount={coverageSummary?.uncoveredAssets?.length || 0}
-        onNavigateToStudio={() => setIsShotStudioOpen(true)}
-      />
-
-      <RoomAssetsManager
-        assets={assets}
-        uncoveredAssetIds={uncoveredAssetIds}
-        isLoading={assetsLoading || assetsFetching}
-        onDeleteAsset={async (assetId) => {
-          await deleteAsset(assetId);
+        unmatchedCount={unmatchedCount}
+        onNavigateToStudio={() => {
+          setActiveTab("assets");
+          setIsShotStudioOpen(true);
         }}
       />
 
-      <Drawer
-        isOpen={isUserDrawerOpen}
-        onClose={() => setIsUserDrawerOpen(false)}
-        title="Create New Asset"
-      >
-        <CreateAssetForm
-          onSuccess={() => {
-            setIsUserDrawerOpen(false);
+      {/* Tab Views */}
+      {activeTab === "reservations" ? (
+        <ApartmentReservationsManager apartmentId={id} onOpenCreateReservation={() => setIsDrawerOpen(true)} />
+      ) : (
+        <ApartmentAssetsManager
+          assets={assets}
+          uncoveredAssetIds={uncoveredAssetIds}
+          isLoading={assetsLoading || assetsFetching}
+          onDeleteAsset={async (assetId) => {
+            await deleteAsset(assetId);
           }}
-          apartmentId={id}
-          isOpen={isUserDrawerOpen}
+          onOpenShotStudio={() => setIsShotStudioOpen(true)}
+          onOpenCreateAsset={() => setIsDrawerOpen(true)}
         />
+      )}
+
+      <Drawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        title={
+          activeTab === "reservations"
+            ? "Create New Reservation"
+            : "Create New Asset"
+        }
+      >
+        {activeTab === "reservations" ? (
+          <CreateReservationForm
+            apartmentId={id}
+            isOpen={isDrawerOpen}
+            onSuccess={() => setIsDrawerOpen(false)}
+          />
+        ) : (
+          <CreateAssetForm
+            apartmentId={id}
+            isOpen={isDrawerOpen}
+            onSuccess={() => setIsDrawerOpen(false)}
+          />
+        )}
       </Drawer>
 
       <ShotStudioModal
