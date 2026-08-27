@@ -8,7 +8,7 @@ export interface DataTableProps<T> {
   data: T[] | undefined;
   columns: ColumnDef<T>[];
   isLoading?: boolean;
-  emptyMessage?: string;
+  emptyMessage?: React.ReactNode;
 }
 
 export interface TabItem {

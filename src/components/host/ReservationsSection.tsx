@@ -1,14 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Typography from "@/components/Typography";
+import { DataTable } from "@/components/DataTable";
 import { getReservationsApartmentByApartmentId } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import type { ColumnDef } from "@/types/component.types";
 
 interface ApartmentReservationsManagerProps {
   apartmentId: string;
   onOpenCreateReservation?: () => void;
+  onSelectReservation?: (reservation: ReservationRow) => void;
+}
+
+interface ReservationRow {
+  id: string;
+  guestName: string;
+  guestEmail?: string | null;
+  checkInDatetime: string;
+  checkOutDatetime: string;
+  platformReservationId?: string | null;
+  status: string;
+  // If your API provides shots directly on the reservation object:
+  // shots?: any[];
 }
 
 const STATUS_BADGE_CLASSES: Record<string, string> = {
@@ -23,6 +38,7 @@ const STATUS_BADGE_CLASSES: Record<string, string> = {
 export function ApartmentReservationsManager({
   apartmentId,
   onOpenCreateReservation,
+  onSelectReservation,
 }: ApartmentReservationsManagerProps) {
   const {
     data: reservationsResponse,
@@ -42,9 +58,8 @@ export function ApartmentReservationsManager({
     enabled: !!apartmentId,
   });
 
-  const reservations = useMemo(() => {
+  const reservations = useMemo<ReservationRow[]>(() => {
     if (!reservationsResponse) return [];
-    // Adjust if API returns { data: [...] } array or direct array
     return Array.isArray(reservationsResponse)
       ? reservationsResponse
       : (reservationsResponse as any)?.data || [];
@@ -61,9 +76,89 @@ export function ApartmentReservationsManager({
     });
   };
 
+  const columns = useMemo<ColumnDef<ReservationRow>[]>(
+    () => [
+      {
+        header: "Guest",
+        accessorKey: (row) => (
+          <div>
+            <div className="font-medium text-gray-900 dark:text-gray-100">
+              {row.guestName}
+            </div>
+            {row.guestEmail && (
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {row.guestEmail}
+              </div>
+            )}
+          </div>
+        ),
+      },
+      {
+        header: "Check-In",
+        accessorKey: (row) => formatDate(row.checkInDatetime),
+      },
+      {
+        header: "Check-Out",
+        accessorKey: (row) => formatDate(row.checkOutDatetime),
+      },
+      {
+        header: "Platform ID",
+        className: "font-mono text-xs text-gray-500 dark:text-gray-400",
+        accessorKey: (row) => row.platformReservationId || "-",
+      },
+      {
+        header: "Status",
+        accessorKey: (row) => (
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+              STATUS_BADGE_CLASSES[row.status] ||
+              "bg-gray-100 text-gray-800 border-gray-200"
+            }`}
+          >
+            {row.status?.replace(/_/g, " ")}
+          </span>
+        ),
+      },
+      {
+        header: "",
+        className: "text-right w-12",
+        accessorKey: (row) => (
+          <div className="flex items-center justify-end">
+            <button
+              type="button"
+              onClick={() => onSelectReservation?.(row)}
+              className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
+              title="View Inspection Shots"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        ),
+      },
+    ],
+    [onSelectReservation]
+  );
+
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <Typography type="h3">Reservations</Typography>
@@ -81,17 +176,6 @@ export function ApartmentReservationsManager({
         </div>
       </div>
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className="border border-gray-200 dark:border-gray-800 rounded-xl p-8 text-center bg-white dark:bg-transparent">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white mb-2"></div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Loading reservations...
-          </p>
-        </div>
-      )}
-
-      {/* Error State */}
       {isError && !isLoading && (
         <div className="border border-rose-200 dark:border-rose-900/50 rounded-xl p-6 text-center bg-rose-50/50 dark:bg-rose-950/20">
           <Typography type="h4" className="text-rose-700 dark:text-rose-400 mb-1">
@@ -103,79 +187,28 @@ export function ApartmentReservationsManager({
         </div>
       )}
 
-      {/* Empty State */}
-      {!isLoading && !isError && reservations.length === 0 && (
-        <div className="border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-xl p-12 text-center bg-gray-50/50 dark:bg-gray-900/20">
-          <Typography type="h4" className="text-gray-700 dark:text-gray-300 mb-2">
-            No reservations found
-          </Typography>
-          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
-            There are currently no bookings for this apartment. Click below to add your first guest reservation.
-          </p>
-          <button
-            onClick={onOpenCreateReservation}
-            className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-          >
-            + New Reservation
-          </button>
-        </div>
-      )}
-
-      {/* Data Table */}
-      {!isLoading && !isError && reservations.length > 0 && (
-        <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden shadow-xs bg-white dark:bg-transparent">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
-              <thead className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-800 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                <tr>
-                  <th className="px-6 py-3 font-semibold">Guest</th>
-                  <th className="px-6 py-3 font-semibold">Check-In</th>
-                  <th className="px-6 py-3 font-semibold">Check-Out</th>
-                  <th className="px-6 py-3 font-semibold">Platform ID</th>
-                  <th className="px-6 py-3 font-semibold">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-                {reservations.map((res: any) => (
-                  <tr
-                    key={res.id}
-                    className="hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900 dark:text-gray-100">
-                        {res.guestName}
-                      </div>
-                      {res.guestEmail && (
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {res.guestEmail}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {formatDate(res.checkInDatetime)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {formatDate(res.checkOutDatetime)}
-                    </td>
-                    <td className="px-6 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">
-                      {res.platformReservationId || "-"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                          STATUS_BADGE_CLASSES[res.status] ||
-                          "bg-gray-100 text-gray-800 border-gray-200"
-                        }`}
-                      >
-                        {res.status?.replace(/_/g, " ")}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      {!isError && (
+        <DataTable
+          data={reservations}
+          columns={columns}
+          isLoading={isLoading}
+          emptyMessage={
+            <div className="flex flex-col items-center justify-center py-4">
+              <Typography type="h4" className="text-gray-700 dark:text-gray-300 mb-2">
+                No reservations found
+              </Typography>
+              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
+                There are currently no bookings for this apartment. Click below to add your first guest reservation.
+              </p>
+              <button
+                onClick={onOpenCreateReservation}
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                + New Reservation
+              </button>
+            </div>
+          }
+        />
       )}
     </div>
   );
