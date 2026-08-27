@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import Typography from "@/components/Typography";
 import { InlineCamera } from "./InlineCamera";
+import {
+  submitInspectionPhotos,
+  type CapturedApartmentShot,
+} from "@/lib/api/submitPhotoProofs"; // Import helper and type
 import type { ApartmentShot } from "@/api/generated/requests/types.gen";
-
-type CapturedApartmentShot = ApartmentShot & {
-  capturedImageUrl?: string;
-};
 
 const SHOT_TYPE_LABELS: Record<ApartmentShot["shotType"], string> = {
   SWEEP_ONLY: "Wide Sweep",
@@ -21,17 +21,22 @@ function formatRoomLocation(room: ApartmentShot["roomLocation"]): string {
 }
 
 interface ApartmentShotGuideProps {
+  apartmentId: string;
+  reservationId: string;
   initialShots: CapturedApartmentShot[];
   onCompleteAll: (shots: CapturedApartmentShot[]) => void;
 }
 
 export function ApartmentShotGuide({
+  apartmentId,
+  reservationId,
   initialShots,
   onCompleteAll,
 }: ApartmentShotGuideProps) {
   const [shots, setShots] = useState<CapturedApartmentShot[]>(initialShots);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const currentShot = shots[currentIndex];
 
@@ -48,16 +53,31 @@ export function ApartmentShotGuide({
   const shotIndexInRoom =
     currentRoomShots.findIndex((s) => s.id === currentShot?.id) + 1;
 
-  const handleCaptureImage = (dataUrl: string) => {
+  // Receives previewUrl AND raw file from InlineCamera
+  const handleCaptureImage = (previewUrl: string, file?: File) => {
     setShots((prev) =>
       prev.map((s, idx) =>
-        idx === currentIndex ? { ...s, capturedImageUrl: dataUrl } : s,
-      ),
+        idx === currentIndex
+          ? { ...s, capturedImageUrl: previewUrl, rawFile: file }
+          : s
+      )
     );
     setIsCameraActive(false);
 
     if (currentIndex < shots.length - 1) {
       setCurrentIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleFinishAll = async () => {
+    setIsSubmitting(true);
+    try {
+      await submitInspectionPhotos({ apartmentId, reservationId, shots });
+      onCompleteAll(shots);
+    } catch (err) {
+      console.error("Failed to submit photos:", err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -74,8 +94,7 @@ export function ApartmentShotGuide({
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-2">
-      {/* Location & Progress Header */}
-      <div className="bg-white dark:bg-gray-900 p-3 sm:p-2 rounded-xl space-y-2">
+      <div className="bg-white dark:bg-gray-900 p-3 pt-0 sm:p-2 rounded-xl space-y-2">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <span className="block text-[10px] sm:text-xs font-semibold tracking-wider text-gray-400 uppercase truncate">
@@ -103,9 +122,7 @@ export function ApartmentShotGuide({
         </div>
       </div>
 
-      {/* Main Shot Card */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-2 lg:p-5 space-y-4 shadow-xs">
-        {/* Toggle Viewfinder OR Image Preview */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl lg:p-5 space-y-4">
         {isCameraActive ? (
           <InlineCamera
             onCapture={handleCaptureImage}
@@ -134,7 +151,6 @@ export function ApartmentShotGuide({
           </div>
         )}
 
-        {/* Shot Metadata & Action */}
         {!isCameraActive && (
           <div className="space-y-4">
             <div>
@@ -163,15 +179,14 @@ export function ApartmentShotGuide({
         )}
       </div>
 
-      {/* Stepper Footer Controls */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 mt-4">
         <button
           type="button"
           onClick={() => {
             setIsCameraActive(false);
             setCurrentIndex((prev) => Math.max(0, prev - 1));
           }}
-          disabled={currentIndex === 0}
+          disabled={currentIndex === 0 || isSubmitting}
           className="px-5 py-2.5 text-sm font-medium border border-gray-300 dark:border-gray-700 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         >
           ← Previous
@@ -180,11 +195,11 @@ export function ApartmentShotGuide({
         {currentIndex === shots.length - 1 ? (
           <button
             type="button"
-            onClick={() => onCompleteAll(shots)}
-            disabled={completedCount === 0}
+            onClick={handleFinishAll}
+            disabled={completedCount === 0 || isSubmitting}
             className="px-6 py-2.5 text-sm font-medium bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 disabled:opacity-40 transition-colors cursor-pointer"
           >
-            Finish & Save All
+            {isSubmitting ? "Uploading..." : "Finish & Save All"}
           </button>
         ) : (
           <button
@@ -193,6 +208,7 @@ export function ApartmentShotGuide({
               setIsCameraActive(false);
               setCurrentIndex((prev) => Math.min(shots.length - 1, prev + 1));
             }}
+            disabled={isSubmitting}
             className="px-5 py-2.5 text-sm font-medium border border-gray-300 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             Next →

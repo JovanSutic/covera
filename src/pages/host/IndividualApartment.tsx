@@ -26,6 +26,7 @@ import { validateAssetShotCoverage } from "@/lib/validations/shots";
 import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
 import CreateReservationForm from "@/components/forms/CreateReservationForm";
 import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
+import { Modal } from "@/components/Modal";
 
 export default function IndividualApartmentPage() {
   const [activeTab, setActiveTab] = useState<"reservations" | "assets">(
@@ -33,7 +34,9 @@ export default function IndividualApartmentPage() {
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isShotStudioOpen, setIsShotStudioOpen] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState<any | null>(null);
+  const [selectedReservation, setSelectedReservation] = useState<any | null>(
+    null,
+  );
   const [isInspectionModalOpen, setIsInspectionModalOpen] = useState(false);
 
   const { id } = useParams<{ id: string }>();
@@ -279,34 +282,27 @@ export default function IndividualApartmentPage() {
 
       {/* Inspection Shot Guide Modal */}
       {isInspectionModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl p-6 my-8">
-            <div className="flex items-center justify-between pb-4 mb-5 border-b border-gray-200 dark:border-gray-800">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                  Apartment Inspection Guide
-                </h2>
-                {selectedReservation && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Reservation for {selectedReservation.guestName}
-                  </p>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={handleCloseInspectionGuide}
-                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-lg transition-colors cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <ApartmentShotGuide
-              initialShots={shots}
-              onCompleteAll={handleCompleteInspection}
-            />
-          </div>
-        </div>
+        <Modal
+          isOpen={isInspectionModalOpen}
+          onClose={handleCloseInspectionGuide}
+          title="Apartment Inspection Guide"
+          subtitle={
+            <span className="hidden sm:inline">
+              {selectedReservation
+                ? `Reservation for ${selectedReservation.guestName}`
+                : undefined}
+            </span>
+          }
+          size="full"
+          bodyClassName="px-4 py-2"
+        >
+          <ApartmentShotGuide
+            apartmentId={id}
+            reservationId={selectedReservation.id}
+            initialShots={shots}
+            onCompleteAll={handleCompleteInspection}
+          />
+        </Modal>
       )}
     </PageLayout>
   );

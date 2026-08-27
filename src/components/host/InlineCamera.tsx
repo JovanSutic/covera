@@ -11,11 +11,9 @@ export function InlineCamera({ onCapture, onCancel }: InlineCameraProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Fast, lightweight preview URL without Base64 encoding overhead
       const previewUrl = URL.createObjectURL(file);
       onCapture(previewUrl, file);
       
-      // Reset input value so taking another photo triggers onChange reliably
       if (inputRef.current) {
         inputRef.current.value = "";
       }
@@ -23,7 +21,7 @@ export function InlineCamera({ onCapture, onCancel }: InlineCameraProps) {
   };
 
   return (
-    <div className="relative w-full aspect-16/10 bg-gray-950 border border-gray-800 rounded-xl p-6 flex flex-col items-center justify-center text-center space-y-4">
+    <div className="relative w-full aspect-16/16 bg-gray-950 border border-gray-800 rounded-xl flex flex-col items-center justify-center text-center space-y-4">
       <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">
         📷
       </div>
