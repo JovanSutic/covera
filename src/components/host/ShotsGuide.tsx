@@ -6,6 +6,7 @@ import {
   type CapturedApartmentShot,
 } from "@/lib/api/submitPhotoProofs"; // Import helper and type
 import type { ApartmentShot } from "@/api/generated/requests/types.gen";
+import { toast } from "sonner";
 
 const SHOT_TYPE_LABELS: Record<ApartmentShot["shotType"], string> = {
   SWEEP_ONLY: "Wide Sweep",
@@ -74,7 +75,9 @@ export function ApartmentShotGuide({
     try {
       await submitInspectionPhotos({ apartmentId, reservationId, shots });
       onCompleteAll(shots);
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err.message || "Failed to submit inspection photos.");
       console.error("Failed to submit photos:", err);
     } finally {
       setIsSubmitting(false);
