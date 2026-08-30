@@ -2,26 +2,26 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTranslation } from "react-i18next";
 import Input from "@/components/formItems/Input";
-import Select from "@/components/formItems/Select";
 import Button from "@/components/formItems/Button";
 import { withAuth } from "@/lib/api/api";
 import { postReservations } from "@/api/generated/requests/services.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { toast } from "sonner";
-import { useEffect, useMemo } from "react";
-import type { SelectOption } from "@/types/component.types";
+import { useEffect, useState } from "react";
 
-const RESERVATION_STATUSES = [
-  "UPCOMING",
-  "CHECK_IN_DUE",
-  "ACTIVE",
-  "CHECK_OUT_DUE",
-  "CLOSED",
-  "DISPUTED",
-] as const;
+// Formats current local date-time into 'YYYY-MM-THH:mm' required by datetime-local min attribute
+const getMinDatetimeLocal = () => {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  return now.toISOString().slice(0, 16);
+};
+
+const isFutureDatetime = (val: string) => {
+  if (!val) return true;
+  return new Date(val).getTime() > Date.now();
+};
 
 const createReservationSchema = z
   .object({
@@ -34,17 +34,27 @@ const createReservationSchema = z
         "Please enter a valid email address",
       ),
     platformReservationId: z.string().optional(),
-    checkInDatetime: z.string().min(1, "Check-in date & time is required"),
-    checkOutDatetime: z.string().min(1, "Check-out date & time is required"),
-    status: z.enum(RESERVATION_STATUSES, {
-      message: "Please select a valid status",
-    }),
-    proofWindowHours: z
+    checkInDatetime: z
+      .string()
+      .min(1, "Check-in date & time is required")
+      .refine(isFutureDatetime, "Check-in time must be in the future"),
+    checkOutDatetime: z
+      .string()
+      .min(1, "Check-out date & time is required")
+      .refine(isFutureDatetime, "Check-out time must be in the future"),
+    alternativeCheckInDatetime: z
       .string()
       .optional()
       .refine(
-        (val) => !val || (!isNaN(Number(val)) && Number(val) > 0),
-        "Window must be a positive number of hours",
+        (val) => !val || isFutureDatetime(val),
+        "Alternative check-in time must be in the future",
+      ),
+    alternativeCheckOutDatetime: z
+      .string()
+      .optional()
+      .refine(
+        (val) => !val || isFutureDatetime(val),
+        "Alternative check-out time must be in the future",
       ),
   })
   .refine(
@@ -55,6 +65,21 @@ const createReservationSchema = z
     {
       message: "Check-out date must be strictly after Check-in date",
       path: ["checkOutDatetime"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (!data.alternativeCheckInDatetime || !data.alternativeCheckOutDatetime)
+        return true;
+      return (
+        new Date(data.alternativeCheckOutDatetime) >
+        new Date(data.alternativeCheckInDatetime)
+      );
+    },
+    {
+      message:
+        "Alternative check-out date must be strictly after alternative check-in date",
+      path: ["alternativeCheckOutDatetime"],
     },
   );
 
@@ -72,8 +97,8 @@ const DEFAULT_FORM_VALUES: CreateReservationFormValues = {
   platformReservationId: "",
   checkInDatetime: "",
   checkOutDatetime: "",
-  status: "UPCOMING",
-  proofWindowHours: "4",
+  alternativeCheckInDatetime: "",
+  alternativeCheckOutDatetime: "",
 };
 
 export default function CreateReservationForm({
@@ -81,26 +106,24 @@ export default function CreateReservationForm({
   isOpen,
   apartmentId,
 }: CreateReservationFormProps) {
-  const { t } = useTranslation("reservations");
-
-  const statusOptions: SelectOption[] = useMemo(
-    () =>
-      RESERVATION_STATUSES.map((status) => ({
-        value: status,
-        label: t(`statuses.${status}`, status.replace(/_/g, " ")),
-      })),
-    [t],
-  );
+  const [showAlternativeDates, setShowAlternativeDates] = useState(false);
+  const [minDatetime, setMinDatetime] = useState(getMinDatetimeLocal());
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors, isSubmitting, isValid },
   } = useForm<CreateReservationFormValues>({
     resolver: zodResolver(createReservationSchema),
     defaultValues: DEFAULT_FORM_VALUES,
+    mode: "onChange",
   });
+
+  const selectedCheckIn = watch("checkInDatetime");
+  const selectedAltCheckIn = watch("alternativeCheckInDatetime");
 
   const queryClient = useQueryClient();
 
@@ -108,20 +131,38 @@ export default function CreateReservationForm({
     mutationFn: async (formData: CreateReservationFormValues) => {
       const config = await withAuth();
 
+      // Build body dynamically and omit keys when not provided
+      const body: Record<string, any> = {
+        apartmentId,
+        guestName: formData.guestName,
+        checkInDatetime: new Date(formData.checkInDatetime).toISOString(),
+        checkOutDatetime: new Date(formData.checkOutDatetime).toISOString(),
+      };
+
+      if (formData.guestEmail?.trim()) {
+        body.guestEmail = formData.guestEmail.trim();
+      }
+
+      if (formData.platformReservationId?.trim()) {
+        body.platformReservationId = formData.platformReservationId.trim();
+      }
+
+      if (showAlternativeDates) {
+        if (formData.alternativeCheckInDatetime) {
+          body.alternativeCheckInDatetime = new Date(
+            formData.alternativeCheckInDatetime,
+          ).toISOString();
+        }
+        if (formData.alternativeCheckOutDatetime) {
+          body.alternativeCheckOutDatetime = new Date(
+            formData.alternativeCheckOutDatetime,
+          ).toISOString();
+        }
+      }
+
       const response = await postReservations({
         ...config,
-        body: {
-          apartmentId,
-          guestName: formData.guestName,
-          guestEmail: formData.guestEmail || null,
-          platformReservationId: formData.platformReservationId || null,
-          checkInDatetime: new Date(formData.checkInDatetime).toISOString(),
-          checkOutDatetime: new Date(formData.checkOutDatetime).toISOString(),
-          status: formData.status,
-          proofWindowHours: formData.proofWindowHours
-            ? parseInt(formData.proofWindowHours, 10)
-            : 4,
-        },
+        body: body as any,
       });
       return response.data;
     },
@@ -132,6 +173,7 @@ export default function CreateReservationForm({
 
       toast.success("Reservation created successfully!");
       reset(DEFAULT_FORM_VALUES);
+      setShowAlternativeDates(false);
       if (onSuccess) onSuccess();
     },
     onError: (error: any) => {
@@ -146,10 +188,20 @@ export default function CreateReservationForm({
     mutate(formData);
   };
 
-  // Reset form when drawer closes
+  const toggleAlternativeDates = () => {
+    if (showAlternativeDates) {
+      setValue("alternativeCheckInDatetime", "");
+      setValue("alternativeCheckOutDatetime", "");
+    }
+    setShowAlternativeDates((prev) => !prev);
+  };
+
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      setMinDatetime(getMinDatetimeLocal());
+    } else {
       reset(DEFAULT_FORM_VALUES);
+      setShowAlternativeDates(false);
     }
   }, [isOpen, reset]);
 
@@ -186,6 +238,7 @@ export default function CreateReservationForm({
         <Input
           label="Check-In Date & Time"
           type="datetime-local"
+          min={minDatetime}
           error={errors.checkInDatetime?.message}
           {...register("checkInDatetime")}
         />
@@ -193,26 +246,43 @@ export default function CreateReservationForm({
         <Input
           label="Check-Out Date & Time"
           type="datetime-local"
+          min={selectedCheckIn || minDatetime}
           error={errors.checkOutDatetime?.message}
           {...register("checkOutDatetime")}
         />
       </div>
 
-      <Select
-        label="Status"
-        options={statusOptions}
-        error={errors.status?.message}
-        {...register("status")}
-      />
+      <div>
+        <button
+          type="button"
+          onClick={toggleAlternativeDates}
+          className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors cursor-pointer"
+        >
+          {showAlternativeDates
+            ? "- Remove alternative dates"
+            : "+ Alternative arrival or departure?"}
+        </button>
 
-      <Input
-        label="Proof Window (Hours)"
-        type="number"
-        min="1"
-        placeholder="4"
-        error={errors.proofWindowHours?.message}
-        {...register("proofWindowHours")}
-      />
+        {showAlternativeDates && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 animate-in fade-in duration-150">
+            <Input
+              label="Alternative Check-In (Optional)"
+              type="datetime-local"
+              min={minDatetime}
+              error={errors.alternativeCheckInDatetime?.message}
+              {...register("alternativeCheckInDatetime")}
+            />
+
+            <Input
+              label="Alternative Check-Out (Optional)"
+              type="datetime-local"
+              min={selectedAltCheckIn || minDatetime}
+              error={errors.alternativeCheckOutDatetime?.message}
+              {...register("alternativeCheckOutDatetime")}
+            />
+          </div>
+        )}
+      </div>
 
       <Button
         type="submit"

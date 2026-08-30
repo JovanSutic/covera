@@ -4,13 +4,20 @@ export interface ColumnDef<T> {
   className?: string;
 }
 
+export interface PaginationProps {
+  page: number;
+  limit: number;
+  total: number;
+  onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
+}
 export interface DataTableProps<T> {
   data: T[] | undefined;
   columns: ColumnDef<T>[];
   isLoading?: boolean;
   emptyMessage?: React.ReactNode;
+  pagination?: PaginationProps;
 }
-
 export interface TabItem {
   id: string;
   label: string;
@@ -26,3 +33,15 @@ export interface TabsProps {
 }
 
 export interface SelectOption { value: string; label: string };
+
+export interface ReservationRow {
+  id: string;
+  guestName: string;
+  guestEmail?: string | null;
+  checkInDatetime: string;
+  checkOutDatetime: string;
+  platformReservationId?: string | null;
+  status: string;
+  hasPhotoProof?: boolean;
+  proofWindowHours?: number;
+}

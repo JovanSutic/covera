@@ -275,11 +275,47 @@ export const CreateApartmentSchema = {
     ]
 } as const;
 
-export const ReservationsListSchema = {
-    type: 'array',
-    items: {
-        $ref: '#/components/schemas/Reservation'
-    }
+export const PaginatedReservationsSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Reservation'
+            }
+        },
+        pagination: {
+            type: 'object',
+            properties: {
+                page: {
+                    type: 'number',
+                    example: 1
+                },
+                limit: {
+                    type: 'number',
+                    example: 20
+                },
+                totalItems: {
+                    type: 'number',
+                    example: 42
+                },
+                totalPages: {
+                    type: 'number',
+                    example: 3
+                }
+            },
+            required: [
+                'page',
+                'limit',
+                'totalItems',
+                'totalPages'
+            ]
+        }
+    },
+    required: [
+        'data',
+        'pagination'
+    ]
 } as const;
 
 export const ReservationSchema = {
@@ -315,15 +351,27 @@ export const ReservationSchema = {
             type: 'string',
             format: 'date-time'
         },
+        alternativeCheckInDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        alternativeCheckOutDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        hasPhotoProof: {
+            type: 'boolean'
+        },
         status: {
             type: 'string',
             enum: [
-                'UPCOMING',
-                'CHECK_IN_DUE',
-                'ACTIVE',
-                'CHECK_OUT_DUE',
-                'CLOSED',
-                'DISPUTED'
+                'PENDING_PROOF',
+                'COVERED',
+                'DISPUTED',
+                'RESOLVED',
+                'CLOSED'
             ]
         },
         proofWindowHours: {
@@ -348,6 +396,9 @@ export const ReservationSchema = {
         'guestEmail',
         'checkInDatetime',
         'checkOutDatetime',
+        'alternativeCheckInDatetime',
+        'alternativeCheckOutDatetime',
+        'hasPhotoProof',
         'status',
         'proofWindowHours',
         'createdAt',
@@ -386,15 +437,27 @@ export const CreateReservationSchema = {
             nullable: true,
             format: 'date-time'
         },
+        alternativeCheckInDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        alternativeCheckOutDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        hasPhotoProof: {
+            type: 'boolean'
+        },
         status: {
             type: 'string',
             enum: [
-                'UPCOMING',
-                'CHECK_IN_DUE',
-                'ACTIVE',
-                'CHECK_OUT_DUE',
-                'CLOSED',
-                'DISPUTED'
+                'PENDING_PROOF',
+                'COVERED',
+                'DISPUTED',
+                'RESOLVED',
+                'CLOSED'
             ]
         },
         proofWindowHours: {
@@ -442,15 +505,27 @@ export const UpdateReservationSchema = {
             nullable: true,
             format: 'date-time'
         },
+        alternativeCheckInDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        alternativeCheckOutDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        hasPhotoProof: {
+            type: 'boolean'
+        },
         status: {
             type: 'string',
             enum: [
-                'UPCOMING',
-                'CHECK_IN_DUE',
-                'ACTIVE',
-                'CHECK_OUT_DUE',
-                'CLOSED',
-                'DISPUTED'
+                'PENDING_PROOF',
+                'COVERED',
+                'DISPUTED',
+                'RESOLVED',
+                'CLOSED'
             ]
         },
         proofWindowHours: {

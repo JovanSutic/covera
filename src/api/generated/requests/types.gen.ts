@@ -64,7 +64,15 @@ export type CreateApartment = {
     externalId?: string | null;
 };
 
-export type ReservationsList = Array<Reservation>;
+export type PaginatedReservations = {
+    data: Array<Reservation>;
+    pagination: {
+        page: number;
+        limit: number;
+        totalItems: number;
+        totalPages: number;
+    };
+};
 
 export type Reservation = {
     id: string;
@@ -74,7 +82,10 @@ export type Reservation = {
     guestEmail: string | null;
     checkInDatetime: string;
     checkOutDatetime: string;
-    status: 'UPCOMING' | 'CHECK_IN_DUE' | 'ACTIVE' | 'CHECK_OUT_DUE' | 'CLOSED' | 'DISPUTED';
+    alternativeCheckInDatetime: string | null;
+    alternativeCheckOutDatetime: string | null;
+    hasPhotoProof: boolean;
+    status: 'PENDING_PROOF' | 'COVERED' | 'DISPUTED' | 'RESOLVED' | 'CLOSED';
     proofWindowHours: number;
     createdAt: string;
     updatedAt: string;
@@ -87,7 +98,10 @@ export type CreateReservation = {
     guestEmail?: string | null;
     checkInDatetime: string | null;
     checkOutDatetime: string | null;
-    status?: 'UPCOMING' | 'CHECK_IN_DUE' | 'ACTIVE' | 'CHECK_OUT_DUE' | 'CLOSED' | 'DISPUTED';
+    alternativeCheckInDatetime?: string | null;
+    alternativeCheckOutDatetime?: string | null;
+    hasPhotoProof?: boolean;
+    status?: 'PENDING_PROOF' | 'COVERED' | 'DISPUTED' | 'RESOLVED' | 'CLOSED';
     proofWindowHours?: number;
 };
 
@@ -98,7 +112,10 @@ export type UpdateReservation = {
     guestEmail?: string | null;
     checkInDatetime?: string | null;
     checkOutDatetime?: string | null;
-    status?: 'UPCOMING' | 'CHECK_IN_DUE' | 'ACTIVE' | 'CHECK_OUT_DUE' | 'CLOSED' | 'DISPUTED';
+    alternativeCheckInDatetime?: string | null;
+    alternativeCheckOutDatetime?: string | null;
+    hasPhotoProof?: boolean;
+    status?: 'PENDING_PROOF' | 'COVERED' | 'DISPUTED' | 'RESOLVED' | 'CLOSED';
     proofWindowHours?: number;
 };
 
@@ -555,10 +572,12 @@ export type PostApartmentsByIdPhotosUploadTokensResponse = PostApartmentsByIdPho
 
 export type PostApartmentsByIdPhotosConfirmData = {
     body?: {
-        shotId: string;
         reservationId: string;
         type?: 'checkin_state' | 'damage';
-        uploadedKeys: Array<string>;
+        photos: Array<{
+            shotId: string;
+            uploadedKey: string;
+        }>;
     };
     path: {
         id: string;
@@ -650,7 +669,24 @@ export type GetReservationsApartmentByApartmentIdData = {
     path: {
         apartmentId: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * Page number (1-indexed)
+         */
+        page?: number;
+        /**
+         * Number of items per page (max 100)
+         */
+        limit?: number;
+        /**
+         * Field to sort reservations by
+         */
+        sortBy?: 'checkInDatetime' | 'checkOutDatetime' | 'createdAt';
+        /**
+         * Sort direction
+         */
+        order?: 'asc' | 'desc';
+    };
     url: '/reservations/apartment/{apartmentId}';
 };
 
@@ -681,9 +717,9 @@ export type GetReservationsApartmentByApartmentIdError = GetReservationsApartmen
 
 export type GetReservationsApartmentByApartmentIdResponses = {
     /**
-     * List all reservations for a specific apartment
+     * List all reservations for a specific apartment with pagination and sorting
      */
-    200: ReservationsList;
+    200: PaginatedReservations;
 };
 
 export type GetReservationsApartmentByApartmentIdResponse = GetReservationsApartmentByApartmentIdResponses[keyof GetReservationsApartmentByApartmentIdResponses];
