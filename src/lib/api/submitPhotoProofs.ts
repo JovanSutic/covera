@@ -1,6 +1,7 @@
 import {
   postApartmentsByIdPhotosUploadTokens,
   postApartmentsByIdPhotosConfirm,
+  patchReservationsById,
 } from "@/api/generated/requests/services.gen";
 import type { ApartmentShot } from "@/api/generated/requests/types.gen";
 
@@ -22,7 +23,6 @@ export async function submitInspectionPhotos({
   shots,
   type = "checkin_state",
 }: UploadParams) {
-  // 1. Get shots that have a newly captured rawFile
   const completedShots = shots.filter(
     (shot): shot is CapturedApartmentShot & { rawFile: File } =>
       Boolean(shot.rawFile && shot.capturedImageUrl)
@@ -32,7 +32,6 @@ export async function submitInspectionPhotos({
     throw new Error("No photos to upload.");
   }
 
-  // 2. Request upload tokens / presigned URLs using fileTypes array
   const tokensRes = await postApartmentsByIdPhotosUploadTokens({
     path: { id: apartmentId },
     body: {
@@ -44,7 +43,7 @@ export async function submitInspectionPhotos({
 
   const uploadTargets = tokensRes.data?.tokens ?? [];
 
-  // 3. Upload binary directly to S3/Cloudflare R2 and collect uploaded keys
+  // 2. Upload binaries to S3/Cloudflare R2 and map to the required photo object shape
   const uploadPromises = completedShots.map(async (shot, index) => {
     const target = uploadTargets[index];
     if (!target?.uploadUrl) {
@@ -63,20 +62,30 @@ export async function submitInspectionPhotos({
       throw new Error(`Failed to upload photo for ${shot.title}`);
     }
 
-    // Return the key returned by the tokens endpoint (using .key instead of .fileKey)
-    return target.key;
+    // Map each shotId to its corresponding uploaded key directly
+    return {
+      shotId: shot.id,
+      uploadedKey: target.key,
+    };
   });
 
-  const uploadedKeys = await Promise.all(uploadPromises);
+  const photos = await Promise.all(uploadPromises);
 
-
+  // 3. Confirm photos using the updated body structure
   const confirmRes = await postApartmentsByIdPhotosConfirm({
     path: { id: apartmentId },
     body: {
       reservationId,
-      shotId: completedShots[0].id,
-      uploadedKeys,
       type,
+      photos,
+    },
+  });
+
+  await patchReservationsById({
+    path: { id: reservationId },
+    body: {
+      hasPhotoProof: true,
+      status: "COVERED",
     },
   });
 
