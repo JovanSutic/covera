@@ -13,7 +13,9 @@ export function DataTable<T>({
       <div className="w-full flex items-center justify-center p-12 border border-gray-100 rounded-xl bg-gray-50/50">
         <div className="flex flex-col items-center gap-2">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-900 dark:border-gray-100 border-t-transparent" />
-          <p className="text-xs font-medium text-gray-500">Loading records...</p>
+          <p className="text-xs font-medium text-gray-500">
+            Loading records...
+          </p>
         </div>
       </div>
     );
@@ -27,8 +29,12 @@ export function DataTable<T>({
     );
   }
 
-  const totalPages = pagination ? Math.ceil(pagination.total / pagination.limit) : 0;
-  const startItem = pagination ? (pagination.page - 1) * pagination.limit + 1 : 0;
+  const totalPages = pagination
+    ? Math.ceil(pagination.total / pagination.limit)
+    : 0;
+  const startItem = pagination
+    ? (pagination.page - 1) * pagination.limit + 1
+    : 0;
   const endItem = pagination
     ? Math.min(pagination.page * pagination.limit, pagination.total)
     : 0;
@@ -40,7 +46,10 @@ export function DataTable<T>({
           <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
             <tr>
               {columns.map((column, idx) => (
-                <th key={idx} className={`px-6 py-3.5 font-semibold ${column.className || ""}`}>
+                <th
+                  key={idx}
+                  className={`px-6 py-3.5 font-semibold ${column.className || ""}`}
+                >
                   {column.header}
                 </th>
               ))}
@@ -48,7 +57,10 @@ export function DataTable<T>({
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
             {data.map((row, rowIdx) => (
-              <tr key={rowIdx} className="hover:bg-gray-50/70 dark:hover:bg-gray-800/40 transition-colors">
+              <tr
+                key={rowIdx}
+                className="hover:bg-gray-50/70 dark:hover:bg-gray-800/40 transition-colors"
+              >
                 {columns.map((column, colIdx) => {
                   const content =
                     typeof column.accessorKey === "function"
@@ -56,7 +68,10 @@ export function DataTable<T>({
                       : (row[column.accessorKey as keyof T] as React.ReactNode);
 
                   return (
-                    <td key={colIdx} className={`px-6 py-4 whitespace-nowrap align-middle ${column.className || ""}`}>
+                    <td
+                      key={colIdx}
+                      className={`px-6 py-4 whitespace-nowrap align-middle ${column.className || ""}`}
+                    >
                       {content}
                     </td>
                   );
@@ -71,17 +86,29 @@ export function DataTable<T>({
       {pagination && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-3.5 border-t border-gray-200/80 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 text-xs text-gray-500">
           <div>
-            Showing <span className="font-medium text-gray-900 dark:text-gray-200">{startItem}</span> to{" "}
-            <span className="font-medium text-gray-900 dark:text-gray-200">{endItem}</span> of{" "}
-            <span className="font-medium text-gray-900 dark:text-gray-200">{pagination.total}</span> results
+            Showing{" "}
+            <span className="font-medium text-gray-900 dark:text-gray-200">
+              {startItem}
+            </span>{" "}
+            to{" "}
+            <span className="font-medium text-gray-900 dark:text-gray-200">
+              {endItem}
+            </span>{" "}
+            of{" "}
+            <span className="font-medium text-gray-900 dark:text-gray-200">
+              {pagination.total}
+            </span>{" "}
+            results
           </div>
 
           <div className="flex items-center gap-2">
             {pagination.onLimitChange && (
               <select
                 value={pagination.limit}
-                onChange={(e) => pagination.onLimitChange?.(Number(e.target.value))}
-                className="px-2 py-1 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                onChange={(e) =>
+                  pagination.onLimitChange?.(Number(e.target.value))
+                }
+                className="hidden sm:block px-2 py-1 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900"
               >
                 {[10, 20, 50, 100].map((size) => (
                   <option key={size} value={size}>
