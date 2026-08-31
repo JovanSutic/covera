@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Camera, Check, Trash2 } from "lucide-react";
 import { deleteReservationsById } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import type { ReservationRow } from "@/types/component.types";
+import { toast } from "sonner";
 
 export function ReservationActionsCell({
   reservation,
@@ -17,57 +18,73 @@ export function ReservationActionsCell({
 }) {
   const queryClient = useQueryClient();
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const now = Date.now();
-  const checkInTime = new Date(reservation.checkInDatetime).getTime();
-  const checkOutTime = new Date(reservation.checkOutDatetime).getTime();
 
-  // Deletion logic: Allowed only before check-in time
-  const isDeletable = Boolean(reservation.checkInDatetime) && checkInTime > now;
+  // Resolve effective check-in time (prioritize alternative check-in if present)
+  const effectiveCheckIn =
+    reservation.alternativeCheckInDatetime || reservation.checkInDatetime;
+  const checkInTime = effectiveCheckIn ? new Date(effectiveCheckIn).getTime() : 0;
 
-  // Proof Window calculation (defaults to 4 hours if proofWindowHours is not provided)
+  // 1. Deletion logic: Allowed strictly before check-in time
+  const isDeletable = Boolean(checkInTime) && checkInTime > now;
+
+  // 2. Photo Proof Window Evaluation
   const windowHours = reservation.proofWindowHours ?? 4;
   const proofWindowStartTime = checkInTime - windowHours * 60 * 60 * 1000;
+  
+  // Extension cutoff: 1 hour post check-in time
+  const maxAllowedTime = checkInTime + 1 * 60 * 60 * 1000;
 
-  // Allowed from window start until checkout (or when already COVERED)
-  const isPastCheckOut = Boolean(reservation.checkOutDatetime) && now > checkOutTime;
-  const isTooEarly = now < proofWindowStartTime;
+  const hasSubmittedProofs =
+    Boolean(reservation.hasPhotoProof) || reservation.status === "COVERED";
 
-  const canTakeShots = !isPastCheckOut && !isTooEarly;
+  const isTooEarly = Boolean(checkInTime) && now < proofWindowStartTime;
+  const isTooLate = Boolean(checkInTime) && now > maxAllowedTime;
 
-  // Tooltip helper to explain state clearly to host
-  const getCameraTooltip = () => {
-    if (reservation.status === "COVERED" || reservation.hasPhotoProof) {
-      return "Inspection photos already submitted (COVERED)";
-    }
-    if (isPastCheckOut) {
-      return "Cannot take inspection shots for past reservations";
-    }
-    if (isTooEarly) {
-      const hoursUntilWindow = Math.ceil((proofWindowStartTime - now) / (1000 * 60 * 60));
-      return `Inspection window opens ${windowHours}h before check-in (in ~${hoursUntilWindow}h)`;
-    }
-    return "Inspection window active! Click to capture photo proof";
-  };
+  // Rule execution: Active window, post window cutoff, & proof status check
+  const canTakeShots =
+    Boolean(checkInTime) && !hasSubmittedProofs && !isTooEarly && !isTooLate;
 
-  const handleDelete = async () => {
-    if (!isDeletable) return;
-    try {
-      setIsDeleting(true);
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
       const config = await withAuth();
       await deleteReservationsById({
         ...config,
         path: { id: reservation.id },
       });
-
-      await queryClient.invalidateQueries({
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
         queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, apartmentId],
       });
-    } catch {
-      setIsDeleting(false);
+      toast.success("Reservation deleted successfully!");
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      toast.error(
+        error?.message || "Failed to delete reservation. Please try again."
+      );
+    },
+    onSettled: () => {
       setIsConfirmingDelete(false);
+    },
+  });
+
+  const getCameraTooltip = (): string => {
+    if (hasSubmittedProofs) {
+      return "Inspection photos have already been submitted";
     }
+    if (isTooLate) {
+      return "Inspection window has closed (expired 1 hour past check-in)";
+    }
+    if (isTooEarly) {
+      const hoursUntilWindow = Math.ceil(
+        (proofWindowStartTime - now) / (1000 * 60 * 60)
+      );
+      return `Inspection window opens ${windowHours}h before check-in (in ~${hoursUntilWindow}h)`;
+    }
+    return "Inspection window active! Click to capture photo proof";
   };
 
   return (
@@ -92,18 +109,19 @@ export function ReservationActionsCell({
         <div className="flex items-center gap-1 animate-in fade-in duration-150">
           <button
             type="button"
-            onClick={handleDelete}
-            disabled={isDeleting}
+            onClick={() => deleteMutation.mutate()}
+            disabled={deleteMutation.isPending}
             className="flex items-center gap-1 rounded bg-red-600 px-2 py-1 text-[11px] font-medium text-white hover:bg-red-700 disabled:opacity-50 transition-colors cursor-pointer"
             title="Confirm deletion"
           >
-            {isDeleting ? "..." : <Check className="h-3 w-3" />}
+            {deleteMutation.isPending ? "..." : <Check className="h-3 w-3" />}
             <span>Delete</span>
           </button>
           <button
             type="button"
             onClick={() => setIsConfirmingDelete(false)}
-            className="rounded bg-gray-100 dark:bg-gray-800 px-1.5 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+            disabled={deleteMutation.isPending}
+            className="rounded bg-gray-100 dark:bg-gray-800 px-1.5 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer disabled:opacity-50"
           >
             Cancel
           </button>

@@ -44,4 +44,5 @@ export interface ReservationRow {
   status: string;
   hasPhotoProof?: boolean;
   proofWindowHours?: number;
+  alternativeCheckInDatetime?: string;
 }

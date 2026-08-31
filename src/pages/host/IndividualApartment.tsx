@@ -27,15 +27,19 @@ import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
 import CreateReservationForm from "@/components/forms/CreateReservationForm";
 import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
 import { Modal } from "@/components/Modal";
+import {
+  submitInspectionPhotos,
+  type CapturedApartmentShot,
+} from "@/lib/api/submitPhotoProofs";
 
 export default function IndividualApartmentPage() {
   const [activeTab, setActiveTab] = useState<"reservations" | "assets">(
-    "reservations",
+    "reservations"
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isShotStudioOpen, setIsShotStudioOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<any | null>(
-    null,
+    null
   );
   const [isInspectionModalOpen, setIsInspectionModalOpen] = useState(false);
 
@@ -110,7 +114,7 @@ export default function IndividualApartmentPage() {
     onError: (error: any) => {
       console.error("Failed to delete asset:", error);
       toast.error(
-        error?.error?.message || "An error occurred while deleting the asset.",
+        error?.error?.message || "An error occurred while deleting the asset."
       );
     },
   });
@@ -136,19 +140,46 @@ export default function IndividualApartmentPage() {
     onError: (error: any) => {
       console.error("Failed to save shots:", error);
       toast.error(
-        error?.error?.message || "An error occurred while saving shots.",
+        error?.error?.message || "An error occurred while saving shots."
+      );
+    },
+  });
+
+  // Handle Inspection Photo Submissions via React Query
+  const submitInspectionMutation = useMutation({
+    mutationFn: async (completedShots: CapturedApartmentShot[]) => {
+      if (!id || !selectedReservation?.id) {
+        throw new Error("Missing apartment or reservation identification");
+      }
+      return submitInspectionPhotos({
+        apartmentId: id,
+        reservationId: selectedReservation.id,
+        shots: completedShots,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, id],
+      });
+      toast.success("All inspection photos submitted successfully!");
+      handleCloseInspectionGuide();
+    },
+    onError: (error: any) => {
+      console.error("Failed to submit inspection photos:", error);
+      toast.error(
+        error?.message || "An error occurred while submitting inspection photos."
       );
     },
   });
 
   const coverageSummary = useMemo(
     () => validateAssetShotCoverage(assets, shots),
-    [assets, shots],
+    [assets, shots]
   );
 
   const uncoveredAssetIds = useMemo(
     () => coverageSummary.uncoveredAssets.map((issue) => issue.asset.id),
-    [coverageSummary],
+    [coverageSummary]
   );
 
   const unmatchedCount = coverageSummary?.uncoveredAssets?.length || 0;
@@ -161,15 +192,6 @@ export default function IndividualApartmentPage() {
   const handleCloseInspectionGuide = () => {
     setIsInspectionModalOpen(false);
     setSelectedReservation(null);
-  };
-
-  const handleCompleteInspection = (completedShots: any[]) => {
-    console.log("Completed inspection for reservation:", {
-      reservationId: selectedReservation?.id,
-      completedShots,
-    });
-    toast.success("Inspection shots saved successfully!");
-    handleCloseInspectionGuide();
   };
 
   if (!id || (!apartment && !apartmentLoading)) {
@@ -281,26 +303,25 @@ export default function IndividualApartmentPage() {
       />
 
       {/* Inspection Shot Guide Modal */}
-      {isInspectionModalOpen && (
+      {isInspectionModalOpen && selectedReservation && (
         <Modal
           isOpen={isInspectionModalOpen}
           onClose={handleCloseInspectionGuide}
           title="Apartment Inspection Guide"
           subtitle={
             <span className="hidden sm:inline">
-              {selectedReservation
-                ? `Reservation for ${selectedReservation.guestName}`
-                : undefined}
+              Reservation for {selectedReservation.guestName}
             </span>
           }
-          size="full"
+          size="xl"
           bodyClassName="px-4 py-2"
         >
           <ApartmentShotGuide
-            apartmentId={id}
-            reservationId={selectedReservation.id}
             initialShots={shots}
-            onCompleteAll={handleCompleteInspection}
+            isSubmitting={submitInspectionMutation.isPending}
+            onSubmit={(completedShots) =>
+              submitInspectionMutation.mutate(completedShots)
+            }
           />
         </Modal>
       )}
