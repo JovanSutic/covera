@@ -989,3 +989,450 @@ export const SyncShotItemSchema = {
         'assetIds'
     ]
 } as const;
+
+export const InspectionSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        reservationId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        visited: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/VisitLogEvent'
+            },
+            default: []
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'reservationId',
+        'createdAt'
+    ]
+} as const;
+
+export const VisitLogEventSchema = {
+    type: 'object',
+    properties: {
+        timestamp: {
+            type: 'string',
+            format: 'date-time',
+            example: '2026-09-05T14:10:00.000Z',
+            description: 'ISO timestamp of when the inspection link was visited'
+        },
+        userAgent: {
+            type: 'string',
+            example: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15',
+            description: 'Client User-Agent header string captured during ping'
+        }
+    },
+    required: [
+        'timestamp',
+        'userAgent'
+    ]
+} as const;
+
+export const CreateInspectionSchema = {
+    type: 'object',
+    properties: {
+        reservationId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: [
+        'reservationId'
+    ]
+} as const;
+
+export const DetailedInspectionSchema = {
+    allOf: [
+        {
+            $ref: '#/components/schemas/Inspection'
+        },
+        {
+            type: 'object',
+            properties: {
+                reservation: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            format: 'uuid'
+                        },
+                        apartmentId: {
+                            type: 'string',
+                            format: 'uuid'
+                        },
+                        platformReservationId: {
+                            type: 'string',
+                            nullable: true,
+                            maxLength: 255
+                        },
+                        guestName: {
+                            type: 'string',
+                            maxLength: 255
+                        },
+                        guestEmail: {
+                            type: 'string',
+                            nullable: true,
+                            maxLength: 255
+                        },
+                        checkInDatetime: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        checkOutDatetime: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        alternativeCheckInDatetime: {
+                            type: 'string',
+                            nullable: true,
+                            format: 'date-time'
+                        },
+                        alternativeCheckOutDatetime: {
+                            type: 'string',
+                            nullable: true,
+                            format: 'date-time'
+                        },
+                        hasPhotoProof: {
+                            type: 'boolean'
+                        },
+                        status: {
+                            type: 'string',
+                            enum: [
+                                'PENDING_PROOF',
+                                'COVERED',
+                                'DISPUTED',
+                                'RESOLVED',
+                                'CLOSED'
+                            ]
+                        },
+                        proofWindowHours: {
+                            type: 'integer',
+                            minimum: -2147483648,
+                            maximum: 2147483647
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        }
+                    },
+                    required: [
+                        'id',
+                        'apartmentId',
+                        'platformReservationId',
+                        'guestName',
+                        'guestEmail',
+                        'checkInDatetime',
+                        'checkOutDatetime',
+                        'alternativeCheckInDatetime',
+                        'alternativeCheckOutDatetime',
+                        'hasPhotoProof',
+                        'status',
+                        'proofWindowHours',
+                        'createdAt',
+                        'updatedAt'
+                    ]
+                },
+                shots: {
+                    type: 'array',
+                    items: {
+                        $ref: '#/components/schemas/ShotWithAssets'
+                    }
+                }
+            },
+            required: [
+                'reservation',
+                'shots'
+            ]
+        }
+    ]
+} as const;
+
+export const ShotWithAssetsSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        roomLocation: {
+            type: 'string',
+            enum: [
+                'ENTRANCE_HALLWAY',
+                'STAIRCASE_CORRIDOR',
+                'LIVING_ROOM',
+                'DINING_ROOM',
+                'GAME_ENTERTAINMENT_ROOM',
+                'HOME_OFFICE_STUDY',
+                'KITCHEN',
+                'PANTRY_LAUNDRY_ROOM',
+                'BEDROOM_PRIMARY',
+                'BEDROOM_2',
+                'BEDROOM_3',
+                'BEDROOM_4',
+                'BEDROOM_5',
+                'BATHROOM_FULL_1',
+                'BATHROOM_FULL_2',
+                'BATHROOM_FULL_3',
+                'BATHROOM_HALF_POWDER',
+                'SAUNA_SPA_ROOM',
+                'GYM_FITNESS_ROOM',
+                'BALCONY_TERRACE',
+                'PATIO_DECK',
+                'GARDEN_YARD',
+                'SWIMMING_POOL_AREA',
+                'STORAGE_ROOM',
+                'GARAGE_PARKING',
+                'UTILITY_BOILER_ROOM',
+                'OTHER'
+            ]
+        },
+        shotType: {
+            type: 'string',
+            enum: [
+                'SWEEP_ONLY',
+                'CLOSEUP',
+                'FUNCTIONAL_ACTION'
+            ]
+        },
+        title: {
+            type: 'string',
+            maxLength: 255
+        },
+        instructions: {
+            type: 'string'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        assets: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    id: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    apartmentId: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    name: {
+                        type: 'string',
+                        maxLength: 255
+                    },
+                    category: {
+                        type: 'string',
+                        enum: [
+                            'ELECTRONICS',
+                            'APPLIANCES_LARGE',
+                            'APPLIANCES_SMALL',
+                            'FURNITURE',
+                            'STRUCTURAL_SURFACES',
+                            'BATH_PLUMBING_FIXTURES',
+                            'RUGS_CARPETS_TEXTILES',
+                            'LIGHTING_FIXTURES',
+                            'SAFETY_SECURITY',
+                            'ENTERTAINMENT_RECREATION',
+                            'DECOR_ART',
+                            'UTILITIES_INFRASTRUCTURE',
+                            'OUTDOOR_PATIO',
+                            'OTHER'
+                        ]
+                    },
+                    roomLocation: {
+                        type: 'string',
+                        enum: [
+                            'ENTRANCE_HALLWAY',
+                            'STAIRCASE_CORRIDOR',
+                            'LIVING_ROOM',
+                            'DINING_ROOM',
+                            'GAME_ENTERTAINMENT_ROOM',
+                            'HOME_OFFICE_STUDY',
+                            'KITCHEN',
+                            'PANTRY_LAUNDRY_ROOM',
+                            'BEDROOM_PRIMARY',
+                            'BEDROOM_2',
+                            'BEDROOM_3',
+                            'BEDROOM_4',
+                            'BEDROOM_5',
+                            'BATHROOM_FULL_1',
+                            'BATHROOM_FULL_2',
+                            'BATHROOM_FULL_3',
+                            'BATHROOM_HALF_POWDER',
+                            'SAUNA_SPA_ROOM',
+                            'GYM_FITNESS_ROOM',
+                            'BALCONY_TERRACE',
+                            'PATIO_DECK',
+                            'GARDEN_YARD',
+                            'SWIMMING_POOL_AREA',
+                            'STORAGE_ROOM',
+                            'GARAGE_PARKING',
+                            'UTILITY_BOILER_ROOM',
+                            'OTHER'
+                        ]
+                    },
+                    description: {
+                        type: 'string',
+                        nullable: true
+                    },
+                    photoProofRequirement: {
+                        type: 'string',
+                        enum: [
+                            'SWEEP_ONLY',
+                            'CLOSEUP',
+                            'FUNCTIONAL_ACTION'
+                        ]
+                    },
+                    approximateValueCents: {
+                        type: 'integer',
+                        nullable: true,
+                        minimum: -2147483648,
+                        maximum: 2147483647
+                    },
+                    isActive: {
+                        type: 'boolean'
+                    },
+                    createdAt: {
+                        type: 'string',
+                        format: 'date-time'
+                    },
+                    updatedAt: {
+                        type: 'string',
+                        format: 'date-time'
+                    }
+                },
+                required: [
+                    'id',
+                    'apartmentId',
+                    'name',
+                    'category',
+                    'roomLocation',
+                    'description',
+                    'photoProofRequirement',
+                    'approximateValueCents',
+                    'isActive',
+                    'createdAt',
+                    'updatedAt'
+                ]
+            }
+        },
+        images: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    id: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    apartmentId: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    shotId: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    reservationId: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    type: {
+                        type: 'string',
+                        enum: [
+                            'checkin_state',
+                            'damage'
+                        ]
+                    },
+                    storageKey: {
+                        type: 'string'
+                    },
+                    uploadedAt: {
+                        type: 'string',
+                        format: 'date-time'
+                    },
+                    status: {
+                        type: 'string',
+                        enum: [
+                            'active',
+                            'soft_deleted'
+                        ]
+                    },
+                    deletedAt: {
+                        type: 'string',
+                        nullable: true,
+                        format: 'date-time'
+                    }
+                },
+                required: [
+                    'id',
+                    'apartmentId',
+                    'shotId',
+                    'reservationId',
+                    'type',
+                    'storageKey',
+                    'uploadedAt',
+                    'status',
+                    'deletedAt'
+                ]
+            }
+        }
+    },
+    required: [
+        'id',
+        'apartmentId',
+        'roomLocation',
+        'shotType',
+        'title',
+        'instructions',
+        'createdAt',
+        'updatedAt',
+        'assets',
+        'images'
+    ]
+} as const;
+
+export const PingInspectionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            example: true
+        },
+        tracked: {
+            type: 'boolean',
+            example: true
+        }
+    },
+    required: [
+        'success',
+        'tracked'
+    ]
+} as const;

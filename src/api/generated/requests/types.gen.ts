@@ -189,6 +189,88 @@ export type SyncShotItem = {
     assetIds: Array<string>;
 };
 
+export type Inspection = {
+    id: string;
+    reservationId: string;
+    visited?: Array<VisitLogEvent>;
+    createdAt: string;
+};
+
+export type VisitLogEvent = {
+    /**
+     * ISO timestamp of when the inspection link was visited
+     */
+    timestamp: string;
+    /**
+     * Client User-Agent header string captured during ping
+     */
+    userAgent: string;
+};
+
+export type CreateInspection = {
+    reservationId: string;
+};
+
+export type DetailedInspection = Inspection & {
+    reservation: {
+        id: string;
+        apartmentId: string;
+        platformReservationId: string | null;
+        guestName: string;
+        guestEmail: string | null;
+        checkInDatetime: string;
+        checkOutDatetime: string;
+        alternativeCheckInDatetime: string | null;
+        alternativeCheckOutDatetime: string | null;
+        hasPhotoProof: boolean;
+        status: 'PENDING_PROOF' | 'COVERED' | 'DISPUTED' | 'RESOLVED' | 'CLOSED';
+        proofWindowHours: number;
+        createdAt: string;
+        updatedAt: string;
+    };
+    shots: Array<ShotWithAssets>;
+};
+
+export type ShotWithAssets = {
+    id: string;
+    apartmentId: string;
+    roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+    shotType: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+    title: string;
+    instructions: string;
+    createdAt: string;
+    updatedAt: string;
+    assets: Array<{
+        id: string;
+        apartmentId: string;
+        name: string;
+        category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
+        roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+        description: string | null;
+        photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+        approximateValueCents: number | null;
+        isActive: boolean;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+    images: Array<{
+        id: string;
+        apartmentId: string;
+        shotId: string;
+        reservationId: string;
+        type: 'checkin_state' | 'damage';
+        storageKey: string;
+        uploadedAt: string;
+        status: 'active' | 'soft_deleted';
+        deletedAt: string | null;
+    }>;
+};
+
+export type PingInspectionResponse = {
+    success: boolean;
+    tracked: boolean;
+};
+
 export type GetUsersData = {
     body?: never;
     path?: never;
@@ -686,6 +768,10 @@ export type GetReservationsApartmentByApartmentIdData = {
          * Sort direction
          */
         order?: 'asc' | 'desc';
+        /**
+         * Whether to include past reservations (history)
+         */
+        history?: boolean | null;
     };
     url: '/reservations/apartment/{apartmentId}';
 };
@@ -1095,3 +1181,187 @@ export type PutApartmentShotsApartmentByApartmentIdResponses = {
 };
 
 export type PutApartmentShotsApartmentByApartmentIdResponse = PutApartmentShotsApartmentByApartmentIdResponses[keyof PutApartmentShotsApartmentByApartmentIdResponses];
+
+export type PostInspectionsData = {
+    body?: CreateInspection;
+    path?: never;
+    query?: never;
+    url: '/inspections';
+};
+
+export type PostInspectionsErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Inspection could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Inspection already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type PostInspectionsError = PostInspectionsErrors[keyof PostInspectionsErrors];
+
+export type PostInspectionsResponses = {
+    /**
+     * Inspection created successfully
+     */
+    201: Inspection;
+};
+
+export type PostInspectionsResponse = PostInspectionsResponses[keyof PostInspectionsResponses];
+
+export type GetInspectionsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Inspection unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: {
+        /**
+         * When set to true, returns the fully hydrated inspection tree including reservation, shots, assets, and images.
+         */
+        detailed?: boolean;
+    };
+    url: '/inspections/{id}';
+};
+
+export type GetInspectionsByIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Inspection could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Inspection already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type GetInspectionsByIdError = GetInspectionsByIdErrors[keyof GetInspectionsByIdErrors];
+
+export type GetInspectionsByIdResponses = {
+    /**
+     * Inspection fetched successfully
+     */
+    200: Inspection | DetailedInspection;
+};
+
+export type GetInspectionsByIdResponse = GetInspectionsByIdResponses[keyof GetInspectionsByIdResponses];
+
+export type GetInspectionsReservationByReservationIdData = {
+    body?: never;
+    path: {
+        /**
+         * Reservation unique identifier (UUID)
+         */
+        reservationId: string;
+    };
+    query?: never;
+    url: '/inspections/reservation/{reservationId}';
+};
+
+export type GetInspectionsReservationByReservationIdErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Inspection could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Inspection already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type GetInspectionsReservationByReservationIdError = GetInspectionsReservationByReservationIdErrors[keyof GetInspectionsReservationByReservationIdErrors];
+
+export type GetInspectionsReservationByReservationIdResponses = {
+    /**
+     * Inspection retrieved by reservation ID
+     */
+    200: Inspection;
+};
+
+export type GetInspectionsReservationByReservationIdResponse = GetInspectionsReservationByReservationIdResponses[keyof GetInspectionsReservationByReservationIdResponses];
+
+export type PostInspectionsByIdPingData = {
+    body?: never;
+    path: {
+        /**
+         * Inspection unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/inspections/{id}/ping';
+};
+
+export type PostInspectionsByIdPingErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Inspection could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Inspection already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type PostInspectionsByIdPingError = PostInspectionsByIdPingErrors[keyof PostInspectionsByIdPingErrors];
+
+export type PostInspectionsByIdPingResponses = {
+    /**
+     * Inspection ping processed successfully
+     */
+    200: PingInspectionResponse;
+};
+
+export type PostInspectionsByIdPingResponse = PostInspectionsByIdPingResponses[keyof PostInspectionsByIdPingResponses];
