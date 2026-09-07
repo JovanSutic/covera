@@ -192,7 +192,7 @@ export function ApartmentShotGuide({
 
         {/* Action Group */}
         <div className="flex items-center gap-2">
-          {!isLastStep && (
+          {!isLastStep ? (
             <button
               type="button"
               onClick={() => {
@@ -204,17 +204,16 @@ export function ApartmentShotGuide({
             >
               Next →
             </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onSubmit(shots)}
+              disabled={!isAllCompleted || isSubmitting}
+              className="px-5 py-2.5 text-sm font-medium bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-400 dark:disabled:bg-gray-800 transition-colors shrink-0"
+            >
+              {isSubmitting ? "Uploading..." : "Finish & Save All"}
+            </button>
           )}
-
-          {/* Save Action */}
-          <button
-            type="button"
-            onClick={() => onSubmit(shots)}
-            disabled={!isAllCompleted || isSubmitting}
-            className="px-5 py-2.5 text-sm font-medium bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-400 dark:disabled:bg-gray-800 transition-colors shrink-0"
-          >
-            {isSubmitting ? "Uploading..." : "Finish & Save All"}
-          </button>
         </div>
       </div>
     </div>

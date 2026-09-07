@@ -29,9 +29,9 @@ const router = createBrowserRouter([
     },
   },
   {
-    path: "/form",
+    path: "/inspection/:id",
     lazy: async () => {
-      const { default: Component } = await import("./pages/FormPage");
+      const { default: Component } = await import("./pages/InspectionPage");
       return { Component };
     },
   },
