@@ -281,7 +281,7 @@ export const PaginatedReservationsSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/Reservation'
+                $ref: '#/components/schemas/ReservationWithInspection'
             }
         },
         pagination: {
@@ -315,6 +315,149 @@ export const PaginatedReservationsSchema = {
     required: [
         'data',
         'pagination'
+    ]
+} as const;
+
+export const ReservationWithInspectionSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        platformReservationId: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        guestName: {
+            type: 'string',
+            maxLength: 255
+        },
+        guestEmail: {
+            type: 'string',
+            nullable: true,
+            maxLength: 255
+        },
+        checkInDatetime: {
+            type: 'string',
+            format: 'date-time'
+        },
+        checkOutDatetime: {
+            type: 'string',
+            format: 'date-time'
+        },
+        alternativeCheckInDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        alternativeCheckOutDatetime: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        hasPhotoProof: {
+            type: 'boolean'
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'PENDING_PROOF',
+                'COVERED',
+                'DISPUTED',
+                'RESOLVED',
+                'CLOSED'
+            ]
+        },
+        proofWindowHours: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        inspection: {
+            $ref: '#/components/schemas/Inspection'
+        }
+    },
+    required: [
+        'id',
+        'apartmentId',
+        'platformReservationId',
+        'guestName',
+        'guestEmail',
+        'checkInDatetime',
+        'checkOutDatetime',
+        'alternativeCheckInDatetime',
+        'alternativeCheckOutDatetime',
+        'hasPhotoProof',
+        'status',
+        'proofWindowHours',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const;
+
+export const InspectionSchema = {
+    type: 'object',
+    nullable: true,
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        reservationId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        visited: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/VisitLogEvent'
+            },
+            default: []
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'reservationId',
+        'createdAt'
+    ]
+} as const;
+
+export const VisitLogEventSchema = {
+    type: 'object',
+    properties: {
+        timestamp: {
+            type: 'string',
+            format: 'date-time',
+            example: '2026-09-05T14:10:00.000Z',
+            description: 'ISO timestamp of when the inspection link was visited'
+        },
+        userAgent: {
+            type: 'string',
+            example: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15',
+            description: 'Client User-Agent header string captured during ping'
+        }
+    },
+    required: [
+        'timestamp',
+        'userAgent'
     ]
 } as const;
 
@@ -987,57 +1130,6 @@ export const SyncShotItemSchema = {
         'title',
         'instructions',
         'assetIds'
-    ]
-} as const;
-
-export const InspectionSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        reservationId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        visited: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/VisitLogEvent'
-            },
-            default: []
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'reservationId',
-        'createdAt'
-    ]
-} as const;
-
-export const VisitLogEventSchema = {
-    type: 'object',
-    properties: {
-        timestamp: {
-            type: 'string',
-            format: 'date-time',
-            example: '2026-09-05T14:10:00.000Z',
-            description: 'ISO timestamp of when the inspection link was visited'
-        },
-        userAgent: {
-            type: 'string',
-            example: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15',
-            description: 'Client User-Agent header string captured during ping'
-        }
-    },
-    required: [
-        'timestamp',
-        'userAgent'
     ]
 } as const;
 

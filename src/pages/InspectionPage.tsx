@@ -125,7 +125,6 @@ function InspectionPage() {
           <div className="mt-3">
             <RoomFlowList
               steps={flowData.steps}
-              currentStepId={flowData.steps[0]?.id || ""}
               completedStepIds={flowData.completedStepIds}
               onSelectRoom={handleSelectRoom}
             />

@@ -65,13 +65,49 @@ export type CreateApartment = {
 };
 
 export type PaginatedReservations = {
-    data: Array<Reservation>;
+    data: Array<ReservationWithInspection>;
     pagination: {
         page: number;
         limit: number;
         totalItems: number;
         totalPages: number;
     };
+};
+
+export type ReservationWithInspection = {
+    id: string;
+    apartmentId: string;
+    platformReservationId: string | null;
+    guestName: string;
+    guestEmail: string | null;
+    checkInDatetime: string;
+    checkOutDatetime: string;
+    alternativeCheckInDatetime: string | null;
+    alternativeCheckOutDatetime: string | null;
+    hasPhotoProof: boolean;
+    status: 'PENDING_PROOF' | 'COVERED' | 'DISPUTED' | 'RESOLVED' | 'CLOSED';
+    proofWindowHours: number;
+    createdAt: string;
+    updatedAt: string;
+    inspection?: Inspection;
+};
+
+export type Inspection = {
+    id: string;
+    reservationId: string;
+    visited?: Array<VisitLogEvent>;
+    createdAt: string;
+} | null;
+
+export type VisitLogEvent = {
+    /**
+     * ISO timestamp of when the inspection link was visited
+     */
+    timestamp: string;
+    /**
+     * Client User-Agent header string captured during ping
+     */
+    userAgent: string;
 };
 
 export type Reservation = {
@@ -187,24 +223,6 @@ export type SyncShotItem = {
     title: string;
     instructions: string;
     assetIds: Array<string>;
-};
-
-export type Inspection = {
-    id: string;
-    reservationId: string;
-    visited?: Array<VisitLogEvent>;
-    createdAt: string;
-};
-
-export type VisitLogEvent = {
-    /**
-     * ISO timestamp of when the inspection link was visited
-     */
-    timestamp: string;
-    /**
-     * Client User-Agent header string captured during ping
-     */
-    userAgent: string;
 };
 
 export type CreateInspection = {
