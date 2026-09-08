@@ -21,7 +21,6 @@ import CreateAssetForm from "@/components/forms/CreateAssetForm";
 import { toast } from "sonner";
 import { ShotStudioModal } from "@/components/host/ShotStudioModal";
 import type { SyncShotItem } from "@/api/generated/requests/types.gen";
-import { addClientId } from "@/lib/helpers/uuid";
 import { validateAssetShotCoverage } from "@/lib/validations/shots";
 import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
 import CreateReservationForm from "@/components/forms/CreateReservationForm";
@@ -31,6 +30,7 @@ import {
   submitInspectionPhotos,
   type CapturedApartmentShot,
 } from "@/lib/api/submitPhotoProofs";
+import { addClientId } from "@/lib/helpers/uuid";
 
 export default function IndividualApartmentPage() {
   const [activeTab, setActiveTab] = useState<"reservations" | "assets">(
@@ -82,7 +82,11 @@ export default function IndividualApartmentPage() {
     enabled: !!id,
   });
 
-  const { data: shots = [] } = useQuery({
+  const {
+    data: shots = [],
+    isLoading: shotsLoading,
+    isFetching: shotsFetching,
+  } = useQuery({
     queryKey: ["APARTMENT_SHOTS_GET_BY_APARTMENT", id],
     queryFn: async ({ signal }) => {
       if (!id) throw new Error("Apartment ID is required");
@@ -172,6 +176,7 @@ export default function IndividualApartmentPage() {
     },
   });
 
+  // Coverage calculation
   const coverageSummary = useMemo(
     () => validateAssetShotCoverage(assets, shots),
     [assets, shots]
@@ -183,6 +188,10 @@ export default function IndividualApartmentPage() {
   );
 
   const unmatchedCount = coverageSummary?.uncoveredAssets?.length || 0;
+
+  // Track global loading/fetching state for dependencies
+  const isDataLoading =
+    assetsLoading || assetsFetching || shotsLoading || shotsFetching;
 
   const handleOpenInspectionGuide = (reservation: any) => {
     setSelectedReservation(reservation);
@@ -229,7 +238,7 @@ export default function IndividualApartmentPage() {
             }`}
           >
             <span>Assets & Verification Shots</span>
-            {unmatchedCount > 0 && (
+            {!isDataLoading && unmatchedCount > 0 && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400">
                 {unmatchedCount}
               </span>
@@ -238,13 +247,16 @@ export default function IndividualApartmentPage() {
         </nav>
       </div>
 
-      <UnmatchedAssetsBanner
-        unmatchedCount={unmatchedCount}
-        onNavigateToStudio={() => {
-          setActiveTab("assets");
-          setIsShotStudioOpen(true);
-        }}
-      />
+      {/* Only show banner when data is completely resolved and there are unmatched assets */}
+      {!isDataLoading && unmatchedCount > 0 && (
+        <UnmatchedAssetsBanner
+          unmatchedCount={unmatchedCount}
+          onNavigateToStudio={() => {
+            setActiveTab("assets");
+            setIsShotStudioOpen(true);
+          }}
+        />
+      )}
 
       {/* Tab Views */}
       {activeTab === "reservations" ? (

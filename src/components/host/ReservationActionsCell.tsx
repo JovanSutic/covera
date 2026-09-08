@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Camera, ClipboardPlus, Trash2 } from "lucide-react";
+import { Camera, ClipboardPlus, Link as LinkIcon, Trash2 } from "lucide-react";
 import {
   deleteReservationsById,
   postInspections,
@@ -7,8 +7,12 @@ import {
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import type { ReservationRow } from "@/types/component.types";
-import { toast } from "sonner";
 import { ConfirmActionButton } from "../ConfirmationButton";
+import { GuestInspectionMessage } from "./GuestInspectionMessage";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
+import { toast } from "sonner";
+
+const VITE_APP_BASE_PATH = import.meta.env.VITE_APP_BASE_PATH;
 
 export function ReservationActionsCell({
   reservation,
@@ -22,8 +26,10 @@ export function ReservationActionsCell({
   apartmentId: string;
 }) {
   const queryClient = useQueryClient();
-
   const now = Date.now();
+
+  // 1. Existing Inspection Check
+  const hasInspection = Boolean(reservation.inspection);
 
   // Resolve effective check-in time (prioritize alternative check-in if present)
   const effectiveCheckIn =
@@ -32,14 +38,12 @@ export function ReservationActionsCell({
     ? new Date(effectiveCheckIn).getTime()
     : 0;
 
-  // 1. Deletion logic: Allowed strictly before check-in time
+  // Deletion logic: Allowed strictly before check-in time
   const isDeletable = Boolean(checkInTime) && checkInTime > now;
 
-  // 2. Photo Proof Window Evaluation
+  // Photo Proof Window Evaluation
   const windowHours = reservation.proofWindowHours ?? 4;
   const proofWindowStartTime = checkInTime - windowHours * 60 * 60 * 1000;
-
-  // Extension cutoff: 1 hour post check-in time
   const maxAllowedTime = checkInTime + 1 * 60 * 60 * 1000;
 
   const hasSubmittedProofs =
@@ -48,11 +52,13 @@ export function ReservationActionsCell({
   const isTooEarly = Boolean(checkInTime) && now < proofWindowStartTime;
   const isTooLate = Boolean(checkInTime) && now > maxAllowedTime;
 
-  // Rule execution: Active window, post window cutoff, & proof status check
   const canTakeShots =
     Boolean(checkInTime) && !hasSubmittedProofs && !isTooEarly && !isTooLate;
 
-  // Delete Reservation Mutation
+  const guestInspectionUrl = reservation.inspection?.id
+    ? `${VITE_APP_BASE_PATH}/inspection/${reservation.inspection.id}`
+    : "";
+
   const deleteMutation = useMutation({
     mutationFn: async () => {
       const config = await withAuth();
@@ -97,7 +103,8 @@ export function ReservationActionsCell({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message || "Failed to create guest inspection. Please try again.",
+        error?.message ||
+          "Failed to create guest inspection. Please try again.",
       );
     },
   });
@@ -135,18 +142,44 @@ export function ReservationActionsCell({
         <Camera className="w-4 h-4" />
       </button>
 
-      {/* 2. Create Inspection Flow (Green Variant) */}
+      {/* 2. Create Inspection Flow */}
       <ConfirmActionButton
         icon={<ClipboardPlus className="w-4 h-4" />}
         variant="success"
         confirmLabel="Create"
         confirmMessage="Create guest inspection?"
-        title="Generate new guest inspection link"
+        disabled={hasInspection}
+        title={
+          hasInspection
+            ? "Guest inspection link already created"
+            : "Generate new guest inspection link"
+        }
         isLoading={createInspectionMutation.isPending}
         onConfirm={() => createInspectionMutation.mutateAsync()}
       />
 
-      {/* 3. Delete Action (Red Variant) */}
+      {/* 3. Airbnb Link Popover */}
+      {hasInspection && (
+        <Popover>
+          <PopoverTrigger>
+            <button
+              type="button"
+              title="Copy guest message for Airbnb"
+              className="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
+            >
+              <LinkIcon className="w-4 h-4" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="right">
+            <GuestInspectionMessage
+              guestName={reservation.guestName}
+              guestInspectionUrl={guestInspectionUrl}
+            />
+          </PopoverContent>
+        </Popover>
+      )}
+
+      {/* 4. Delete Action */}
       <ConfirmActionButton
         icon={<Trash2 className="w-4 h-4" />}
         variant="danger"

@@ -1,3 +1,5 @@
+import type { Inspection } from "@/api/generated/requests/types.gen";
+
 export interface ColumnDef<T> {
   header: string;
   accessorKey: keyof T | ((row: T) => React.ReactNode);
@@ -45,4 +47,5 @@ export interface ReservationRow {
   hasPhotoProof?: boolean;
   proofWindowHours?: number;
   alternativeCheckInDatetime?: string;
+  inspection?: Inspection;
 }
