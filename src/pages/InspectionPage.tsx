@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getInspectionsById } from "@/api/generated/requests/services.gen";
 import Header from "@/components/Header";
@@ -11,13 +10,24 @@ import {
   type RoomFlowStep,
 } from "@/components/guest/RoomFlowList";
 import { RoomDetails } from "@/components/guest/RoomDetails";
-import type { ApartmentShot, DetailedInspection, ShotWithAssets } from "@/api/generated/requests/types.gen";
+import type {
+  ApartmentShot,
+  DetailedInspection,
+  ShotWithAssets,
+} from "@/api/generated/requests/types.gen";
 import { mapShotsToRoomFlowSteps } from "@/lib/helpers/shots";
+import { InspectionIntroduction } from "@/components/guest/InspectionIntroduction";
+import { useParams } from "react-router";
+
+type InspectionStep = "intro" | "rooms" | "details";
 
 function InspectionPage() {
   const { id } = useParams<{ id: string }>();
 
-  // State to control active view: null = list overview, string = room detail view
+  // Single step state manager to handle view flow: 'intro' -> 'rooms' -> 'details'
+  const [currentStep, setCurrentStep] = useState<InspectionStep>("intro");
+
+  // Selected room location for details view
   const [selectedRoomLocation, setSelectedRoomLocation] = useState<
     ApartmentShot["roomLocation"] | null
   >(null);
@@ -48,57 +58,56 @@ function InspectionPage() {
 
   // Extract raw shots array typed with embedded images/assets
   const rawShots = useMemo(() => {
-    return ((inspection as DetailedInspection)?.shots || []) as ShotWithAssets[];
+    return ((inspection as DetailedInspection)?.shots ||
+      []) as ShotWithAssets[];
   }, [inspection]);
 
   // Derive rooms steps and completion status from shots data
   const flowData = useMemo(() => {
-    if (!rawShots.length) return { steps: [], completedStepIds: [] };
+    if (!rawShots.length) return { steps: [] };
     return mapShotsToRoomFlowSteps(rawShots);
   }, [rawShots]);
 
   // Extract ordered list of unique room keys for bottom pagination
   const allRoomLocations = useMemo(() => {
-    return flowData.steps.map((step) => step.id as ApartmentShot["roomLocation"]);
+    return flowData.steps.map(
+      (step) => step.id as ApartmentShot["roomLocation"],
+    );
   }, [flowData.steps]);
 
   // Filter shots belonging to currently selected room
   const currentRoomShots = useMemo(() => {
     if (!selectedRoomLocation) return [];
-    return rawShots.filter((shot) => shot.roomLocation === selectedRoomLocation);
+    return rawShots.filter(
+      (shot) => shot.roomLocation === selectedRoomLocation,
+    );
   }, [rawShots, selectedRoomLocation]);
+
+  const handleStartHandover = () => {
+    setCurrentStep("rooms");
+  };
 
   const handleSelectRoom = (step: RoomFlowStep) => {
     setSelectedRoomLocation(step.id as ApartmentShot["roomLocation"]);
+    setCurrentStep("details");
+  };
+
+  const handleBackToRooms = () => {
+    setSelectedRoomLocation(null);
+    setCurrentStep("rooms");
   };
 
   const handleFlagShot = (shotId: string) => {
-    // Flag handler stub for moderation or review flow
     console.log("Flagged shot:", shotId);
   };
 
-  if (isLoading) {
+  if (!isLoading && (isError || !inspection)) {
     return (
       <PageLayout size="lg">
         <Header />
         <PageTitle
-          title="Guest Inspection"
-          subtitle="Loading property assets and reference photos..."
-        />
-        <div className="flex items-center justify-center py-20 text-gray-500">
-          <span className="animate-pulse">Loading inspection data...</span>
-        </div>
-      </PageLayout>
-    );
-  }
-
-  if (isError || !inspection) {
-    return (
-      <PageLayout size="lg">
-        <Header />
-        <PageTitle
-          title="Inspection Not Found"
-          subtitle="Unable to load the requested property inspection."
+          title="Handover Not Found"
+          subtitle="Unable to load the requested property details."
         />
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/30">
           <p className="text-sm text-red-600 dark:text-red-400">
@@ -111,32 +120,37 @@ function InspectionPage() {
   }
 
   return (
-    <PageLayout size="lg">
+    <PageLayout size="sm">
       <Header />
 
-      {!selectedRoomLocation ? (
-        /* View 1: Room Flow List Overview */
-        <>
-          <PageTitle
-            title="Guest Inspection"
-            subtitle="Select a room below to view required photos and covered assets."
-          />
+      {/* Step 1: Introductory Card View */}
+      {currentStep === "intro" && (
+        <InspectionIntroduction
+          apartmentName={"name"}
+          onStartWalkthrough={handleStartHandover}
+          isLoading={isLoading}
+        />
+      )}
 
+      {/* Step 2: Room Flow List Overview */}
+      {currentStep === "rooms" && (
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
           <div className="mt-3">
             <RoomFlowList
               steps={flowData.steps}
-              completedStepIds={flowData.completedStepIds}
               onSelectRoom={handleSelectRoom}
             />
           </div>
-        </>
-      ) : (
-        /* View 2: Detailed Room Photo View */
+        </div>
+      )}
+
+      {/* Step 3: Detailed Room Photo View */}
+      {currentStep === "details" && selectedRoomLocation && (
         <RoomDetails
           roomLocation={selectedRoomLocation}
           shots={currentRoomShots}
           allRooms={allRoomLocations}
-          onBackToList={() => setSelectedRoomLocation(null)}
+          onBackToList={handleBackToRooms}
           onSelectRoom={(location) => setSelectedRoomLocation(location)}
           onFlagShot={handleFlagShot}
         />

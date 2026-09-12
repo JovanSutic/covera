@@ -3,7 +3,6 @@ import type { RoomFlowStep } from "@/components/guest/RoomFlowList";
 
 export function mapShotsToRoomFlowSteps(shots: DetailedInspection["shots"]): {
   steps: RoomFlowStep[];
-  completedStepIds: string[];
 } {
   const roomGroups = new Map<
     string,
@@ -28,19 +27,10 @@ export function mapShotsToRoomFlowSteps(shots: DetailedInspection["shots"]): {
     existing.totalShots += 1;
     existing.shots.push(shot);
 
-    // A shot is considered completed if it has active uploaded images
-    /* const hasActiveImages = shot.images.some(
-      (img) => img.status === "active" && !img.deletedAt
-    );
-    if (hasActiveImages) {
-      existing.completedShots += 1;
-    } */
-
     roomGroups.set(key, existing);
   });
 
   const steps: RoomFlowStep[] = [];
-  const completedStepIds: string[] = [];
 
   roomGroups.forEach((group) => {
     const stepId = group.roomLocation;
@@ -51,11 +41,7 @@ export function mapShotsToRoomFlowSteps(shots: DetailedInspection["shots"]): {
       proofNumber: group.totalShots,
     });
 
-    // Mark room step as complete if all required shots have uploaded images
-    if (group.totalShots > 0 && group.completedShots === group.totalShots) {
-      completedStepIds.push(stepId);
-    }
   });
 
-  return { steps, completedStepIds };
+  return { steps };
 }

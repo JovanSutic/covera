@@ -1,7 +1,6 @@
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import type { ApartmentShot, ShotWithAssets } from "@/api/generated/requests/types.gen";
 import { RoomPhotoItem } from "./RoomPhotoItem";
-import CustomSelect, { type RichOption } from "../formItems/Select"; // Adjust path if needed
 
 interface RoomDetailViewProps {
   roomLocation: ApartmentShot["roomLocation"];
@@ -31,35 +30,18 @@ export function RoomDetails({
   const prevRoom = currentIndex > 0 ? allRooms[currentIndex - 1] : null;
   const nextRoom = currentIndex < allRooms.length - 1 ? allRooms[currentIndex + 1] : null;
 
-  // Transform rooms array to RichOption format for CustomSelect
-  const roomOptions: RichOption[] = allRooms.map((loc) => ({
-    value: loc,
-    label: loc,
-  }));
-
   return (
     <div className="pb-24">
       {/* 1. Sticky Navigation Bar */}
-      <div className="sticky top-0 z-20 -mx-4 mb-4 border-b border-gray-200 bg-white/95 px-4 py-3 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/95 sm:mx-0 sm:rounded-xl">
+      <div className="sticky top-0 z-20 -mx-4 mb-4  bg-white/95 px-4 py-3 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/95 sm:mx-0 sm:rounded-xl">
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={onBackToList}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-900"
+            className="inline-flex cursor-pointer shrink-0 items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-900"
           >
             <ArrowLeft className="h-4 w-4" /> All Rooms
           </button>
-
-          {/* Custom Dropdown Room Selector */}
-          <CustomSelect
-            options={roomOptions}
-            value={roomLocation}
-            onChange={(e) =>
-              onSelectRoom(e.target.value as ApartmentShot["roomLocation"])
-            }
-            containerClassName="w-auto min-w-[160px]"
-            className="py-1.5 min-h-[36px] text-xs font-semibold"
-          />
         </div>
       </div>
 
@@ -109,7 +91,7 @@ export function RoomDetails({
             type="button"
             disabled={!prevRoom}
             onClick={() => prevRoom && onSelectRoom(prevRoom)}
-            className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-40 dark:text-gray-400 dark:hover:bg-gray-900"
+            className="inline-flex cursor-pointer items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed dark:text-gray-400 dark:hover:bg-gray-900"
           >
             <ChevronLeft className="h-4 w-4" /> Previous Room
           </button>
@@ -122,7 +104,7 @@ export function RoomDetails({
             type="button"
             disabled={!nextRoom}
             onClick={() => nextRoom && onSelectRoom(nextRoom)}
-            className="inline-flex items-center gap-1 rounded-lg bg-black px-3.5 py-2 text-xs font-medium text-white hover:bg-gray-800 disabled:opacity-40 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            className="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-black px-3.5 py-2 text-xs font-medium text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed dark:bg-white dark:text-black dark:hover:bg-gray-200"
           >
             Next Room <ChevronRight className="h-4 w-4" />
           </button>
