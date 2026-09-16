@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router";
 import { getInspectionsById } from "@/api/generated/requests/services.gen";
 import Header from "@/components/Header";
 import PageLayout from "@/components/layout/PageLayout";
@@ -17,7 +18,8 @@ import type {
 } from "@/api/generated/requests/types.gen";
 import { mapShotsToRoomFlowSteps } from "@/lib/helpers/shots";
 import { InspectionIntroduction } from "@/components/guest/InspectionIntroduction";
-import { useParams } from "react-router";
+import { Modal } from "@/components/Modal";
+import { FlagContentForm } from "@/components/forms/FlagContentForm";
 
 type InspectionStep = "intro" | "rooms" | "details";
 
@@ -31,6 +33,9 @@ function InspectionPage() {
   const [selectedRoomLocation, setSelectedRoomLocation] = useState<
     ApartmentShot["roomLocation"] | null
   >(null);
+
+  // Track the full active shot object for reporting
+  const [flaggedShot, setFlaggedShot] = useState<ShotWithAssets | null>(null);
 
   const {
     data: inspection,
@@ -97,8 +102,18 @@ function InspectionPage() {
     setCurrentStep("rooms");
   };
 
-  const handleFlagShot = (shotId: string) => {
-    console.log("Flagged shot:", shotId);
+  // Accepts either the full Shot object directly or finds it by ID
+  const handleFlagShot = (shotOrId: ShotWithAssets | string) => {
+    if (typeof shotOrId === "string") {
+      const match = rawShots.find((s) => s.id === shotOrId) || null;
+      setFlaggedShot(match);
+    } else {
+      setFlaggedShot(shotOrId);
+    }
+  };
+
+  const handleCloseFlagModal = () => {
+    setFlaggedShot(null);
   };
 
   if (!isLoading && (isError || !inspection)) {
@@ -155,6 +170,24 @@ function InspectionPage() {
           onFlagShot={handleFlagShot}
         />
       )}
+
+      {/* Global Flag / Report Modal */}
+      <Modal
+        isOpen={Boolean(flaggedShot)}
+        onClose={handleCloseFlagModal}
+        title="Report an Issue"
+        subtitle={flaggedShot ? `Flagging item: ${flaggedShot.title}` : ""}
+        size="md"
+        bodyClassName="p-6"
+      >
+        {flaggedShot && (
+          <FlagContentForm
+            shot={flaggedShot}
+            onSubmitSuccess={handleCloseFlagModal}
+            onCancel={handleCloseFlagModal}
+          />
+        )}
+      </Modal>
     </PageLayout>
   );
 }

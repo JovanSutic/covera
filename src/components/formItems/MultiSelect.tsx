@@ -14,18 +14,23 @@ export interface RichOption {
   subLabel?: string;
 }
 
-export interface CustomSelectProps
-  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "value"> {
+export interface MultiSelectProps
+  extends Omit<
+    React.SelectHTMLAttributes<HTMLSelectElement>,
+    "value" | "defaultValue" | "onChange" | "multiple"
+  > {
   label?: string;
   options: RichOption[];
   error?: string;
   containerClassName?: string;
-  value?: string;
+  value?: string[];
+  defaultValue?: string[];
+  onChange?: (value: string[]) => void;
 }
 
-const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
-  (
-    {
+const MultiSelect = forwardRef<HTMLSelectElement, MultiSelectProps>(
+  (props, ref) => {
+    const {
       label,
       options,
       error,
@@ -33,13 +38,12 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
       containerClassName,
       onChange,
       value,
-      defaultValue,
+      defaultValue = [],
       id,
       disabled,
-      ...props
-    },
-    ref
-  ) => {
+      ...restProps
+    } = props;
+
     const generatedId = useId();
     const activeId = id || generatedId;
 
@@ -50,14 +54,15 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
 
     const [isOpen, setIsOpen] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState<number>(-1);
-    
-    // Derived state pattern to prevent out-of-sync effect updates
-    const isControlled = value !== undefined;
-    const [uncontrolledValue, setUncontrolledValue] = useState<string>(
-      (defaultValue as string) || ""
-    );
-    const currentValue = isControlled ? value : uncontrolledValue;
 
+    // Controlled vs Uncontrolled state
+    const isControlled = value !== undefined;
+    const [uncontrolledValue, setUncontrolledValue] =
+      useState<string[]>(defaultValue);
+
+    const currentValue = isControlled ? value || [] : uncontrolledValue;
+
+    // Close dropdown on outside click
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (
@@ -72,36 +77,39 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
         document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const handleSelectOption = (selectedValue: string) => {
+    // Sync native hidden select and trigger onChange callbacks
+    const notifyChange = (newValue: string[]) => {
       if (!isControlled) {
-        setUncontrolledValue(selectedValue);
+        setUncontrolledValue(newValue);
       }
-      setIsOpen(false);
 
       if (nativeSelectRef.current) {
         const nativeSelect = nativeSelectRef.current;
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          window.HTMLSelectElement.prototype,
-          "value"
-        )?.set;
+        Array.from(nativeSelect.options).forEach((opt) => {
+          opt.selected = newValue.includes(opt.value);
+        });
 
-        if (nativeInputValueSetter) {
-          nativeInputValueSetter.call(nativeSelect, selectedValue);
-        } else {
-          nativeSelect.value = selectedValue;
-        }
-
-        const event = new Event("change", { bubbles: true });
-        nativeSelect.dispatchEvent(event);
-
-        if (onChange) {
-          onChange({
-            target: nativeSelect,
-            currentTarget: nativeSelect,
-            type: "change",
-          } as React.ChangeEvent<HTMLSelectElement>);
-        }
+        const syntheticEvent = new Event("change", { bubbles: true });
+        nativeSelect.dispatchEvent(syntheticEvent);
       }
+
+      if (onChange) {
+        onChange(newValue);
+      }
+    };
+
+    const handleToggleOption = (selectedValue: string) => {
+      const nextValue = currentValue.includes(selectedValue)
+        ? currentValue.filter((v) => v !== selectedValue)
+        : [...currentValue, selectedValue];
+
+      notifyChange(nextValue);
+    };
+
+    const removeTag = (valToRemove: string, e: React.MouseEvent) => {
+      e.stopPropagation();
+      const nextValue = currentValue.filter((v) => v !== valToRemove);
+      notifyChange(nextValue);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -110,7 +118,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         if (isOpen && focusedIndex >= 0 && options[focusedIndex]) {
-          handleSelectOption(options[focusedIndex].value);
+          handleToggleOption(options[focusedIndex].value);
         } else {
           setIsOpen((prev) => !prev);
         }
@@ -135,28 +143,28 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
       }
     };
 
-    const selectedOption = options.find((opt) => opt.value === currentValue);
-    const hasValue = Boolean(selectedOption || currentValue);
+    const selectedOptions = options.filter((opt) =>
+      currentValue.includes(opt.value)
+    );
+    const hasValue = currentValue.length > 0;
 
     return (
       <div
         ref={containerRef}
         className={cn("relative w-full", containerClassName)}
       >
+        {/* Hidden native multi-select for DOM & form library support */}
         <select
           ref={nativeSelectRef}
+          multiple
           value={currentValue}
-          onChange={(e) => {
-            if (!isControlled) setUncontrolledValue(e.target.value);
-            onChange?.(e);
-          }}
+          onChange={() => {}}
           tabIndex={-1}
           aria-hidden="true"
           className="absolute inset-0 h-full w-full opacity-0 pointer-events-none"
           disabled={disabled}
-          {...props}
+          {...restProps}
         >
-          <option value="" />
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -166,11 +174,13 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
 
         <div
           className={cn(
-            "relative cursor-pointer rounded-lg border border-gray-300 bg-white transition-all duration-200",
-            isOpen && "border-black ring-1 ring-black",
+            "relative cursor-pointer rounded-lg border border-gray-300 bg-white transition-all duration-200 dark:bg-gray-900 dark:border-gray-700",
+            isOpen &&
+              "border-black ring-1 ring-black dark:border-white dark:ring-white",
             error &&
               "border-destructive focus-within:border-destructive focus-within:ring-destructive",
-            disabled && "cursor-not-allowed opacity-50 bg-gray-50"
+            disabled &&
+              "cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-800"
           )}
           onClick={() => !disabled && setIsOpen(!isOpen)}
         >
@@ -184,18 +194,27 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
             disabled={disabled}
             onKeyDown={handleKeyDown}
             className={cn(
-              "flex w-full flex-col justify-center border-0 bg-transparent px-3 text-left text-base text-black outline-none pr-10 select-none cursor-pointer",
-              label ? "min-h-[56px] pb-2 pt-6" : "min-h-[38px] py-2",
+              "flex w-full flex-wrap items-center gap-1.5 border-0 bg-transparent px-3 text-left text-base text-black dark:text-white outline-none pr-10 select-none cursor-pointer min-h-[56px]",
+              label ? "pb-2 pt-6" : "py-2",
               className
             )}
           >
-            {selectedOption ? (
-              <span className="block truncate text-sm font-normal leading-tight">
-                {selectedOption.label}
+            {selectedOptions.map((opt) => (
+              <span
+                key={opt.value}
+                className="inline-flex items-center gap-1 rounded bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-xs font-medium text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700"
+              >
+                {opt.label}
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => removeTag(opt.value, e)}
+                  className="text-gray-400 hover:text-black dark:hover:text-white cursor-pointer ml-0.5 font-bold"
+                >
+                  ×
+                </span>
               </span>
-            ) : (
-              <span className="block h-5" />
-            )}
+            ))}
           </button>
 
           {label && (
@@ -204,9 +223,9 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
               className={cn(
                 "pointer-events-none absolute left-3 origin-top-left transition-all duration-150",
                 hasValue || isOpen
-                  ? "top-4 -translate-y-3 scale-75 text-sm text-gray-500"
-                  : "top-4 translate-y-0 scale-100 text-base text-gray-500",
-                isOpen && "text-black"
+                  ? "top-4 -translate-y-3 scale-75 text-sm text-gray-500 dark:text-gray-400"
+                  : "top-4 translate-y-0 scale-100 text-base text-gray-500 dark:text-gray-400",
+                isOpen && "text-black dark:text-white font-medium"
               )}
             >
               {label}
@@ -240,7 +259,8 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
             id={`${activeId}-listbox`}
             role="listbox"
             tabIndex={-1}
-            className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+            aria-multiselectable="true"
+            className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           >
             {options.length === 0 ? (
               <li className="px-3 py-2 text-xs italic text-gray-500">
@@ -248,35 +268,40 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
               </li>
             ) : (
               options.map((opt, idx) => {
-                const isSelected = opt.value === currentValue;
+                const selected = currentValue.includes(opt.value);
                 const isFocused = idx === focusedIndex;
 
                 return (
                   <li
                     key={opt.value}
                     role="option"
-                    aria-selected={isSelected}
+                    aria-selected={selected}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSelectOption(opt.value);
+                      handleToggleOption(opt.value);
                     }}
                     onMouseEnter={() => setFocusedIndex(idx)}
                     className={cn(
-                      "cursor-pointer select-none px-3 py-2 text-left transition-colors",
-                      isSelected && "font-medium bg-gray-100",
-                      isFocused && !isSelected && "bg-gray-50"
+                      "cursor-pointer select-none px-3 py-2 text-left transition-colors flex items-center justify-between",
+                      selected && "font-medium bg-gray-100 dark:bg-gray-800",
+                      isFocused && !selected && "bg-gray-50 dark:bg-gray-800/50"
                     )}
                   >
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {opt.label}
                       </span>
                       {opt.subLabel && (
-                        <span className="mt-0.5 text-xs text-gray-500">
+                        <span className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                           {opt.subLabel}
                         </span>
                       )}
                     </div>
+                    {selected && (
+                      <span className="text-xs font-semibold text-black dark:text-white">
+                        ✓
+                      </span>
+                    )}
                   </li>
                 );
               })
@@ -294,5 +319,5 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
   }
 );
 
-CustomSelect.displayName = "CustomSelect";
-export default CustomSelect;
+MultiSelect.displayName = "MultiSelect";
+export default MultiSelect;
