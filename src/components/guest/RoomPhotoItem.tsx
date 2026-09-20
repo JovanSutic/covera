@@ -5,11 +5,12 @@ import type { ShotWithAssets } from "@/api/generated/requests/types.gen";
 interface RoomPhotoItemProps {
   shot: ShotWithAssets;
   onFlagShot?: (shotId: string) => void;
+  isFlagDisabled: boolean;
 }
 
 const R2_IMAGE_URL = import.meta.env.VITE_R2_IMAGE_URL;
 
-export function RoomPhotoItem({ shot, onFlagShot }: RoomPhotoItemProps) {
+export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoItemProps) {
   const [isZoomed, setIsZoomed] = useState(false);
   const activeImage = shot.images.find(
     (img) => img.status === "active" && !img.deletedAt,
@@ -42,7 +43,8 @@ export function RoomPhotoItem({ shot, onFlagShot }: RoomPhotoItemProps) {
             type="button"
             onClick={() => onFlagShot?.(shot.id)}
             title="Flag issue with this photo"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-rose-700 bg-rose-50 border border-rose-200/80 hover:bg-rose-100 hover:text-rose-800 dark:bg-rose-950/40 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-900/60 cursor-pointer transition-colors shrink-0"
+            disabled={isFlagDisabled}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-rose-700 bg-rose-50 border border-rose-200/80 hover:bg-rose-100 cursor-pointer hover:text-rose-800 disabled:opacity-50 disabled:cursor-not-allowed  transition-colors shrink-0"
           >
             <Flag className="h-3.5 w-3.5 stroke-[2]" />
             <span>Flag item</span>

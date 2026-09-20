@@ -229,6 +229,42 @@ export type CreateInspection = {
     reservationId: string;
 };
 
+export type InspectionFlag = {
+    id: string;
+    inspectionId: string;
+    shotId: string | null;
+    reason: 'missing_asset' | 'damaged' | 'poor_photo' | 'wrong_room' | 'other';
+    details: string;
+    reportedByUserId: string | null;
+    status: 'pending' | 'under_review' | 'resolved' | 'dismissed';
+    resolutionNotes: string | null;
+    resolvedAt: string | null;
+    resolvedByUserId: string | null;
+    createdAt: string;
+    updatedAt: string;
+    assets?: Array<{
+        id: string;
+        apartmentId: string;
+        name: string;
+        category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
+        roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+        description: string | null;
+        photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+        approximateValueCents: number | null;
+        isActive: boolean;
+        createdAt: string;
+        updatedAt: string;
+    }>;
+};
+
+export type CreateInspectionFlag = {
+    shotId?: string | null;
+    reason: 'missing_asset' | 'damaged' | 'poor_photo' | 'wrong_room' | 'other';
+    details: string;
+    reportedByUserId?: string | null;
+    assetIds?: Array<string>;
+};
+
 export type DetailedInspection = Inspection & {
     reservation: {
         id: string;
@@ -247,6 +283,7 @@ export type DetailedInspection = Inspection & {
         updatedAt: string;
     };
     shots: Array<ShotWithAssets>;
+    flags?: Array<InspectionFlag>;
 };
 
 export type ShotWithAssets = {
@@ -1241,6 +1278,52 @@ export type PostInspectionsResponses = {
 
 export type PostInspectionsResponse = PostInspectionsResponses[keyof PostInspectionsResponses];
 
+export type PostInspectionsByIdFlagsData = {
+    body?: CreateInspectionFlag;
+    path: {
+        /**
+         * Inspection unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/inspections/{id}/flags';
+};
+
+export type PostInspectionsByIdFlagsErrors = {
+    /**
+     * Bad Request: One or more parameters failed validation.
+     */
+    400: StandardError;
+    /**
+     * Unauthorized: Missing or invalid token.
+     */
+    401: StandardError;
+    /**
+     * Not Found: The requested Inspection could not be found.
+     */
+    404: StandardError;
+    /**
+     * Conflict: This Inspection already exists.
+     */
+    409: StandardError;
+    /**
+     * Internal Server Error: Something went wrong on our end.
+     */
+    500: StandardError;
+};
+
+export type PostInspectionsByIdFlagsError = PostInspectionsByIdFlagsErrors[keyof PostInspectionsByIdFlagsErrors];
+
+export type PostInspectionsByIdFlagsResponses = {
+    /**
+     * Inspection flag created successfully
+     */
+    201: InspectionFlag;
+};
+
+export type PostInspectionsByIdFlagsResponse = PostInspectionsByIdFlagsResponses[keyof PostInspectionsByIdFlagsResponses];
+
 export type GetInspectionsByIdData = {
     body?: never;
     path: {
@@ -1251,7 +1334,7 @@ export type GetInspectionsByIdData = {
     };
     query?: {
         /**
-         * When set to true, returns the fully hydrated inspection tree including reservation, shots, assets, and images.
+         * When set to true, returns the fully hydrated inspection tree including reservation, shots, assets, images, and flags.
          */
         detailed?: boolean;
     };

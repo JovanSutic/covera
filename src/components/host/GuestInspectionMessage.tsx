@@ -15,7 +15,7 @@ export function GuestInspectionMessage({
 }: GuestInspectionMessageProps) {
   const [isCopying, setIsCopying] = useState(false);
 
-  const guestMessage = `Hello ${guestName},\n\nPlease complete your check-in photo inspection using the following link prior to or upon arrival:\n${guestInspectionUrl}\n\nThank you!`;
+  const guestMessage = `Hi ${guestName}! We want your stay to be completely worry-free. Before you unpack and relax, please take 2 minutes to complete your arrival handover:\n\n${guestInspectionUrl}\n\nThank you, and enjoy your stay!`;
 
   const handleCopyMessage = async () => {
     try {

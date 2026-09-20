@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router";
 import { getInspectionsById } from "@/api/generated/requests/services.gen";
 import Header from "@/components/Header";
 import PageLayout from "@/components/layout/PageLayout";
@@ -13,11 +14,13 @@ import { RoomDetails } from "@/components/guest/RoomDetails";
 import type {
   ApartmentShot,
   DetailedInspection,
+  InspectionFlag,
   ShotWithAssets,
 } from "@/api/generated/requests/types.gen";
 import { mapShotsToRoomFlowSteps } from "@/lib/helpers/shots";
 import { InspectionIntroduction } from "@/components/guest/InspectionIntroduction";
-import { useParams } from "react-router";
+import { Modal } from "@/components/Modal";
+import { FlagContentForm } from "@/components/forms/FlagContentForm";
 
 type InspectionStep = "intro" | "rooms" | "details";
 
@@ -31,6 +34,9 @@ function InspectionPage() {
   const [selectedRoomLocation, setSelectedRoomLocation] = useState<
     ApartmentShot["roomLocation"] | null
   >(null);
+
+  // Track the full active shot object for reporting
+  const [flaggedShot, setFlaggedShot] = useState<ShotWithAssets | null>(null);
 
   const {
     data: inspection,
@@ -56,26 +62,28 @@ function InspectionPage() {
     enabled: Boolean(id),
   });
 
-  // Extract raw shots array typed with embedded images/assets
+
   const rawShots = useMemo(() => {
     return ((inspection as DetailedInspection)?.shots ||
       []) as ShotWithAssets[];
   }, [inspection]);
 
-  // Derive rooms steps and completion status from shots data
+  const inspectionFlags = useMemo(() => {
+    return ((inspection as DetailedInspection)?.flags ||
+      []) as InspectionFlag[];
+  }, [inspection]);
+
   const flowData = useMemo(() => {
     if (!rawShots.length) return { steps: [] };
     return mapShotsToRoomFlowSteps(rawShots);
   }, [rawShots]);
 
-  // Extract ordered list of unique room keys for bottom pagination
   const allRoomLocations = useMemo(() => {
     return flowData.steps.map(
       (step) => step.id as ApartmentShot["roomLocation"],
     );
   }, [flowData.steps]);
 
-  // Filter shots belonging to currently selected room
   const currentRoomShots = useMemo(() => {
     if (!selectedRoomLocation) return [];
     return rawShots.filter(
@@ -97,8 +105,18 @@ function InspectionPage() {
     setCurrentStep("rooms");
   };
 
-  const handleFlagShot = (shotId: string) => {
-    console.log("Flagged shot:", shotId);
+  // Accepts either the full Shot object directly or finds it by ID
+  const handleFlagShot = (shotOrId: ShotWithAssets | string) => {
+    if (typeof shotOrId === "string") {
+      const match = rawShots.find((s) => s.id === shotOrId) || null;
+      setFlaggedShot(match);
+    } else {
+      setFlaggedShot(shotOrId);
+    }
+  };
+
+  const handleCloseFlagModal = () => {
+    setFlaggedShot(null);
   };
 
   if (!isLoading && (isError || !inspection)) {
@@ -153,8 +171,28 @@ function InspectionPage() {
           onBackToList={handleBackToRooms}
           onSelectRoom={(location) => setSelectedRoomLocation(location)}
           onFlagShot={handleFlagShot}
+          flags={inspectionFlags}
         />
       )}
+
+      {/* Global Flag / Report Modal */}
+      <Modal
+        isOpen={Boolean(flaggedShot)}
+        onClose={handleCloseFlagModal}
+        title="Report an Issue"
+        subtitle={flaggedShot ? `Flagging item: ${flaggedShot.title}` : ""}
+        size="md"
+        bodyClassName="p-6"
+      >
+        {flaggedShot && id && (
+          <FlagContentForm
+            shot={flaggedShot}
+            onSubmitSuccess={handleCloseFlagModal}
+            onCancel={handleCloseFlagModal}
+            inspectionId={id}
+          />
+        )}
+      </Modal>
     </PageLayout>
   );
 }

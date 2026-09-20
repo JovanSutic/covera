@@ -69,7 +69,7 @@ export function InspectionIntroduction({
           type="button"
           onClick={onStartWalkthrough}
           disabled={isLoading}
-          className="inline-flex disabled:opacity-40 disabled:cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 cursor-pointer shadow-sm"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
         >
           <span>
             {isLoading

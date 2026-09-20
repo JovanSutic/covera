@@ -1,28 +1,14 @@
 import React from "react";
-import {
-  ChevronRight,
-  Camera,
-  Home,
-  Bed,
-  Bath,
-  Utensils,
-  Tv,
-} from "lucide-react";
+import { ChevronRight, Camera } from "lucide-react";
 import type { RoomFlowStep } from "./RoomFlowList";
+import { getRoomIcon } from "@/lib/helpers/icons";
+import type { InspectionFlag } from "@/api/generated/requests/types.gen";
 
 interface RoomFlowItemProps {
   step: RoomFlowStep;
   onSelectRoom?: (step: RoomFlowStep) => void;
+  flags?: InspectionFlag[],
 }
-
-const getRoomIcon = (roomName: string) => {
-  const lower = roomName.toLowerCase();
-  if (lower.includes("bedroom") || lower.includes("bed")) return Bed;
-  if (lower.includes("bath") || lower.includes("restroom")) return Bath;
-  if (lower.includes("kitchen") || lower.includes("dining")) return Utensils;
-  if (lower.includes("living") || lower.includes("lounge")) return Tv;
-  return Home;
-};
 
 export const RoomFlowItem: React.FC<RoomFlowItemProps> = ({
   step,
