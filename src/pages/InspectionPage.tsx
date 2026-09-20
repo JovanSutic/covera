@@ -14,6 +14,7 @@ import { RoomDetails } from "@/components/guest/RoomDetails";
 import type {
   ApartmentShot,
   DetailedInspection,
+  InspectionFlag,
   ShotWithAssets,
 } from "@/api/generated/requests/types.gen";
 import { mapShotsToRoomFlowSteps } from "@/lib/helpers/shots";
@@ -61,26 +62,28 @@ function InspectionPage() {
     enabled: Boolean(id),
   });
 
-  // Extract raw shots array typed with embedded images/assets
+
   const rawShots = useMemo(() => {
     return ((inspection as DetailedInspection)?.shots ||
       []) as ShotWithAssets[];
   }, [inspection]);
 
-  // Derive rooms steps and completion status from shots data
+  const inspectionFlags = useMemo(() => {
+    return ((inspection as DetailedInspection)?.flags ||
+      []) as InspectionFlag[];
+  }, [inspection]);
+
   const flowData = useMemo(() => {
     if (!rawShots.length) return { steps: [] };
     return mapShotsToRoomFlowSteps(rawShots);
   }, [rawShots]);
 
-  // Extract ordered list of unique room keys for bottom pagination
   const allRoomLocations = useMemo(() => {
     return flowData.steps.map(
       (step) => step.id as ApartmentShot["roomLocation"],
     );
   }, [flowData.steps]);
 
-  // Filter shots belonging to currently selected room
   const currentRoomShots = useMemo(() => {
     if (!selectedRoomLocation) return [];
     return rawShots.filter(
@@ -168,6 +171,7 @@ function InspectionPage() {
           onBackToList={handleBackToRooms}
           onSelectRoom={(location) => setSelectedRoomLocation(location)}
           onFlagShot={handleFlagShot}
+          flags={inspectionFlags}
         />
       )}
 
@@ -180,11 +184,12 @@ function InspectionPage() {
         size="md"
         bodyClassName="p-6"
       >
-        {flaggedShot && (
+        {flaggedShot && id && (
           <FlagContentForm
             shot={flaggedShot}
             onSubmitSuccess={handleCloseFlagModal}
             onCancel={handleCloseFlagModal}
+            inspectionId={id}
           />
         )}
       </Modal>

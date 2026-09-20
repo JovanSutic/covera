@@ -1146,6 +1146,243 @@ export const CreateInspectionSchema = {
     ]
 } as const;
 
+export const InspectionFlagSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        inspectionId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        shotId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        reason: {
+            type: 'string',
+            enum: [
+                'missing_asset',
+                'damaged',
+                'poor_photo',
+                'wrong_room',
+                'other'
+            ]
+        },
+        details: {
+            type: 'string'
+        },
+        reportedByUserId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'pending',
+                'under_review',
+                'resolved',
+                'dismissed'
+            ]
+        },
+        resolutionNotes: {
+            type: 'string',
+            nullable: true
+        },
+        resolvedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        resolvedByUserId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        assets: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    id: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    apartmentId: {
+                        type: 'string',
+                        format: 'uuid'
+                    },
+                    name: {
+                        type: 'string',
+                        maxLength: 255
+                    },
+                    category: {
+                        type: 'string',
+                        enum: [
+                            'ELECTRONICS',
+                            'APPLIANCES_LARGE',
+                            'APPLIANCES_SMALL',
+                            'FURNITURE',
+                            'STRUCTURAL_SURFACES',
+                            'BATH_PLUMBING_FIXTURES',
+                            'RUGS_CARPETS_TEXTILES',
+                            'LIGHTING_FIXTURES',
+                            'SAFETY_SECURITY',
+                            'ENTERTAINMENT_RECREATION',
+                            'DECOR_ART',
+                            'UTILITIES_INFRASTRUCTURE',
+                            'OUTDOOR_PATIO',
+                            'OTHER'
+                        ]
+                    },
+                    roomLocation: {
+                        type: 'string',
+                        enum: [
+                            'ENTRANCE_HALLWAY',
+                            'STAIRCASE_CORRIDOR',
+                            'LIVING_ROOM',
+                            'DINING_ROOM',
+                            'GAME_ENTERTAINMENT_ROOM',
+                            'HOME_OFFICE_STUDY',
+                            'KITCHEN',
+                            'PANTRY_LAUNDRY_ROOM',
+                            'BEDROOM_PRIMARY',
+                            'BEDROOM_2',
+                            'BEDROOM_3',
+                            'BEDROOM_4',
+                            'BEDROOM_5',
+                            'BATHROOM_FULL_1',
+                            'BATHROOM_FULL_2',
+                            'BATHROOM_FULL_3',
+                            'BATHROOM_HALF_POWDER',
+                            'SAUNA_SPA_ROOM',
+                            'GYM_FITNESS_ROOM',
+                            'BALCONY_TERRACE',
+                            'PATIO_DECK',
+                            'GARDEN_YARD',
+                            'SWIMMING_POOL_AREA',
+                            'STORAGE_ROOM',
+                            'GARAGE_PARKING',
+                            'UTILITY_BOILER_ROOM',
+                            'OTHER'
+                        ]
+                    },
+                    description: {
+                        type: 'string',
+                        nullable: true
+                    },
+                    photoProofRequirement: {
+                        type: 'string',
+                        enum: [
+                            'SWEEP_ONLY',
+                            'CLOSEUP',
+                            'FUNCTIONAL_ACTION'
+                        ]
+                    },
+                    approximateValueCents: {
+                        type: 'integer',
+                        nullable: true,
+                        minimum: -2147483648,
+                        maximum: 2147483647
+                    },
+                    isActive: {
+                        type: 'boolean'
+                    },
+                    createdAt: {
+                        type: 'string',
+                        format: 'date-time'
+                    },
+                    updatedAt: {
+                        type: 'string',
+                        format: 'date-time'
+                    }
+                },
+                required: [
+                    'id',
+                    'apartmentId',
+                    'name',
+                    'category',
+                    'roomLocation',
+                    'description',
+                    'photoProofRequirement',
+                    'approximateValueCents',
+                    'isActive',
+                    'createdAt',
+                    'updatedAt'
+                ]
+            },
+            default: []
+        }
+    },
+    required: [
+        'id',
+        'inspectionId',
+        'shotId',
+        'reason',
+        'details',
+        'reportedByUserId',
+        'status',
+        'resolutionNotes',
+        'resolvedAt',
+        'resolvedByUserId',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const;
+
+export const CreateInspectionFlagSchema = {
+    type: 'object',
+    properties: {
+        shotId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        reason: {
+            type: 'string',
+            enum: [
+                'missing_asset',
+                'damaged',
+                'poor_photo',
+                'wrong_room',
+                'other'
+            ]
+        },
+        details: {
+            type: 'string'
+        },
+        reportedByUserId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        assetIds: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'uuid'
+            },
+            default: []
+        }
+    },
+    required: [
+        'reason',
+        'details'
+    ]
+} as const;
+
 export const DetailedInspectionSchema = {
     allOf: [
         {
@@ -1246,6 +1483,13 @@ export const DetailedInspectionSchema = {
                     items: {
                         $ref: '#/components/schemas/ShotWithAssets'
                     }
+                },
+                flags: {
+                    type: 'array',
+                    items: {
+                        $ref: '#/components/schemas/InspectionFlag'
+                    },
+                    default: []
                 }
             },
             required: [

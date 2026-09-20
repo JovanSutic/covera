@@ -2,10 +2,12 @@ import React from "react";
 import { ChevronRight, Camera } from "lucide-react";
 import type { RoomFlowStep } from "./RoomFlowList";
 import { getRoomIcon } from "@/lib/helpers/icons";
+import type { InspectionFlag } from "@/api/generated/requests/types.gen";
 
 interface RoomFlowItemProps {
   step: RoomFlowStep;
   onSelectRoom?: (step: RoomFlowStep) => void;
+  flags?: InspectionFlag[],
 }
 
 export const RoomFlowItem: React.FC<RoomFlowItemProps> = ({

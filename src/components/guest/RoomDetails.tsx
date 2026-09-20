@@ -1,5 +1,9 @@
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import type { ApartmentShot, ShotWithAssets } from "@/api/generated/requests/types.gen";
+import type {
+  ApartmentShot,
+  ShotWithAssets,
+  InspectionFlag,
+} from "@/api/generated/requests/types.gen";
 import { RoomPhotoItem } from "./RoomPhotoItem";
 
 interface RoomDetailViewProps {
@@ -9,6 +13,7 @@ interface RoomDetailViewProps {
   onBackToList: () => void;
   onSelectRoom: (location: ApartmentShot["roomLocation"]) => void;
   onFlagShot?: (shotId: string) => void;
+  flags?: InspectionFlag[];
 }
 
 export function RoomDetails({
@@ -18,6 +23,7 @@ export function RoomDetails({
   onBackToList,
   onSelectRoom,
   onFlagShot,
+  flags,
 }: RoomDetailViewProps) {
   const roomName = roomLocation;
 
@@ -28,7 +34,8 @@ export function RoomDetails({
   // Navigation indexes for bottom toolbar
   const currentIndex = allRooms.indexOf(roomLocation);
   const prevRoom = currentIndex > 0 ? allRooms[currentIndex - 1] : null;
-  const nextRoom = currentIndex < allRooms.length - 1 ? allRooms[currentIndex + 1] : null;
+  const nextRoom =
+    currentIndex < allRooms.length - 1 ? allRooms[currentIndex + 1] : null;
 
   return (
     <div className="pb-24">
@@ -55,7 +62,14 @@ export function RoomDetails({
             </h2>
             <div className="space-y-4">
               {sweepShots.map((shot) => (
-                <RoomPhotoItem key={shot.id} shot={shot} onFlagShot={onFlagShot} />
+                <RoomPhotoItem
+                  key={shot.id}
+                  shot={shot}
+                  onFlagShot={onFlagShot}
+                  isFlagDisabled={(flags || []).some(
+                    (flag) => flag.shotId === shot.id,
+                  )}
+                />
               ))}
             </div>
           </section>
@@ -69,7 +83,14 @@ export function RoomDetails({
             </h2>
             <div className="space-y-4">
               {closeupShots.map((shot) => (
-                <RoomPhotoItem key={shot.id} shot={shot} onFlagShot={onFlagShot} />
+                <RoomPhotoItem
+                  key={shot.id}
+                  shot={shot}
+                  onFlagShot={onFlagShot}
+                  isFlagDisabled={(flags || []).some(
+                    (flag) => flag.shotId === shot.id,
+                  )}
+                />
               ))}
             </div>
           </section>
