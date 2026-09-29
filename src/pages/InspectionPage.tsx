@@ -21,11 +21,13 @@ import { mapShotsToRoomFlowSteps } from "@/lib/helpers/shots";
 import { InspectionIntroduction } from "@/components/guest/InspectionIntroduction";
 import { Modal } from "@/components/Modal";
 import { FlagContentForm } from "@/components/forms/FlagContentForm";
+import { useTranslation } from "react-i18next";
 
 type InspectionStep = "intro" | "rooms" | "details";
 
 function InspectionPage() {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation("assets");
 
   // Single step state manager to handle view flow: 'intro' -> 'rooms' -> 'details'
   const [currentStep, setCurrentStep] = useState<InspectionStep>("intro");
@@ -75,8 +77,8 @@ function InspectionPage() {
 
   const flowData = useMemo(() => {
     if (!rawShots.length) return { steps: [] };
-    return mapShotsToRoomFlowSteps(rawShots);
-  }, [rawShots]);
+    return mapShotsToRoomFlowSteps(rawShots, t);
+  }, [rawShots, t]);
 
   const allRoomLocations = useMemo(() => {
     return flowData.steps.map(

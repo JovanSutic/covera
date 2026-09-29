@@ -218,13 +218,13 @@ export function ShotStudioFlow({
               <button
                 type="button"
                 onClick={() => setIsCreatingNew(false)}
-                className="px-3 py-1 text-xs border rounded-md"
+                className="px-3 py-1 text-xs border rounded-md cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-3 py-1 text-xs bg-blue-600 text-white font-medium rounded-md"
+                className="px-3 py-1 text-xs bg-blue-600 text-white font-medium rounded-md cursor-pointer"
               >
                 Add
               </button>
@@ -267,7 +267,7 @@ export function ShotStudioFlow({
             >
               <div className="flex justify-between items-start mb-1">
                 <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
-                  {shot.roomLocation} • {shot.shotType}
+                  {t(`roomLocations.${shot.roomLocation}`)} • {t(`photoProofs.${shot.shotType}`)}
                 </span>
                 <button
                   onClick={(e) => handleDeleteShot(shot._clientId, e)}
@@ -342,14 +342,14 @@ export function ShotStudioFlow({
                           )}
                         </div>
                         <p className="text-[10px] text-gray-500 mb-2">
-                          {asset.category.replace(/_/g, " ")}
+                          {t(`categories.${asset.category}`)}
                         </p>
                       </div>
 
                       <div className="flex items-center justify-between text-[10px] text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800">
-                        <span>{asset.roomLocation.replace(/_/g, " ")}</span>
+                        <span>{t(`roomLocations.${asset.roomLocation}`)}</span>
                         <span className="font-mono">
-                          {asset.photoProofRequirement}
+                          {t(`photoProofs.${asset.photoProofRequirement}`)}
                         </span>
                       </div>
                     </div>

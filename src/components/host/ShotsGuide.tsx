@@ -1,21 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Typography from "@/components/Typography";
 import { InlineCamera } from "./InlineCamera";
 import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
 import type { ApartmentShot } from "@/api/generated/requests/types.gen";
+import { useTranslation } from "react-i18next";
 
 const SHOT_TYPE_LABELS: Record<ApartmentShot["shotType"], string> = {
   SWEEP_ONLY: "Wide Sweep",
   CLOSEUP: "Close-up",
   FUNCTIONAL_ACTION: "Functional / In-Action",
 };
-
-function formatRoomLocation(room: ApartmentShot["roomLocation"]): string {
-  return room
-    .replace(/_/g, " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 interface ApartmentShotGuideProps {
   initialShots: CapturedApartmentShot[];
@@ -30,11 +24,24 @@ export function ApartmentShotGuide({
 }: ApartmentShotGuideProps) {
   const [shots, setShots] = useState<CapturedApartmentShot[]>(initialShots);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const { t } = useTranslation("assets");
 
-  // Start directly with camera open to bypass unnecessary clicks
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
 
   const currentShot = shots[currentIndex];
+
+  // Prevent accidental navigation/tab closing during upload
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isSubmitting) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isSubmitting]);
 
   const roomGroups = useMemo(() => {
     const groups: Record<string, CapturedApartmentShot[]> = {};
@@ -60,12 +67,10 @@ export function ApartmentShotGuide({
       )
     );
 
-    // Auto-advance to the next step while keeping camera active
     if (currentIndex < shots.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       setIsCameraActive(true);
     } else {
-      // If we just captured the final photo, switch to preview mode
       setIsCameraActive(false);
     }
   };
@@ -85,7 +90,37 @@ export function ApartmentShotGuide({
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-2">
+    <div className="relative w-full max-w-2xl mx-auto space-y-2">
+      {/* Fullscreen Backdrop Blocking Overlay during Submission */}
+      {isSubmitting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-950/80 backdrop-blur-md p-4 transition-all">
+          <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 text-center shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+            {/* Animated Loading Spinner */}
+            <div className="relative inline-flex items-center justify-center">
+              <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+              <span className="absolute text-xl">📸</span>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
+                Uploading High-Resolution Photos...
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto leading-relaxed">
+                This process might take up to a minute depending on your connection speed.
+              </p>
+            </div>
+
+            {/* Prominent Warning Callout */}
+            <div className="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-600 dark:text-amber-400 text-xs font-medium flex items-center justify-center gap-2">
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>Please keep this tab open until the upload completes.</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top Header & Progress Bar */}
       <div className="bg-white dark:bg-gray-900 p-3 pt-0 sm:p-2 rounded-xl space-y-2">
         <div className="flex items-center justify-between gap-3">
@@ -94,7 +129,7 @@ export function ApartmentShotGuide({
               Current Location
             </span>
             <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
-              {formatRoomLocation(currentShot.roomLocation)}
+              {t(`roomLocations.${currentShot.roomLocation}`)}
             </h3>
           </div>
           <div className="text-right shrink-0">
@@ -177,7 +212,6 @@ export function ApartmentShotGuide({
 
       {/* Bottom Control Bar */}
       <div className="flex items-center justify-between gap-3 mt-4">
-        {/* Previous Step */}
         <button
           type="button"
           onClick={() => {
@@ -190,7 +224,6 @@ export function ApartmentShotGuide({
           ← Previous
         </button>
 
-        {/* Action Group */}
         <div className="flex items-center gap-2">
           {!isLastStep ? (
             <button

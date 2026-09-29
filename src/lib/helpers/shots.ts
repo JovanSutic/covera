@@ -1,9 +1,11 @@
+import type { TFunction } from "i18next";
 import type { DetailedInspection, ShotWithAssets } from "@/api/generated/requests/types.gen";
 import type { RoomFlowStep } from "@/components/guest/RoomFlowList";
 
-export function mapShotsToRoomFlowSteps(shots: DetailedInspection["shots"]): {
-  steps: RoomFlowStep[];
-} {
+export function mapShotsToRoomFlowSteps(
+  shots: DetailedInspection["shots"],
+  t: TFunction<"assets">
+): { steps: RoomFlowStep[] } {
   const roomGroups = new Map<
     string,
     {
@@ -37,10 +39,9 @@ export function mapShotsToRoomFlowSteps(shots: DetailedInspection["shots"]): {
 
     steps.push({
       id: stepId,
-      room: group.roomLocation,
+      room: t(`roomLocations.${group.roomLocation}`, { defaultValue: group.roomLocation }),
       proofNumber: group.totalShots,
     });
-
   });
 
   return { steps };
