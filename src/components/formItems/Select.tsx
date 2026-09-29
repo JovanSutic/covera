@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   forwardRef,
   useState,
@@ -14,13 +15,16 @@ export interface RichOption {
   subLabel?: string;
 }
 
-export interface CustomSelectProps
-  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "value"> {
+export interface CustomSelectProps extends Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  "value" | "defaultValue"
+> {
   label?: string;
   options: RichOption[];
   error?: string;
   containerClassName?: string;
   value?: string;
+  defaultValue?: string; // Add explicit defaultValue definition
 }
 
 const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
@@ -38,7 +42,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     const generatedId = useId();
     const activeId = id || generatedId;
@@ -50,13 +54,22 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
 
     const [isOpen, setIsOpen] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState<number>(-1);
-    
-    // Derived state pattern to prevent out-of-sync effect updates
+
     const isControlled = value !== undefined;
+
+    // Updated initialization without accessing props.value / props.defaultValue
     const [uncontrolledValue, setUncontrolledValue] = useState<string>(
-      (defaultValue as string) || ""
+      defaultValue || value || "",
     );
+
     const currentValue = isControlled ? value : uncontrolledValue;
+
+    // Updated synchronization effect
+    useEffect(() => {
+      if (!isControlled && nativeSelectRef.current) {
+        setUncontrolledValue(nativeSelectRef.current.value || "");
+      }
+    }, [value, defaultValue, isControlled]);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -82,7 +95,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
         const nativeSelect = nativeSelectRef.current;
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
           window.HTMLSelectElement.prototype,
-          "value"
+          "value",
         )?.set;
 
         if (nativeInputValueSetter) {
@@ -170,7 +183,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
             isOpen && "border-black ring-1 ring-black",
             error &&
               "border-destructive focus-within:border-destructive focus-within:ring-destructive",
-            disabled && "cursor-not-allowed opacity-50 bg-gray-50"
+            disabled && "cursor-not-allowed opacity-50 bg-gray-50",
           )}
           onClick={() => !disabled && setIsOpen(!isOpen)}
         >
@@ -186,7 +199,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
             className={cn(
               "flex w-full flex-col justify-center border-0 bg-transparent px-3 text-left text-base text-black outline-none pr-10 select-none cursor-pointer",
               label ? "min-h-[56px] pb-2 pt-6" : "min-h-[38px] py-2",
-              className
+              className,
             )}
           >
             {selectedOption ? (
@@ -206,7 +219,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
                 hasValue || isOpen
                   ? "top-4 -translate-y-3 scale-75 text-sm text-gray-500"
                   : "top-4 translate-y-0 scale-100 text-base text-gray-500",
-                isOpen && "text-black"
+                isOpen && "text-black",
               )}
             >
               {label}
@@ -216,7 +229,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
           <div
             className={cn(
               "pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500 transition-transform duration-200",
-              isOpen && "rotate-180"
+              isOpen && "rotate-180",
             )}
           >
             <svg
@@ -264,7 +277,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
                     className={cn(
                       "cursor-pointer select-none px-3 py-2 text-left transition-colors",
                       isSelected && "font-medium bg-gray-100",
-                      isFocused && !isSelected && "bg-gray-50"
+                      isFocused && !isSelected && "bg-gray-50",
                     )}
                   >
                     <div className="flex flex-col">
@@ -291,7 +304,7 @@ const CustomSelect = forwardRef<HTMLSelectElement, CustomSelectProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 CustomSelect.displayName = "CustomSelect";

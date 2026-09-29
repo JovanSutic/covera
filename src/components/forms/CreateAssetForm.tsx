@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -48,7 +48,7 @@ interface CreateAssetFormProps {
 
 const DEFAULT_FORM_VALUES: CreateAssetFormValues = {
   name: "",
-  category: "" as any, // Use empty string instead of undefined for controlled selects
+  category: "" as any,
   roomLocation: "" as any,
   description: "",
   photoProofRequirement: "SWEEP_ONLY",
@@ -93,6 +93,7 @@ export default function CreateAssetForm({
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting, isValid },
   } = useForm<CreateAssetFormValues>({
     resolver: zodResolver(createAssetSchema),
@@ -164,25 +165,49 @@ export default function CreateAssetForm({
         {...register("name")}
       />
 
-      <Select
-        label="Category"
-        options={categoryOptions}
-        error={errors.category?.message}
-        {...register("category")}
+      <Controller
+        name="category"
+        control={control}
+        render={({ field }) => (
+          <Select
+            label="Category"
+            options={categoryOptions}
+            error={errors.category?.message}
+            value={field.value}
+            onChange={field.onChange}
+            ref={field.ref}
+          />
+        )}
       />
 
-      <Select
-        label="Room Location"
-        options={roomLocationOptions}
-        error={errors.roomLocation?.message}
-        {...register("roomLocation")}
+      <Controller
+        name="roomLocation"
+        control={control}
+        render={({ field }) => (
+          <Select
+            label="Room Location"
+            options={roomLocationOptions}
+            error={errors.roomLocation?.message}
+            value={field.value}
+            onChange={field.onChange}
+            ref={field.ref}
+          />
+        )}
       />
 
-      <Select
-        label="Photo Requirement"
-        options={photoProofOptions}
-        error={errors.photoProofRequirement?.message}
-        {...register("photoProofRequirement")}
+      <Controller
+        name="photoProofRequirement"
+        control={control}
+        render={({ field }) => (
+          <Select
+            label="Photo Requirement"
+            options={photoProofOptions}
+            error={errors.photoProofRequirement?.message}
+            value={field.value}
+            onChange={field.onChange}
+            ref={field.ref}
+          />
+        )}
       />
 
       <Input

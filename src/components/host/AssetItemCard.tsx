@@ -7,12 +7,6 @@ import type {
 import { useTranslation } from "react-i18next";
 import Typography from "../Typography";
 
-const photoProofLabels: Record<Asset["photoProofRequirement"], string> = {
-  SWEEP_ONLY: "Sweep Only",
-  CLOSEUP: "Close-up",
-  FUNCTIONAL_ACTION: "Functional Action",
-};
-
 function formatCentsToDecimal(cents: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "decimal",
@@ -140,8 +134,7 @@ export function AssetItemCard({
 
           <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 border border-blue-100">
             <Camera className="h-3 w-3 text-blue-500" />
-            {photoProofLabels[asset.photoProofRequirement] ||
-              asset.photoProofRequirement}
+            {t(`photoProofs.${asset.photoProofRequirement}`)}
           </span>
 
           {!isCovered && (
