@@ -1,7 +1,10 @@
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState, useEffect } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import { getInspectionsById } from "@/api/generated/requests/services.gen";
+import {
+  getInspectionsById,
+  postInspectionsByIdPing,
+} from "@/api/generated/requests/services.gen";
 import Header from "@/components/Header";
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
@@ -29,15 +32,10 @@ function InspectionPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation("assets");
 
-  // Single step state manager to handle view flow: 'intro' -> 'rooms' -> 'details'
   const [currentStep, setCurrentStep] = useState<InspectionStep>("intro");
-
-  // Selected room location for details view
   const [selectedRoomLocation, setSelectedRoomLocation] = useState<
     ApartmentShot["roomLocation"] | null
   >(null);
-
-  // Track the full active shot object for reporting
   const [flaggedShot, setFlaggedShot] = useState<ShotWithAssets | null>(null);
 
   const {
@@ -64,6 +62,35 @@ function InspectionPage() {
     enabled: Boolean(id),
   });
 
+  // Ping mutation
+  const { mutate: pingInspection } = useMutation({
+    mutationFn: async (inspectionId: string) => {
+      return await postInspectionsByIdPing({
+        path: { id: inspectionId },
+      });
+    },
+    onError: (err) => {
+      console.error("Failed to send inspection ping:", err);
+    },
+  });
+
+  // Check if current userAgent already exists in the inspection's JSON array
+  useEffect(() => {
+    if (!isLoading && inspection && id) {
+      const currentUserAgent = navigator.userAgent;
+
+      // Cast inspection to detailed type or access your pings/activity property
+      const existingPings = (inspection as DetailedInspection & { pings?: Array<{ userAgent: string }> }).pings || [];
+
+      const userAgentExists = existingPings.some(
+        (ping) => ping.userAgent === currentUserAgent
+      );
+
+      if (!userAgentExists) {
+        pingInspection(id);
+      }
+    }
+  }, [isLoading, inspection, id, pingInspection]);
 
   const rawShots = useMemo(() => {
     return ((inspection as DetailedInspection)?.shots ||
@@ -107,7 +134,6 @@ function InspectionPage() {
     setCurrentStep("rooms");
   };
 
-  // Accepts either the full Shot object directly or finds it by ID
   const handleFlagShot = (shotOrId: ShotWithAssets | string) => {
     if (typeof shotOrId === "string") {
       const match = rawShots.find((s) => s.id === shotOrId) || null;
@@ -143,7 +169,6 @@ function InspectionPage() {
     <PageLayout size="sm">
       <Header />
 
-      {/* Step 1: Introductory Card View */}
       {currentStep === "intro" && (
         <InspectionIntroduction
           apartmentName={"name"}
@@ -152,7 +177,6 @@ function InspectionPage() {
         />
       )}
 
-      {/* Step 2: Room Flow List Overview */}
       {currentStep === "rooms" && (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
           <div className="mt-3">
@@ -164,7 +188,6 @@ function InspectionPage() {
         </div>
       )}
 
-      {/* Step 3: Detailed Room Photo View */}
       {currentStep === "details" && selectedRoomLocation && (
         <RoomDetails
           roomLocation={selectedRoomLocation}
@@ -177,7 +200,6 @@ function InspectionPage() {
         />
       )}
 
-      {/* Global Flag / Report Modal */}
       <Modal
         isOpen={Boolean(flaggedShot)}
         onClose={handleCloseFlagModal}
