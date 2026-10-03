@@ -7,7 +7,10 @@ import { toast } from "sonner";
 import CustomSelect from "../formItems/Select";
 import Textarea from "../formItems/Textarea";
 import MultiSelect from "../formItems/MultiSelect";
-import type { ShotWithAssets, InspectionFlag } from "@/api/generated/requests/types.gen";
+import type {
+  ShotWithAssets,
+  InspectionFlag,
+} from "@/api/generated/requests/types.gen";
 import { postInspectionsByIdFlags } from "@/api/generated/requests/services.gen";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 
@@ -40,10 +43,9 @@ const flagSchema = z.object({
     .string()
     .min(10, "Please provide at least 10 characters describing the issue"),
 
-  status: z
-    .enum(FLAG_STATUSES, {
-      message: "Invalid status value",
-    }),
+  status: z.enum(FLAG_STATUSES, {
+    message: "Invalid status value",
+  }),
 });
 
 export type FlagFormData = z.infer<typeof flagSchema>;
@@ -111,7 +113,7 @@ export function FlagContentForm({
 
   const createFlagMutation = useMutation({
     mutationFn: async (formData: FlagFormData) => {
-      return await postInspectionsByIdFlags({
+      const res = await postInspectionsByIdFlags({
         path: {
           id: inspectionId,
         },
@@ -122,6 +124,12 @@ export function FlagContentForm({
           details: formData.details,
         },
       });
+
+      if (res.error) {
+        throw res.error;
+      }
+
+      return res.data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
@@ -146,11 +154,18 @@ export function FlagContentForm({
     },
     onError: (error: any) => {
       console.error("Failed to flag content", error);
+
+      const errorMessage =
+        error?.error?.message ||
+        "Failed to submit report. Please try again.";
+
+      toast.error("Failed to flag item", {
+        description: errorMessage,
+      });
+
       setError("root", {
         type: "server",
-        message:
-          error?.response?.data?.message ||
-          "Failed to submit report. Please try again.",
+        message: errorMessage,
       });
     },
   });
