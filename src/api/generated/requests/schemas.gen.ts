@@ -1484,6 +1484,50 @@ export const DetailedInspectionSchema = {
                         $ref: '#/components/schemas/ShotWithAssets'
                     }
                 },
+                apartment: {
+                    type: 'object',
+                    nullable: true,
+                    properties: {
+                        id: {
+                            type: 'string',
+                            format: 'uuid'
+                        },
+                        name: {
+                            type: 'string'
+                        },
+                        address: {
+                            type: 'string'
+                        },
+                        currency: {
+                            type: 'string',
+                            enum: [
+                                'EUR',
+                                'USD',
+                                'GBP',
+                                'RSD',
+                                'CHF',
+                                'CAD',
+                                'AUD'
+                            ]
+                        },
+                        externalId: {
+                            type: 'string',
+                            nullable: true
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        }
+                    },
+                    required: [
+                        'id',
+                        'name',
+                        'address',
+                        'currency',
+                        'externalId',
+                        'createdAt'
+                    ]
+                },
                 flags: {
                     type: 'array',
                     items: {
@@ -1494,7 +1538,8 @@ export const DetailedInspectionSchema = {
             },
             required: [
                 'reservation',
-                'shots'
+                'shots',
+                'apartment'
             ]
         }
     ]

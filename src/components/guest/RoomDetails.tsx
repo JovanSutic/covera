@@ -57,9 +57,6 @@ export function RoomDetails({
         {/* Wide Sweeps Section */}
         {sweepShots.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-              Wide Sweeps ({sweepShots.length})
-            </h2>
             <div className="space-y-4">
               {sweepShots.map((shot) => (
                 <RoomPhotoItem
@@ -78,9 +75,6 @@ export function RoomDetails({
         {/* Close-ups Section */}
         {closeupShots.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-              Close-ups & Specific Assets ({closeupShots.length})
-            </h2>
             <div className="space-y-4">
               {closeupShots.map((shot) => (
                 <RoomPhotoItem

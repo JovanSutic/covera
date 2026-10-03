@@ -32,10 +32,10 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
   return (
     <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/40 to-white p-4 sm:p-5 shadow-xs dark:border-blue-900/30 dark:from-blue-950/20 dark:to-gray-900">
       {/* Header - Title & Top-Right Flag Action */}
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
+      <div className="mb-3 flex items-center justify-end gap-3">
+        {/* <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
           {shot.title}
-        </h3>
+        </h3> */}
 
         <button
           type="button"

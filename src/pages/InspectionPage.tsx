@@ -171,7 +171,7 @@ function InspectionPage() {
 
       {currentStep === "intro" && (
         <InspectionIntroduction
-          apartmentName={"name"}
+          apartmentName={(inspection as DetailedInspection)?.apartment?.name || ""}
           onStartWalkthrough={handleStartHandover}
           isLoading={isLoading}
         />

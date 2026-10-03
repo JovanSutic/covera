@@ -283,6 +283,14 @@ export type DetailedInspection = Inspection & {
         updatedAt: string;
     };
     shots: Array<ShotWithAssets>;
+    apartment: {
+        id: string;
+        name: string;
+        address: string;
+        currency: 'EUR' | 'USD' | 'GBP' | 'RSD' | 'CHF' | 'CAD' | 'AUD';
+        externalId: string | null;
+        createdAt: string;
+    } | null;
     flags?: Array<InspectionFlag>;
 };
 
