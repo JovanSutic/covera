@@ -11,14 +11,15 @@ import CustomSelect from "./formItems/Select";
 const LANGUAGES = [
   { code: "en", label: "EN" },
   { code: "de", label: "DE" },
-  { code: "sr", label: "SR" },
+  { code: "tr", label: "TR" },
+  { code: "sr-Latn", label: "SR" },
 ];
 
 export default function Header() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useAuthUser();
-  const { i18n } = useTranslation();
+  const { i18n } = useTranslation("general");
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     i18n.changeLanguage(e.target.value);
@@ -45,7 +46,7 @@ export default function Header() {
           ) : user ? (
             <ProfileDropdown
               user={user}
-              currentLang={i18n.language?.split("-")[0] || "en"}
+              currentLang={i18n.language || "en"}
               onLanguageChange={handleLanguageChange}
               onLogout={handleLogout}
             />
@@ -67,6 +68,7 @@ function ProfileDropdown({
   onLanguageChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onLogout: () => void;
 }) {
+  const { t } = useTranslation("general");
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -114,7 +116,6 @@ function ProfileDropdown({
 
         <div className="my-1 border-t border-gray-100" />
 
-        {/* Language Item */}
         <div className="flex items-center justify-between px-3 py-1 text-sm font-medium text-gray-700">
           <span className="flex items-center gap-2">
             <svg
@@ -130,7 +131,7 @@ function ProfileDropdown({
                 d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
               />
             </svg>
-            Language
+            {t("header.language")}
           </span>
 
           <CustomSelect
@@ -166,7 +167,7 @@ function ProfileDropdown({
               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
             />
           </svg>
-          Sign out
+          {t("header.signOut")}
         </button>
       </div>
     </div>

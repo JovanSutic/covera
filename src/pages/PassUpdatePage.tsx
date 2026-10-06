@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/layout/PageLayout";
 import PassUpdateForm from "@/components/forms/PassUpdateForm";
 import Button from "@/components/formItems/Button";
@@ -9,6 +10,7 @@ import { useSupabaseTask } from "@/hooks/supabase";
 import { getAuthUserFromJwt } from "@/lib/auth";
 
 export default function PassUpdatePage() {
+  const { t } = useTranslation("general");
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
@@ -74,8 +76,8 @@ export default function PassUpdatePage() {
       if (resolved) return;
     }
 
-    setErrorMsg("Invalid or missing invitation link.");
-  }, [execute, resolveUserSession]);
+    setErrorMsg(t("login.passUpdate.invalidLinkError"));
+  }, [execute, resolveUserSession, t]);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -103,13 +105,13 @@ export default function PassUpdatePage() {
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
             {isReady && userName
-              ? `Welcome to Covera, ${userName}`
-              : "Welcome to Covera"}
+              ? t("login.passUpdate.welcomeWithName", { name: userName })
+              : t("login.passUpdate.welcomeGeneric")}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             {isReady
-              ? "Set up your new password to activate your account."
-              : "Update your password."}
+              ? t("login.passUpdate.subtitleReady")
+              : t("login.passUpdate.subtitleDefault")}
           </p>
         </div>
 
@@ -119,14 +121,14 @@ export default function PassUpdatePage() {
               {errorMsg}
             </div>
             <Button onClick={() => navigate("/login")} className="w-full py-3">
-              Go to Login
+              {t("login.passUpdate.goToLogin")}
             </Button>
           </div>
         ) : isReady ? (
           <PassUpdateForm />
         ) : (
           <div className="text-center py-6 text-sm text-gray-500">
-            Verifying invitation details...
+            {t("login.passUpdate.verifyingDetails")}
           </div>
         )}
       </div>

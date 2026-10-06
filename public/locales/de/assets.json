@@ -48,5 +48,146 @@
     "SWEEP_ONLY": "Nur Sweep",
     "CLOSEUP": "Nahaufnahmefoto",
     "FUNCTIONAL_ACTION": "Funktionale Aktion"
+  },
+  "apartmentAssetsManager": {
+    "title": "Assets und Verifizierungsaufnahmen",
+    "description": "Verwalten Sie physische Wohnungsbestände und richten Sie erforderliche Fotobestätigungsaufnahmen aus.",
+    "shotStudio": "Aufnahmestudio",
+    "addNewAsset": "+ Neues Asset hinzufügen",
+    "emptyState": {
+      "title": "Keine Vermögenswerte registriert",
+      "description": "Dieser Wohnung sind noch keine Vermögenswerte zugewiesen. Klicken Sie oben auf „+ Neues Asset hinzufügen“, um zu beginnen."
+    },
+    "roomCard": {
+      "toggleAriaLabel": "Raumbereich umschalten",
+      "assetCount_one": "{{count}} Vermögenswert",
+      "assetCount_other": "{{count}} Vermögenswerte"
+    },
+    "roomLocations": {
+      "General / Unassigned": "Allgemein / Nicht zugewiesen"
+    }
+  },
+  "apartments": {
+    "overviewHeader": {
+      "backLink": "Alle Wohnungen",
+      "externalIdLabel": "ID: {{id}}",
+      "createdDate": "Erstellt: <date>{{date}}</date>"
+    },
+    "list": {
+      "emptyMessage": "In der Systemdatenbank wurden keine Wohnungen gefunden.",
+      "columns": {
+        "name": "Wohnungsname",
+        "address": "Adresse",
+        "location": "Standort",
+        "externalId": "Externe ID",
+        "createdDate": "Erstellungsdatum"
+      }
+    }
+  },
+  "createAssetForm": {
+    "fields": {
+      "name": {
+        "label": "Asset-Name",
+        "placeholder": "Smart-TV, Ledersofa, Espressomaschine..."
+      },
+      "category": {
+        "label": "Kategorie"
+      },
+      "roomLocation": {
+        "label": "Lage des Zimmers"
+      },
+      "photoRequirement": {
+        "label": "Fotoanforderung"
+      },
+      "approximateValue": {
+        "label": "Ungefährer Wert (optional)",
+        "placeholder": "250,00"
+      },
+      "description": {
+        "label": "Beschreibung / Inspektionshinweise (optional)",
+        "placeholder": "Befindet sich an der Ostwand. Überprüfen Sie die Fernbedienung ..."
+      }
+    },
+    "buttons": {
+      "submit": "Asset erstellen",
+      "submitting": "Asset registrieren..."
+    },
+    "validation": {
+      "nameRequired": "Asset-Name ist erforderlich",
+      "categoryRequired": "Bitte wählen Sie eine gültige Kategorie aus",
+      "roomLocationRequired": "Bitte wählen Sie einen Raumstandort aus",
+      "invalidValue": "Der Wert muss eine gültige, nicht negative Zahl sein"
+    },
+    "messages": {
+      "createSuccess": "Asset erfolgreich erstellt!",
+      "createError": "Beim Erstellen des Assets ist ein Fehler aufgetreten."
+    }
+  },
+  "assetCard": {
+    "tooltips": {
+      "viewDescription": "Beschreibung anzeigen"
+    },
+    "labels": {
+      "missingShot": "Fehlender Schuss",
+      "approxValue": "Ca. Wert"
+    },
+    "actions": {
+      "delete": "Löschen",
+      "cancel": "Abbrechen",
+      "confirmDeleteTitle": "Bestätigen Sie den Löschvorgang",
+      "deleteAssetTitle": "Asset löschen"
+    }
+  },
+  "shotGuide": {
+    "shotTypes": {
+      "SWEEP_ONLY": "Großer Schwung",
+      "CLOSEUP": "Nahaufnahme",
+      "FUNCTIONAL_ACTION": "Funktional / In Aktion"
+    },
+    "noShots": "Für diese Wohnung sind keine Aufnahmen erforderlich",
+    "header": {
+      "currentLocation": "Aktueller Standort",
+      "shotProgress": "{{current}} von {{total}} im Raum erschossen",
+      "completedCount": "{{completed}} / {{total}} Abgeschlossen"
+    },
+    "uploadingModal": {
+      "title": "Hochauflösende Fotos hochladen...",
+      "description": "Dieser Vorgang kann je nach Verbindungsgeschwindigkeit bis zu einer Minute dauern.",
+      "warning": "Bitte lassen Sie diesen Tab geöffnet, bis der Upload abgeschlossen ist."
+    },
+    "camera": {
+      "noPhoto": "Noch kein Foto aufgenommen.",
+      "retakePhoto": "Foto erneut aufnehmen",
+      "openCamera": "Öffnen Sie die Kamera"
+    },
+    "actions": {
+      "previous": "← Zurück",
+      "next": "Weiter →",
+      "uploading": "Hochladen...",
+      "finishAndSave": "Fertig stellen und alles speichern"
+    }
+  },
+  "shotStudio": {
+    "shotsListCount": "Schussliste ({{count}})",
+    "addShot": "+ Schuss hinzufügen",
+    "createNewShot": "Neue Aufnahme erstellen",
+    "titleLabel": "Titel",
+    "titlePlaceholder": "z.B. Fernseher und Soundbar",
+    "roomLabel": "Zimmer",
+    "typeLabel": "Typ",
+    "instructionsLabel": "Anweisungen",
+    "instructionsPlaceholder": "Machen Sie ein gemeinsames Foto von Fernseher und Soundbar",
+    "emptyTitle": "Noch keine Aufnahmen definiert",
+    "emptyDescription": "Erstellen Sie Verifizierungsfotos, die Sie mit Ihrem Wohnungsvermögen abgleichen können.",
+    "createFirstShot": "+ Erstelle den ersten Schuss",
+    "untitledShot": "Aufnahme ohne Titel",
+    "assetsLinkedCount": "{{count}} Verknüpfte Vermögenswerte",
+    "linkAssetsHeader": "Assets für „{{title}}“ verknüpfen",
+    "linkAssetsSubheader": "Wählen Sie Wohnungsvermögenswerte aus, die von dieser Überprüfung abgedeckt werden sollen.",
+    "noAssetsAvailable": "Für diese Wohnung sind noch keine eingetragenen Vermögenswerte vorhanden.",
+    "finishAddingPrompt": "Beenden Sie das Hinzufügen der Aufnahme auf der linken Seite, um mit der Verknüpfung von Assets zu beginnen.",
+    "selectShotPrompt": "Wählen Sie links eine Aufnahme aus, um Apartment-Assets anzuzeigen und zu verknüpfen.",
+    "cancel": "Abbrechen",
+    "add": "Hinzufügen"
   }
 }

@@ -133,14 +133,14 @@ export function ShotStudioFlow({
       >
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-            Shots List ({shots.length})
+            {t("shotStudio.shotsListHeader", { count: shots.length })}
           </span>
           {!isCreatingNew && (
             <button
               onClick={handleStartCreate}
               className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400"
             >
-              + Add Shot
+              {t("shotStudio.addShot")}
             </button>
           )}
         </div>
@@ -152,17 +152,17 @@ export function ShotStudioFlow({
             className="p-4 border-2 border-blue-500/40 rounded-lg bg-blue-50/30 dark:bg-blue-950/20 flex flex-col gap-3"
           >
             <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-              Create New Shot
+              {t("shotStudio.createNewShot")}
             </h4>
             <div>
               <label className="block text-[11px] font-medium text-gray-500 mb-1">
-                Title
+                {t("shotStudio.titleLabel")}
               </label>
               <Input
-                label="Shot Title"
+                label={t("shotStudio.shotTitle")}
                 type="text"
                 required
-                placeholder="e.g. TV & Soundbar"
+                placeholder={t("shotStudio.titlePlaceholder")}
                 value={newShotForm.title}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setNewShotForm({ ...newShotForm, title: e.target.value })
@@ -172,7 +172,7 @@ export function ShotStudioFlow({
 
             <div className="grid grid-cols-2 gap-2">
               <Select
-                label="Room"
+                label={t("shotStudio.roomLabel")}
                 value={newShotForm.roomLocation}
                 options={roomOptions}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -184,7 +184,7 @@ export function ShotStudioFlow({
               />
 
               <Select
-                label="Type"
+                label={t("shotStudio.typeLabel")}
                 value={newShotForm.shotType}
                 options={typeOptions}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -198,12 +198,12 @@ export function ShotStudioFlow({
 
             <div>
               <label className="block text-[11px] font-medium text-gray-500 mb-1">
-                Instructions
+                {t("shotStudio.instructionsLabel")}
               </label>
               <Textarea
-                label="Instructions"
+                label={t("shotStudio.instructionsLabel")}
                 rows={2}
-                placeholder="Take shot of TV and soundbar together"
+                placeholder={t("shotStudio.instructionsPlaceholder")}
                 value={newShotForm.instructions}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                   setNewShotForm({
@@ -220,13 +220,13 @@ export function ShotStudioFlow({
                 onClick={() => setIsCreatingNew(false)}
                 className="px-3 py-1 text-xs border rounded-md cursor-pointer"
               >
-                Cancel
+                {t("shotStudio.cancel")}
               </button>
               <button
                 type="submit"
                 className="px-3 py-1 text-xs bg-blue-600 text-white font-medium rounded-md cursor-pointer"
               >
-                Add
+                {t("shotStudio.add")}
               </button>
             </div>
           </form>
@@ -236,17 +236,16 @@ export function ShotStudioFlow({
         {shots.length === 0 && !isCreatingNew && (
           <div className="flex-1 min-h-[200px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg p-4 text-center">
             <p className="text-sm font-medium text-gray-900 dark:text-gray-200 mb-1">
-              No shots defined yet
+              {t("shotStudio.emptyStateTitle")}
             </p>
             <p className="text-xs text-gray-500 mb-3 max-w-xs">
-              Create verification shot items to map against your apartment
-              assets.
+              {t("shotStudio.emptyStateDescription")}
             </p>
             <button
               onClick={handleStartCreate}
               className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md font-medium"
             >
-              + Create First Shot
+              {t("shotStudio.createFirstShot")}
             </button>
           </div>
         )}
@@ -277,7 +276,7 @@ export function ShotStudioFlow({
                 </button>
               </div>
               <h5 className="font-semibold text-xs text-gray-900 dark:text-gray-100 mb-1">
-                {shot.title || "Untitled Shot"}
+                {shot.title || t("shotStudio.untitledShot")}
               </h5>
               {shot.instructions && (
                 <p className="text-[11px] text-gray-500 line-clamp-2 mb-2">
@@ -286,7 +285,7 @@ export function ShotStudioFlow({
               )}
               <div className="flex items-center gap-1">
                 <span className="text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded">
-                  {shot.assetIds.length} Assets Linked
+                  {t("shotStudio.assetsLinked", { count: shot.assetIds.length })}
                 </span>
               </div>
             </div>
@@ -304,17 +303,16 @@ export function ShotStudioFlow({
           <>
             <div className="mb-4">
               <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Link Assets for "{activeShot.title}"
+                {t("shotStudio.linkAssetsHeader", { title: activeShot.title })}
               </h4>
               <p className="text-xs text-gray-500">
-                Select apartment assets that should be covered by this
-                verification shot.
+                {t("shotStudio.linkAssetsDescription")}
               </p>
             </div>
 
             {availableAssets.length === 0 ? (
               <div className="flex-1 flex items-center justify-center p-8 border border-dashed rounded-lg text-center text-xs text-gray-400">
-                No registered assets available for this apartment yet.
+                {t("shotStudio.noAssetsAvailable")}
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3">
@@ -362,8 +360,8 @@ export function ShotStudioFlow({
           <div className="h-full flex flex-col items-center justify-center text-center p-6 text-gray-400">
             <p className="text-xs">
               {isCreatingNew
-                ? "Finish adding the shot on the left to start linking assets."
-                : "Select a shot on the left to view and link apartment assets."}
+                ? t("shotStudio.finishAddingPrompt")
+                : t("shotStudio.selectShotPrompt")}
             </p>
           </div>
         )}

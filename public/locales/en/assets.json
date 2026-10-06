@@ -48,5 +48,146 @@
     "SWEEP_ONLY": "Sweep Only",
     "CLOSEUP": "Close-up Photo",
     "FUNCTIONAL_ACTION": "Functional Action"
+  },
+  "apartmentAssetsManager": {
+    "title": "Assets & Verification Shots",
+    "description": "Manage physical apartment assets and align required photo verification shots.",
+    "shotStudio": "Shot Studio",
+    "addNewAsset": "+ Add New Asset",
+    "emptyState": {
+      "title": "No assets registered",
+      "description": "This apartment doesn't have any assets assigned yet. Click \"+ Add New Asset\" above to get started."
+    },
+    "roomCard": {
+      "toggleAriaLabel": "Toggle room section",
+      "assetCount_one": "{{count}} asset",
+      "assetCount_other": "{{count}} assets"
+    },
+    "roomLocations": {
+      "General / Unassigned": "General / Unassigned"
+    }
+  },
+  "apartments": {
+    "overviewHeader": {
+      "backLink": "All Apartments",
+      "externalIdLabel": "ID: {{id}}",
+      "createdDate": "Created: <date>{{date}}</date>"
+    },
+    "list": {
+      "emptyMessage": "No apartments found in the system database.",
+      "columns": {
+        "name": "Apartment Name",
+        "address": "Address",
+        "location": "Location",
+        "externalId": "External ID",
+        "createdDate": "Created Date"
+      }
+    }
+  },
+  "createAssetForm": {
+    "fields": {
+      "name": {
+        "label": "Asset Name",
+        "placeholder": "Smart TV, Leather Sofa, Espresso Machine..."
+      },
+      "category": {
+        "label": "Category"
+      },
+      "roomLocation": {
+        "label": "Room Location"
+      },
+      "photoRequirement": {
+        "label": "Photo Requirement"
+      },
+      "approximateValue": {
+        "label": "Approximate Value (Optional)",
+        "placeholder": "250.00"
+      },
+      "description": {
+        "label": "Description / Inspection Notes (Optional)",
+        "placeholder": "Located on the east wall, inspect remote control..."
+      }
+    },
+    "buttons": {
+      "submit": "Create Asset",
+      "submitting": "Registering Asset..."
+    },
+    "validation": {
+      "nameRequired": "Asset name is required",
+      "categoryRequired": "Please select a valid category",
+      "roomLocationRequired": "Please select a room location",
+      "invalidValue": "Value must be a valid non-negative number"
+    },
+    "messages": {
+      "createSuccess": "Asset created successfully!",
+      "createError": "An error occurred creating the asset."
+    }
+  },
+  "assetCard": {
+    "tooltips": {
+      "viewDescription": "View description"
+    },
+    "labels": {
+      "missingShot": "Missing shot",
+      "approxValue": "Approx. value"
+    },
+    "actions": {
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "confirmDeleteTitle": "Confirm deletion",
+      "deleteAssetTitle": "Delete asset"
+    }
+  },
+  "shotGuide": {
+    "shotTypes": {
+      "SWEEP_ONLY": "Wide Sweep",
+      "CLOSEUP": "Close-up",
+      "FUNCTIONAL_ACTION": "Functional / In-Action"
+    },
+    "noShots": "No shots required for this apartment",
+    "header": {
+      "currentLocation": "Current Location",
+      "shotProgress": "Shot {{current}} of {{total}} in room",
+      "completedCount": "{{completed}} / {{total}} Completed"
+    },
+    "uploadingModal": {
+      "title": "Uploading High-Resolution Photos...",
+      "description": "This process might take up to a minute depending on your connection speed.",
+      "warning": "Please keep this tab open until the upload completes."
+    },
+    "camera": {
+      "noPhoto": "No photo captured yet.",
+      "retakePhoto": "Retake Photo",
+      "openCamera": "Open Camera"
+    },
+    "actions": {
+      "previous": "← Previous",
+      "next": "Next →",
+      "uploading": "Uploading...",
+      "finishAndSave": "Finish & Save All"
+    }
+  },
+  "shotStudio": {
+    "shotsListCount": "Shots List ({{count}})",
+    "addShot": "+ Add Shot",
+    "createNewShot": "Create New Shot",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. TV & Soundbar",
+    "roomLabel": "Room",
+    "typeLabel": "Type",
+    "instructionsLabel": "Instructions",
+    "instructionsPlaceholder": "Take shot of TV and soundbar together",
+    "emptyTitle": "No shots defined yet",
+    "emptyDescription": "Create verification shot items to map against your apartment assets.",
+    "createFirstShot": "+ Create First Shot",
+    "untitledShot": "Untitled Shot",
+    "assetsLinkedCount": "{{count}} Assets Linked",
+    "linkAssetsHeader": "Link Assets for \"{{title}}\"",
+    "linkAssetsSubheader": "Select apartment assets that should be covered by this verification shot.",
+    "noAssetsAvailable": "No registered assets available for this apartment yet.",
+    "finishAddingPrompt": "Finish adding the shot on the left to start linking assets.",
+    "selectShotPrompt": "Select a shot on the left to view and link apartment assets.",
+    "cancel": "Cancel",
+    "add": "Add"
   }
 }

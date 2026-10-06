@@ -20,12 +20,12 @@ import {
 } from "@/types/assets.types";
 
 const createAssetSchema = z.object({
-  name: z.string().min(1, "Asset name is required"),
+  name: z.string().min(1, "createAssetForm.validation.nameRequired"),
   category: z.enum(ASSET_CATEGORIES, {
-    message: "Please select a valid category",
+    message: "createAssetForm.validation.categoryRequired",
   }),
   roomLocation: z.enum(ROOM_LOCATIONS, {
-    message: "Please select a room location",
+    message: "createAssetForm.validation.roomLocationRequired",
   }),
   description: z.string().optional(),
   photoProofRequirement: z.enum(["SWEEP_ONLY", "CLOSEUP", "FUNCTIONAL_ACTION"]),
@@ -34,7 +34,7 @@ const createAssetSchema = z.object({
     .optional()
     .refine(
       (val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
-      "Value must be a valid non-negative number",
+      "createAssetForm.validation.invalidValue",
     ),
 });
 
@@ -129,14 +129,14 @@ export default function CreateAssetForm({
         queryKey: [...QUERY_ACTIONS.ASSETS_GET_BY_APARTMENT, apartmentId],
       });
 
-      toast.success("Asset created successfully!");
+      toast.success(t("createAssetForm.messages.createSuccess"));
       reset(DEFAULT_FORM_VALUES);
       if (onSuccess) onSuccess();
     },
     onError: (error: any) => {
       console.error("Mutation failed:", error);
       toast.error(
-        error?.error?.message || "An error occurred creating the asset.",
+        error?.error?.message || t("createAssetForm.messages.createError"),
       );
     },
   });
@@ -158,10 +158,10 @@ export default function CreateAssetForm({
       className="flex flex-col gap-5 w-full max-w-xl bg-white"
     >
       <Input
-        label="Asset Name"
+        label={t("createAssetForm.fields.name.label")}
         type="text"
-        placeholder="Smart TV, Leather Sofa, Espresso Machine..."
-        error={errors.name?.message}
+        placeholder={t("createAssetForm.fields.name.placeholder")}
+        error={errors.name?.message ? t(errors.name.message) : undefined}
         {...register("name")}
       />
 
@@ -170,9 +170,13 @@ export default function CreateAssetForm({
         control={control}
         render={({ field }) => (
           <Select
-            label="Category"
+            label={t("createAssetForm.fields.category.label")}
             options={categoryOptions}
-            error={errors.category?.message}
+            error={
+              errors.category?.message
+                ? t(errors.category.message)
+                : undefined
+            }
             value={field.value}
             onChange={field.onChange}
             ref={field.ref}
@@ -185,9 +189,13 @@ export default function CreateAssetForm({
         control={control}
         render={({ field }) => (
           <Select
-            label="Room Location"
+            label={t("createAssetForm.fields.roomLocation.label")}
             options={roomLocationOptions}
-            error={errors.roomLocation?.message}
+            error={
+              errors.roomLocation?.message
+                ? t(errors.roomLocation.message)
+                : undefined
+            }
             value={field.value}
             onChange={field.onChange}
             ref={field.ref}
@@ -200,9 +208,13 @@ export default function CreateAssetForm({
         control={control}
         render={({ field }) => (
           <Select
-            label="Photo Requirement"
+            label={t("createAssetForm.fields.photoRequirement.label")}
             options={photoProofOptions}
-            error={errors.photoProofRequirement?.message}
+            error={
+              errors.photoProofRequirement?.message
+                ? t(errors.photoProofRequirement.message)
+                : undefined
+            }
             value={field.value}
             onChange={field.onChange}
             ref={field.ref}
@@ -211,19 +223,27 @@ export default function CreateAssetForm({
       />
 
       <Input
-        label="Approximate Value (Optional)"
+        label={t("createAssetForm.fields.approximateValue.label")}
         type="number"
         step="0.01"
-        placeholder="250.00"
-        error={errors.approximateValue?.message}
+        placeholder={t("createAssetForm.fields.approximateValue.placeholder")}
+        error={
+          errors.approximateValue?.message
+            ? t(errors.approximateValue.message)
+            : undefined
+        }
         {...register("approximateValue")}
       />
 
       <Input
-        label="Description / Inspection Notes (Optional)"
+        label={t("createAssetForm.fields.description.label")}
         type="text"
-        placeholder="Located on the east wall, inspect remote control..."
-        error={errors.description?.message}
+        placeholder={t("createAssetForm.fields.description.placeholder")}
+        error={
+          errors.description?.message
+            ? t(errors.description.message)
+            : undefined
+        }
         {...register("description")}
       />
 
@@ -233,7 +253,9 @@ export default function CreateAssetForm({
         disabled={isSubmitting || isPending || !isValid}
         isLoading={isPending}
       >
-        {isSubmitting || isPending ? "Registering Asset..." : "Create Asset"}
+        {isSubmitting || isPending
+          ? t("createAssetForm.buttons.submitting")
+          : t("createAssetForm.buttons.submit")}
       </Button>
     </form>
   );

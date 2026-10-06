@@ -43,7 +43,7 @@ function RoomCard({
               {t(`roomLocations.${roomName}`, roomName)}
             </Typography>
             <Typography type="caption" className="text-gray-500 dark:text-gray-400 mt-0.5 block">
-              {assets.length} {assets.length === 1 ? "asset" : "assets"}
+              {t("apartmentAssetsManager.roomCard.assetCount", { count: assets.length })}
             </Typography>
           </div>
         </button>
@@ -51,7 +51,7 @@ function RoomCard({
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors cursor-pointer"
-          aria-label="Toggle room section"
+          aria-label={t("apartmentAssetsManager.roomCard.toggleAriaLabel")}
         >
           <ChevronDown
             className={`h-4 w-4 transition-transform duration-200 ${
@@ -112,6 +112,8 @@ export function ApartmentAssetsManager({
   onOpenShotStudio,
   onOpenCreateAsset,
 }: ApartmentAssetsManagerProps) {
+  const { t } = useTranslation("assets");
+
   const uncoveredSet = useMemo(
     () => new Set(uncoveredAssetIds),
     [uncoveredAssetIds],
@@ -136,9 +138,9 @@ export function ApartmentAssetsManager({
       {/* Section Header & Action Buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <Typography type="h3">Assets & Verification Shots</Typography>
+          <Typography type="h3">{t("apartmentAssetsManager.title")}</Typography>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Manage physical apartment assets and align required photo verification shots.
+            {t("apartmentAssetsManager.description")}
           </p>
         </div>
 
@@ -147,13 +149,13 @@ export function ApartmentAssetsManager({
             onClick={onOpenShotStudio}
             className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-xs hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors cursor-pointer dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
           >
-            Shot Studio
+            {t("apartmentAssetsManager.shotStudio")}
           </button>
           <button
             onClick={onOpenCreateAsset}
             className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-lg shadow-xs hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors cursor-pointer dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
           >
-            + Add New Asset
+            {t("apartmentAssetsManager.addNewAsset")}
           </button>
         </div>
       </div>
@@ -168,10 +170,10 @@ export function ApartmentAssetsManager({
             <Package className="h-6 w-6" />
           </div>
           <Typography type="h4" className="text-gray-700 dark:text-gray-300 mb-1">
-            No assets registered
+            {t("apartmentAssetsManager.emptyState.title")}
           </Typography>
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-            This apartment doesn't have any assets assigned yet. Click "+ Add New Asset" above to get started.
+            {t("apartmentAssetsManager.emptyState.description")}
           </p>
         </div>
       )}

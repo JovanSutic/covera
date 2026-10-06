@@ -1,47 +1,193 @@
 {
   "roomLocations": {
-    "ENTRANCE_HALLWAY": "Entrance / Hallway",
-    "STAIRCASE_CORRIDOR": "Staircase / Corridor",
-    "LIVING_ROOM": "Living Room",
-    "DINING_ROOM": "Dining Room",
-    "GAME_ENTERTAINMENT_ROOM": "Game / Entertainment Room",
-    "HOME_OFFICE_STUDY": "Home Office / Study",
-    "KITCHEN": "Kitchen",
-    "PANTRY_LAUNDRY_ROOM": "Pantry / Laundry Room",
-    "BEDROOM_PRIMARY": "Primary Bedroom",
-    "BEDROOM_2": "Bedroom 2",
-    "BEDROOM_3": "Bedroom 3",
-    "BEDROOM_4": "Bedroom 4",
-    "BEDROOM_5": "Bedroom 5",
-    "BATHROOM_FULL_1": "Full Bathroom 1",
+    "ENTRANCE_HALLWAY": "Ulaz / Hodnik",
+    "STAIRCASE_CORRIDOR": "Stepenište / Hodnik",
+    "LIVING_ROOM": "Dnevna soba",
+    "DINING_ROOM": "Trpezarija",
+    "GAME_ENTERTAINMENT_ROOM": "Igraonica / Soba za zabavu",
+    "HOME_OFFICE_STUDY": "Kućna kancelarija / Radna soba",
+    "KITCHEN": "Kuhinja",
+    "PANTRY_LAUNDRY_ROOM": "Ostava / Praonica",
+    "BEDROOM_PRIMARY": "Osnovna spavaća soba",
+    "BEDROOM_2": "Spavaca soba",
+    "BEDROOM_3": "Spavaca soba <split/4 Spavaca soba <split/4spavaca soba 2",
+    "BEDROOM_4": "Spavaća soba 5",
+    "BEDROOM_5": "Potpuno kupatilo 1",
+    "BATHROOM_FULL_1": "Potpuno kupatilo 2",
     "BATHROOM_FULL_2": "Full Bathroom 2",
-    "BATHROOM_FULL_3": "Full Bathroom 3",
-    "BATHROOM_HALF_POWDER": "Half Bathroom / Powder Room",
-    "SAUNA_SPA_ROOM": "Sauna / Spa Room",
-    "GYM_FITNESS_ROOM": "Gym / Fitness Room",
-    "BALCONY_TERRACE": "Balcony / Terrace",
-    "PATIO_DECK": "Patio / Deck",
-    "GARDEN_YARD": "Garden / Yard",
-    "SWIMMING_POOL_AREA": "Swimming Pool Area",
-    "STORAGE_ROOM": "Storage Room",
-    "GARAGE_PARKING": "Garage / Parking",
-    "UTILITY_BOILER_ROOM": "Utility / Boiler Room",
-    "OTHER": "Other"
+    "BATHROOM_FULL_3": "Potpuno kupatilo 3",
+    "BATHROOM_HALF_POWDER": "Polukupatilo / Sala sa puderom",
+    "SAUNA_SPA_ROOM": "Sauna / Spa soba",
+    "GYM_FITNESS_ROOM": "Teretana / Fitnes soba",
+    "BALCONY_TERRACE": "Balkon / Terasa",
+    "PATIO_DECK": "Patio / Paluba",
+    "GARDEN_YARD": "Vrt / Dvorište",
+    "SWIMMING_POOL_AREA": "Bazen Područje",
+    "STORAGE_ROOM": "Ostava",
+    "GARAGE_PARKING": "Ostava / Garaza",
+    "UTILITY_BOILER_ROOM": "Ostava",
+    "OTHER": "Ostava <split/ Kotlarnica"
   },
   "categories": {
-    "ELECTRONICS": "Electronics",
-    "APPLIANCES_LARGE": "Large Appliances",
-    "APPLIANCES_SMALL": "Small Appliances",
-    "FURNITURE": "Furniture",
-    "STRUCTURAL_SURFACES": "Structural Surfaces",
-    "BATH_PLUMBING_FIXTURES": "Bath & Plumbing Fixtures",
-    "RUGS_CARPETS_TEXTILES": "Rugs, Carpets & Textiles",
-    "LIGHTING_FIXTURES": "Lighting Fixtures",
-    "SAFETY_SECURITY": "Safety & Security",
-    "ENTERTAINMENT_RECREATION": "Entertainment & Recreation",
-    "DECOR_ART": "Decor & Art",
-    "UTILITIES_INFRASTRUCTURE": "Utilities & Infrastructure",
-    "OUTDOOR_PATIO": "Outdoor & Patio",
-    "OTHER": "Other"
+    "ELECTRONICS": "Ostalo",
+    "APPLIANCES_LARGE": "Elektronika",
+    "APPLIANCES_SMALL": "Veliki uređaji",
+    "FURNITURE": "Namještaj",
+    "STRUCTURAL_SURFACES": "Strukturne površine",
+    "BATH_PLUMBING_FIXTURES": "Kupatila i vodovod",
+    "RUGS_CARPETS_TEXTILES": "Tepisi, tepisi i tekstil",
+    "LIGHTING_FIXTURES": "Rasvjetna tijela",
+    "SAFETY_SECURITY": "Sigurnost i sigurnost",
+    "ENTERTAINMENT_RECREATION": "Zabava i rekreacija",
+    "DECOR_ART": "Dekor i umjetnost",
+    "UTILITIES_INFRASTRUCTURE": "Patio Utilities",
+    "OUTDOOR_PATIO": "Patio Utilities",
+    "OTHER": "Patio Utilities"
+  },
+  "photoProofs": {
+    "SWEEP_ONLY": "Ostalo",
+    "CLOSEUP": "Samo pomeranje",
+    "FUNCTIONAL_ACTION": "Fotografija izbliza"
+  },
+  "apartmentAssetsManager": {
+    "title": "Funkcionalna radnja",
+    "description": "Upravljajte fizičkim sredstvima stana i poravnajte potrebne snimke za verifikaciju fotografija.",
+    "shotStudio": "Shot Studio",
+    "addNewAsset": "+ Dodaj novo sredstvo",
+    "emptyState": {
+      "title": "Nema registrovanih sredstava",
+      "description": "Ovaj stan još uvek nema dodeljenu imovinu. Kliknite na „+ Dodaj novo sredstvo“ iznad da biste započeli."
+    },
+    "roomCard": {
+      "toggleAriaLabel": "Uključi odeljak soba",
+      "assetCount_one": "{{count}} sredstvo",
+      "assetCount_other": "{{count}} sredstva"
+    },
+    "roomLocations": {
+      "General / Unassigned": "Opšte / Nedodeljeno"
+    }
+  },
+  "apartments": {
+    "overviewHeader": {
+      "backLink": "Svi stanovi",
+      "externalIdLabel": "ID: {{id}}",
+      "createdDate": "Kreirano: <date>{{date}}</date>"
+    },
+    "list": {
+      "emptyMessage": "Naziv stana",
+      "columns": {
+        "name": "Adresa",
+        "address": "Address",
+        "location": "Lokacija",
+        "externalId": "Spoljni ID",
+        "createdDate": "Datum kreiranja"
+      }
+    }
+  },
+  "createAssetForm": {
+    "fields": {
+      "name": {
+        "label": "Naziv sredstva",
+        "placeholder": "Smart TV, kožna sofa, aparat za espreso..."
+      },
+      "category": {
+        "label": "Kategorija"
+      },
+      "roomLocation": {
+        "label": "Lokacija sobe"
+      },
+      "photoRequirement": {
+        "label": "Zahtevi za fotografiju"
+      },
+      "approximateValue": {
+        "label": "Približna vrednost (opciono)",
+        "placeholder": "0 Opis <Osplit/> Napomena (Opcija 250)."
+      },
+      "description": {
+        "label": "Nalazi se na istočnom zidu, pregledajte daljinski upravljač...",
+        "placeholder": "Kreirajte sredstvo"
+      }
+    },
+    "buttons": {
+      "submit": "Registracija sredstva...",
+      "submitting": "Naziv sredstva je obavezan"
+    },
+    "validation": {
+      "nameRequired": "Asset name is required",
+      "categoryRequired": "Izaberite važeću kategoriju",
+      "roomLocationRequired": "Izaberite lokaciju sobe",
+      "invalidValue": "Vrednost mora biti važeći nenegativan broj"
+    },
+    "messages": {
+      "createSuccess": "Uspešno kreirano sredstvo!",
+      "createError": "Došlo je do greške pri kreiranju dela."
+    }
+  },
+  "assetCard": {
+    "tooltips": {
+      "viewDescription": "Prikaži opis"
+    },
+    "labels": {
+      "missingShot": "Nedostaje snimak",
+      "approxValue": "Pribl. vrednost"
+    },
+    "actions": {
+      "delete": "Izbriši",
+      "cancel": "Otkaži",
+      "confirmDeleteTitle": "Potvrdi brisanje",
+      "deleteAssetTitle": "Izbriši element"
+    }
+  },
+  "shotGuide": {
+    "shotTypes": {
+      "SWEEP_ONLY": "Široki pregled",
+      "CLOSEUP": "Krupni plan",
+      "FUNCTIONAL_ACTION": "Funkcionalno / u akciji"
+    },
+    "noShots": "Za ovaj stan nisu potrebni snimci",
+    "header": {
+      "currentLocation": "Trenutna lokacija",
+      "shotProgress": "Snimak {{current}} od {{total}} u sobi",
+      "completedCount": "{{completed}} / {{total}} Završeno"
+    },
+    "uploadingModal": {
+      "title": "Otpremanje fotografija visoke rezolucije...",
+      "description": "Ovaj proces može potrajati do jednog minuta u zavisnosti od brzine veze.",
+      "warning": "Ostavite ovu karticu otvorenom dok se otpremanje ne završi."
+    },
+    "camera": {
+      "noPhoto": "Još uvek nije snimljena nijedna fotografija.",
+      "retakePhoto": "Ponovo snimi fotografiju",
+      "openCamera": "Otvori kameru"
+    },
+    "actions": {
+      "previous": "← Prethodno",
+      "next": "Sledeće →",
+      "uploading": "Otpremanje...",
+      "finishAndSave": "Završi i sačuvaj sve"
+    }
+  },
+  "shotStudio": {
+    "shotsListCount": "listu snimaka ({{count}})",
+    "addShot": "+ Dodaj snimak",
+    "createNewShot": "Kreiraj novi snimak",
+    "titleLabel": "Naslov",
+    "titlePlaceholder": "npr. TV & Soundbar",
+    "roomLabel": "Soba",
+    "typeLabel": "Tip",
+    "instructionsLabel": "Uputstva",
+    "instructionsPlaceholder": "Snimite TV i zvučnu traku zajedno",
+    "emptyTitle": "Još uvek nema definisanih snimaka",
+    "emptyDescription": "Kreirajte stavke snimka za proveru da biste mapirali imovinu vašeg stana.",
+    "createFirstShot": "+ Kreiraj prvi snimak",
+    "untitledShot": "Snimak bez naslova",
+    "assetsLinkedCount": "{{count}} Povezana sredstva",
+    "linkAssetsHeader": "Poveži sredstva za „{{title}}“",
+    "linkAssetsSubheader": "Izaberite imovinu stana koja treba da bude pokrivena ovim snimkom verifikacije.",
+    "noAssetsAvailable": "Još uvek nema registrovanih sredstava za ovaj stan.",
+    "finishAddingPrompt": "Završite dodavanjem snimka sa leve strane da biste počeli da povezujete elemente.",
+    "selectShotPrompt": "Izaberite snimak sa leve strane da biste videli i povezali imovinu stana.",
+    "cancel": "Otkaži",
+    "add": "Dodaj"
   }
 }

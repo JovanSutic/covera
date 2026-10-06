@@ -1,23 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import Input from "@/components/formItems/Input";
 import Select from "@/components/formItems/Select";
 import Button from "@/components/formItems/Button";
 import { withAuth } from "@/lib/api/api";
 import { postUsers } from "@/api/generated/requests/services.gen";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
-import { toast } from "sonner";
-import { useEffect } from "react";
 
 const createUserSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.email("Invalid email address").min(1, "Email is required"),
+  firstName: z.string().min(1, "createUserForm.validation.firstNameRequired"),
+  lastName: z.string().min(1, "createUserForm.validation.lastNameRequired"),
+  email: z
+    .string()
+    .min(1, "createUserForm.validation.emailRequired")
+    .email("createUserForm.validation.invalidEmail"),
   role: z.enum(["admin", "host", "guest"], {
-    message: "Please select a valid system role",
+    message: "createUserForm.validation.invalidRole",
   }),
 });
 
@@ -32,6 +36,8 @@ export default function CreateUserForm({
   onSuccess,
   isOpen,
 }: CreateUserFormProps) {
+  const { t } = useTranslation("general");
+
   const {
     register,
     handleSubmit,
@@ -63,13 +69,13 @@ export default function CreateUserForm({
         queryKey: [...QUERY_ACTIONS.USERS_GET_ALL],
       });
 
-      toast.success("User profile created successfully!");
+      toast.success(t("createUserForm.toast.success"));
       reset();
       if (onSuccess) onSuccess();
     },
     onError: (error: any) => {
       console.error("Mutation failed:", error);
-      toast.error(error?.error?.message || "An auth error occurred.");
+      toast.error(error?.error?.message || t("createUserForm.toast.error"));
     },
   });
 
@@ -77,11 +83,14 @@ export default function CreateUserForm({
     mutate(formData);
   };
 
-  const roleOptions = [
-    { value: "guest", label: "Guest" },
-    { value: "host", label: "Host" },
-    { value: "admin", label: "Administrator" },
-  ];
+  const roleOptions = useMemo(
+    () => [
+      { value: "guest", label: t("createUserForm.roles.guest") },
+      { value: "host", label: t("createUserForm.roles.host") },
+      { value: "admin", label: t("createUserForm.roles.admin") },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     if (!isOpen && isDirty) {
@@ -96,34 +105,38 @@ export default function CreateUserForm({
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
-          label="First Name"
+          label={t("createUserForm.labels.firstName")}
           type="text"
-          placeholder="John"
-          error={errors.firstName?.message}
+          placeholder={t("createUserForm.placeholders.firstName")}
+          error={
+            errors.firstName?.message ? t(errors.firstName.message) : undefined
+          }
           {...register("firstName")}
         />
         <Input
-          label="Last Name"
+          label={t("createUserForm.labels.lastName")}
           type="text"
-          placeholder="Doe"
-          error={errors.lastName?.message}
+          placeholder={t("createUserForm.placeholders.lastName")}
+          error={
+            errors.lastName?.message ? t(errors.lastName.message) : undefined
+          }
           {...register("lastName")}
         />
       </div>
 
       <Input
-        label="Email Address"
+        label={t("createUserForm.labels.email")}
         type="email"
-        placeholder="name@example.com"
+        placeholder={t("createUserForm.placeholders.email")}
         autoComplete="off"
-        error={errors.email?.message}
+        error={errors.email?.message ? t(errors.email.message) : undefined}
         {...register("email")}
       />
 
       <Select
-        label="System Access Role"
+        label={t("createUserForm.labels.role")}
         options={roleOptions}
-        error={errors.role?.message}
+        error={errors.role?.message ? t(errors.role.message) : undefined}
         {...register("role")}
       />
 
@@ -132,7 +145,9 @@ export default function CreateUserForm({
         className="w-full py-3 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={isSubmitting || isPending || !isValid}
       >
-        {isSubmitting || isPending ? "Creating Account..." : "Create User"}
+        {isSubmitting || isPending
+          ? t("createUserForm.button.submitting")
+          : t("createUserForm.button.submit")}
       </Button>
     </form>
   );

@@ -1,0 +1,217 @@
+{
+  "login": {
+    "welcome": "Covera'ya hoş geldiniz",
+    "subtitle": "Hesabınızı yönetmek için giriş yapın veya kaydolun.",
+    "passUpdate": {
+      "welcomeWithName": "Covera'ya hoş geldiniz, {{name}}",
+      "welcomeGeneric": "Covera'ya hoş geldiniz",
+      "subtitleReady": "Hesabınızı etkinleştirmek için yeni şifrenizi ayarlayın.",
+      "subtitleDefault": "Şifrenizi güncelleyin.",
+      "invalidLinkError": "Geçersiz veya eksik davet bağlantısı.",
+      "goToLogin": "Giriş Yap'a git",
+      "verifyingDetails": "Davetiye ayrıntıları doğrulanıyor..."
+    }
+  },
+  "errorPage": {
+    "unexpectedTitle": "Beklenmeyen Hata",
+    "unexpectedSubtitle": "Bu sayfa yüklenirken bir şeyler ters gitti.",
+    "notFoundTitle": "Sayfa Bulunamadı",
+    "notFoundSubtitle": "İstenen inceleme veya sayfa mevcut değil.",
+    "serverErrorTitle": "Sunucu Hatası",
+    "serverErrorSubtitle": "Tarafımızdan bir sorunla karşılaştık. Lütfen daha sonra tekrar deneyin.",
+    "backToHome": "Ana Sayfaya Geri Dön"
+  },
+  "adminDashboard": {
+    "title": "Kontrol Paneli",
+    "subtitle": "Yönetici Yönetim Seçenekleri",
+    "tabs": {
+      "users": "Kullanıcılar",
+      "apartments": "Daireler"
+    }
+  },
+  "hostApartments": {
+    "title": "Daireler",
+    "subtitle": "Yönettiğiniz dairelerin listesi"
+  },
+  "hostDashboard": {
+    "title": "Kontrol Paneli",
+    "subtitle": "Ana Bilgisayar Yönetimi Seçenekleri",
+    "tabs": {
+      "apartments": "Daireler"
+    }
+  },
+  "apartmentPage": {
+    "errors": {
+      "apartmentIdRequired": "Daire kimliği gerekli",
+      "deleteAssetFailed": "Varlık silinirken bir hata oluştu.",
+      "saveShotsFailed": "Çekimler kaydedilirken bir hata oluştu.",
+      "missingInspectionDetails": "Eksik daire veya rezervasyon kimliği",
+      "submitInspectionFailed": "İnceleme fotoğrafları gönderilirken bir hata oluştu."
+    },
+    "toast": {
+      "deleteAssetSuccess": "Varlık başarıyla silindi!",
+      "saveShotsSuccess": "Atış gereksinimleri kaydedildi!",
+      "submitInspectionSuccess": "Tüm inceleme fotoğrafları başarıyla gönderildi!"
+    },
+    "tabs": {
+      "ariaLabel": "Daire Bölümleri",
+      "reservations": "Rezervasyonlar",
+      "assets": "Varlıklar ve Doğrulama Çekimleri"
+    },
+    "drawer": {
+      "createReservation": "Yeni Rezervasyon Oluştur",
+      "createAsset": "Yeni Varlık Oluştur"
+    },
+    "modal": {
+      "inspectionTitle": "Apartman Denetim Rehberi",
+      "reservationFor": "{{guestName}} için rezervasyon"
+    }
+  },
+  "dataTable": {
+    "loading": "Kayıtlar yükleniyor...",
+    "emptyMessage": "Hiçbir kayıt bulunamadı.",
+    "pagination": {
+      "showing": "Gösterilen",
+      "to": "için",
+      "of": "arasında",
+      "results": "sonuçlar",
+      "perPage": "{{size}} / sayfa",
+      "previous": "Önceki",
+      "pageIndicator": "{{page}} / {{totalPages}}",
+      "next": "Sonraki"
+    }
+  },
+  "drawer": {
+    "closePanel": "Paneli kapat"
+  },
+  "header": {
+    "language": "Dil",
+    "signOut": "Oturumu kapat"
+  },
+  "common": {
+    "noReferencePhoto": "Henüz referans fotoğraf yüklenmedi",
+    "loadingImage": "Resim yükleniyor...",
+    "tapToZoom": "Yakınlaştırmak için dokunun",
+    "closeZoom": "Yakınlaştırmayı kapat"
+  },
+  "apartments": {
+    "createButton": "Daire Oluştur",
+    "createDrawerTitle": "Yeni Daire Oluştur",
+    "emptyMessage": "Sistem veritabanında daire bulunamadı.",
+    "columns": {
+      "name": "Daire Adı",
+      "address": "Adres",
+      "location": "Konum",
+      "hostOwner": "Ev Sahibi / Sahip",
+      "externalId": "Harici Kimlik",
+      "createdDate": "Oluşturulma Tarihi"
+    }
+  },
+  "users": {
+    "createUserButton": "Kullanıcı Oluştur",
+    "createUserDrawerTitle": "Yeni Kullanıcı Oluştur",
+    "emptyMessage": "Sistem veritabanında kullanıcı bulunamadı.",
+    "columns": {
+      "name": "İsim",
+      "email": "E-posta Adresi",
+      "role": "Sistem Rolü",
+      "status": "Durum",
+      "joinedDate": "Katılma Tarihi",
+      "actions": "Eylemler"
+    },
+    "actions": {
+      "sendInvite": "Davet Gönder",
+      "sending": "Gönderiliyor..."
+    },
+    "errors": {
+      "sendInviteFailed": "Davet gönderilemedi",
+      "noDataReturned": "Davet uç noktasından veri döndürülmedi"
+    },
+    "status": {
+      "confirmed": "Onaylandı",
+      "invited": "Davet edildi",
+      "created": "Oluşturuldu",
+      "disabled": "Devre dışı"
+    }
+  },
+  "createUserForm": {
+    "validation": {
+      "firstNameRequired": "Ad gerekli",
+      "lastNameRequired": "Soyadı gerekli",
+      "invalidEmail": "Geçersiz e-posta adresi",
+      "emailRequired": "E-posta gerekli",
+      "invalidRole": "Lütfen geçerli bir sistem rolü seçin"
+    },
+    "labels": {
+      "firstName": "Ad",
+      "lastName": "Soyadı",
+      "email": "E-posta Adresi",
+      "role": "Sistem Erişim Rolü"
+    },
+    "placeholders": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "isim@example.com"
+    },
+    "roles": {
+      "guest": "Misafir",
+      "host": "Sunucu",
+      "admin": "Yönetici"
+    },
+    "button": {
+      "submit": "Kullanıcı Oluştur",
+      "submitting": "Hesap Oluşturuluyor..."
+    },
+    "toast": {
+      "success": "Kullanıcı profili başarıyla oluşturuldu!",
+      "error": "Bir kimlik doğrulama hatası oluştu."
+    }
+  },
+  "loginForm": {
+    "validation": {
+      "emailRequired": "E-posta gerekli",
+      "invalidEmail": "Geçersiz e-posta adresi",
+      "passwordRequired": "Şifre gerekli",
+      "passwordMinLength": "Şifre en az 8 karakter uzunluğunda olmalıdır",
+      "passwordUppercase": "Şifre en az bir büyük harf içermelidir",
+      "passwordLowercase": "Şifre en az bir küçük harf içermelidir",
+      "passwordNumber": "Şifre en az bir rakam içermelidir",
+      "passwordSpecialChar": "Şifre en az bir özel karakter içermelidir"
+    },
+    "labels": {
+      "email": "E-posta",
+      "password": "Şifre"
+    },
+    "buttons": {
+      "continue": "Devam et",
+      "loading": "Yükleniyor..."
+    },
+    "messages": {
+      "welcomeBack": "Tekrar hoş geldiniz!"
+    }
+  },
+  "passUpdateForm": {
+    "validation": {
+      "passwordRequired": "Şifre gerekli",
+      "passwordMinLength": "Şifre en az 8 karakter uzunluğunda olmalıdır",
+      "passwordUppercase": "Şifre en az bir büyük harf içermelidir",
+      "passwordLowercase": "Şifre en az bir küçük harf içermelidir",
+      "passwordNumber": "Şifre en az bir rakam içermelidir",
+      "passwordSpecialChar": "Şifre en az bir özel karakter içermelidir",
+      "confirmPasswordRequired": "Lütfen şifrenizi onaylayın",
+      "passwordsMustMatch": "Şifreler eşleşmiyor"
+    },
+    "labels": {
+      "password": "Yeni Şifre",
+      "confirmPassword": "Şifreyi Onayla"
+    },
+    "button": {
+      "submit": "Şifreyi Ayarla",
+      "submitting": "Güncelleniyor..."
+    },
+    "toast": {
+      "success": "Şifre başarıyla güncellendi!",
+      "error": "Şifre güncellenirken bir hata oluştu."
+    }
+  }
+}

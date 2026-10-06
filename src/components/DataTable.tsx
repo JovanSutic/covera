@@ -1,20 +1,26 @@
 import type { DataTableProps } from "@/types/component.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export function DataTable<T>({
   data,
   columns,
   isLoading,
-  emptyMessage = "No records found.",
+  emptyMessage,
   pagination,
 }: DataTableProps<T>) {
+  const { t } = useTranslation("general");
+
+  const resolvedEmptyMessage =
+    emptyMessage ?? t("dataTable.emptyMessage");
+
   if (isLoading) {
     return (
       <div className="w-full flex items-center justify-center p-12 border border-gray-100 rounded-xl bg-gray-50/50">
         <div className="flex flex-col items-center gap-2">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-900 dark:border-gray-100 border-t-transparent" />
           <p className="text-xs font-medium text-gray-500">
-            Loading records...
+            {t("dataTable.loading")}
           </p>
         </div>
       </div>
@@ -24,7 +30,7 @@ export function DataTable<T>({
   if (!data || data.length === 0) {
     return (
       <div className="w-full text-center p-12 border border-dashed border-gray-200 dark:border-gray-800 rounded-xl bg-gray-50/50 dark:bg-gray-900/30 text-sm text-gray-500">
-        {emptyMessage}
+        {resolvedEmptyMessage}
       </div>
     );
   }
@@ -86,19 +92,19 @@ export function DataTable<T>({
       {pagination && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-3.5 border-t border-gray-200/80 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 text-xs text-gray-500">
           <div>
-            Showing{" "}
+            {t("dataTable.pagination.showing")}{" "}
             <span className="font-medium text-gray-900 dark:text-gray-200">
               {startItem}
             </span>{" "}
-            to{" "}
+            {t("dataTable.pagination.to")}{" "}
             <span className="font-medium text-gray-900 dark:text-gray-200">
               {endItem}
             </span>{" "}
-            of{" "}
+            {t("dataTable.pagination.of")}{" "}
             <span className="font-medium text-gray-900 dark:text-gray-200">
               {pagination.total}
             </span>{" "}
-            results
+            {t("dataTable.pagination.results")}
           </div>
 
           <div className="flex items-center gap-2">
@@ -112,7 +118,7 @@ export function DataTable<T>({
               >
                 {[10, 20, 50, 100].map((size) => (
                   <option key={size} value={size}>
-                    {size} / page
+                    {t("dataTable.pagination.perPage", { size })}
                   </option>
                 ))}
               </select>
@@ -123,17 +129,20 @@ export function DataTable<T>({
               disabled={pagination.page <= 1}
               className="px-3 py-1 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              Previous
+              {t("dataTable.pagination.previous")}
             </button>
             <span className="font-medium px-1">
-              {pagination.page} of {totalPages || 1}
+              {t("dataTable.pagination.pageIndicator", {
+                page: pagination.page,
+                totalPages: totalPages || 1,
+              })}
             </span>
             <button
               onClick={() => pagination.onPageChange(pagination.page + 1)}
               disabled={pagination.page >= totalPages}
               className="px-3 py-1 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              Next
+              {t("dataTable.pagination.next")}
             </button>
           </div>
         </div>

@@ -2,14 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import Typography from "@/components/Typography";
 import { InlineCamera } from "./InlineCamera";
 import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
-import type { ApartmentShot } from "@/api/generated/requests/types.gen";
 import { useTranslation } from "react-i18next";
-
-const SHOT_TYPE_LABELS: Record<ApartmentShot["shotType"], string> = {
-  SWEEP_ONLY: "Wide Sweep",
-  CLOSEUP: "Close-up",
-  FUNCTIONAL_ACTION: "Functional / In-Action",
-};
 
 interface ApartmentShotGuideProps {
   initialShots: CapturedApartmentShot[];
@@ -84,7 +77,7 @@ export function ApartmentShotGuide({
   if (!currentShot) {
     return (
       <div className="p-8 text-center border border-gray-200 dark:border-gray-800 rounded-xl bg-gray-50/50 dark:bg-gray-900/20">
-        <Typography type="h4">No shots required for this apartment</Typography>
+        <Typography type="h4">{t("shotGuide.noShots")}</Typography>
       </div>
     );
   }
@@ -103,10 +96,10 @@ export function ApartmentShotGuide({
 
             <div className="space-y-2">
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
-                Uploading High-Resolution Photos...
+                {t("shotGuide.uploadingModal.title")}
               </h3>
               <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto leading-relaxed">
-                This process might take up to a minute depending on your connection speed.
+                {t("shotGuide.uploadingModal.description")}
               </p>
             </div>
 
@@ -115,7 +108,7 @@ export function ApartmentShotGuide({
               <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span>Please keep this tab open until the upload completes.</span>
+              <span>{t("shotGuide.uploadingModal.warning")}</span>
             </div>
           </div>
         </div>
@@ -126,18 +119,24 @@ export function ApartmentShotGuide({
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <span className="block text-[10px] sm:text-xs font-semibold tracking-wider text-gray-400 uppercase truncate">
-              Current Location
+              {t("shotGuide.header.currentLocation")}
             </span>
             <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 truncate">
-              {t(`roomLocations.${currentShot.roomLocation}`)}
+              {t(`roomLocations.${currentShot.roomLocation}`, { defaultValue: currentShot.roomLocation })}
             </h3>
           </div>
           <div className="text-right shrink-0">
             <span className="block text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
-              Shot {shotIndexInRoom} of {currentRoomShots.length} in room
+              {t("shotGuide.header.shotProgress", {
+                current: shotIndexInRoom,
+                total: currentRoomShots.length,
+              })}
             </span>
             <div className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
-              {completedCount} / {shots.length} Completed
+              {t("shotGuide.header.completedCount", {
+                completed: completedCount,
+                total: shots.length,
+              })}
             </div>
           </div>
         </div>
@@ -161,7 +160,7 @@ export function ApartmentShotGuide({
               {currentShot.title}
             </Typography>
             <span className="px-2.5 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-full border border-gray-200 dark:border-gray-700 shrink-0">
-              {SHOT_TYPE_LABELS[currentShot.shotType] || currentShot.shotType}
+              {t(`shotGuide.shotTypes.${currentShot.shotType}`, { defaultValue: currentShot.shotType })}
             </span>
           </div>
           <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 whitespace-pre-line">
@@ -190,7 +189,7 @@ export function ApartmentShotGuide({
                   <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-gray-400">
                     📷
                   </div>
-                  <p className="text-xs text-gray-400">No photo captured yet.</p>
+                  <p className="text-xs text-gray-400">{t("shotGuide.camera.noPhoto")}</p>
                 </div>
               )}
             </div>
@@ -203,7 +202,9 @@ export function ApartmentShotGuide({
             >
               <span>📷</span>
               <span>
-                {currentShot.capturedImageUrl ? "Retake Photo" : "Open Camera"}
+                {currentShot.capturedImageUrl
+                  ? t("shotGuide.camera.retakePhoto")
+                  : t("shotGuide.camera.openCamera")}
               </span>
             </button>
           </div>
@@ -221,7 +222,7 @@ export function ApartmentShotGuide({
           disabled={currentIndex === 0 || isSubmitting}
           className="px-4 py-2.5 text-sm font-medium border border-gray-300 dark:border-gray-700 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shrink-0"
         >
-          ← Previous
+          {t("shotGuide.actions.previous")}
         </button>
 
         <div className="flex items-center gap-2">
@@ -235,7 +236,7 @@ export function ApartmentShotGuide({
               disabled={isSubmitting}
               className="px-4 py-2.5 text-sm font-medium border border-gray-300 dark:border-gray-700 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shrink-0"
             >
-              Next →
+              {t("shotGuide.actions.next")}
             </button>
           ) : (
             <button
@@ -244,7 +245,9 @@ export function ApartmentShotGuide({
               disabled={!isAllCompleted || isSubmitting}
               className="px-5 py-2.5 text-sm font-medium bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-400 dark:disabled:bg-gray-800 transition-colors shrink-0"
             >
-              {isSubmitting ? "Uploading..." : "Finish & Save All"}
+              {isSubmitting
+                ? t("shotGuide.actions.uploading")
+                : t("shotGuide.actions.finishAndSave")}
             </button>
           )}
         </div>

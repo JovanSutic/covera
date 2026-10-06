@@ -74,12 +74,10 @@ function InspectionPage() {
     },
   });
 
-  // Check if current userAgent already exists in the inspection's JSON array
   useEffect(() => {
     if (!isLoading && inspection && id) {
       const currentUserAgent = navigator.userAgent;
 
-      // Cast inspection to detailed type or access your pings/activity property
       const existingPings = (inspection as DetailedInspection & { pings?: Array<{ userAgent: string }> }).pings || [];
 
       const userAgentExists = existingPings.some(

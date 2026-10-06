@@ -1,0 +1,148 @@
+{
+  "guestInspectionMessage": {
+    "headerTitle": "Airbnb-Gastnachricht",
+    "copyButton": "Nachricht kopieren",
+    "toastCopySuccess": "Gastnachricht in die Zwischenablage kopiert!",
+    "toastCopyError": "Nachricht konnte nicht kopiert werden",
+    "messageTemplate": "Hallo {{guestName}}! Wir möchten, dass Ihr Aufenthalt völlig sorgenfrei verläuft. Bevor Sie auspacken und sich entspannen, nehmen Sie sich bitte 2 Minuten Zeit, um Ihre Ankunftsübergabe abzuschließen:\n\n{{guestInspectionUrl}}\n\nVielen Dank und genießen Sie Ihren Aufenthalt!"
+  },
+  "inlineCamera": {
+    "title": "Nehmen Sie ein Verifizierungsfoto auf",
+    "description": "Machen Sie mit der Kamera Ihres Geräts ein Foto in voller Auflösung, um den EXIF-Zeitstempel und den GPS-Beweis für AirCover zu erhalten.",
+    "cancelButton": "Abbrechen",
+    "openCameraButton": "Öffnen Sie die Kamera"
+  },
+  "reservationActionsCell": {
+    "toast": {
+      "deleteSuccess": "Reservierung erfolgreich gelöscht!",
+      "deleteError": "Reservierung konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
+      "createSuccess": "Gastbesichtigungssitzung erstellt!",
+      "createError": "Gastbesichtigung konnte nicht erstellt werden. Bitte versuchen Sie es erneut."
+    },
+    "tooltip": {
+      "hasSubmittedProofs": "Inspektionsfotos wurden bereits eingereicht",
+      "isTooLate": "Das Kontrollfenster ist geschlossen (eine Stunde nach dem Check-in abgelaufen)",
+      "isTooEarly": "Das Inspektionsfenster öffnet sich {{windowHours}}h vor dem Check-in (in ~{{hoursUntilWindow}}h)",
+      "active": "Sichtfenster aktiv! Klicken Sie hier, um einen Fotobeweis aufzunehmen",
+      "hasInspection": "Gastinspektionslink bereits erstellt",
+      "createInspection": "Erstellen Sie einen neuen Link zur Gästebesichtigung",
+      "copyMessage": "Gastnachricht für Airbnb kopieren",
+      "delete": "Reservierung löschen",
+      "cannotDelete": "Bereits begonnene Reservierungen können nicht gelöscht werden"
+    },
+    "confirm": {
+      "createMessage": "Gästebesichtigung erstellen?",
+      "createLabel": "Erstellen",
+      "deleteMessage": "Reservierung löschen?",
+      "deleteLabel": "Löschen"
+    }
+  },
+  "apartmentReservationsManager": {
+    "title": "Reservierungen",
+    "description": "Verwalten Sie Gastaufenthalte und sehen Sie sich bevorstehende Buchungen für dieses Apartment an.",
+    "newReservationButton": "+ Neue Reservierung",
+    "columns": {
+      "guest": "Gast",
+      "checkIn": "Einchecken",
+      "checkOut": "Auschecken",
+      "platformId": "Plattform-ID",
+      "status": "Status"
+    },
+    "status": {
+      "PENDING_PROOF": "Der Beweis steht noch aus",
+      "COVERED": "ABDECKT",
+      "DISPUTED": "Umstritten",
+      "RESOLVED": "GELÖST",
+      "CLOSED": "GESCHLOSSEN"
+    },
+    "error": {
+      "title": "Reservierungen konnten nicht geladen werden",
+      "defaultMessage": "Es ist ein unerwarteter Fehler aufgetreten."
+    },
+    "empty": {
+      "title": "Keine Reservierungen gefunden",
+      "description": "Für diese Wohnung liegen derzeit keine Buchungen vor. Klicken Sie unten, um Ihre erste Gastreservierung hinzuzufügen."
+    }
+  },
+  "shotStudioModal": {
+    "title": "Apartment Shot Studio",
+    "unsavedChanges": "Nicht gespeicherte Änderungen",
+    "subtitle": "Definieren Sie Anforderungen für Verifizierungsaufnahmen und ordnen Sie hochgeladene Medienressourcen zu.",
+    "cancelButton": "Abbrechen",
+    "saveButton": "Änderungen speichern",
+    "savingButton": "Sparen..."
+  },
+  "unmatchedAssetsBanner": {
+    "missingCoverage_one": "<bold>{{count}} Asset</bold> fehlende Fotoabdeckung.",
+    "missingCoverage_other": "Bei <bold>{{count}} Assets</bold> fehlt die Fotoabdeckung.",
+    "reviewInStudio": "Rezension im Shot Studio →"
+  },
+  "createApartmentForm": {
+    "validation": {
+      "nameRequired": "Der Name der Wohnung ist erforderlich",
+      "addressRequired": "Adresse ist erforderlich",
+      "invalidOwner": "Bitte wählen Sie einen gültigen Eigentümer aus",
+      "invalidLocation": "Bitte wählen Sie einen gültigen Standort aus"
+    },
+    "labels": {
+      "name": "Wohnungsname",
+      "address": "Straßenadresse",
+      "externalId": "Externe Referenz-ID (optional)",
+      "owner": "Zugewiesener Eigentümer",
+      "location": "Standort"
+    },
+    "placeholders": {
+      "name": "Luxussuite in der Innenstadt",
+      "address": "123 Main Street, Suite 4B",
+      "externalId": "EXT-10042"
+    },
+    "button": {
+      "submit": "Wohnung erstellen",
+      "submitting": "Eigentum registrieren..."
+    },
+    "toast": {
+      "success": "Wohnung erfolgreich erstellt!",
+      "error": "Beim Erstellen der Wohnung ist ein Fehler aufgetreten."
+    }
+  },
+  "createReservationForm": {
+    "validation": {
+      "guestNameRequired": "Der Name des Gastes ist erforderlich",
+      "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "checkInRequired": "Datum und Uhrzeit des Check-ins sind erforderlich",
+      "checkInFuture": "Die Check-in-Zeit muss in der Zukunft liegen",
+      "checkOutRequired": "Datum und Uhrzeit des Check-outs sind erforderlich",
+      "checkOutFuture": "Die Check-out-Zeit muss in der Zukunft liegen",
+      "altCheckInFuture": "Die alternative Check-in-Zeit muss in der Zukunft liegen",
+      "altCheckOutFuture": "Die alternative Check-out-Zeit muss in der Zukunft liegen",
+      "checkOutAfterCheckIn": "Das Check-out-Datum muss unbedingt nach dem Check-in-Datum liegen",
+      "altCheckOutAfterAltCheckIn": "Das alternative Check-out-Datum muss unbedingt nach dem alternativen Check-in-Datum liegen"
+    },
+    "labels": {
+      "guestName": "Gastname",
+      "guestEmail": "Gast-E-Mail (optional)",
+      "platformReservationId": "Plattformreservierungs-ID (optional)",
+      "checkInDatetime": "Check-in-Datum und -Uhrzeit",
+      "checkOutDatetime": "Datum und Uhrzeit des Check-outs",
+      "alternativeCheckInDatetime": "Alternativer Check-in (optional)",
+      "alternativeCheckOutDatetime": "Alternativer Check-out (optional)"
+    },
+    "placeholders": {
+      "guestName": "John Doe...",
+      "guestEmail": "john.doe@example.com",
+      "platformReservationId": "HM12345678, AIRBNB-XYZ..."
+    },
+    "toggleAlternativeDates": {
+      "show": "+ Alternative An- oder Abreise?",
+      "hide": "- Alternativtermine entfernen"
+    },
+    "button": {
+      "submit": "Reservierung erstellen",
+      "submitting": "Reservierung erstellen..."
+    },
+    "toast": {
+      "success": "Reservierung erfolgreich erstellt!",
+      "error": "Beim Erstellen der Reservierung ist ein Fehler aufgetreten."
+    }
+  }
+}

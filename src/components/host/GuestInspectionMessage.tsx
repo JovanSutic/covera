@@ -1,5 +1,6 @@
 import { Copy, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 interface GuestInspectionMessageProps {
@@ -13,18 +14,22 @@ export function GuestInspectionMessage({
   guestInspectionUrl,
   onClose,
 }: GuestInspectionMessageProps) {
+  const { t } = useTranslation("host");
   const [isCopying, setIsCopying] = useState(false);
 
-  const guestMessage = `Hi ${guestName}! We want your stay to be completely worry-free. Before you unpack and relax, please take 2 minutes to complete your arrival handover:\n\n${guestInspectionUrl}\n\nThank you, and enjoy your stay!`;
+  const guestMessage = t("guestInspectionMessage.messageTemplate", {
+    guestName,
+    guestInspectionUrl,
+  });
 
   const handleCopyMessage = async () => {
     try {
       setIsCopying(true);
       await navigator.clipboard.writeText(guestMessage);
-      toast.success("Guest message copied to clipboard!");
+      toast.success(t("guestInspectionMessage.toastCopySuccess"));
       onClose?.();
     } catch {
-      toast.error("Failed to copy message");
+      toast.error(t("guestInspectionMessage.toastCopyError"));
     } finally {
       setIsCopying(false);
     }
@@ -34,7 +39,7 @@ export function GuestInspectionMessage({
     <div className="w-80 space-y-3">
       <div className="flex items-center justify-between">
         <h4 className="text-xs font-semibold text-gray-900 dark:text-gray-100">
-          Airbnb Guest Message
+          {t("guestInspectionMessage.headerTitle")}
         </h4>
         {onClose && (
           <button
@@ -59,7 +64,7 @@ export function GuestInspectionMessage({
         className="w-full flex items-center justify-center gap-1.5 text-xs font-medium py-1.5 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer"
       >
         <Copy className="w-3.5 h-3.5" />
-        Copy Message
+        {t("guestInspectionMessage.copyButton")}
       </button>
     </div>
   );

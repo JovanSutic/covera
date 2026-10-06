@@ -1,24 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import Input from "@/components/formItems/Input";
 import Select from "@/components/formItems/Select";
 import Button from "@/components/formItems/Button";
 import { withAuth } from "@/lib/api/api";
 import { postApartments } from "@/api/generated/requests/services.gen";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
-import { toast } from "sonner";
-import { useEffect } from "react";
 import type { SelectOption } from "@/types/component.types";
 
 const createApartmentSchema = z.object({
-  name: z.string().min(1, "Apartment name is required"),
-  address: z.string().min(1, "Address is required"),
+  name: z.string().min(1, "createApartmentForm.validation.nameRequired"),
+  address: z.string().min(1, "createApartmentForm.validation.addressRequired"),
   externalId: z.string().optional(),
-  owner: z.uuid("Please select a valid owner"),
-  location: z.uuid("Please select a valid location"),
+  owner: z.uuid("createApartmentForm.validation.invalidOwner"),
+  location: z.uuid("createApartmentForm.validation.invalidLocation"),
 });
 
 type CreateApartmentFormValues = z.infer<typeof createApartmentSchema>;
@@ -36,6 +37,8 @@ export default function CreateApartmentForm({
   ownerOptions,
   locationOptions,
 }: CreateApartmentFormProps) {
+  const { t } = useTranslation("host");
+
   const {
     register,
     handleSubmit,
@@ -74,14 +77,14 @@ export default function CreateApartmentForm({
         queryKey: [...QUERY_ACTIONS.APARTMENTS_GET_ALL],
       });
 
-      toast.success("Apartment created successfully!");
+      toast.success(t("createApartmentForm.toast.success"));
       reset();
       if (onSuccess) onSuccess();
     },
     onError: (error: any) => {
       console.error("Mutation failed:", error);
       toast.error(
-        error?.error?.message || "An error occurred creating the apartment.",
+        error?.error?.message || t("createApartmentForm.toast.error"),
       );
     },
   });
@@ -102,41 +105,45 @@ export default function CreateApartmentForm({
       className="flex flex-col gap-5 max-w-xl bg-white"
     >
       <Input
-        label="Apartment Name"
+        label={t("createApartmentForm.labels.name")}
         type="text"
-        placeholder="Luxury Suite Downtown"
-        error={errors.name?.message}
+        placeholder={t("createApartmentForm.placeholders.name")}
+        error={errors.name?.message ? t(errors.name.message) : undefined}
         {...register("name")}
       />
 
       <Input
-        label="Street Address"
+        label={t("createApartmentForm.labels.address")}
         type="text"
-        placeholder="123 Main Street, Suite 4B"
-        error={errors.address?.message}
+        placeholder={t("createApartmentForm.placeholders.address")}
+        error={errors.address?.message ? t(errors.address.message) : undefined}
         {...register("address")}
       />
 
       <Input
-        label="External Reference ID (Optional)"
+        label={t("createApartmentForm.labels.externalId")}
         type="text"
-        placeholder="EXT-10042"
-        error={errors.externalId?.message}
+        placeholder={t("createApartmentForm.placeholders.externalId")}
+        error={
+          errors.externalId?.message ? t(errors.externalId.message) : undefined
+        }
         {...register("externalId")}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Select
-          label="Assigned Owner"
+          label={t("createApartmentForm.labels.owner")}
           options={ownerOptions}
-          error={errors.owner?.message}
+          error={errors.owner?.message ? t(errors.owner.message) : undefined}
           {...register("owner")}
         />
 
         <Select
-          label="Location"
+          label={t("createApartmentForm.labels.location")}
           options={locationOptions}
-          error={errors.location?.message}
+          error={
+            errors.location?.message ? t(errors.location.message) : undefined
+          }
           {...register("location")}
         />
       </div>
@@ -148,8 +155,8 @@ export default function CreateApartmentForm({
         isLoading={isPending}
       >
         {isSubmitting || isPending
-          ? "Registering Property..."
-          : "Create Apartment"}
+          ? t("createApartmentForm.button.submitting")
+          : t("createApartmentForm.button.submit")}
       </Button>
     </form>
   );

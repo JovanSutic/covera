@@ -1,0 +1,112 @@
+{
+  "flagContentForm": {
+    "title": "Report an Issue",
+    "flaggingLabel": "Flagging:",
+    "validation": {
+      "shotIdRequired": "Shot ID is required",
+      "reasonRequired": "Please select a valid reason for flagging",
+      "detailsMinLength": "Please provide at least 10 characters describing the issue",
+      "invalidStatus": "Invalid status value"
+    },
+    "reasons": {
+      "missing_asset": {
+        "label": "Missing asset/item",
+        "subLabel": "An asset listed is not visible in the photo"
+      },
+      "damaged": {
+        "label": "Damaged or poor condition",
+        "subLabel": "Item or area appears damaged or broken"
+      },
+      "poor_photo": {
+        "label": "Blurry or poor lighting",
+        "subLabel": "The photo quality makes verification difficult"
+      },
+      "wrong_room": {
+        "label": "Incorrect photo/room",
+        "subLabel": "Photo does not match this room or item"
+      },
+      "other": {
+        "label": "Other issue",
+        "subLabel": "Describe the situation below"
+      }
+    },
+    "labels": {
+      "selectItemOptional": "Select specific item (optional)",
+      "reasonForReport": "Reason for report",
+      "additionalDetails": "Additional details",
+      "category": "Category:"
+    },
+    "placeholders": {
+      "details": "Please describe what is broken, missing, or incorrect..."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit Report",
+      "submitting": "Submitting...",
+      "gotIt": "Got it"
+    },
+    "toast": {
+      "flaggedSuccess": "{{targetText}} flagged successfully",
+      "flaggedDescription": "You can now send the host an updated photo showing the new look or current condition.",
+      "failedTitle": "Failed to flag item",
+      "failedDefaultMessage": "Failed to submit report. Please try again.",
+      "targetAssets": "{{count}} asset(s)",
+      "targetThisItem": "This item"
+    }
+  },
+  "inspectionIntro": {
+    "badge": "Arrival Handover & Peace of Mind",
+    "titleNamed": "Welcome to {{apartmentName}}! Let’s get you settled.",
+    "titleDefault": "Welcome to your stay! Let’s get you settled.",
+    "description": "We want your stay to be completely worry-free. Before you unpack and relax, take 2 minutes to complete your arrival handover. Photos are grouped room-by-room so you can quickly review the space and verify everything meets your expectations.",
+    "pitch": {
+      "peaceOfMind": {
+        "title": "For Your Peace of Mind",
+        "description": "Establishes a fair, timestamped record so pre-existing wear or marks aren't on you."
+      },
+      "effortlessCheck": {
+        "title": "Effortless Room Check",
+        "description": "Browse host reference photos by room and flag photos only if you spot something off."
+      }
+    },
+    "buttons": {
+      "loading": "Loading arrival details...",
+      "start": "Begin Arrival Handover"
+    }
+  },
+  "instructionsShort": {
+    "title": "How it works in 3 easy steps:",
+    "steps": {
+      "step1": "Tap any room below as you walk into it to view the host's reference photos.",
+      "step2": "Take a quick look around to make sure everything matches the space and looks ready to enjoy.",
+      "step3": "If you spot prior damage or missing items, flag that photo and inform the host."
+    },
+    "buttons": {
+      "hide": "Hide detailed steps",
+      "show": "How does this work?"
+    }
+  },
+  "roomDetails": {
+    "allRooms": "All Rooms",
+    "noRequirements": "No photo requirements registered for {{roomName}}.",
+    "previousRoom": "Previous Room",
+    "nextRoom": "Next Room",
+    "pagination": "{{current}} of {{total}}"
+  },
+  "roomFlowItem": {
+    "photo_one": "{{count}} reference photo",
+    "photo_other": "{{count}} reference photos",
+    "viewRoom": "View Room"
+  },
+  "roomFlowList": {
+    "title": "Room Walkthrough",
+    "description": "Select any room below to review reference photos and confirm property setup."
+  },
+  "roomPhotoItem": {
+    "flagIssueTitle": "Flag issue with this photo",
+    "flagItem": "Flag item",
+    "capturedOn": "Captured on {{val, datetime}}",
+    "verifyItemsPlural": "Verify these items are clearly visible in the space:",
+    "verifyItemSingular": "Verify this item is clearly visible in the space:"
+  }
+}

@@ -1,4 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMemo, useState } from "react";
+import { Navigate, useParams } from "react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+
 import {
   deleteAssetsById,
   getApartmentsById,
@@ -6,26 +12,24 @@ import {
   getApartmentShotsApartmentByApartmentId,
   putApartmentShotsApartmentByApartmentId,
 } from "@/api/generated/requests/sdk.gen";
+import type { SyncShotItem } from "@/api/generated/requests/types.gen";
+
 import Header from "@/components/Header";
-import { ApartmentOverviewHeader } from "@/components/host/ApartmentHeader";
 import PageLayout from "@/components/layout/PageLayout";
-import { withAuth } from "@/lib/api/api";
-import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Navigate, useParams } from "react-router";
+import Drawer from "@/components/Drawer";
+import { Modal } from "@/components/Modal";
+import { ApartmentOverviewHeader } from "@/components/host/ApartmentHeader";
 import { ApartmentAssetsManager } from "@/components/host/ApartmentAssetsManager";
 import { ApartmentReservationsManager } from "@/components/host/ReservationsSection";
-import { useMemo, useState } from "react";
-import Drawer from "@/components/Drawer";
-import CreateAssetForm from "@/components/forms/CreateAssetForm";
-import { toast } from "sonner";
 import { ShotStudioModal } from "@/components/host/ShotStudioModal";
-import type { SyncShotItem } from "@/api/generated/requests/types.gen";
-import { validateAssetShotCoverage } from "@/lib/validations/shots";
-import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
-import CreateReservationForm from "@/components/forms/CreateReservationForm";
 import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
-import { Modal } from "@/components/Modal";
+import CreateAssetForm from "@/components/forms/CreateAssetForm";
+import CreateReservationForm from "@/components/forms/CreateReservationForm";
+import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
+
+import { withAuth } from "@/lib/api/api";
+import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { validateAssetShotCoverage } from "@/lib/validations/shots";
 import {
   submitInspectionPhotos,
   type CapturedApartmentShot,
@@ -33,6 +37,8 @@ import {
 import { addClientId } from "@/lib/helpers/uuid";
 
 export default function IndividualApartmentPage() {
+  const { t } = useTranslation("general");
+
   const [activeTab, setActiveTab] = useState<"reservations" | "assets">(
     "reservations"
   );
@@ -46,6 +52,8 @@ export default function IndividualApartmentPage() {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
 
+  // --- QUERIES ---
+
   const {
     data: apartment,
     isLoading: apartmentLoading,
@@ -53,7 +61,7 @@ export default function IndividualApartmentPage() {
   } = useQuery({
     queryKey: [...QUERY_ACTIONS.APARTMENTS_GET_ID, id],
     queryFn: async ({ signal }) => {
-      if (!id) throw new Error("Apartment ID is required");
+      if (!id) throw new Error(t("apartmentPage.errors.apartmentIdRequired"));
       const config = await withAuth({ signal });
       const response = await getApartmentsById({
         ...config,
@@ -71,7 +79,7 @@ export default function IndividualApartmentPage() {
   } = useQuery({
     queryKey: [...QUERY_ACTIONS.ASSETS_GET_BY_APARTMENT, id],
     queryFn: async ({ signal }) => {
-      if (!id) throw new Error("Apartment ID is required");
+      if (!id) throw new Error(t("apartmentPage.errors.apartmentIdRequired"));
       const config = await withAuth({ signal });
       const response = await getAssetsApartmentByApartmentId({
         ...config,
@@ -89,7 +97,7 @@ export default function IndividualApartmentPage() {
   } = useQuery({
     queryKey: ["APARTMENT_SHOTS_GET_BY_APARTMENT", id],
     queryFn: async ({ signal }) => {
-      if (!id) throw new Error("Apartment ID is required");
+      if (!id) throw new Error(t("apartmentPage.errors.apartmentIdRequired"));
       const config = await withAuth({ signal });
       const response = await getApartmentShotsApartmentByApartmentId({
         ...config,
@@ -100,7 +108,9 @@ export default function IndividualApartmentPage() {
     enabled: !!id,
   });
 
-  const { mutateAsync: deleteAsset } = useMutation({
+  // --- MUTATIONS ---
+
+  const { mutate: deleteAsset } = useMutation({
     mutationFn: async (assetId: string) => {
       const config = await withAuth();
       const response = await deleteAssetsById({
@@ -110,22 +120,24 @@ export default function IndividualApartmentPage() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [...QUERY_ACTIONS.ASSETS_GET_BY_APARTMENT, id],
-      });
-      toast.success("Asset deleted successfully!");
+      if (id) {
+        queryClient.invalidateQueries({
+          queryKey: [...QUERY_ACTIONS.ASSETS_GET_BY_APARTMENT, id],
+        });
+      }
+      toast.success(t("apartmentPage.toast.deleteAssetSuccess"));
     },
     onError: (error: any) => {
       console.error("Failed to delete asset:", error);
       toast.error(
-        error?.error?.message || "An error occurred while deleting the asset."
+        error?.error?.message || t("apartmentPage.errors.deleteAssetFailed")
       );
     },
   });
 
-  const { mutateAsync: saveShots } = useMutation({
+  const saveShotsMutation = useMutation({
     mutationFn: async (updatedShots: SyncShotItem[]) => {
-      if (!id) throw new Error("Apartment ID required");
+      if (!id) throw new Error(t("apartmentPage.errors.apartmentIdRequired"));
       const config = await withAuth();
       const response = await putApartmentShotsApartmentByApartmentId({
         ...config,
@@ -135,25 +147,26 @@ export default function IndividualApartmentPage() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["APARTMENT_SHOTS_GET_BY_APARTMENT", id],
-      });
-      toast.success("Shot requirements saved!");
+      if (id) {
+        queryClient.invalidateQueries({
+          queryKey: ["APARTMENT_SHOTS_GET_BY_APARTMENT", id],
+        });
+      }
+      toast.success(t("apartmentPage.toast.saveShotsSuccess"));
       setIsShotStudioOpen(false);
     },
     onError: (error: any) => {
       console.error("Failed to save shots:", error);
       toast.error(
-        error?.error?.message || "An error occurred while saving shots."
+        error?.error?.message || t("apartmentPage.errors.saveShotsFailed")
       );
     },
   });
 
-  // Handle Inspection Photo Submissions via React Query
   const submitInspectionMutation = useMutation({
     mutationFn: async (completedShots: CapturedApartmentShot[]) => {
       if (!id || !selectedReservation?.id) {
-        throw new Error("Missing apartment or reservation identification");
+        throw new Error(t("apartmentPage.errors.missingInspectionDetails"));
       }
       return submitInspectionPhotos({
         apartmentId: id,
@@ -162,21 +175,24 @@ export default function IndividualApartmentPage() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, id],
-      });
-      toast.success("All inspection photos submitted successfully!");
+      if (id) {
+        queryClient.invalidateQueries({
+          queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, id],
+        });
+      }
+      toast.success(t("apartmentPage.toast.submitInspectionSuccess"));
       handleCloseInspectionGuide();
     },
     onError: (error: any) => {
       console.error("Failed to submit inspection photos:", error);
       toast.error(
-        error?.message || "An error occurred while submitting inspection photos."
+        error?.message || t("apartmentPage.errors.submitInspectionFailed")
       );
     },
   });
 
-  // Coverage calculation
+  // --- COMPUTED VALUES ---
+
   const coverageSummary = useMemo(
     () => validateAssetShotCoverage(assets, shots),
     [assets, shots]
@@ -189,9 +205,12 @@ export default function IndividualApartmentPage() {
 
   const unmatchedCount = coverageSummary?.uncoveredAssets?.length || 0;
 
-  // Track global loading/fetching state for dependencies
   const isDataLoading =
     assetsLoading || assetsFetching || shotsLoading || shotsFetching;
+
+  const preparedShots = useMemo(() => addClientId(shots), [shots]);
+
+  // --- HANDLERS ---
 
   const handleOpenInspectionGuide = (reservation: any) => {
     setSelectedReservation(reservation);
@@ -203,8 +222,23 @@ export default function IndividualApartmentPage() {
     setSelectedReservation(null);
   };
 
+  const handleFormSuccess = () => {
+    setIsDrawerOpen(false);
+    if (!id) return;
+
+    if (activeTab === "reservations") {
+      queryClient.invalidateQueries({
+        queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, id],
+      });
+    } else {
+      queryClient.invalidateQueries({
+        queryKey: [...QUERY_ACTIONS.ASSETS_GET_BY_APARTMENT, id],
+      });
+    }
+  };
+
   if (!id || (!apartment && !apartmentLoading)) {
-    return <Navigate to="/apartments" />;
+    return <Navigate to="/apartments" replace />;
   }
 
   return (
@@ -217,8 +251,12 @@ export default function IndividualApartmentPage() {
 
       {/* Primary Workspace Navigation Tabs */}
       <div className="border-b border-gray-200 dark:border-gray-800 mt-6 mb-6">
-        <nav className="-mb-px flex space-x-8" aria-label="Apartment Sections">
+        <nav
+          className="-mb-px flex space-x-8"
+          aria-label={t("apartmentPage.tabs.ariaLabel")}
+        >
           <button
+            type="button"
             onClick={() => setActiveTab("reservations")}
             className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer ${
               activeTab === "reservations"
@@ -226,10 +264,11 @@ export default function IndividualApartmentPage() {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
             }`}
           >
-            Reservations
+            {t("apartmentPage.tabs.reservations")}
           </button>
 
           <button
+            type="button"
             onClick={() => setActiveTab("assets")}
             className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer flex items-center gap-2 ${
               activeTab === "assets"
@@ -237,7 +276,7 @@ export default function IndividualApartmentPage() {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
             }`}
           >
-            <span>Assets & Verification Shots</span>
+            <span>{t("apartmentPage.tabs.assets")}</span>
             {!isDataLoading && unmatchedCount > 0 && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400">
                 {unmatchedCount}
@@ -247,7 +286,7 @@ export default function IndividualApartmentPage() {
         </nav>
       </div>
 
-      {/* Only show banner when data is completely resolved and there are unmatched assets */}
+      {/* Unmatched Assets Banner */}
       {!isDataLoading && unmatchedCount > 0 && (
         <UnmatchedAssetsBanner
           unmatchedCount={unmatchedCount}
@@ -270,9 +309,7 @@ export default function IndividualApartmentPage() {
           assets={assets}
           uncoveredAssetIds={uncoveredAssetIds}
           isLoading={assetsLoading || assetsFetching}
-          onDeleteAsset={async (assetId) => {
-            await deleteAsset(assetId);
-          }}
+          onDeleteAsset={(assetId) => deleteAsset(assetId)}
           onOpenShotStudio={() => setIsShotStudioOpen(true)}
           onOpenCreateAsset={() => setIsDrawerOpen(true)}
         />
@@ -284,45 +321,49 @@ export default function IndividualApartmentPage() {
         onClose={() => setIsDrawerOpen(false)}
         title={
           activeTab === "reservations"
-            ? "Create New Reservation"
-            : "Create New Asset"
+            ? t("apartmentPage.drawer.createReservation")
+            : t("apartmentPage.drawer.createAsset")
         }
       >
         {activeTab === "reservations" ? (
           <CreateReservationForm
             apartmentId={id}
             isOpen={isDrawerOpen}
-            onSuccess={() => setIsDrawerOpen(false)}
+            onSuccess={handleFormSuccess}
           />
         ) : (
           <CreateAssetForm
             apartmentId={id}
             isOpen={isDrawerOpen}
-            onSuccess={() => setIsDrawerOpen(false)}
+            onSuccess={handleFormSuccess}
           />
         )}
       </Drawer>
 
       {/* Studio Modal Component */}
-      <ShotStudioModal
-        isOpen={isShotStudioOpen}
-        onClose={() => setIsShotStudioOpen(false)}
-        initialShots={addClientId(shots)}
-        availableAssets={assets}
-        onSave={async (updatedShots) => {
-          await saveShots(updatedShots);
-        }}
-      />
+      {isShotStudioOpen && (
+        <ShotStudioModal
+          isOpen={isShotStudioOpen}
+          onClose={() => setIsShotStudioOpen(false)}
+          initialShots={preparedShots}
+          availableAssets={assets}
+          onSave={async (updatedShots) => {
+            await saveShotsMutation.mutateAsync(updatedShots);
+          }}
+        />
+      )}
 
       {/* Inspection Shot Guide Modal */}
       {isInspectionModalOpen && selectedReservation && (
         <Modal
           isOpen={isInspectionModalOpen}
           onClose={handleCloseInspectionGuide}
-          title="Apartment Inspection Guide"
+          title={t("apartmentPage.modal.inspectionTitle")}
           subtitle={
             <span className="hidden sm:inline">
-              Reservation for {selectedReservation.guestName}
+              {t("apartmentPage.modal.reservationFor", {
+                guestName: selectedReservation.guestName,
+              })}
             </span>
           }
           size="xl"

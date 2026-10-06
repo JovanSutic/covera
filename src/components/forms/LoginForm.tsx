@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import Input from "@/components/formItems/Input";
 import Button from "@/components/formItems/Button";
 import { supabase } from "@/lib/supabase";
@@ -9,24 +10,26 @@ import { getAuthRole } from "@/lib/auth";
 import { useNavigate } from "react-router";
 
 const loginSchema = z.object({
-  email: z.email().min(1, "Email is required"),
+  email: z
+    .string()
+    .min(1, "loginForm.validation.emailRequired")
+    .email("loginForm.validation.invalidEmail"),
   password: z
     .string()
-    .min(1, "Password is required")
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least one special character",
-    ),
+    .min(1, "loginForm.validation.passwordRequired")
+    .min(8, "loginForm.validation.passwordMinLength")
+    .regex(/[A-Z]/, "loginForm.validation.passwordUppercase")
+    .regex(/[a-z]/, "loginForm.validation.passwordLowercase")
+    .regex(/[0-9]/, "loginForm.validation.passwordNumber")
+    .regex(/[^A-Za-z0-9]/, "loginForm.validation.passwordSpecialChar"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
+  const { t } = useTranslation("general");
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -38,6 +41,7 @@ export default function LoginForm() {
       password: "",
     },
   });
+
   const { execute, isLoading } = useSupabaseTask();
 
   const onSubmit = async (formData: LoginFormValues) => {
@@ -47,12 +51,12 @@ export default function LoginForm() {
           email: formData.email,
           password: formData.password,
         }),
-      { successMessage: "Welcome back!" },
+      { successMessage: t("loginForm.messages.welcomeBack") },
     );
 
     if (sessionData) {
       const role = await getAuthRole();
-      if (role !== 'guest') {
+      if (role !== "guest") {
         navigate(`/${role}/dashboard`);
       } else {
         navigate("/");
@@ -64,17 +68,19 @@ export default function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div className="flex flex-col gap-3">
         <Input
-          label="Email"
+          label={t("loginForm.labels.email")}
           type="email"
           autoComplete="email"
-          error={errors.email?.message}
+          error={errors.email?.message ? t(errors.email.message) : undefined}
           {...register("email")}
         />
         <Input
-          label="Password"
+          label={t("loginForm.labels.password")}
           type="password"
           autoComplete="current-password"
-          error={errors.password?.message}
+          error={
+            errors.password?.message ? t(errors.password.message) : undefined
+          }
           {...register("password")}
         />
       </div>
@@ -82,9 +88,11 @@ export default function LoginForm() {
       <Button
         type="submit"
         className="w-full py-3 mt-2"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isLoading}
       >
-        {isSubmitting || isLoading ? "Loading..." : "Continue"}
+        {isSubmitting || isLoading
+          ? t("loginForm.buttons.loading")
+          : t("loginForm.buttons.continue")}
       </Button>
     </form>
   );

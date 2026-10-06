@@ -1,3 +1,5 @@
+import { useTranslation, Trans } from "react-i18next";
+
 export function UnmatchedAssetsBanner({
   unmatchedCount,
   onNavigateToStudio,
@@ -5,6 +7,8 @@ export function UnmatchedAssetsBanner({
   unmatchedCount: number;
   onNavigateToStudio?: () => void;
 }) {
+  const { t } = useTranslation("host");
+
   if (unmatchedCount === 0) return null;
 
   return (
@@ -15,15 +19,22 @@ export function UnmatchedAssetsBanner({
           <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
         </span>
         <span>
-          <strong className="font-semibold">{unmatchedCount} {unmatchedCount === 1 ? "asset" : "assets"}</strong> missing photo coverage.
+          <Trans
+            i18nKey="unmatchedAssetsBanner.missingCoverage"
+            count={unmatchedCount}
+            components={{
+              bold: <strong className="font-semibold" />,
+            }}
+          />
         </span>
       </div>
       {onNavigateToStudio && (
         <button
+          type="button"
           onClick={onNavigateToStudio}
           className="font-medium text-amber-900 hover:text-amber-950 underline underline-offset-2 transition-colors cursor-pointer shrink-0"
         >
-          Review in Shot Studio →
+          {t("unmatchedAssetsBanner.reviewInStudio")}
         </button>
       )}
     </div>

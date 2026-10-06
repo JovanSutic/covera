@@ -1,0 +1,193 @@
+{
+  "roomLocations": {
+    "ENTRANCE_HALLWAY": "Giriş / Koridor",
+    "STAIRCASE_CORRIDOR": "Merdiven / Koridor",
+    "LIVING_ROOM": "Oturma odası",
+    "DINING_ROOM": "Yemek Odası",
+    "GAME_ENTERTAINMENT_ROOM": "Oyun / Eğlence Odası",
+    "HOME_OFFICE_STUDY": "Ev Ofis / Çalışma",
+    "KITCHEN": "Mutfak",
+    "PANTRY_LAUNDRY_ROOM": "Kiler / Çamaşır Odası",
+    "BEDROOM_PRIMARY": "Birincil Yatak Odası",
+    "BEDROOM_2": "Yatak odası 2",
+    "BEDROOM_3": "Yatak odası 3",
+    "BEDROOM_4": "Yatak odası 4",
+    "BEDROOM_5": "Yatak odası 5",
+    "BATHROOM_FULL_1": "Tam Banyo 1",
+    "BATHROOM_FULL_2": "Tam Banyo 2",
+    "BATHROOM_FULL_3": "Tam Banyo 3",
+    "BATHROOM_HALF_POWDER": "Yarım Banyo / Tuvalet",
+    "SAUNA_SPA_ROOM": "Sauna / Spa Odası",
+    "GYM_FITNESS_ROOM": "Spor Salonu / Fitness Odası",
+    "BALCONY_TERRACE": "Balkon / Teras",
+    "PATIO_DECK": "Veranda / Güverte",
+    "GARDEN_YARD": "Bahçe / Avlu",
+    "SWIMMING_POOL_AREA": "Yüzme Havuzu Alanı",
+    "STORAGE_ROOM": "Depo Odası",
+    "GARAGE_PARKING": "Garaj / Otopark",
+    "UTILITY_BOILER_ROOM": "Yardımcı Program / Kazan Dairesi",
+    "OTHER": "Diğer"
+  },
+  "categories": {
+    "ELECTRONICS": "Elektronik",
+    "APPLIANCES_LARGE": "Büyük Ev Aletleri",
+    "APPLIANCES_SMALL": "Küçük Ev Aletleri",
+    "FURNITURE": "Mobilya",
+    "STRUCTURAL_SURFACES": "Yapısal Yüzeyler",
+    "BATH_PLUMBING_FIXTURES": "Banyo ve Sıhhi Tesisat Armatürleri",
+    "RUGS_CARPETS_TEXTILES": "Kilim, Halı ve Tekstil",
+    "LIGHTING_FIXTURES": "Aydınlatma Armatürleri",
+    "SAFETY_SECURITY": "Emniyet ve Güvenlik",
+    "ENTERTAINMENT_RECREATION": "Eğlence ve Rekreasyon",
+    "DECOR_ART": "Dekor ve Sanat",
+    "UTILITIES_INFRASTRUCTURE": "Yardımcı Hizmetler ve Altyapı",
+    "OUTDOOR_PATIO": "Açık Hava ve Veranda",
+    "OTHER": "Diğer"
+  },
+  "photoProofs": {
+    "SWEEP_ONLY": "Yalnızca Süpür",
+    "CLOSEUP": "Yakın çekim fotoğraf",
+    "FUNCTIONAL_ACTION": "İşlevsel Eylem"
+  },
+  "apartmentAssetsManager": {
+    "title": "Varlıklar ve Doğrulama Çekimleri",
+    "description": "Fiziksel apartman varlıklarını yönetin ve gerekli fotoğraf doğrulama çekimlerini hizalayın.",
+    "shotStudio": "Çekim Stüdyosu",
+    "addNewAsset": "+ Yeni Varlık Ekle",
+    "emptyState": {
+      "title": "Kayıtlı varlık yok",
+      "description": "Bu daireye henüz atanmış herhangi bir varlık yok. Başlamak için yukarıdaki \"+ Yeni Varlık Ekle\"yi tıklayın."
+    },
+    "roomCard": {
+      "toggleAriaLabel": "Oda bölümünü değiştir",
+      "assetCount_one": "{{count}} öğe",
+      "assetCount_other": "{{count}} varlık"
+    },
+    "roomLocations": {
+      "General / Unassigned": "Genel / Atanmamış"
+    }
+  },
+  "apartments": {
+    "overviewHeader": {
+      "backLink": "Tüm Daireler",
+      "externalIdLabel": "Kimlik: {{id}}",
+      "createdDate": "Oluşturuldu: <date>{{date}}</date>"
+    },
+    "list": {
+      "emptyMessage": "Sistem veritabanında daire bulunamadı.",
+      "columns": {
+        "name": "Daire Adı",
+        "address": "Adres",
+        "location": "Konum",
+        "externalId": "Harici Kimlik",
+        "createdDate": "Oluşturulma Tarihi"
+      }
+    }
+  },
+  "createAssetForm": {
+    "fields": {
+      "name": {
+        "label": "Varlık Adı",
+        "placeholder": "Smart TV, Deri Koltuk, Espresso Makinesi..."
+      },
+      "category": {
+        "label": "Kategori"
+      },
+      "roomLocation": {
+        "label": "Oda Konumu"
+      },
+      "photoRequirement": {
+        "label": "Fotoğraf Gereksinimi"
+      },
+      "approximateValue": {
+        "label": "Yaklaşık Değer (İsteğe Bağlı)",
+        "placeholder": "250.00"
+      },
+      "description": {
+        "label": "Açıklama / Muayene Notları (Opsiyonel)",
+        "placeholder": "Doğu duvarında bulunan uzaktan kumandayı inceleyin..."
+      }
+    },
+    "buttons": {
+      "submit": "Varlık Oluştur",
+      "submitting": "Varlık Kaydediliyor..."
+    },
+    "validation": {
+      "nameRequired": "Öğe adı gerekli",
+      "categoryRequired": "Lütfen geçerli bir kategori seçin",
+      "roomLocationRequired": "Lütfen bir oda konumu seçin",
+      "invalidValue": "Değer, negatif olmayan geçerli bir sayı olmalıdır"
+    },
+    "messages": {
+      "createSuccess": "Öğe başarıyla oluşturuldu!",
+      "createError": "Öğe oluşturulurken bir hata oluştu."
+    }
+  },
+  "assetCard": {
+    "tooltips": {
+      "viewDescription": "Açıklamayı görüntüle"
+    },
+    "labels": {
+      "missingShot": "Eksik atış",
+      "approxValue": "Yaklaşık. değer"
+    },
+    "actions": {
+      "delete": "Sil",
+      "cancel": "İptal",
+      "confirmDeleteTitle": "Silmeyi onayla",
+      "deleteAssetTitle": "Öğeyi sil"
+    }
+  },
+  "shotGuide": {
+    "shotTypes": {
+      "SWEEP_ONLY": "Geniş Tarama",
+      "CLOSEUP": "Yakın çekim",
+      "FUNCTIONAL_ACTION": "İşlevsel / Eylem Halinde"
+    },
+    "noShots": "Bu daire için çekime gerek yok",
+    "header": {
+      "currentLocation": "Mevcut Konum",
+      "shotProgress": "Odada {{total}} / {{current}} vuruldu",
+      "completedCount": "{{completed}} / {{total}} Tamamlandı"
+    },
+    "uploadingModal": {
+      "title": "Yüksek Çözünürlüklü Fotoğraflar Yükleniyor...",
+      "description": "Bu işlem bağlantı hızınıza bağlı olarak bir dakika kadar sürebilir.",
+      "warning": "Lütfen yükleme tamamlanana kadar bu sekmeyi açık tutun."
+    },
+    "camera": {
+      "noPhoto": "Henüz fotoğraf çekilmedi.",
+      "retakePhoto": "Fotoğrafı Yeniden Çek",
+      "openCamera": "Kamerayı Aç"
+    },
+    "actions": {
+      "previous": "← Önceki",
+      "next": "Sonraki →",
+      "uploading": "Yükleniyor...",
+      "finishAndSave": "Bitir ve Tümünü Kaydet"
+    }
+  },
+  "shotStudio": {
+    "shotsListCount": "Çekim Listesi ({{count}})",
+    "addShot": "+ Çekim Ekle",
+    "createNewShot": "Yeni Çekim Oluştur",
+    "titleLabel": "Başlık",
+    "titlePlaceholder": "örneğin TV ve Soundbar",
+    "roomLabel": "Oda",
+    "typeLabel": "Tür",
+    "instructionsLabel": "Talimatlar",
+    "instructionsPlaceholder": "TV ve soundbar'ın birlikte çekimini yapın",
+    "emptyTitle": "Henüz tanımlanmış çekim yok",
+    "emptyDescription": "Apartman varlıklarınızla eşleşecek doğrulama çekimi öğeleri oluşturun.",
+    "createFirstShot": "+ İlk Çekimi Oluştur",
+    "untitledShot": "İsimsiz Çekim",
+    "assetsLinkedCount": "{{count}} Bağlantılı Varlıklar",
+    "linkAssetsHeader": "\"{{title}}\" için Varlıkları Bağla",
+    "linkAssetsSubheader": "Bu doğrulama çekiminin kapsaması gereken apartman varlıklarını seçin.",
+    "noAssetsAvailable": "Bu daire için henüz kayıtlı varlık yok.",
+    "finishAddingPrompt": "Varlıkları bağlamaya başlamak için soldaki çekimi eklemeyi bitirin.",
+    "selectShotPrompt": "Daire varlıklarını görüntülemek ve bağlamak için soldan bir çekim seçin.",
+    "cancel": "İptal",
+    "add": "Ekle"
+  }
+}

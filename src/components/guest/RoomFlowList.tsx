@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { RoomFlowItem } from "./RoomFlowItem";
 import InstructionsShort from "./InstructionsShort";
 
@@ -18,15 +19,17 @@ export const RoomFlowList: React.FC<RoomFlowListProps> = ({
   steps,
   onSelectRoom,
 }) => {
+  const { t } = useTranslation("guest");
+
   return (
     <div className="w-full space-y-4">
       {/* Header text and instructions inside RoomFlowList */}
       <div>
-        <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Room Walkthrough
+        <p className="mb-2 text-lg font-medium text-gray-700 dark:text-gray-300">
+          {t("roomFlowList.title")}
         </p>
-         <p className="text-sm text-gray-500 dark:text-gray-300">
-          Select any room below to review reference photos and confirm property setup.
+        <p className="text-sm text-gray-500 dark:text-gray-300">
+          {t("roomFlowList.description")}
         </p>
         <InstructionsShort />
       </div>

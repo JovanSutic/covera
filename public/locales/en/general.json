@@ -1,0 +1,217 @@
+{
+  "login": {
+    "welcome": "Welcome to Covera",
+    "subtitle": "Log in or sign up to manage your account.",
+    "passUpdate": {
+      "welcomeWithName": "Welcome to Covera, {{name}}",
+      "welcomeGeneric": "Welcome to Covera",
+      "subtitleReady": "Set up your new password to activate your account.",
+      "subtitleDefault": "Update your password.",
+      "invalidLinkError": "Invalid or missing invitation link.",
+      "goToLogin": "Go to Login",
+      "verifyingDetails": "Verifying invitation details..."
+    }
+  },
+  "errorPage": {
+    "unexpectedTitle": "Unexpected Error",
+    "unexpectedSubtitle": "Something went wrong while loading this page.",
+    "notFoundTitle": "Page Not Found",
+    "notFoundSubtitle": "The requested inspection or page does not exist.",
+    "serverErrorTitle": "Server Error",
+    "serverErrorSubtitle": "We encountered a problem on our end. Please try again later.",
+    "backToHome": "Back to Home"
+  },
+  "adminDashboard": {
+    "title": "Dashboard",
+    "subtitle": "Admin Management Options",
+    "tabs": {
+      "users": "Users",
+      "apartments": "Apartments"
+    }
+  },
+  "hostApartments": {
+    "title": "Apartments",
+    "subtitle": "List of apartments you manage"
+  },
+  "hostDashboard": {
+    "title": "Dashboard",
+    "subtitle": "Host Management Options",
+    "tabs": {
+      "apartments": "Apartments"
+    }
+  },
+  "apartmentPage": {
+    "errors": {
+      "apartmentIdRequired": "Apartment ID is required",
+      "deleteAssetFailed": "An error occurred while deleting the asset.",
+      "saveShotsFailed": "An error occurred while saving shots.",
+      "missingInspectionDetails": "Missing apartment or reservation identification",
+      "submitInspectionFailed": "An error occurred while submitting inspection photos."
+    },
+    "toast": {
+      "deleteAssetSuccess": "Asset deleted successfully!",
+      "saveShotsSuccess": "Shot requirements saved!",
+      "submitInspectionSuccess": "All inspection photos submitted successfully!"
+    },
+    "tabs": {
+      "ariaLabel": "Apartment Sections",
+      "reservations": "Reservations",
+      "assets": "Assets & Verification Shots"
+    },
+    "drawer": {
+      "createReservation": "Create New Reservation",
+      "createAsset": "Create New Asset"
+    },
+    "modal": {
+      "inspectionTitle": "Apartment Inspection Guide",
+      "reservationFor": "Reservation for {{guestName}}"
+    }
+  },
+  "dataTable": {
+    "loading": "Loading records...",
+    "emptyMessage": "No records found.",
+    "pagination": {
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results",
+      "perPage": "{{size}} / page",
+      "previous": "Previous",
+      "pageIndicator": "{{page}} of {{totalPages}}",
+      "next": "Next"
+    }
+  },
+  "drawer": {
+    "closePanel": "Close panel"
+  },
+  "header": {
+    "language": "Language",
+    "signOut": "Sign out"
+  },
+  "common": {
+    "noReferencePhoto": "No reference photo uploaded yet",
+    "loadingImage": "Loading image...",
+    "tapToZoom": "Tap to zoom",
+    "closeZoom": "Close zoom"
+  },
+  "apartments": {
+    "createButton": "Create Apartment",
+    "createDrawerTitle": "Create New Apartment",
+    "emptyMessage": "No apartments found in the system database.",
+    "columns": {
+      "name": "Apartment Name",
+      "address": "Address",
+      "location": "Location",
+      "hostOwner": "Host / Owner",
+      "externalId": "External ID",
+      "createdDate": "Created Date"
+    }
+  },
+  "users": {
+    "createUserButton": "Create User",
+    "createUserDrawerTitle": "Create New User",
+    "emptyMessage": "No users found in the system database.",
+    "columns": {
+      "name": "Name",
+      "email": "Email Address",
+      "role": "System Role",
+      "status": "Status",
+      "joinedDate": "Joined Date",
+      "actions": "Actions"
+    },
+    "actions": {
+      "sendInvite": "Send Invite",
+      "sending": "Sending..."
+    },
+    "errors": {
+      "sendInviteFailed": "Failed to send invite",
+      "noDataReturned": "No data returned from invite endpoint"
+    },
+    "status": {
+      "confirmed": "Confirmed",
+      "invited": "Invited",
+      "created": "Created",
+      "disabled": "Disabled"
+    }
+  },
+  "createUserForm": {
+    "validation": {
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "invalidEmail": "Invalid email address",
+      "emailRequired": "Email is required",
+      "invalidRole": "Please select a valid system role"
+    },
+    "labels": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "role": "System Access Role"
+    },
+    "placeholders": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "name@example.com"
+    },
+    "roles": {
+      "guest": "Guest",
+      "host": "Host",
+      "admin": "Administrator"
+    },
+    "button": {
+      "submit": "Create User",
+      "submitting": "Creating Account..."
+    },
+    "toast": {
+      "success": "User profile created successfully!",
+      "error": "An auth error occurred."
+    }
+  },
+  "loginForm": {
+    "validation": {
+      "emailRequired": "Email is required",
+      "invalidEmail": "Invalid email address",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters long",
+      "passwordUppercase": "Password must contain at least one uppercase letter",
+      "passwordLowercase": "Password must contain at least one lowercase letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecialChar": "Password must contain at least one special character"
+    },
+    "labels": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "buttons": {
+      "continue": "Continue",
+      "loading": "Loading..."
+    },
+    "messages": {
+      "welcomeBack": "Welcome back!"
+    }
+  },
+  "passUpdateForm": {
+    "validation": {
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters long",
+      "passwordUppercase": "Password must contain at least one uppercase letter",
+      "passwordLowercase": "Password must contain at least one lowercase letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecialChar": "Password must contain at least one special character",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsMustMatch": "Passwords do not match"
+    },
+    "labels": {
+      "password": "New Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "button": {
+      "submit": "Set Password",
+      "submitting": "Updating..."
+    },
+    "toast": {
+      "success": "Password updated successfully!",
+      "error": "An error occurred updating the password."
+    }
+  }
+}
