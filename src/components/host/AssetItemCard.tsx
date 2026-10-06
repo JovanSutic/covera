@@ -16,11 +16,13 @@ function formatCentsToDecimal(cents: number): string {
 }
 
 function DescriptionTooltip({ content }: { content: string }) {
+  const { t } = useTranslation("assets");
+
   return (
     <div className="relative group/tooltip inline-block">
       <button
         type="button"
-        aria-label="View description"
+        aria-label={t("assetCard.tooltips.viewDescription")}
         className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
       >
         <FileText className="h-4 w-4" />
@@ -93,23 +95,23 @@ export function AssetItemCard({
                   onClick={handleDelete}
                   disabled={isDeleting}
                   className="flex items-center gap-1 rounded bg-red-600 px-2 py-0.5 text-[11px] font-medium text-white hover:bg-red-700 disabled:opacity-50 transition-colors cursor-pointer"
-                  title="Confirm deletion"
+                  title={t("assetCard.actions.confirmDeleteTitle")}
                 >
                   {isDeleting ? "..." : <Check className="h-3 w-3" />}
-                  <span>Delete</span>
+                  <span>{t("assetCard.actions.delete")}</span>
                 </button>
                 <button
                   onClick={() => setIsConfirmingDelete(false)}
                   className="rounded bg-gray-100 px-1.5 py-0.5 text-[11px] font-medium text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {t("assetCard.actions.cancel")}
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => setIsConfirmingDelete(true)}
                 className="text-gray-400 hover:text-red-600 p-1 rounded-md hover:bg-red-50 transition-colors cursor-pointer"
-                title="Delete asset"
+                title={t("assetCard.actions.deleteAssetTitle")}
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -140,7 +142,7 @@ export function AssetItemCard({
           {!isCovered && (
             <span className="inline-flex items-center gap-1 rounded-md bg-amber-100/80 px-2 py-0.5 text-[11px] font-medium text-amber-800 border border-amber-200">
               <AlertCircle className="h-3 w-3 text-amber-600" />
-              Missing shot
+              {t("assetCard.labels.missingShot")}
             </span>
           )}
         </div>
@@ -149,7 +151,7 @@ export function AssetItemCard({
       {formattedAmount && (
         <div className="mt-3 border-t border-gray-100 pt-2">
           <Typography type="caption" className="text-gray-400 block text-[11px]">
-            Approx. value
+            {t("assetCard.labels.approxValue")}
           </Typography>
           <Typography type="body-sm" className="font-semibold text-emerald-700 mt-0.5">
             {formattedAmount} {currency}

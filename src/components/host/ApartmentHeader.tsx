@@ -1,6 +1,7 @@
 import type { ApartmentWithLocation } from "@/api/generated/requests/types.gen";
 import { Building2, MapPin, Calendar, Coins, ArrowLeft } from "lucide-react";
 import { Link } from "react-router";
+import { Trans, useTranslation } from "react-i18next";
 import Typography from "../Typography";
 
 interface ApartmentOverviewHeaderProps {
@@ -12,6 +13,8 @@ export function ApartmentOverviewHeader({
   apartment,
   isLoading,
 }: ApartmentOverviewHeaderProps) {
+  const { t, i18n } = useTranslation("assets");
+
   if (isLoading) {
     return <ApartmentOverviewSkeleton />;
   }
@@ -19,7 +22,7 @@ export function ApartmentOverviewHeader({
   if (!apartment) return null;
 
   const formattedDate = new Date(apartment.createdAt).toLocaleDateString(
-    "en-US",
+    i18n.language,
     {
       year: "numeric",
       month: "short",
@@ -39,7 +42,7 @@ export function ApartmentOverviewHeader({
             type="caption"
             className="font-medium text-gray-500 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
           >
-            All Apartments
+            {t("apartments.overviewHeader.backLink")}
           </Typography>
         </Link>
       </div>
@@ -79,17 +82,21 @@ export function ApartmentOverviewHeader({
             </span>
 
             <span className="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 font-mono text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-gray-200 dark:border-gray-700 max-w-full truncate">
-              ID: {apartment.externalId}
+              {t("apartments.overviewHeader.externalIdLabel", { id: apartment.externalId })}
             </span>
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5">
             <Calendar className="h-3.5 w-3.5 text-gray-400" />
             <Typography type="caption" className="text-gray-500 dark:text-gray-400">
-              Created:{" "}
-              <span className="font-medium text-gray-700 dark:text-gray-300">
-                {formattedDate}
-              </span>
+              <Trans
+                ns="assets"
+                i18nKey="apartments.overviewHeader.createdDate"
+                values={{ date: formattedDate }}
+                components={{
+                  date: <span className="font-medium text-gray-700 dark:text-gray-300" />,
+                }}
+              />
             </Typography>
           </div>
         </div>

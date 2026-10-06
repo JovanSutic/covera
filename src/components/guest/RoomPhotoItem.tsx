@@ -1,4 +1,5 @@
 import { Flag, CheckCircle2, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ShotWithAssets } from "@/api/generated/requests/types.gen";
 import { ExpandableImage } from "../shared/ExpendableImage";
 
@@ -11,6 +12,8 @@ interface RoomPhotoItemProps {
 const R2_IMAGE_URL = import.meta.env.VITE_R2_IMAGE_URL;
 
 export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoItemProps) {
+  const { t } = useTranslation("guest");
+
   const activeImage = shot.images.find(
     (img) => img.status === "active" && !img.deletedAt,
   );
@@ -19,18 +22,14 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
     ? `${R2_IMAGE_URL}/${activeImage.storageKey}`
     : null;
 
-  // Format captured timestamp
-  const captureTimestamp = activeImage?.uploadedAt
-    ? new Date(activeImage.uploadedAt).toLocaleString(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
-      })
+  const activeImageDate = activeImage?.uploadedAt
+    ? new Date(activeImage.uploadedAt)
     : null;
 
   const isSweep = shot.shotType === "SWEEP_ONLY";
 
   return (
-    <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/40 to-white p-4 sm:p-5 shadow-xs dark:border-blue-900/30 dark:from-blue-950/20 dark:to-gray-900">
+    <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/40 to-white p-4 shadow-xs dark:border-blue-900/30 dark:from-blue-950/20 dark:to-gray-900 sm:p-5">
       {/* Header - Title & Top-Right Flag Action */}
       <div className="mb-3 flex items-center justify-end gap-3">
         {/* <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
@@ -40,12 +39,12 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
         <button
           type="button"
           onClick={() => onFlagShot?.(shot.id)}
-          title="Flag issue with this photo"
+          title={t("roomPhotoItem.flagIssueTitle")}
           disabled={isFlagDisabled}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-rose-700 bg-rose-50 border border-rose-200/80 hover:bg-rose-100 cursor-pointer hover:text-rose-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
+          className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-rose-200/80 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100 hover:text-rose-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Flag className="h-3.5 w-3.5 stroke-[2]" />
-          <span>Flag item</span>
+          <span>{t("roomPhotoItem.flagItem")}</span>
         </button>
       </div>
 
@@ -57,20 +56,27 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
       />
 
       {/* Timestamp Below Image */}
-      {captureTimestamp && (
+      {activeImageDate && (
         <div className="mt-2.5 flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
           <Clock className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500" />
-          <span>Captured on {captureTimestamp}</span>
+          <span>
+            {t("roomPhotoItem.capturedOn", {
+              val: activeImageDate,
+              formatParams: {
+                val: { dateStyle: "medium", timeStyle: "short" },
+              },
+            })}
+          </span>
         </div>
       )}
 
       {/* Asset Checklist Section */}
       {shot.assets && shot.assets.length > 0 && (
-        <div className="mt-3.5 border-t border-gray-100/80 dark:border-gray-800/80 pt-3">
+        <div className="mt-3.5 border-t border-gray-100/80 pt-3 dark:border-gray-800/80">
           <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
             {isSweep
-              ? "Verify these items are clearly visible in the space:"
-              : "Verify this item is clearly visible in the space:"}
+              ? t("roomPhotoItem.verifyItemsPlural")
+              : t("roomPhotoItem.verifyItemSingular")}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {shot.assets.map((asset) => (

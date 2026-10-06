@@ -1,16 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Camera, ClipboardPlus, Link as LinkIcon, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
   deleteReservationsById,
   postInspections,
 } from "@/api/generated/requests/services.gen";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import type { ReservationRow } from "@/types/component.types";
 import { ConfirmActionButton } from "../ConfirmationButton";
 import { GuestInspectionMessage } from "./GuestInspectionMessage";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
-import { toast } from "sonner";
 
 const VITE_APP_BASE_PATH = import.meta.env.VITE_APP_BASE_PATH;
 
@@ -25,6 +26,7 @@ export function ReservationActionsCell({
   onCreateGuestInspection?: (reservation: ReservationRow) => void;
   apartmentId: string;
 }) {
+  const { t } = useTranslation("host");
   const queryClient = useQueryClient();
   const now = Date.now();
 
@@ -71,12 +73,12 @@ export function ReservationActionsCell({
       queryClient.invalidateQueries({
         queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, apartmentId],
       });
-      toast.success("Reservation deleted successfully!");
+      toast.success(t("reservationActionsCell.toast.deleteSuccess"));
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message || "Failed to delete reservation. Please try again.",
+        error?.message || t("reservationActionsCell.toast.deleteError"),
       );
     },
   });
@@ -97,32 +99,34 @@ export function ReservationActionsCell({
       queryClient.invalidateQueries({
         queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, apartmentId],
       });
-      toast.success("Guest inspection session created!");
+      toast.success(t("reservationActionsCell.toast.createSuccess"));
       onCreateGuestInspection?.(reservation);
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message ||
-          "Failed to create guest inspection. Please try again.",
+        error?.message || t("reservationActionsCell.toast.createError"),
       );
     },
   });
 
   const getCameraTooltip = (): string => {
     if (hasSubmittedProofs) {
-      return "Inspection photos have already been submitted";
+      return t("reservationActionsCell.tooltip.hasSubmittedProofs");
     }
     if (isTooLate) {
-      return "Inspection window has closed (expired 1 hour past check-in)";
+      return t("reservationActionsCell.tooltip.isTooLate");
     }
     if (isTooEarly) {
       const hoursUntilWindow = Math.ceil(
         (proofWindowStartTime - now) / (1000 * 60 * 60),
       );
-      return `Inspection window opens ${windowHours}h before check-in (in ~${hoursUntilWindow}h)`;
+      return t("reservationActionsCell.tooltip.isTooEarly", {
+        windowHours,
+        hoursUntilWindow,
+      });
     }
-    return "Inspection window active! Click to capture photo proof";
+    return t("reservationActionsCell.tooltip.active");
   };
 
   return (
@@ -146,13 +150,13 @@ export function ReservationActionsCell({
       <ConfirmActionButton
         icon={<ClipboardPlus className="w-4 h-4" />}
         variant="success"
-        confirmLabel="Create"
-        confirmMessage="Create guest inspection?"
+        confirmLabel={t("reservationActionsCell.confirm.createLabel")}
+        confirmMessage={t("reservationActionsCell.confirm.createMessage")}
         disabled={hasInspection}
         title={
           hasInspection
-            ? "Guest inspection link already created"
-            : "Generate new guest inspection link"
+            ? t("reservationActionsCell.tooltip.hasInspection")
+            : t("reservationActionsCell.tooltip.createInspection")
         }
         isLoading={createInspectionMutation.isPending}
         onConfirm={() => createInspectionMutation.mutateAsync()}
@@ -164,7 +168,7 @@ export function ReservationActionsCell({
           <PopoverTrigger>
             <button
               type="button"
-              title="Copy guest message for Airbnb"
+              title={t("reservationActionsCell.tooltip.copyMessage")}
               className="p-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
             >
               <LinkIcon className="w-4 h-4" />
@@ -183,14 +187,14 @@ export function ReservationActionsCell({
       <ConfirmActionButton
         icon={<Trash2 className="w-4 h-4" />}
         variant="danger"
-        confirmLabel="Delete"
-        confirmMessage="Delete reservation?"
+        confirmLabel={t("reservationActionsCell.confirm.deleteLabel")}
+        confirmMessage={t("reservationActionsCell.confirm.deleteMessage")}
         disabled={!isDeletable}
         isLoading={deleteMutation.isPending}
         title={
           isDeletable
-            ? "Delete reservation"
-            : "Cannot delete reservations that have already started"
+            ? t("reservationActionsCell.tooltip.delete")
+            : t("reservationActionsCell.tooltip.cannotDelete")
         }
         onConfirm={() => deleteMutation.mutateAsync()}
       />

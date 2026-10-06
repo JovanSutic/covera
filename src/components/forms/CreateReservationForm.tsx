@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import Input from "@/components/formItems/Input";
 import Button from "@/components/formItems/Button";
 import { withAuth } from "@/lib/api/api";
 import { postReservations } from "@/api/generated/requests/services.gen";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
-import { toast } from "sonner";
-import { useEffect, useState } from "react";
 
 // Formats current local date-time into 'YYYY-MM-THH:mm' required by datetime-local min attribute
 const getMinDatetimeLocal = () => {
@@ -25,36 +26,44 @@ const isFutureDatetime = (val: string) => {
 
 const createReservationSchema = z
   .object({
-    guestName: z.string().min(1, "Guest name is required"),
+    guestName: z
+      .string()
+      .min(1, "createReservationForm.validation.guestNameRequired"),
     guestEmail: z
       .string()
       .optional()
       .refine(
         (val) => !val || z.string().email().safeParse(val).success,
-        "Please enter a valid email address",
+        "createReservationForm.validation.invalidEmail",
       ),
     platformReservationId: z.string().optional(),
     checkInDatetime: z
       .string()
-      .min(1, "Check-in date & time is required")
-      .refine(isFutureDatetime, "Check-in time must be in the future"),
+      .min(1, "createReservationForm.validation.checkInRequired")
+      .refine(
+        isFutureDatetime,
+        "createReservationForm.validation.checkInFuture",
+      ),
     checkOutDatetime: z
       .string()
-      .min(1, "Check-out date & time is required")
-      .refine(isFutureDatetime, "Check-out time must be in the future"),
+      .min(1, "createReservationForm.validation.checkOutRequired")
+      .refine(
+        isFutureDatetime,
+        "createReservationForm.validation.checkOutFuture",
+      ),
     alternativeCheckInDatetime: z
       .string()
       .optional()
       .refine(
         (val) => !val || isFutureDatetime(val),
-        "Alternative check-in time must be in the future",
+        "createReservationForm.validation.altCheckInFuture",
       ),
     alternativeCheckOutDatetime: z
       .string()
       .optional()
       .refine(
         (val) => !val || isFutureDatetime(val),
-        "Alternative check-out time must be in the future",
+        "createReservationForm.validation.altCheckOutFuture",
       ),
   })
   .refine(
@@ -63,7 +72,7 @@ const createReservationSchema = z
       return new Date(data.checkOutDatetime) > new Date(data.checkInDatetime);
     },
     {
-      message: "Check-out date must be strictly after Check-in date",
+      message: "createReservationForm.validation.checkOutAfterCheckIn",
       path: ["checkOutDatetime"],
     },
   )
@@ -77,8 +86,7 @@ const createReservationSchema = z
       );
     },
     {
-      message:
-        "Alternative check-out date must be strictly after alternative check-in date",
+      message: "createReservationForm.validation.altCheckOutAfterAltCheckIn",
       path: ["alternativeCheckOutDatetime"],
     },
   );
@@ -106,6 +114,7 @@ export default function CreateReservationForm({
   isOpen,
   apartmentId,
 }: CreateReservationFormProps) {
+  const { t } = useTranslation("host");
   const [showAlternativeDates, setShowAlternativeDates] = useState(false);
   const [minDatetime, setMinDatetime] = useState(getMinDatetimeLocal());
 
@@ -131,7 +140,6 @@ export default function CreateReservationForm({
     mutationFn: async (formData: CreateReservationFormValues) => {
       const config = await withAuth();
 
-      // Build body dynamically and omit keys when not provided
       const body: Record<string, any> = {
         apartmentId,
         guestName: formData.guestName,
@@ -171,7 +179,7 @@ export default function CreateReservationForm({
         queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, apartmentId],
       });
 
-      toast.success("Reservation created successfully!");
+      toast.success(t("createReservationForm.toast.success"));
       reset(DEFAULT_FORM_VALUES);
       setShowAlternativeDates(false);
       if (onSuccess) onSuccess();
@@ -179,7 +187,7 @@ export default function CreateReservationForm({
     onError: (error: any) => {
       console.error("Mutation failed:", error);
       toast.error(
-        error?.error?.message || "An error occurred creating the reservation.",
+        error?.error?.message || t("createReservationForm.toast.error"),
       );
     },
   });
@@ -211,43 +219,59 @@ export default function CreateReservationForm({
       className="flex flex-col gap-5 w-full max-w-xl bg-white dark:bg-transparent"
     >
       <Input
-        label="Guest Name"
+        label={t("createReservationForm.labels.guestName")}
         type="text"
-        placeholder="John Doe..."
-        error={errors.guestName?.message}
+        placeholder={t("createReservationForm.placeholders.guestName")}
+        error={errors.guestName?.message ? t(errors.guestName.message) : undefined}
         {...register("guestName")}
       />
 
       <Input
-        label="Guest Email (Optional)"
+        label={t("createReservationForm.labels.guestEmail")}
         type="email"
-        placeholder="john.doe@example.com"
-        error={errors.guestEmail?.message}
+        placeholder={t("createReservationForm.placeholders.guestEmail")}
+        error={
+          errors.guestEmail?.message ? t(errors.guestEmail.message) : undefined
+        }
         {...register("guestEmail")}
       />
 
       <Input
-        label="Platform Reservation ID (Optional)"
+        label={t("createReservationForm.labels.platformReservationId")}
         type="text"
-        placeholder="HM12345678, AIRBNB-XYZ..."
-        error={errors.platformReservationId?.message}
+        placeholder={t(
+          "createReservationForm.placeholders.platformReservationId",
+        )}
+        error={
+          errors.platformReservationId?.message
+            ? t(errors.platformReservationId.message)
+            : undefined
+        }
         {...register("platformReservationId")}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
-          label="Check-In Date & Time"
+          label={t("createReservationForm.labels.checkInDatetime")}
           type="datetime-local"
           min={minDatetime}
-          error={errors.checkInDatetime?.message}
+          error={
+            errors.checkInDatetime?.message
+              ? t(errors.checkInDatetime.message)
+              : undefined
+          }
           {...register("checkInDatetime")}
         />
 
         <Input
-          label="Check-Out Date & Time"
+          label={t("createReservationForm.labels.checkOutDatetime")}
           type="datetime-local"
           min={selectedCheckIn || minDatetime}
-          error={errors.checkOutDatetime?.message}
+          error={
+            errors.checkOutDatetime?.message
+              ? t(errors.checkOutDatetime.message)
+              : undefined
+          }
           {...register("checkOutDatetime")}
         />
       </div>
@@ -259,25 +283,37 @@ export default function CreateReservationForm({
           className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors cursor-pointer"
         >
           {showAlternativeDates
-            ? "- Remove alternative dates"
-            : "+ Alternative arrival or departure?"}
+            ? t("createReservationForm.toggleAlternativeDates.hide")
+            : t("createReservationForm.toggleAlternativeDates.show")}
         </button>
 
         {showAlternativeDates && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 animate-in fade-in duration-150">
             <Input
-              label="Alternative Check-In (Optional)"
+              label={t(
+                "createReservationForm.labels.alternativeCheckInDatetime",
+              )}
               type="datetime-local"
               min={minDatetime}
-              error={errors.alternativeCheckInDatetime?.message}
+              error={
+                errors.alternativeCheckInDatetime?.message
+                  ? t(errors.alternativeCheckInDatetime.message)
+                  : undefined
+              }
               {...register("alternativeCheckInDatetime")}
             />
 
             <Input
-              label="Alternative Check-Out (Optional)"
+              label={t(
+                "createReservationForm.labels.alternativeCheckOutDatetime",
+              )}
               type="datetime-local"
               min={selectedAltCheckIn || minDatetime}
-              error={errors.alternativeCheckOutDatetime?.message}
+              error={
+                errors.alternativeCheckOutDatetime?.message
+                  ? t(errors.alternativeCheckOutDatetime.message)
+                  : undefined
+              }
               {...register("alternativeCheckOutDatetime")}
             />
           </div>
@@ -291,8 +327,8 @@ export default function CreateReservationForm({
         isLoading={isPending}
       >
         {isSubmitting || isPending
-          ? "Creating Reservation..."
-          : "Create Reservation"}
+          ? t("createReservationForm.button.submitting")
+          : t("createReservationForm.button.submit")}
       </Button>
     </form>
   );

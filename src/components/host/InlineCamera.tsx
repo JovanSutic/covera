@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 interface InlineCameraProps {
   onCapture: (previewUrl: string, file: File) => void;
@@ -6,6 +7,7 @@ interface InlineCameraProps {
 }
 
 export function InlineCamera({ onCapture, onCancel }: InlineCameraProps) {
+  const { t } = useTranslation("host");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,10 +30,10 @@ export function InlineCamera({ onCapture, onCancel }: InlineCameraProps) {
 
       <div className="space-y-1">
         <h4 className="text-sm font-semibold text-gray-100">
-          Capture Verification Photo
+          {t("inlineCamera.title")}
         </h4>
         <p className="text-xs text-gray-400 max-w-xs">
-          Take a full-resolution photo using your device camera to preserve EXIF timestamp and GPS proof for AirCover.
+          {t("inlineCamera.description")}
         </p>
       </div>
 
@@ -41,11 +43,11 @@ export function InlineCamera({ onCapture, onCancel }: InlineCameraProps) {
           onClick={onCancel}
           className="px-4 py-2 text-xs font-medium text-gray-400 hover:text-gray-200 rounded-lg bg-gray-900 border border-gray-800 transition-colors cursor-pointer"
         >
-          Cancel
+          {t("inlineCamera.cancelButton")}
         </button>
 
         <label className="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg shadow-sm cursor-pointer transition-colors flex items-center gap-2">
-          <span>Open Camera</span>
+          <span>{t("inlineCamera.openCameraButton")}</span>
           <input
             ref={inputRef}
             type="file"

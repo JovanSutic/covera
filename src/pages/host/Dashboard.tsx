@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import ApartmentsSection from "@/components/host/ApartmentSection";
 import PageLayout from "@/components/layout/PageLayout";
@@ -6,19 +7,24 @@ import type { TabItem } from "@/components/Tabs";
 import Tabs from "@/components/Tabs";
 
 export default function DashboardPage() {
+  const { t } = useTranslation("general");
+
   const dashboardTabs: TabItem[] = [
-      {
-        id: "apartments",
-        label: "Apartments",
-        content: <ApartmentsSection />,
-      },
-    ];
-  
+    {
+      id: "apartments",
+      label: t("hostDashboard.tabs.apartments"),
+      content: <ApartmentsSection />,
+    },
+  ];
+
   return (
     <PageLayout size="lg">
       <Header />
-      <PageTitle title="Dashboard" subtitle="Host Management Options" />
-       <Tabs tabs={dashboardTabs} defaultTabId="apartments" />
+      <PageTitle
+        title={t("hostDashboard.title")}
+        subtitle={t("hostDashboard.subtitle")}
+      />
+      <Tabs tabs={dashboardTabs} defaultTabId="apartments" />
     </PageLayout>
   );
 }

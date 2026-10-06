@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Eye, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ExpandableImageProps {
   src: string;
@@ -11,11 +12,14 @@ interface ExpandableImageProps {
 export function ExpandableImage({
   src,
   alt,
-  emptyFallbackText = "No reference photo uploaded yet",
+  emptyFallbackText,
   className = "aspect-16/9 w-full",
 }: ExpandableImageProps) {
+  const { t } = useTranslation("general");
   const [isZoomed, setIsZoomed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const fallbackText = emptyFallbackText ?? t("common.noReferencePhoto");
 
   if (!src) {
     return (
@@ -23,7 +27,7 @@ export function ExpandableImage({
         className={`relative flex items-center justify-center rounded-xl border border-gray-200/80 bg-gray-100 p-4 text-center dark:border-gray-800 dark:bg-gray-800 ${className}`}
       >
         <p className="text-xs font-medium text-gray-400 dark:text-gray-500">
-          {emptyFallbackText}
+          {fallbackText}
         </p>
       </div>
     );
@@ -37,7 +41,7 @@ export function ExpandableImage({
         {/* Loading Skeleton */}
         {isLoading && (
           <div className="absolute inset-0 z-10 bg-gray-200/80 dark:bg-gray-700/80 animate-pulse flex items-center justify-center">
-            <span className="sr-only">Loading image...</span>
+            <span className="sr-only">{t("common.loadingImage")}</span>
           </div>
         )}
 
@@ -59,7 +63,7 @@ export function ExpandableImage({
           {!isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/25 backdrop-blur-[1px] transition-opacity max-md:opacity-100 md:opacity-0 md:group-hover:opacity-100">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1.5 text-xs font-medium text-white shadow-md">
-                <Eye className="h-3.5 w-3.5" /> Tap to zoom
+                <Eye className="h-3.5 w-3.5" /> {t("common.tapToZoom")}
               </span>
             </div>
           )}
@@ -74,7 +78,7 @@ export function ExpandableImage({
         >
           <button
             type="button"
-            aria-label="Close zoom"
+            aria-label={t("common.closeZoom")}
             className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors cursor-pointer"
             onClick={() => setIsZoomed(false)}
           >

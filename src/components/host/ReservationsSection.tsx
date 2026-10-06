@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import Typography from "@/components/Typography";
 import { DataTable } from "@/components/DataTable";
 import { getReservationsApartmentByApartmentId } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
 import type { ColumnDef, ReservationRow } from "@/types/component.types";
 import { ReservationActionsCell } from "./ReservationActionsCell";
 
@@ -33,6 +34,7 @@ export function ApartmentReservationsManager({
   onOpenCreateReservation,
   onSelectReservation,
 }: ApartmentReservationsManagerProps) {
+  const { t } = useTranslation("host");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
@@ -64,8 +66,9 @@ export function ApartmentReservationsManager({
       });
       return response.data;
     },
-    enabled: !!apartmentId,
+    enabled: !apartmentId,
   });
+
   const reservations = useMemo<ReservationRow[]>(() => {
     if (!reservationsResponse) return [];
     return Array.isArray(reservationsResponse)
@@ -73,7 +76,7 @@ export function ApartmentReservationsManager({
       : (reservationsResponse as any)?.data || [];
   }, [reservationsResponse]);
 
-  const formatDate = (isoString: string) => {
+  const formatDate = useCallback((isoString: string) => {
     if (!isoString) return "-";
     return new Date(isoString).toLocaleDateString(undefined, {
       month: "short",
@@ -82,12 +85,12 @@ export function ApartmentReservationsManager({
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
+  }, []);
 
   const columns = useMemo<ColumnDef<ReservationRow>[]>(
     () => [
       {
-        header: "Guest",
+        header: t("apartmentReservationsManager.columns.guest"),
         accessorKey: (row) => (
           <div>
             <div className="font-medium text-gray-900 dark:text-gray-100">
@@ -102,30 +105,39 @@ export function ApartmentReservationsManager({
         ),
       },
       {
-        header: "Check-In",
+        header: t("apartmentReservationsManager.columns.checkIn"),
         accessorKey: (row) => formatDate(row.checkInDatetime),
       },
       {
-        header: "Check-Out",
+        header: t("apartmentReservationsManager.columns.checkOut"),
         accessorKey: (row) => formatDate(row.checkOutDatetime),
       },
       {
-        header: "Platform ID",
+        header: t("apartmentReservationsManager.columns.platformId"),
         className: "font-mono text-xs text-gray-500 dark:text-gray-400",
         accessorKey: (row) => row.platformReservationId || "-",
       },
       {
-        header: "Status",
-        accessorKey: (row) => (
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-              STATUS_BADGE_CLASSES[row.status] ||
-              "bg-gray-100 text-gray-800 border-gray-200"
-            }`}
-          >
-            {row.status?.replace(/_/g, " ")}
-          </span>
-        ),
+        header: t("apartmentReservationsManager.columns.status"),
+        accessorKey: (row) => {
+          const statusLabel = t(
+            `apartmentReservationsManager.status.${row.status}`,
+            {
+              defaultValue: row.status?.replace(/_/g, " "),
+            },
+          );
+
+          return (
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                STATUS_BADGE_CLASSES[row.status] ||
+                "bg-gray-100 text-gray-800 border-gray-200"
+              }`}
+            >
+              {statusLabel}
+            </span>
+          );
+        },
       },
       {
         header: "",
@@ -139,24 +151,27 @@ export function ApartmentReservationsManager({
         ),
       },
     ],
-    [apartmentId, onSelectReservation],
+    [t, formatDate, onSelectReservation, apartmentId],
   );
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <Typography type="h3">Reservations</Typography>
+          <Typography type="h3">
+            {t("apartmentReservationsManager.title")}
+          </Typography>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Manage guest stays and view upcoming bookings for this apartment.
+            {t("apartmentReservationsManager.description")}
           </p>
         </div>
         <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
           <button
+            type="button"
             onClick={onOpenCreateReservation}
             className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-lg shadow-sm hover:bg-gray-800 transition-colors cursor-pointer dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
           >
-            + New Reservation
+            {t("apartmentReservationsManager.newReservationButton")}
           </button>
         </div>
       </div>
@@ -167,10 +182,11 @@ export function ApartmentReservationsManager({
             type="h4"
             className="text-rose-700 dark:text-rose-400 mb-1"
           >
-            Failed to load reservations
+            {t("apartmentReservationsManager.error.title")}
           </Typography>
           <p className="text-sm text-rose-500 dark:text-rose-400">
-            {(error as any)?.message || "An unexpected error occurred."}
+            {(error as any)?.message ||
+              t("apartmentReservationsManager.error.defaultMessage")}
           </p>
         </div>
       )}
@@ -196,17 +212,17 @@ export function ApartmentReservationsManager({
                 type="h4"
                 className="text-gray-700 dark:text-gray-300 mb-2"
               >
-                No reservations found
+                {t("apartmentReservationsManager.empty.title")}
               </Typography>
               <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
-                There are currently no bookings for this apartment. Click below
-                to add your first guest reservation.
+                {t("apartmentReservationsManager.empty.description")}
               </p>
               <button
+                type="button"
                 onClick={onOpenCreateReservation}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
               >
-                + New Reservation
+                {t("apartmentReservationsManager.newReservationButton")}
               </button>
             </div>
           }

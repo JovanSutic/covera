@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as z from "zod";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import CustomSelect from "../formItems/Select";
 import Textarea from "../formItems/Textarea";
@@ -32,51 +33,23 @@ const FLAG_STATUSES: [FlagStatus, ...FlagStatus[]] = [
 ];
 
 const flagSchema = z.object({
-  shotId: z.string().min(1, "Shot ID is required"),
+  shotId: z.string().min(1, "flagContentForm.validation.shotIdRequired"),
   assetIds: z.array(z.string()),
 
   reason: z.enum(FLAG_REASONS, {
-    message: "Please select a valid reason for flagging",
+    message: "flagContentForm.validation.reasonRequired",
   }),
 
   details: z
     .string()
-    .min(10, "Please provide at least 10 characters describing the issue"),
+    .min(10, "flagContentForm.validation.detailsMinLength"),
 
   status: z.enum(FLAG_STATUSES, {
-    message: "Invalid status value",
+    message: "flagContentForm.validation.invalidStatus",
   }),
 });
 
 export type FlagFormData = z.infer<typeof flagSchema>;
-
-const REASON_OPTIONS = [
-  {
-    value: "missing_asset",
-    label: "Missing asset/item",
-    subLabel: "An asset listed is not visible in the photo",
-  },
-  {
-    value: "damaged",
-    label: "Damaged or poor condition",
-    subLabel: "Item or area appears damaged or broken",
-  },
-  {
-    value: "poor_photo",
-    label: "Blurry or poor lighting",
-    subLabel: "The photo quality makes verification difficult",
-  },
-  {
-    value: "wrong_room",
-    label: "Incorrect photo/room",
-    subLabel: "Photo does not match this room or item",
-  },
-  {
-    value: "other",
-    label: "Other issue",
-    subLabel: "Describe the situation below",
-  },
-];
 
 interface FlagContentFormProps {
   inspectionId: string; // Passed from parent view/route context
@@ -91,7 +64,36 @@ export function FlagContentForm({
   onSubmitSuccess,
   onCancel,
 }: FlagContentFormProps) {
+  const { t } = useTranslation("guest");
   const queryClient = useQueryClient();
+
+  const reasonOptions = [
+    {
+      value: "missing_asset",
+      label: t("flagContentForm.reasons.missing_asset.label"),
+      subLabel: t("flagContentForm.reasons.missing_asset.subLabel"),
+    },
+    {
+      value: "damaged",
+      label: t("flagContentForm.reasons.damaged.label"),
+      subLabel: t("flagContentForm.reasons.damaged.subLabel"),
+    },
+    {
+      value: "poor_photo",
+      label: t("flagContentForm.reasons.poor_photo.label"),
+      subLabel: t("flagContentForm.reasons.poor_photo.subLabel"),
+    },
+    {
+      value: "wrong_room",
+      label: t("flagContentForm.reasons.wrong_room.label"),
+      subLabel: t("flagContentForm.reasons.wrong_room.subLabel"),
+    },
+    {
+      value: "other",
+      label: t("flagContentForm.reasons.other.label"),
+      subLabel: t("flagContentForm.reasons.other.subLabel"),
+    },
+  ];
 
   const {
     register,
@@ -137,15 +139,17 @@ export function FlagContentForm({
       });
 
       const count = variables.assetIds.length;
-      const targetText = count > 0 ? `${count} asset(s)` : "This item";
+      const targetText =
+        count > 0
+          ? t("flagContentForm.toast.targetAssets", { count })
+          : t("flagContentForm.toast.targetThisItem");
 
-      toast.info(`${targetText} flagged successfully`, {
-        description:
-          "You can now send the host an updated photo showing the new look or current condition.",
+      toast.info(t("flagContentForm.toast.flaggedSuccess", { targetText }), {
+        description: t("flagContentForm.toast.flaggedDescription"),
         duration: Infinity,
         dismissible: true,
         action: {
-          label: "Got it",
+          label: t("flagContentForm.buttons.gotIt"),
           onClick: () => toast.dismiss(),
         },
       });
@@ -157,9 +161,9 @@ export function FlagContentForm({
 
       const errorMessage =
         error?.error?.message ||
-        "Failed to submit report. Please try again.";
+        t("flagContentForm.toast.failedDefaultMessage");
 
-      toast.error("Failed to flag item", {
+      toast.error(t("flagContentForm.toast.failedTitle"), {
         description: errorMessage,
       });
 
@@ -173,7 +177,7 @@ export function FlagContentForm({
   const assetOptions = (shot.assets || []).map((asset) => ({
     value: asset.id,
     label: asset.name,
-    subLabel: `Category: ${asset.category.replace(/_/g, " ")}`,
+    subLabel: `${t("flagContentForm.labels.category")} ${asset.category.replace(/_/g, " ")}`,
   }));
 
   const onSubmit = (data: FlagFormData) => {
@@ -186,10 +190,10 @@ export function FlagContentForm({
 
       <div className="space-y-1">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Report an Issue
+          {t("flagContentForm.title")}
         </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Flagging:{" "}
+          {t("flagContentForm.flaggingLabel")}{" "}
           <span className="font-medium text-gray-800 dark:text-gray-200">
             {shot.title}
           </span>
@@ -211,14 +215,18 @@ export function FlagContentForm({
             render={({ field }) => (
               <MultiSelect
                 {...field}
-                label="Select specific item (optional)"
+                label={t("flagContentForm.labels.selectItemOptional")}
                 options={assetOptions}
                 onChange={(val: any) => {
                   const newValue =
                     val?.target?.value !== undefined ? val.target.value : val;
                   field.onChange(newValue);
                 }}
-                error={errors.assetIds?.message}
+                error={
+                  errors.assetIds?.message
+                    ? t(errors.assetIds.message)
+                    : undefined
+                }
               />
             )}
           />
@@ -231,24 +239,30 @@ export function FlagContentForm({
           render={({ field }) => (
             <CustomSelect
               {...field}
-              label="Reason for report"
-              options={REASON_OPTIONS}
+              label={t("flagContentForm.labels.reasonForReport")}
+              options={reasonOptions}
               onChange={(val: any) => {
                 const newValue =
                   val?.target?.value !== undefined ? val.target.value : val;
                 field.onChange(newValue);
               }}
-              error={errors.reason?.message}
+              error={
+                errors.reason?.message
+                  ? t(errors.reason.message)
+                  : undefined
+              }
             />
           )}
         />
 
         {/* Text Area */}
         <Textarea
-          label="Additional details"
+          label={t("flagContentForm.labels.additionalDetails")}
           rows={4}
-          placeholder="Please describe what is broken, missing, or incorrect..."
-          error={errors.details?.message}
+          placeholder={t("flagContentForm.placeholders.details")}
+          error={
+            errors.details?.message ? t(errors.details.message) : undefined
+          }
           {...register("details")}
         />
       </div>
@@ -262,7 +276,7 @@ export function FlagContentForm({
             disabled={createFlagMutation.isPending}
             className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 cursor-pointer"
           >
-            Cancel
+            {t("flagContentForm.buttons.cancel")}
           </button>
         )}
         <button
@@ -270,7 +284,9 @@ export function FlagContentForm({
           disabled={!isValid || createFlagMutation.isPending}
           className="rounded-lg bg-black dark:bg-white dark:text-black px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          {createFlagMutation.isPending ? "Submitting..." : "Submit Report"}
+          {createFlagMutation.isPending
+            ? t("flagContentForm.buttons.submitting")
+            : t("flagContentForm.buttons.submit")}
         </button>
       </div>
     </form>

@@ -1,0 +1,148 @@
+{
+  "guestInspectionMessage": {
+    "headerTitle": "Airbnb Guest Message",
+    "copyButton": "Copy Message",
+    "toastCopySuccess": "Guest message copied to clipboard!",
+    "toastCopyError": "Failed to copy message",
+    "messageTemplate": "Hi {{guestName}}! We want your stay to be completely worry-free. Before you unpack and relax, please take 2 minutes to complete your arrival handover:\n\n{{guestInspectionUrl}}\n\nThank you, and enjoy your stay!"
+  },
+  "inlineCamera": {
+    "title": "Capture Verification Photo",
+    "description": "Take a full-resolution photo using your device camera to preserve EXIF timestamp and GPS proof for AirCover.",
+    "cancelButton": "Cancel",
+    "openCameraButton": "Open Camera"
+  },
+  "reservationActionsCell": {
+    "toast": {
+      "deleteSuccess": "Reservation deleted successfully!",
+      "deleteError": "Failed to delete reservation. Please try again.",
+      "createSuccess": "Guest inspection session created!",
+      "createError": "Failed to create guest inspection. Please try again."
+    },
+    "tooltip": {
+      "hasSubmittedProofs": "Inspection photos have already been submitted",
+      "isTooLate": "Inspection window has closed (expired 1 hour past check-in)",
+      "isTooEarly": "Inspection window opens {{windowHours}}h before check-in (in ~{{hoursUntilWindow}}h)",
+      "active": "Inspection window active! Click to capture photo proof",
+      "hasInspection": "Guest inspection link already created",
+      "createInspection": "Generate new guest inspection link",
+      "copyMessage": "Copy guest message for Airbnb",
+      "delete": "Delete reservation",
+      "cannotDelete": "Cannot delete reservations that have already started"
+    },
+    "confirm": {
+      "createMessage": "Create guest inspection?",
+      "createLabel": "Create",
+      "deleteMessage": "Delete reservation?",
+      "deleteLabel": "Delete"
+    }
+  },
+  "apartmentReservationsManager": {
+    "title": "Reservations",
+    "description": "Manage guest stays and view upcoming bookings for this apartment.",
+    "newReservationButton": "+ New Reservation",
+    "columns": {
+      "guest": "Guest",
+      "checkIn": "Check-In",
+      "checkOut": "Check-Out",
+      "platformId": "Platform ID",
+      "status": "Status"
+    },
+    "status": {
+      "PENDING_PROOF": "PENDING PROOF",
+      "COVERED": "COVERED",
+      "DISPUTED": "DISPUTED",
+      "RESOLVED": "RESOLVED",
+      "CLOSED": "CLOSED"
+    },
+    "error": {
+      "title": "Failed to load reservations",
+      "defaultMessage": "An unexpected error occurred."
+    },
+    "empty": {
+      "title": "No reservations found",
+      "description": "There are currently no bookings for this apartment. Click below to add your first guest reservation."
+    }
+  },
+  "shotStudioModal": {
+    "title": "Apartment Shot Studio",
+    "unsavedChanges": "Unsaved changes",
+    "subtitle": "Define verification shot requirements and map uploaded media assets.",
+    "cancelButton": "Cancel",
+    "saveButton": "Save Changes",
+    "savingButton": "Saving..."
+  },
+  "unmatchedAssetsBanner": {
+    "missingCoverage_one": "<bold>{{count}} asset</bold> missing photo coverage.",
+    "missingCoverage_other": "<bold>{{count}} assets</bold> missing photo coverage.",
+    "reviewInStudio": "Review in Shot Studio →"
+  },
+  "createApartmentForm": {
+    "validation": {
+      "nameRequired": "Apartment name is required",
+      "addressRequired": "Address is required",
+      "invalidOwner": "Please select a valid owner",
+      "invalidLocation": "Please select a valid location"
+    },
+    "labels": {
+      "name": "Apartment Name",
+      "address": "Street Address",
+      "externalId": "External Reference ID (Optional)",
+      "owner": "Assigned Owner",
+      "location": "Location"
+    },
+    "placeholders": {
+      "name": "Luxury Suite Downtown",
+      "address": "123 Main Street, Suite 4B",
+      "externalId": "EXT-10042"
+    },
+    "button": {
+      "submit": "Create Apartment",
+      "submitting": "Registering Property..."
+    },
+    "toast": {
+      "success": "Apartment created successfully!",
+      "error": "An error occurred creating the apartment."
+    }
+  },
+  "createReservationForm": {
+    "validation": {
+      "guestNameRequired": "Guest name is required",
+      "invalidEmail": "Please enter a valid email address",
+      "checkInRequired": "Check-in date & time is required",
+      "checkInFuture": "Check-in time must be in the future",
+      "checkOutRequired": "Check-out date & time is required",
+      "checkOutFuture": "Check-out time must be in the future",
+      "altCheckInFuture": "Alternative check-in time must be in the future",
+      "altCheckOutFuture": "Alternative check-out time must be in the future",
+      "checkOutAfterCheckIn": "Check-out date must be strictly after Check-in date",
+      "altCheckOutAfterAltCheckIn": "Alternative check-out date must be strictly after alternative check-in date"
+    },
+    "labels": {
+      "guestName": "Guest Name",
+      "guestEmail": "Guest Email (Optional)",
+      "platformReservationId": "Platform Reservation ID (Optional)",
+      "checkInDatetime": "Check-In Date & Time",
+      "checkOutDatetime": "Check-Out Date & Time",
+      "alternativeCheckInDatetime": "Alternative Check-In (Optional)",
+      "alternativeCheckOutDatetime": "Alternative Check-Out (Optional)"
+    },
+    "placeholders": {
+      "guestName": "John Doe...",
+      "guestEmail": "john.doe@example.com",
+      "platformReservationId": "HM12345678, AIRBNB-XYZ..."
+    },
+    "toggleAlternativeDates": {
+      "show": "+ Alternative arrival or departure?",
+      "hide": "- Remove alternative dates"
+    },
+    "button": {
+      "submit": "Create Reservation",
+      "submitting": "Creating Reservation..."
+    },
+    "toast": {
+      "success": "Reservation created successfully!",
+      "error": "An error occurred creating the reservation."
+    }
+  }
+}

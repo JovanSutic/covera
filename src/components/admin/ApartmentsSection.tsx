@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Drawer from "../Drawer";
 import CreateApartmentForm from "../forms/CreateApartmentForm";
 import { withAuth } from "@/lib/api/api";
@@ -16,6 +17,7 @@ import type { ColumnDef } from "@/types/component.types";
 import { DataTable } from "../DataTable";
 
 export default function ApartmentsSection() {
+  const { t, i18n } = useTranslation("general");
   const [isApartmentDrawerOpen, setIsApartmentDrawerOpen] = useState(false);
 
   const { data: apartments, isLoading: apartmentsIsLoading } = useQuery({
@@ -84,55 +86,58 @@ export default function ApartmentsSection() {
     }));
   }, [users]);
 
-  const columns: ColumnDef<ApartmentWithLocation>[] = [
-    {
-      header: "Apartment Name",
-      accessorKey: "name",
-      className: "font-medium text-gray-900",
-    },
-    {
-      header: "Address",
-      accessorKey: "address",
-      className: "text-gray-500",
-    },
-    {
-      header: "Location",
-      accessorKey: (row) => locationMap.get(row.location.name) || "—",
-      className: "text-gray-700 font-medium",
-    },
-    {
-      header: "Host / Owner",
-      accessorKey: (row) => {
-        const owner = userMap.get(row.owner);
-        if (!owner) return <span className="text-gray-400">—</span>;
-        return (
-          <div className="flex flex-col">
-            <span className="font-medium text-gray-900">{owner.name}</span>
-            <span className="text-xs text-gray-500">{owner.email}</span>
-          </div>
-        );
+  const columns: ColumnDef<ApartmentWithLocation>[] = useMemo(
+    () => [
+      {
+        header: t("apartments.columns.name"),
+        accessorKey: "name",
+        className: "font-medium text-gray-900",
       },
-    },
-    {
-      header: "External ID",
-      accessorKey: (row) => (
-        <span className="text-xs font-mono text-gray-500">
-          {row.externalId || "—"}
-        </span>
-      ),
-    },
-    {
-      header: "Created Date",
-      accessorKey: (row) => {
-        return new Date(row.createdAt).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
+      {
+        header: t("apartments.columns.address"),
+        accessorKey: "address",
+        className: "text-gray-500",
       },
-      className: "text-xs",
-    },
-  ];
+      {
+        header: t("apartments.columns.location"),
+        accessorKey: (row) => locationMap.get(row.location.name) || "—",
+        className: "text-gray-700 font-medium",
+      },
+      {
+        header: t("apartments.columns.hostOwner"),
+        accessorKey: (row) => {
+          const owner = userMap.get(row.owner);
+          if (!owner) return <span className="text-gray-400">—</span>;
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-900">{owner.name}</span>
+              <span className="text-xs text-gray-500">{owner.email}</span>
+            </div>
+          );
+        },
+      },
+      {
+        header: t("apartments.columns.externalId"),
+        accessorKey: (row) => (
+          <span className="text-xs font-mono text-gray-500">
+            {row.externalId || "—"}
+          </span>
+        ),
+      },
+      {
+        header: t("apartments.columns.createdDate"),
+        accessorKey: (row) => {
+          return new Date(row.createdAt).toLocaleDateString(i18n.language, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          });
+        },
+        className: "text-xs",
+      },
+    ],
+    [t, i18n.language, locationMap, userMap],
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -143,7 +148,7 @@ export default function ApartmentsSection() {
           disabled={locationsIsLoading || usersIsLoading}
           className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-lg shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors cursor-pointer"
         >
-          Create Apartment
+          {t("apartments.createButton")}
         </Button>
       </div>
 
@@ -151,13 +156,13 @@ export default function ApartmentsSection() {
         data={apartments}
         columns={columns}
         isLoading={apartmentsIsLoading || locationsIsLoading || usersIsLoading}
-        emptyMessage="No apartments found in the system database."
+        emptyMessage={t("apartments.emptyMessage")}
       />
 
       <Drawer
         isOpen={isApartmentDrawerOpen}
         onClose={() => setIsApartmentDrawerOpen(false)}
-        title="Create New Apartment"
+        title={t("apartments.createDrawerTitle")}
       >
         <CreateApartmentForm
           onSuccess={() => {

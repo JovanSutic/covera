@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal } from "../Modal";
 import { ShotStudioFlow } from "./ShotStudioFlow";
 import type { SyncShotItem, Asset } from "@/api/generated/requests/types.gen";
@@ -23,6 +24,7 @@ export function ShotStudioModal({
   availableAssets,
   onSave,
 }: ShotStudioModalProps) {
+  const { t } = useTranslation("host");
   const [shots, setShots] = useState<WithClientId<SyncShotItem>[]>(() =>
     addClientId(initialShots),
   );
@@ -58,33 +60,37 @@ export function ShotStudioModal({
       size="xl"
       title={
         <div className="flex items-center gap-2">
-          <span>Apartment Shot Studio</span>
+          <span>{t("shotStudioModal.title")}</span>
           {hasUnsavedChanges && (
             <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium">
-              Unsaved changes
+              {t("shotStudioModal.unsavedChanges")}
             </span>
           )}
         </div>
       }
       subtitle={
         <span className="hidden sm:inline">
-          Define verification shot requirements and map uploaded media assets.
+          {t("shotStudioModal.subtitle")}
         </span>
       }
       footer={
         <>
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer"
           >
-            Cancel
+            {t("shotStudioModal.cancelButton")}
           </button>
           <button
+            type="button"
             onClick={handleSave}
             disabled={isSaving}
             className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
           >
-            {isSaving ? "Saving..." : "Save Changes"}
+            {isSaving
+              ? t("shotStudioModal.savingButton")
+              : t("shotStudioModal.saveButton")}
           </button>
         </>
       }
