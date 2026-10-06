@@ -11,7 +11,8 @@ import CustomSelect from "./formItems/Select";
 const LANGUAGES = [
   { code: "en", label: "EN" },
   { code: "de", label: "DE" },
-  { code: "sr", label: "SR" },
+  { code: "tr", label: "TR" },
+  { code: "sr-Latn", label: "SR" },
 ];
 
 export default function Header() {
@@ -45,7 +46,7 @@ export default function Header() {
           ) : user ? (
             <ProfileDropdown
               user={user}
-              currentLang={i18n.language?.split("-")[0] || "en"}
+              currentLang={i18n.language || "en"}
               onLanguageChange={handleLanguageChange}
               onLogout={handleLogout}
             />

@@ -1,1 +1,112 @@
-{}
+{
+  "flagContentForm": {
+    "title": "Melden Sie ein Problem",
+    "flaggingLabel": "Markieren:",
+    "validation": {
+      "shotIdRequired": "Ein Schussausweis ist erforderlich",
+      "reasonRequired": "Bitte wählen Sie einen gültigen Grund für die Meldung aus",
+      "detailsMinLength": "Bitte beschreiben Sie das Problem in mindestens 10 Zeichen",
+      "invalidStatus": "Ungültiger Statuswert"
+    },
+    "reasons": {
+      "missing_asset": {
+        "label": "Fehlender Vermögenswert/Artikel",
+        "subLabel": "Ein aufgeführtes Asset ist auf dem Foto nicht sichtbar"
+      },
+      "damaged": {
+        "label": "Beschädigter oder schlechter Zustand",
+        "subLabel": "Der Gegenstand oder Bereich scheint beschädigt oder kaputt zu sein"
+      },
+      "poor_photo": {
+        "label": "Verschwommene oder schlechte Beleuchtung",
+        "subLabel": "Die Fotoqualität erschwert die Überprüfung"
+      },
+      "wrong_room": {
+        "label": "Falsches Foto/Zimmer",
+        "subLabel": "Das Foto passt nicht zu diesem Zimmer oder Artikel"
+      },
+      "other": {
+        "label": "Anderes Problem",
+        "subLabel": "Beschreiben Sie die Situation unten"
+      }
+    },
+    "labels": {
+      "selectItemOptional": "Wählen Sie einen bestimmten Artikel aus (optional)",
+      "reasonForReport": "Grund für die Meldung",
+      "additionalDetails": "Weitere Details",
+      "category": "Kategorie:"
+    },
+    "placeholders": {
+      "details": "Bitte beschreiben Sie, was kaputt ist, fehlt oder falsch ist ..."
+    },
+    "buttons": {
+      "cancel": "Abbrechen",
+      "submit": "Bericht einreichen",
+      "submitting": "Einreichen...",
+      "gotIt": "Verstanden"
+    },
+    "toast": {
+      "flaggedSuccess": "{{targetText}} erfolgreich markiert",
+      "flaggedDescription": "Sie können dem Gastgeber nun ein aktualisiertes Foto senden, das das neue Aussehen oder den aktuellen Zustand zeigt.",
+      "failedTitle": "Das Markieren des Elements ist fehlgeschlagen",
+      "failedDefaultMessage": "Fehler beim Senden des Berichts. Bitte versuchen Sie es erneut.",
+      "targetAssets": "{{count}} Vermögenswert(e)",
+      "targetThisItem": "Dieser Artikel"
+    }
+  },
+  "inspectionIntro": {
+    "badge": "Ankunftsübergabe und Seelenfrieden",
+    "titleNamed": "Willkommen bei {{apartmentName}}! Lassen Sie uns für Sie sorgen.",
+    "titleDefault": "Willkommen zu Ihrem Aufenthalt! Lassen Sie uns für Sie sorgen.",
+    "description": "Wir möchten, dass Ihr Aufenthalt völlig sorgenfrei verläuft. Nehmen Sie sich vor dem Auspacken und Entspannen zwei Minuten Zeit, um die Übergabe bei Ihrer Ankunft abzuschließen. Die Fotos sind nach Raum für Raum gruppiert, sodass Sie den Raum schnell überprüfen und sicherstellen können, dass alles Ihren Erwartungen entspricht.",
+    "pitch": {
+      "peaceOfMind": {
+        "title": "Für Ihren Seelenfrieden",
+        "description": "Erstellt eine faire, mit einem Zeitstempel versehene Aufzeichnung, sodass bereits vorhandene Abnutzungserscheinungen oder Markierungen nicht zu Ihren Lasten gehen."
+      },
+      "effortlessCheck": {
+        "title": "Mühelose Zimmerüberprüfung",
+        "description": "Durchsuchen Sie die Referenzfotos des Gastgebers nach Raum und kennzeichnen Sie Fotos nur, wenn Ihnen etwas Auffälliges auffällt."
+      }
+    },
+    "buttons": {
+      "loading": "Ankunftsdetails werden geladen...",
+      "start": "Beginnen Sie mit der Übergabe bei der Ankunft"
+    }
+  },
+  "instructionsShort": {
+    "title": "So funktioniert es in 3 einfachen Schritten:",
+    "steps": {
+      "step1": "Tippen Sie beim Betreten auf einen beliebigen Raum unten, um die Referenzfotos des Gastgebers anzuzeigen.",
+      "step2": "Schauen Sie sich kurz um, um sicherzustellen, dass alles zum Raum passt und zum Genießen bereitsteht.",
+      "step3": "Wenn Sie frühere Schäden oder fehlende Gegenstände entdecken, kennzeichnen Sie dieses Foto und informieren Sie den Gastgeber."
+    },
+    "buttons": {
+      "hide": "Detaillierte Schritte ausblenden",
+      "show": "Wie funktioniert das?"
+    }
+  },
+  "roomDetails": {
+    "allRooms": "Alle Zimmer",
+    "noRequirements": "Für {{roomName}} sind keine Fotoanforderungen registriert.",
+    "previousRoom": "Vorheriger Raum",
+    "nextRoom": "Nächster Raum",
+    "pagination": "{{current}} von {{total}}"
+  },
+  "roomFlowItem": {
+    "photo_one": "{{count}} Referenzfoto",
+    "photo_other": "{{count}} Referenzfotos",
+    "viewRoom": "Zimmer ansehen"
+  },
+  "roomFlowList": {
+    "title": "Zimmer-Komplettlösung",
+    "description": "Wählen Sie unten einen beliebigen Raum aus, um Referenzfotos anzusehen und die Einrichtung der Unterkunft zu bestätigen."
+  },
+  "roomPhotoItem": {
+    "flagIssueTitle": "Problem mit diesem Foto melden",
+    "flagItem": "Artikel kennzeichnen",
+    "capturedOn": "Aufgenommen am {{val, datetime}}",
+    "verifyItemsPlural": "Stellen Sie sicher, dass diese Elemente im Raum deutlich sichtbar sind:",
+    "verifyItemSingular": "Stellen Sie sicher, dass dieses Element im Raum deutlich sichtbar ist:"
+  }
+}

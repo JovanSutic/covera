@@ -1,0 +1,112 @@
+{
+  "flagContentForm": {
+    "title": "Prijavite problem",
+    "flaggingLabel": "Označavanje:",
+    "validation": {
+      "shotIdRequired": "ID snimka je potreban",
+      "reasonRequired": "Izaberite validan razlog za označavanje",
+      "detailsMinLength": "Navedite najmanje 10 znakova koji opisuju problem",
+      "invalidStatus": "Nevažeća vrednost statusa"
+    },
+    "reasons": {
+      "missing_asset": {
+        "label": "Nedostaje sredstvo/stavka",
+        "subLabel": "Navedeno sredstvo nije prikazano <split/ stanje"
+      },
+      "damaged": {
+        "label": "područje izgleda oštećeno ili slomljeno",
+        "subLabel": "Zamućeno ili loše osvetljenje"
+      },
+      "poor_photo": {
+        "label": "Kvalitet fotografije otežava verifikaciju",
+        "subLabel": "Netačna fotografija/soba"
+      },
+      "wrong_room": {
+        "label": "Slika se ne podudara sa ovom prostorijom ili stavkom",
+        "subLabel": "Drugi problem"
+      },
+      "other": {
+        "label": "Other issue",
+        "subLabel": "Opišite situaciju u nastavku"
+      }
+    },
+    "labels": {
+      "selectItemOptional": "Izaberite određenu stavku (opciono)",
+      "reasonForReport": "Razlog za prijavu",
+      "additionalDetails": "Dodatni detalji",
+      "category": "Kategorija:"
+    },
+    "placeholders": {
+      "details": "Opišite šta je pokvareno, nedostaje ili netačno..."
+    },
+    "buttons": {
+      "cancel": "Otkaži",
+      "submit": "Pošalji izveštaj",
+      "submitting": "Slanje... to <split_VAR_> Got",
+      "gotIt": "Sada možete poslati domaćinu ažuriranu fotografiju koja prikazuje novi izgled ili trenutno stanje."
+    },
+    "toast": {
+      "flaggedSuccess": "Označavanje stavke nije uspelo",
+      "flaggedDescription": "Slanje izveštaja nije uspelo. Pokušajte ponovo.",
+      "failedTitle": "__VAR_0__ sredstva",
+      "failedDefaultMessage": "Failed to submit report. Please try again.",
+      "targetAssets": "{{count}} asset(s)",
+      "targetThisItem": "Ovaj artikal"
+    }
+  },
+  "inspectionIntro": {
+    "badge": "Primopredaja i mir",
+    "titleNamed": "Dobrodošli u {{apartmentName}}! Hajde da se sredimo.",
+    "titleDefault": "Dobro došli u vaš boravak! Hajde da se sredimo.",
+    "description": "Želimo da vaš boravak bude potpuno bezbrižan. Pre nego što se raspakujete i opustite, odvojite 2 minuta da završite primopredaju. Fotografije su grupisane po sobi tako da možete brzo da pregledate prostor i proverite da li sve ispunjava vaša očekivanja.",
+    "pitch": {
+      "peaceOfMind": {
+        "title": "Za vaš mir",
+        "description": "Uspostavlja poštenu evidenciju sa vremenskim oznakama tako da nemate već postojeće habanje ili tragove."
+      },
+      "effortlessCheck": {
+        "title": "Provera sobe bez napora",
+        "description": "Pregledajte referentne fotografije domaćina po prostoriji i označite fotografije samo ako primetite da nešto nije u redu."
+      }
+    },
+    "buttons": {
+      "loading": "Učitavanje detalja dolaska...",
+      "start": "Početak primopredaje dolaska"
+    }
+  },
+  "instructionsShort": {
+    "title": "Kako to funkcioniše u 3 jednostavna koraka:",
+    "steps": {
+      "step1": "Dodirnite bilo koju sobu ispod dok ulazite u nju da biste videli referentne fotografije domaćina.",
+      "step2": "Brzo pogledajte okolo da biste se uverili da sve odgovara prostoru i da izgleda spremno za uživanje.",
+      "step3": "Ako uočite prethodnu štetu ili predmete koji nedostaju, označite tu fotografiju i obavestite domaćina."
+    },
+    "buttons": {
+      "hide": "Sakrij detaljne korake",
+      "show": "Kako ovo funkcioniše?"
+    }
+  },
+  "roomDetails": {
+    "allRooms": "Sve sobe",
+    "noRequirements": "Nema registrovanih zahteva za fotografije za {{roomName}}.",
+    "previousRoom": "Prethodna soba",
+    "nextRoom": "Sledeća soba",
+    "pagination": "{{current}} od {{total}}"
+  },
+  "roomFlowItem": {
+    "photo_one": "{{count}} referentna fotografija",
+    "photo_other": "{{count}} referentne fotografije",
+    "viewRoom": "Pogledajte sobu"
+  },
+  "roomFlowList": {
+    "title": "Promena soba",
+    "description": "Izaberite bilo koju sobu ispod da biste podesili referencu."
+  },
+  "roomPhotoItem": {
+    "flagIssueTitle": "Problem sa zastavicom sa ovom fotografijom",
+    "flagItem": "Označi stavku",
+    "capturedOn": "Snimljeno {{val, datetime}}",
+    "verifyItemsPlural": "Proverite da li su ove stavke jasno vidljive u prostoru:",
+    "verifyItemSingular": "Uverite se da je ova stavka jasno vidljiva u prostoru:"
+  }
+}

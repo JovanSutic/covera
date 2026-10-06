@@ -2,23 +2,33 @@
 import fs from "node:fs";
 import path from "node:path";
 import { translate } from "@vitalets/google-translate-api";
+import { cyrillicToLatin } from "./cyrillicToLatin";
 
 const LOCALES_DIR = path.join(process.cwd(), "public/locales");
 const SOURCE_LANG = "en";
 
-const TARGET_LANGS = ["de", "sr"];
+const TARGET_LANGS = ["de", "tr", "sr-Latn"];
 
 const FOLDER_MAP: Record<string, string> = {
   de: "de",
-  sr: "sr",
+  tr: "tr",
+  "sr-Latn": "sr-Latn",
 };
 
-const NAMESPACES = ["assets", "common"];
+// Google free web API defaults to Cyrillic for 'sr' and ignores '-Latn'
+const GOOGLE_LANG_MAP: Record<string, string> = {
+  de: "de",
+  tr: "tr",
+  "sr-Latn": "sr", 
+};
 
-// Helper to delay between language requests
+const NAMESPACES = ["assets", "common", "host", "guest", "general"];
+
+// HTML tags are preserved intact by Google Translate
+const SPLIT_TAG = "<split/>";
+
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Flatten nested JSON object into dot-notation paths
 function flattenObject(
   obj: Record<string, any>,
   prefix = "",
@@ -37,7 +47,6 @@ function flattenObject(
   );
 }
 
-// Unflatten dot-notation paths back to deep nested object
 function unflattenObject(flatObj: Record<string, string>): Record<string, any> {
   const result: Record<string, any> = {};
   for (const pathKey of Object.keys(flatObj)) {
@@ -56,6 +65,27 @@ function unflattenObject(flatObj: Record<string, string>): Record<string, any> {
   return result;
 }
 
+function maskInterpolations(text: string): {
+  maskedText: string;
+  vars: string[];
+} {
+  const vars: string[] = [];
+  const maskedText = text.replace(/\{\{[^}]+\}\}/g, (match) => {
+    vars.push(match);
+    return `__VAR_${vars.length - 1}__`;
+  });
+  return { maskedText, vars };
+}
+
+function unmaskInterpolations(text: string, vars: string[]): string {
+  let restored = text;
+  vars.forEach((originalVar, idx) => {
+    const regex = new RegExp(`__\\s*VAR_${idx}\\s*__`, "g");
+    restored = restored.replace(regex, originalVar);
+  });
+  return restored;
+}
+
 async function syncTranslations() {
   for (const ns of NAMESPACES) {
     const sourcePath = path.join(LOCALES_DIR, SOURCE_LANG, `${ns}.json`);
@@ -66,6 +96,8 @@ async function syncTranslations() {
 
     for (const lang of TARGET_LANGS) {
       const folderName = FOLDER_MAP[lang] || lang;
+      const targetGoogleLang = GOOGLE_LANG_MAP[lang] || lang;
+
       console.log(`\nSyncing namespace '${ns}' for: ${lang}`);
 
       const targetDir = path.join(LOCALES_DIR, folderName);
@@ -85,9 +117,12 @@ async function syncTranslations() {
         }
       }
 
-      // Find missing keys
+      // Filter out missing or previously corrupted entries
       const missingKeys = Object.keys(flatSource).filter(
-        (key) => !flatTarget[key],
+        (key) =>
+          !flatTarget[key] ||
+          flatTarget[key].includes("___SPLIT_DELIMITER___") ||
+          flatTarget[key].includes("___СПЛИТ_ДЕЛИМИТЕР___"),
       );
 
       if (missingKeys.length === 0) {
@@ -95,37 +130,55 @@ async function syncTranslations() {
         continue;
       }
 
-      // Batch all missing values into a single text block
-      const missingValues = missingKeys.map((k) => flatSource[k]);
-      const batchedText = missingValues.join("\n");
-
-      try {
-        // Single network call for the entire namespace!
-        const res = await translate(batchedText, { to: lang });
-        const translatedValues = res.text.split("\n");
-
-        missingKeys.forEach((key, idx) => {
-          const translatedVal =
-            translatedValues[idx]?.trim() || flatSource[key];
-          flatTarget[key] = translatedVal;
-          console.log(`  [${lang}] "${flatSource[key]}" -> "${translatedVal}"`);
-        });
-
-        const updatedData = unflattenObject(flatTarget);
-        fs.writeFileSync(
-          targetPath,
-          JSON.stringify(updatedData, null, 2),
-          "utf-8",
+      // Process in smaller batches of 15 to stay within URL length limits
+      const CHUNK_SIZE = 15;
+      for (let i = 0; i < missingKeys.length; i += CHUNK_SIZE) {
+        const chunkKeys = missingKeys.slice(i, i + CHUNK_SIZE);
+        const maskedEntries = chunkKeys.map((k) =>
+          maskInterpolations(flatSource[k]),
         );
-      } catch (err: any) {
-        console.error(
-          `  Failed to translate namespace '${ns}' to ${lang}:`,
-          err.message || err,
-        );
+        const batchedText = maskedEntries
+          .map((entry) => entry.maskedText)
+          .join(` ${SPLIT_TAG} `);
+
+        try {
+          const res = await translate(batchedText, { to: targetGoogleLang });
+          let translatedText = res.text;
+
+          // Convert Cyrillic to Latin for Serbian
+          if (lang === "sr-Latn") {
+            translatedText = cyrillicToLatin(translatedText);
+          }
+
+          // Split safely by the XML tag
+          const translatedSegments = translatedText.split(
+            /\s*<split\s*\/?>\s*/i,
+          );
+
+          chunkKeys.forEach((key, idx) => {
+            const rawTranslated = translatedSegments[idx]?.trim();
+            const restoredValue = rawTranslated
+              ? unmaskInterpolations(rawTranslated, maskedEntries[idx].vars)
+              : flatSource[key];
+
+            flatTarget[key] = restoredValue;
+          });
+        } catch (err: any) {
+          console.error(
+            `  Failed translating chunk for '${ns}' to ${lang}:`,
+            err.message || err,
+          );
+        }
+
+        await sleep(1000);
       }
 
-      // Respectful pause between language requests to prevent IP blocks
-      await sleep(1500);
+      const updatedData = unflattenObject(flatTarget);
+      fs.writeFileSync(
+        targetPath,
+        JSON.stringify(updatedData, null, 2),
+        "utf-8",
+      );
     }
   }
   console.log("\n✅ Translation sync complete!");

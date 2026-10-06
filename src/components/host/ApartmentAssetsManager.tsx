@@ -40,7 +40,7 @@ function RoomCard({
           </div>
           <div>
             <Typography type="h4" className="text-gray-900 font-semibold dark:text-white">
-              {t(`apartmentAssetsManager.roomLocations.${roomName}`, roomName)}
+              {t(`roomLocations.${roomName}`, roomName)}
             </Typography>
             <Typography type="caption" className="text-gray-500 dark:text-gray-400 mt-0.5 block">
               {t("apartmentAssetsManager.roomCard.assetCount", { count: assets.length })}

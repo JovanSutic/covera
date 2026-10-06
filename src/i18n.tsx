@@ -3,20 +3,46 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import Backend from "i18next-http-backend";
 
-const languageDetector = new LanguageDetector();
+i18next
+  .use(Backend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    // 1. Explicitly allow exact language keys
+    supportedLngs: ["en", "de", "tr", "sr-Latn"],
+    
+    // 2. DISABLE nonExplicitSupportedLngs so i18next stops stripping '-Latn'
+    nonExplicitSupportedLngs: false,
 
-// Override the detect function to normalize saved language to language-only code
-languageDetector.detect = () => {
-  const lang = localStorage.getItem('i18nextLng') || navigator.language || 'en';
+    // 3. Ensure exact string lookup for folder paths (/locales/sr-Latn/general.json)
+    load: "currentOnly",
+    lowerCaseLng: false,
 
-  // Normalize to language only, e.g. 'de-DE' => 'de'
-  return lang.split('-')[0];
-};
-
-i18next.use(languageDetector).use(initReactI18next).use(Backend).init({
-    supportedLngs: ['en', 'de', 'sr'],
-    returnObjects: true,
-    load: 'languageOnly',
     fallbackLng: "en",
-    debug: true,
-});
+    debug: process.env.NODE_ENV === "development",
+
+    detection: {
+      order: ["localStorage", "navigator"],
+      caches: ["localStorage"],
+      lookupLocalStorage: "i18nextLng",
+
+      // Intercept browser languages (e.g. 'sr', 'sr-RS', 'sr-ME') and force 'sr-Latn'
+      convertDetectedLanguage: (lng) => {
+        if (!lng) return "en";
+        if (lng.toLowerCase().startsWith("sr")) {
+          return "sr-Latn";
+        }
+        return lng;
+      },
+    },
+
+    backend: {
+      loadPath: "/locales/{{lng}}/{{ns}}.json",
+    },
+
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+
+export default i18next;

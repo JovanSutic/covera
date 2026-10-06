@@ -1,0 +1,148 @@
+{
+  "guestInspectionMessage": {
+    "headerTitle": "Airbnb poruka gosta",
+    "copyButton": "Kopiraj poruku",
+    "toastCopySuccess": "Poruka gosta je kopirana u međuspremnik!",
+    "toastCopyError": "Kopiranje poruke nije uspelo",
+    "messageTemplate": "Zdravo {{guestName}}! Želimo da vaš boravak bude potpuno bezbrižan. Pre nego što se raspakujete i opustite, odvojite 2 minuta da završite primopredaju:\n\n{{guestInspectionUrl}}\n\nHvala vam i uživajte u boravku!"
+  },
+  "inlineCamera": {
+    "title": "Snimite fotografiju za verifikaciju",
+    "description": "Snimite fotografiju u punoj rezoluciji pomoću kamere uređaja da biste sačuvali EKSIF vremensku oznaku i GPS dokaz za AirCover.",
+    "cancelButton": "Otkaži",
+    "openCameraButton": "Otvori kameru"
+  },
+  "reservationActionsCell": {
+    "toast": {
+      "deleteSuccess": "Rezervacija je uspešno izbrisana!",
+      "deleteError": "Brisanje rezervacije nije uspelo. Pokušajte ponovo.",
+      "createSuccess": "Sesija inspekcije gostiju je napravljena!",
+      "createError": "Kreiranje inspekcije gostiju nije uspelo. Pokušajte ponovo."
+    },
+    "tooltip": {
+      "hasSubmittedProofs": "Fotografije sa inspekcije su već poslate",
+      "isTooLate": "Prozor za inspekciju je zatvoren (istekao 1 sat nakon prijave)",
+      "isTooEarly": "Prozor za inspekciju se otvara {{windowHours}}h pre prijave (za ~{{hoursUntilWindow}}h)",
+      "active": "Prozor za inspekciju je aktivan! Kliknite da snimite dokaz fotografije",
+      "hasInspection": "Veza za inspekciju gostiju je već kreirana",
+      "createInspection": "Generiši novu vezu za inspekciju gostiju",
+      "copyMessage": "Kopiraj poruku gosta za Airbnb",
+      "delete": "Izbriši rezervaciju",
+      "cannotDelete": "Ne možete izbrisati rezervacije koje su već započete"
+    },
+    "confirm": {
+      "createMessage": "Kreirati inspekciju gosta?",
+      "createLabel": "Napravi",
+      "deleteMessage": "Izbrisati rezervaciju?",
+      "deleteLabel": "Obriši"
+    }
+  },
+  "apartmentReservationsManager": {
+    "title": "Rezervacije",
+    "description": "Upravljajte boravcima gostiju i pogledajte predstojeće rezervacije za ovaj apartman.",
+    "newReservationButton": "+ Nova rezervacija",
+    "columns": {
+      "guest": "Gost",
+      "checkIn": "Prijava",
+      "checkOut": "Odjava",
+      "platformId": "ID platforme",
+      "status": "Status"
+    },
+    "status": {
+      "PENDING_PROOF": "NA DOKAZU",
+      "COVERED": "POKRIVENO",
+      "DISPUTED": "SPORNO",
+      "RESOLVED": "REŠENO",
+      "CLOSED": "ZATVORENO"
+    },
+    "error": {
+      "title": "Učitavanje rezervacija nije uspelo",
+      "defaultMessage": "Došlo je do neočekivane greške."
+    },
+    "empty": {
+      "title": "Nisu pronađene rezervacije",
+      "description": "Trenutno nema rezervacija za ovaj apartman. Kliknite ispod da dodate svoju prvu rezervaciju za goste."
+    }
+  },
+  "shotStudioModal": {
+    "title": "Apartman Shot Studio",
+    "unsavedChanges": "Nesačuvane promene",
+    "subtitle": "Definišite zahteve za verifikacioni snimak i mapirajte otpremljena medijska sredstva.",
+    "cancelButton": "Otkaži",
+    "saveButton": "Sačuvaj promene",
+    "savingButton": "Čuvanje..."
+  },
+  "unmatchedAssetsBanner": {
+    "missingCoverage_one": "<bold>{{count}} asset</bold> nedostaje foto pokrivenost.",
+    "missingCoverage_other": "<bold>{{count}} sredstva</bold> nedostaje foto pokrivenost.",
+    "reviewInStudio": "Pregled u Shot Studiju →"
+  },
+  "createApartmentForm": {
+    "validation": {
+      "nameRequired": "Naziv stana je obavezan",
+      "addressRequired": "Adresa je potrebna",
+      "invalidOwner": "Molimo izaberite važećeg vlasnika",
+      "invalidLocation": "Molimo izaberite ispravnu lokaciju"
+    },
+    "labels": {
+      "name": "Naziv stana",
+      "address": "Adresa ulice",
+      "externalId": "ID eksterne reference (opciono)",
+      "owner": "Dodijeljeni vlasnik",
+      "location": "Lokacija"
+    },
+    "placeholders": {
+      "name": "Lukuri Suite Dovntovn",
+      "address": "Glavna ulica 123, Apartman 4B",
+      "externalId": "EKST-10042"
+    },
+    "button": {
+      "submit": "Napravite stan",
+      "submitting": "Registracija imovine..."
+    },
+    "toast": {
+      "success": "Stan uspešno napravljen!",
+      "error": "Došlo je do greške pri kreiranju stana."
+    }
+  },
+  "createReservationForm": {
+    "validation": {
+      "guestNameRequired": "Ime gosta je potrebno",
+      "invalidEmail": "Unesite važeću adresu e-pošte",
+      "checkInRequired": "Datum i vreme prijavljivanja su potrebni",
+      "checkInFuture": "Vreme prijave mora biti u budućnosti",
+      "checkOutRequired": "Datum i vreme odjavljivanja je potrebno",
+      "checkOutFuture": "Vreme odjave mora biti u budućnosti",
+      "altCheckInFuture": "Alternativno vreme prijave mora biti u budućnosti",
+      "altCheckOutFuture": "Alternativno vreme odjavljivanja mora da bude u budućnosti",
+      "checkOutAfterCheckIn": "Datum odjavljivanja mora biti striktno posle datuma prijavljivanja",
+      "altCheckOutAfterAltCheckIn": "Alternativni datum odjavljivanja mora da bude striktno posle alternativnog datuma prijavljivanja"
+    },
+    "labels": {
+      "guestName": "Ime gosta",
+      "guestEmail": "E-pošta gosta (opciono)",
+      "platformReservationId": "ID rezervacije platforme (opciono)",
+      "checkInDatetime": "Datum dolaska",
+      "checkOutDatetime": "Datum polaska",
+      "alternativeCheckInDatetime": "Alternativni dolazak (opciono)",
+      "alternativeCheckOutDatetime": "Alternativni polazak (opciono)"
+    },
+    "placeholders": {
+      "guestName": "Ime gosta",
+      "guestEmail": "+ Alternativni dolazak?",
+      "platformReservationId": "HM12345678, AIRBNB-XYZ.."
+    },
+    "toggleAlternativeDates": {
+      "show": "+ Alternativni dolazak ili polazak?",
+      "hide": "- Skloni alternativne datume"
+    },
+    "button": {
+      "submit": "Kreiranje rezervacije",
+      "submitting": "Kreiranje rezervacije..."
+    },
+    "toast": {
+      "success": "Rezervacija je uspešno napravljena!",
+      "error": "Došlo je do greške pri kreiranju rezervacije."
+    }
+  }
+}

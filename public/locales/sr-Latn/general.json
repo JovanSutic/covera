@@ -1,0 +1,217 @@
+{
+  "login": {
+    "welcome": "Dobrodošli u Covera",
+    "subtitle": "Prijavite se ili se prijavite da biste upravljali svojim nalogom.",
+    "passUpdate": {
+      "welcomeWithName": "Dobro došli u Coveru, {{name}}",
+      "welcomeGeneric": "Dobrodošli u Coveru",
+      "subtitleReady": "Podesite novu lozinku da biste aktivirali nalog.",
+      "subtitleDefault": "Ažurirajte svoju lozinku.",
+      "invalidLinkError": "Veza za poziv je nevažeća ili nedostaje.",
+      "goToLogin": "Idite na Prijava",
+      "verifyingDetails": "Provera detalja pozivnice..."
+    }
+  },
+  "errorPage": {
+    "unexpectedTitle": "Neočekivana greška",
+    "unexpectedSubtitle": "Nešto nije u redu pri učitavanju ove stranice.",
+    "notFoundTitle": "Stranica nije pronađena",
+    "notFoundSubtitle": "Tražena inspekcija ili stranica ne postoji.",
+    "serverErrorTitle": "Greška servera",
+    "serverErrorSubtitle": "Naišli smo na problem na našoj strani. Pokušajte ponovo kasnije.",
+    "backToHome": "Nazad na početnu"
+  },
+  "adminDashboard": {
+    "title": "Kontrolnu tablu",
+    "subtitle": "Opcije upravljanja administratorom",
+    "tabs": {
+      "users": "Korisnici",
+      "apartments": "Apartmani"
+    }
+  },
+  "hostApartments": {
+    "title": "Apartmani",
+    "subtitle": "Lista stanova kojima upravljate"
+  },
+  "hostDashboard": {
+    "title": "Kontrolna tabla",
+    "subtitle": "Opcije upravljanja hostom",
+    "tabs": {
+      "apartments": "Stanovi"
+    }
+  },
+  "apartmentPage": {
+    "errors": {
+      "apartmentIdRequired": "ID stana je potreban",
+      "deleteAssetFailed": "Došlo je do greške prilikom brisanja.",
+      "saveShotsFailed": "Došlo je do greške pri čuvanju snimaka.",
+      "missingInspectionDetails": "Nedostaje identifikacija apartmana ili rezervacije",
+      "submitInspectionFailed": "Došlo je do greške prilikom slanja inspekcijskih fotografija."
+    },
+    "toast": {
+      "deleteAssetSuccess": "Imovina je uspešno izbrisana!",
+      "saveShotsSuccess": "Zahtevi za snimanje su sačuvani!",
+      "submitInspectionSuccess": "Sve fotografije sa inspekcije su uspešno poslate!"
+    },
+    "tabs": {
+      "ariaLabel": "Sekcije apartmana",
+      "reservations": "Rezervacije",
+      "assets": "Snimci imovine i verifikacije"
+    },
+    "drawer": {
+      "createReservation": "Kreiraj novu rezervaciju",
+      "createAsset": "Kreiraj novu imovinu"
+    },
+    "modal": {
+      "inspectionTitle": "Vodič za pregled apartmana",
+      "reservationFor": "Rezervacija za {{guestName}}"
+    }
+  },
+  "dataTable": {
+    "loading": "Učitavanje zapisa...",
+    "emptyMessage": "Nije pronađen nijedan zapis.",
+    "pagination": {
+      "showing": "Prikazuje se od",
+      "to": "do",
+      "of": "of",
+      "results": "rezultati",
+      "perPage": "{{size}} / stranica",
+      "previous": "Prethodni",
+      "pageIndicator": "{{page}} od {{totalPages}}",
+      "next": "Sledeći"
+    }
+  },
+  "drawer": {
+    "closePanel": "Zatvori panel"
+  },
+  "header": {
+    "language": "Jezik",
+    "signOut": "Odjavi se"
+  },
+  "common": {
+    "noReferencePhoto": "Još nije otpremljena referentna fotografija",
+    "loadingImage": "Učitavanje slike... Tap zo/ split>",
+    "tapToZoom": "Kreiraj stan",
+    "closeZoom": "Kreiraj novi stan"
+  },
+  "apartments": {
+    "createButton": "Nijedan stan nije pronađen u bazi podataka sistema.",
+    "createDrawerTitle": "Create New Apartment",
+    "emptyMessage": "No apartments found in the system database.",
+    "columns": {
+      "name": "Naziv stana",
+      "address": "Adresa",
+      "location": "Lokacija",
+      "hostOwner": "Host / Vlasnik",
+      "externalId": "Eksterni ID",
+      "createdDate": "Datum kreiranja"
+    }
+  },
+  "users": {
+    "createUserButton": "Kreiraj korisnika",
+    "createUserDrawerTitle": "Kreiraj novog korisnika",
+    "emptyMessage": "Nijedan korisnik nije pronađen u bazi podataka sistema.",
+    "columns": {
+      "name": "Ime",
+      "email": "Adresa e-pošte",
+      "role": "Uloga sistema",
+      "status": "Status",
+      "joinedDate": "Datum pridruživanja",
+      "actions": "Radnje"
+    },
+    "actions": {
+      "sendInvite": "Slanje pozivnice",
+      "sending": "Slanje..."
+    },
+    "errors": {
+      "sendInviteFailed": "Slanje pozivnice nije uspelo",
+      "noDataReturned": "Nema podataka vraćenih sa krajnje tačke poziva"
+    },
+    "status": {
+      "confirmed": "Potvrđeno",
+      "invited": "Pozvano",
+      "created": "Kreirano",
+      "disabled": "Onemogućeno"
+    }
+  },
+  "createUserForm": {
+    "validation": {
+      "firstNameRequired": "Ime je potrebno",
+      "lastNameRequired": "Prezime je potrebno",
+      "invalidEmail": "Prezime je potrebno",
+      "emailRequired": "Nevažeća adresa e-pošte/potrebna je valjana adresa e-pošte>",
+      "invalidRole": "Ime"
+    },
+    "labels": {
+      "firstName": "Prezime",
+      "lastName": "Last Name",
+      "email": "Adresa e-pošte",
+      "role": "Uloga pristupa sistemu"
+    },
+    "placeholders": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "name@ekample.com"
+    },
+    "roles": {
+      "guest": "Gost",
+      "host": "Host",
+      "admin": "Administrator"
+    },
+    "button": {
+      "submit": "Kreiraj korisnika",
+      "submitting": "Kreiranje naloga..."
+    },
+    "toast": {
+      "success": "Korisnički profil je uspešno kreiran!",
+      "error": "Došlo je do greške pri autentifikaciji."
+    }
+  },
+  "loginForm": {
+    "validation": {
+      "emailRequired": "Email je obavezan",
+      "invalidEmail": "Nevažeća adresa e-pošte",
+      "passwordRequired": "Potrebna je lozinka",
+      "passwordMinLength": "Lozinka mora da ima najmanje 8 znakova",
+      "passwordUppercase": "Lozinka mora da sadrži najmanje jedno veliko slovo",
+      "passwordLowercase": "Lozinka mora da sadrži najmanje jedno malo slovo",
+      "passwordNumber": "Lozinka mora da sadrži najmanje jedan broj",
+      "passwordSpecialChar": "Lozinka mora da sadrži najmanje jedan poseban znak"
+    },
+    "labels": {
+      "email": "E-pošta",
+      "password": "Lozinka"
+    },
+    "buttons": {
+      "continue": "Nastavi",
+      "loading": "Učitavanje nazad"
+    },
+    "messages": {
+      "welcomeBack": "Dobrodošli nazad!"
+    }
+  },
+  "passUpdateForm": {
+    "validation": {
+      "passwordRequired": "Lozinka je potrebna",
+      "passwordMinLength": "Lozinka mora da ima najmanje 8 znakova",
+      "passwordUppercase": "Lozinka mora da sadrži najmanje jedno veliko slovo",
+      "passwordLowercase": "Lozinka mora da sadrži najmanje jedno malo slovo",
+      "passwordNumber": "Lozinka mora da sadrži najmanje jedan broj",
+      "passwordSpecialChar": "Lozinka mora da sadrži najmanje jedan specijalni znak",
+      "confirmPasswordRequired": "Molimo potvrdite svoju lozinku",
+      "passwordsMustMatch": "Lozinke se ne podudaraju"
+    },
+    "labels": {
+      "password": "Nova lozinka",
+      "confirmPassword": "Potvrdite lozinku"
+    },
+    "button": {
+      "submit": "Postavite lozinku",
+      "submitting": "Ažuriranje..."
+    },
+    "toast": {
+      "success": "Lozinka je uspešno ažurirana!",
+      "error": "Došlo je do greške pri ažuriranju lozinke."
+    }
+  }
+}

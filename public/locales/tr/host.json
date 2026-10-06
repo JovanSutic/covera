@@ -1,0 +1,148 @@
+{
+  "guestInspectionMessage": {
+    "headerTitle": "Airbnb Misafir Mesajı",
+    "copyButton": "Mesajı Kopyala",
+    "toastCopySuccess": "Misafir mesajı panoya kopyalandı!",
+    "toastCopyError": "Mesaj kopyalanamadı",
+    "messageTemplate": "Merhaba {{guestName}}! Konaklamanızın tamamen endişesiz olmasını istiyoruz. Paketinizi açıp dinlenmeden önce lütfen varış teslim işlemini tamamlamak için 2 dakikanızı ayırın:\n\n{{guestInspectionUrl}}\n\nTeşekkür ederiz ve konaklamanızın tadını çıkarın!"
+  },
+  "inlineCamera": {
+    "title": "Doğrulama Fotoğrafı Çek",
+    "description": "AirCover için EXIF zaman damgasını ve GPS kanıtını korumak için cihazınızın kamerasını kullanarak tam çözünürlüklü bir fotoğraf çekin.",
+    "cancelButton": "İptal",
+    "openCameraButton": "Kamerayı Aç"
+  },
+  "reservationActionsCell": {
+    "toast": {
+      "deleteSuccess": "Rezervasyon başarıyla silindi!",
+      "deleteError": "Rezervasyon silinemedi. Lütfen tekrar deneyin.",
+      "createSuccess": "Konuk inceleme oturumu oluşturuldu!",
+      "createError": "Misafir incelemesi oluşturulamadı. Lütfen tekrar deneyin."
+    },
+    "tooltip": {
+      "hasSubmittedProofs": "Muayene fotoğrafları zaten gönderildi",
+      "isTooLate": "Denetim penceresi kapandı (girişten 1 saat sonra sona erdi)",
+      "isTooEarly": "Denetim penceresi check-in işleminden {{windowHours}}h önce açılıyor (~{{hoursUntilWindow}}h içinde)",
+      "active": "Denetim penceresi etkin! Fotoğraf kanıtı yakalamak için tıklayın",
+      "hasInspection": "Konuk inceleme bağlantısı zaten oluşturuldu",
+      "createInspection": "Yeni misafir inceleme bağlantısı oluştur",
+      "copyMessage": "Airbnb için misafir mesajını kopyala",
+      "delete": "Rezervasyonu sil",
+      "cannotDelete": "Zaten başlamış olan rezervasyonlar silinemez"
+    },
+    "confirm": {
+      "createMessage": "Konuk incelemesi oluşturulsun mu?",
+      "createLabel": "Oluştur",
+      "deleteMessage": "Rezervasyon silinsin mi?",
+      "deleteLabel": "Sil"
+    }
+  },
+  "apartmentReservationsManager": {
+    "title": "Rezervasyonlar",
+    "description": "Misafir konaklamalarını yönetin ve bu daire için yaklaşan rezervasyonları görüntüleyin.",
+    "newReservationButton": "+ Yeni Rezervasyon",
+    "columns": {
+      "guest": "Misafir",
+      "checkIn": "Giriş",
+      "checkOut": "Çıkış",
+      "platformId": "Platform Kimliği",
+      "status": "Durum"
+    },
+    "status": {
+      "PENDING_PROOF": "BEKLENEN KANIT",
+      "COVERED": "KAPALI",
+      "DISPUTED": "TARTIŞILMIŞ",
+      "RESOLVED": "ÇÖZÜLDÜ",
+      "CLOSED": "KAPALI"
+    },
+    "error": {
+      "title": "Rezervasyonlar yüklenemedi",
+      "defaultMessage": "Beklenmeyen bir hata oluştu."
+    },
+    "empty": {
+      "title": "Rezervasyon bulunamadı",
+      "description": "Bu daire için şu anda rezervasyon bulunmamaktadır. İlk misafir rezervasyonunuzu eklemek için aşağıya tıklayın."
+    }
+  },
+  "shotStudioModal": {
+    "title": "Apartman Çekim Stüdyosu",
+    "unsavedChanges": "Kaydedilmemiş değişiklikler",
+    "subtitle": "Doğrulama çekimi gereksinimlerini tanımlayın ve yüklenen medya varlıklarını eşleyin.",
+    "cancelButton": "İptal",
+    "saveButton": "Değişiklikleri Kaydet",
+    "savingButton": "Kaydediliyor..."
+  },
+  "unmatchedAssetsBanner": {
+    "missingCoverage_one": "<bold>{{count}} öğenin</bold> fotoğraf kapsamı eksik.",
+    "missingCoverage_other": "<bold>{{count}} öğelerde</bold> fotoğraf kapsamı eksik.",
+    "reviewInStudio": "Shot Studio'da İncele →"
+  },
+  "createApartmentForm": {
+    "validation": {
+      "nameRequired": "Daire adı gerekli",
+      "addressRequired": "Adres gerekli",
+      "invalidOwner": "Lütfen geçerli bir sahip seçin",
+      "invalidLocation": "Lütfen geçerli bir konum seçin"
+    },
+    "labels": {
+      "name": "Daire Adı",
+      "address": "Sokak Adresi",
+      "externalId": "Harici Referans Kimliği (İsteğe Bağlı)",
+      "owner": "Atanan Sahip",
+      "location": "Konum"
+    },
+    "placeholders": {
+      "name": "Lüks Süit Şehir Merkezi",
+      "address": "123 Ana Cadde, Süit 4B",
+      "externalId": "EXT-10042"
+    },
+    "button": {
+      "submit": "Daire Oluştur",
+      "submitting": "Mülk Kaydediliyor..."
+    },
+    "toast": {
+      "success": "Daire başarıyla oluşturuldu!",
+      "error": "Daire oluşturulurken bir hata oluştu."
+    }
+  },
+  "createReservationForm": {
+    "validation": {
+      "guestNameRequired": "Konuk adı gerekli",
+      "invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
+      "checkInRequired": "Giriş tarihi ve saati gerekli",
+      "checkInFuture": "Giriş zamanı gelecekte olmalıdır",
+      "checkOutRequired": "Çıkış tarihi ve saati gerekli",
+      "checkOutFuture": "Çıkış saati gelecekte olmalıdır",
+      "altCheckInFuture": "Alternatif check-in zamanı gelecekte olmalıdır",
+      "altCheckOutFuture": "Alternatif çıkış zamanı gelecekte olmalıdır",
+      "checkOutAfterCheckIn": "Çıkış tarihi kesinlikle Giriş tarihinden sonra olmalıdır",
+      "altCheckOutAfterAltCheckIn": "Alternatif çıkış tarihi kesinlikle alternatif giriş tarihinden sonra olmalıdır"
+    },
+    "labels": {
+      "guestName": "Konuk Adı",
+      "guestEmail": "Misafir E-postası (İsteğe bağlı)",
+      "platformReservationId": "Platform Rezervasyon Kimliği (İsteğe Bağlı)",
+      "checkInDatetime": "Giriş Tarihi ve Saati",
+      "checkOutDatetime": "Çıkış Tarihi ve Saati",
+      "alternativeCheckInDatetime": "Alternatif Check-In (İsteğe Bağlı)",
+      "alternativeCheckOutDatetime": "Alternatif Çıkış (Opsiyonel)"
+    },
+    "placeholders": {
+      "guestName": "John Doe...",
+      "guestEmail": "john.doe@example.com",
+      "platformReservationId": "HM12345678, AIRBNB-XYZ..."
+    },
+    "toggleAlternativeDates": {
+      "show": "+ Alternatif varış mı yoksa kalkış mı?",
+      "hide": "- Alternatif tarihleri kaldırın"
+    },
+    "button": {
+      "submit": "Rezervasyon Oluştur",
+      "submitting": "Rezervasyon Oluşturuluyor..."
+    },
+    "toast": {
+      "success": "Rezervasyon başarıyla oluşturuldu!",
+      "error": "Rezervasyon oluşturulurken bir hata oluştu."
+    }
+  }
+}

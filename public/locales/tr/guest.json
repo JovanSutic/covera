@@ -1,0 +1,112 @@
+{
+  "flagContentForm": {
+    "title": "Sorun Bildir",
+    "flaggingLabel": "İşaretleme:",
+    "validation": {
+      "shotIdRequired": "Çekim kimliği gerekli",
+      "reasonRequired": "Lütfen işaretleme için geçerli bir neden seçin",
+      "detailsMinLength": "Lütfen sorunu açıklayan en az 10 karakter sağlayın",
+      "invalidStatus": "Geçersiz durum değeri"
+    },
+    "reasons": {
+      "missing_asset": {
+        "label": "Eksik öğe/öğe",
+        "subLabel": "Listelenen bir varlık fotoğrafta görünmüyor"
+      },
+      "damaged": {
+        "label": "Hasarlı veya kötü durumda",
+        "subLabel": "Öğe veya alan hasarlı veya kırık görünüyor"
+      },
+      "poor_photo": {
+        "label": "Bulanık veya zayıf aydınlatma",
+        "subLabel": "Fotoğraf kalitesi doğrulamayı zorlaştırıyor"
+      },
+      "wrong_room": {
+        "label": "Yanlış fotoğraf/oda",
+        "subLabel": "Fotoğraf bu oda veya öğeyle eşleşmiyor"
+      },
+      "other": {
+        "label": "Diğer sorun",
+        "subLabel": "Aşağıdaki durumu açıklayın"
+      }
+    },
+    "labels": {
+      "selectItemOptional": "Belirli bir öğeyi seçin (isteğe bağlı)",
+      "reasonForReport": "Raporun nedeni",
+      "additionalDetails": "Ek ayrıntılar",
+      "category": "Kategori:"
+    },
+    "placeholders": {
+      "details": "Lütfen neyin bozuk, eksik veya yanlış olduğunu açıklayın..."
+    },
+    "buttons": {
+      "cancel": "İptal",
+      "submit": "Raporu Gönder",
+      "submitting": "Gönderiliyor...",
+      "gotIt": "Anladım"
+    },
+    "toast": {
+      "flaggedSuccess": "{{targetText}} başarıyla işaretlendi",
+      "flaggedDescription": "Artık toplantı sahibine yeni görünümü veya mevcut durumu gösteren güncellenmiş bir fotoğraf gönderebilirsiniz.",
+      "failedTitle": "Öğe işaretlenemedi",
+      "failedDefaultMessage": "Rapor gönderilemedi. Lütfen tekrar deneyin.",
+      "targetAssets": "{{count}} varlık(lar)",
+      "targetThisItem": "Bu öğe"
+    }
+  },
+  "inspectionIntro": {
+    "badge": "Varış Devri ve Huzuru",
+    "titleNamed": "{{apartmentName}}'a hoş geldiniz! Hadi seni halledelim.",
+    "titleDefault": "Konaklamanıza hoş geldiniz! Hadi seni halledelim.",
+    "description": "Konaklamanızın tamamen endişesiz olmasını istiyoruz. Paketinizi açıp dinlenmeden önce, varış teslim işlemini tamamlamak için 2 dakikanızı ayırın. Fotoğraflar oda oda gruplandırılmıştır, böylece alanı hızlı bir şekilde inceleyebilir ve her şeyin beklentilerinizi karşıladığını doğrulayabilirsiniz.",
+    "pitch": {
+      "peaceOfMind": {
+        "title": "İç Huzurunuz İçin",
+        "description": "Adil, zaman damgalı bir kayıt oluşturarak önceden var olan aşınma veya izlerin üzerinizde olmamasını sağlar."
+      },
+      "effortlessCheck": {
+        "title": "Zahmetsiz Oda Kontrolü",
+        "description": "Toplantı sahibi referans fotoğraflarına odaya göre göz atın ve yalnızca dikkatinizi çeken bir şey fark ederseniz fotoğrafları işaretleyin."
+      }
+    },
+    "buttons": {
+      "loading": "Varış ayrıntıları yükleniyor...",
+      "start": "Varış Devir Teslimine Başlayın"
+    }
+  },
+  "instructionsShort": {
+    "title": "3 kolay adımda nasıl çalışır:",
+    "steps": {
+      "step1": "Ev sahibinin referans fotoğraflarını görüntülemek için içeri girerken aşağıdaki herhangi bir odaya dokunun.",
+      "step2": "Her şeyin alanla eşleştiğinden ve eğlenmeye hazır göründüğünden emin olmak için etrafınıza hızlıca bir göz atın.",
+      "step3": "Önceden hasar olduğunu veya eksik eşyaları tespit ederseniz, o fotoğrafı işaretleyin ve ev sahibini bilgilendirin."
+    },
+    "buttons": {
+      "hide": "Ayrıntılı adımları gizle",
+      "show": "Bu nasıl çalışıyor?"
+    }
+  },
+  "roomDetails": {
+    "allRooms": "Tüm Odalar",
+    "noRequirements": "{{roomName}} için kayıtlı fotoğraf zorunluluğu yok.",
+    "previousRoom": "Önceki Oda",
+    "nextRoom": "Sonraki Oda",
+    "pagination": "{{current}} / {{total}}"
+  },
+  "roomFlowItem": {
+    "photo_one": "{{count}} referans fotoğrafı",
+    "photo_other": "{{count}} referans fotoğrafları",
+    "viewRoom": "Odayı Görüntüle"
+  },
+  "roomFlowList": {
+    "title": "Oda Açıklaması",
+    "description": "Referans fotoğraflarını incelemek ve mülk kurulumunu onaylamak için aşağıdan herhangi bir odayı seçin."
+  },
+  "roomPhotoItem": {
+    "flagIssueTitle": "Bu fotoğrafla ilgili sorunu işaretle",
+    "flagItem": "Öğeyi işaretle",
+    "capturedOn": "{{val, datetime}} tarihinde yakalandı",
+    "verifyItemsPlural": "Bu öğelerin alanda açıkça göründüğünü doğrulayın:",
+    "verifyItemSingular": "Bu öğenin alanda açıkça göründüğünü doğrulayın:"
+  }
+}
