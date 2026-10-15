@@ -86,7 +86,11 @@
   },
   "header": {
     "language": "Jezik",
-    "signOut": "Odjavi se"
+    "signOut": "Odjavi se",
+    "signIn": "Prijavi se",
+    "guestUser": "Gost",
+    "guestSubtitle": "Dobrodošli u vaš smeštaj",
+    "userFallback": "Korisnik"
   },
   "common": {
     "noReferencePhoto": "Još nije otpremljena referentna fotografija",

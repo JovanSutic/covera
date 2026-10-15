@@ -1,7 +1,7 @@
 {
   "flagContentForm": {
     "title": "Melden Sie ein Problem",
-    "flaggingLabel": "Markieren:",
+    "flaggingLabel": "Etwas sieht anders aus? Lassen Sie uns wissen, was nicht passt, damit wir es für Ihren Aufenthalt dokumentieren können. Es dauert nur einen Moment.",
     "validation": {
       "shotIdRequired": "Ein Schussausweis ist erforderlich",
       "reasonRequired": "Bitte wählen Sie einen gültigen Grund für die Meldung aus",
@@ -55,35 +55,27 @@
     }
   },
   "inspectionIntro": {
-    "badge": "Ankunftsübergabe und Seelenfrieden",
-    "titleNamed": "Willkommen bei {{apartmentName}}! Lassen Sie uns für Sie sorgen.",
-    "titleDefault": "Willkommen zu Ihrem Aufenthalt! Lassen Sie uns für Sie sorgen.",
-    "description": "Wir möchten, dass Ihr Aufenthalt völlig sorgenfrei verläuft. Nehmen Sie sich vor dem Auspacken und Entspannen zwei Minuten Zeit, um die Übergabe bei Ihrer Ankunft abzuschließen. Die Fotos sind nach Raum für Raum gruppiert, sodass Sie den Raum schnell überprüfen und sicherstellen können, dass alles Ihren Erwartungen entspricht.",
+    "badge": "Ankunft & Sorgenfreie Übergabe",
+    "titleNamed": "Willkommen im {{apartmentName}}! Machen Sie es sich bequem.",
+    "titleDefault": "Willkommen in Ihrer Unterkunft! Machen Sie es sich bequem.",
+    "description": "Wir möchten, dass Ihr Aufenthalt vollkommen sorgenfrei verläuft. Bevor Sie auspacken und entspannen, nehmen Sie sich 2 Minuten Zeit für die Übergabe.",
+    "howItWorks": {
+      "title": "Wie es funktioniert & wie es Sie schützt",
+      "description": "Ihr Gastgeber hat direkt vor Ihrer Ankunft Referenzfotos der Wohnung gemacht. Ein kurzer Blick darauf bestätigt den Zustand der Unterkunft bei Ihrer Ankunft. So entsteht ein fairer Nachweis für Sie und Ihren Gastgeber — damit Sie niemals für bereits vorhandene Abnutzungen oder Fehlendes haftbar gemacht werden."
+    },
     "pitch": {
       "peaceOfMind": {
-        "title": "Für Ihren Seelenfrieden",
-        "description": "Erstellt eine faire, mit einem Zeitstempel versehene Aufzeichnung, sodass bereits vorhandene Abnutzungserscheinungen oder Markierungen nicht zu Ihren Lasten gehen."
+        "title": "Zu Ihrer Sicherheit",
+        "description": "Schützt Ihre Kaution und erstellt einen zeitgestempelten Nachweis des Zustands beim Check-in."
       },
       "effortlessCheck": {
-        "title": "Mühelose Zimmerüberprüfung",
-        "description": "Durchsuchen Sie die Referenzfotos des Gastgebers nach Raum und kennzeichnen Sie Fotos nur, wenn Ihnen etwas Auffälliges auffällt."
+        "title": "Mühelose Raumprüfung",
+        "description": "Durchsuchen Sie die Fotos des Gastgebers Raum für Raum und melden Sie ein Foto nur, wenn etwas nicht übereinstimmt."
       }
     },
     "buttons": {
       "loading": "Ankunftsdetails werden geladen...",
-      "start": "Beginnen Sie mit der Übergabe bei der Ankunft"
-    }
-  },
-  "instructionsShort": {
-    "title": "So funktioniert es in 3 einfachen Schritten:",
-    "steps": {
-      "step1": "Tippen Sie beim Betreten auf einen beliebigen Raum unten, um die Referenzfotos des Gastgebers anzuzeigen.",
-      "step2": "Schauen Sie sich kurz um, um sicherzustellen, dass alles zum Raum passt und zum Genießen bereitsteht.",
-      "step3": "Wenn Sie frühere Schäden oder fehlende Gegenstände entdecken, kennzeichnen Sie dieses Foto und informieren Sie den Gastgeber."
-    },
-    "buttons": {
-      "hide": "Detaillierte Schritte ausblenden",
-      "show": "Wie funktioniert das?"
+      "start": "Übergabe starten"
     }
   },
   "roomDetails": {
@@ -99,14 +91,16 @@
     "viewRoom": "Zimmer ansehen"
   },
   "roomFlowList": {
-    "title": "Zimmer-Komplettlösung",
-    "description": "Wählen Sie unten einen beliebigen Raum aus, um Referenzfotos anzusehen und die Einrichtung der Unterkunft zu bestätigen."
+    "badge": "Raum-Übersicht",
+    "title": "Erkunden Sie Ihre Unterkunft",
+    "subtitle": "Machen Sie einen kurzen Rundgang durch die Wohnung und machen Sie sich mit allem vertraut.",
+    "description": "Tippen Sie auf einen Raum, um die Referenzfotos des Gastgebers anzusehen und zu prüfen, ob alles mit der Unterkunft übereinstimmt. Gehen Sie Raum für Raum vor oder wechseln Sie nach Belieben."
   },
   "roomPhotoItem": {
     "flagIssueTitle": "Problem mit diesem Foto melden",
-    "flagItem": "Artikel kennzeichnen",
     "capturedOn": "Aufgenommen am {{val, datetime}}",
-    "verifyItemsPlural": "Stellen Sie sicher, dass diese Elemente im Raum deutlich sichtbar sind:",
-    "verifyItemSingular": "Stellen Sie sicher, dass dieses Element im Raum deutlich sichtbar ist:"
+    "flagItem": "Problem melden",
+    "verifyItemsPlural": "Vergleichen Sie das Foto mit Ihrem Raum — diese Gegenstände sollten genau dort sein, wo Sie sie sehen:",
+    "verifyItemSingular": "Vergleichen Sie das Foto mit Ihrem Raum — dieser Gegenstand sollte genau dort sein, wo Sie ihn sehen:"
   }
 }

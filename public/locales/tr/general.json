@@ -86,7 +86,11 @@
   },
   "header": {
     "language": "Dil",
-    "signOut": "Oturumu kapat"
+    "signOut": "Çıkış yap",
+    "signIn": "Giriş yap",
+    "guestUser": "Misafir",
+    "guestSubtitle": "Konaklamanıza hoş geldiniz",
+    "userFallback": "Kullanıcı"
   },
   "common": {
     "noReferencePhoto": "Henüz referans fotoğraf yüklenmedi",

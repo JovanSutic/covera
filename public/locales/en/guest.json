@@ -1,7 +1,7 @@
 {
   "flagContentForm": {
     "title": "Report an Issue",
-    "flaggingLabel": "Flagging:",
+    "flaggingLabel": "Spotted something different? Let us know what's off so we can make sure it’s documented for your stay. It only takes a moment.",
     "validation": {
       "shotIdRequired": "Shot ID is required",
       "reasonRequired": "Please select a valid reason for flagging",
@@ -58,32 +58,24 @@
     "badge": "Arrival Handover & Peace of Mind",
     "titleNamed": "Welcome to {{apartmentName}}! Let’s get you settled.",
     "titleDefault": "Welcome to your stay! Let’s get you settled.",
-    "description": "We want your stay to be completely worry-free. Before you unpack and relax, take 2 minutes to complete your arrival handover. Photos are grouped room-by-room so you can quickly review the space and verify everything meets your expectations.",
+    "description": "We want your stay to be completely worry-free. Before you unpack and relax, take 2 minutes to complete your arrival handover.",
+    "howItWorks": {
+      "title": "How it works & why it protects you",
+      "description": "Your host took reference photos of the apartment right before your arrival. By taking a quick look through them, you confirm the condition of the space as you found it. This creates a fair, timestamped record for both you and your host—ensuring you’ll never be held responsible for pre-existing wear, marks, or missing items."
+    },
     "pitch": {
       "peaceOfMind": {
         "title": "For Your Peace of Mind",
-        "description": "Establishes a fair, timestamped record so pre-existing wear or marks aren't on you."
+        "description": "Protects your deposit and establishes a timestamped record of the apartment's condition at check-in."
       },
       "effortlessCheck": {
         "title": "Effortless Room Check",
-        "description": "Browse host reference photos by room and flag photos only if you spot something off."
+        "description": "Browse the host's photos room-by-room and flag a photo only if something doesn't match what you see."
       }
     },
     "buttons": {
       "loading": "Loading arrival details...",
       "start": "Begin Arrival Handover"
-    }
-  },
-  "instructionsShort": {
-    "title": "How it works in 3 easy steps:",
-    "steps": {
-      "step1": "Tap any room below as you walk into it to view the host's reference photos.",
-      "step2": "Take a quick look around to make sure everything matches the space and looks ready to enjoy.",
-      "step3": "If you spot prior damage or missing items, flag that photo and inform the host."
-    },
-    "buttons": {
-      "hide": "Hide detailed steps",
-      "show": "How does this work?"
     }
   },
   "roomDetails": {
@@ -99,14 +91,16 @@
     "viewRoom": "View Room"
   },
   "roomFlowList": {
-    "title": "Room Walkthrough",
-    "description": "Select any room below to review reference photos and confirm property setup."
+    "badge": "Room Explorer",
+    "title": "Explore your space",
+    "subtitle": "Take a quick tour around the apartment to see how everything is set up.",
+    "description": "Tap on any room to view the host's reference photos and make sure everything matches what you see in the space. Go through them room-by-room or jump around at your own pace."
   },
   "roomPhotoItem": {
     "flagIssueTitle": "Flag issue with this photo",
-    "flagItem": "Flag item",
     "capturedOn": "Captured on {{val, datetime}}",
-    "verifyItemsPlural": "Verify these items are clearly visible in the space:",
-    "verifyItemSingular": "Verify this item is clearly visible in the space:"
+    "flagItem": "Report an issue",
+    "verifyItemsPlural": "Compare the photo with your room — these items should be right where you see them:",
+    "verifyItemSingular": "Compare the photo with your room — this item should be right where you see it:"
   }
 }

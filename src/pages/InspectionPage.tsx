@@ -30,7 +30,7 @@ type InspectionStep = "intro" | "rooms" | "details";
 
 function InspectionPage() {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation("assets");
+  const { t } = useTranslation(["assets", "guest"]);
 
   const [currentStep, setCurrentStep] = useState<InspectionStep>("intro");
   const [selectedRoomLocation, setSelectedRoomLocation] = useState<
@@ -201,8 +201,7 @@ function InspectionPage() {
       <Modal
         isOpen={Boolean(flaggedShot)}
         onClose={handleCloseFlagModal}
-        title="Report an Issue"
-        subtitle={flaggedShot ? `Flagging item: ${flaggedShot.title}` : ""}
+        title={t("guest:flagContentForm.title")}
         size="md"
         bodyClassName="p-6"
       >
