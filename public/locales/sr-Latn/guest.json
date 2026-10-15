@@ -1,7 +1,7 @@
 {
   "flagContentForm": {
     "title": "Prijavite problem",
-    "flaggingLabel": "Označavanje:",
+    "flaggingLabel": "Primetili ste razliku? Javite nam šta nije u redu kako bismo to zabeležili za vaš boravak. Traje samo trenutak.",
     "validation": {
       "shotIdRequired": "ID snimka je potreban",
       "reasonRequired": "Izaberite validan razlog za označavanje",
@@ -55,35 +55,27 @@
     }
   },
   "inspectionIntro": {
-    "badge": "Primopredaja i mir",
-    "titleNamed": "Dobrodošli u {{apartmentName}}! Hajde da se sredimo.",
-    "titleDefault": "Dobro došli u vaš boravak! Hajde da se sredimo.",
-    "description": "Želimo da vaš boravak bude potpuno bezbrižan. Pre nego što se raspakujete i opustite, odvojite 2 minuta da završite primopredaju. Fotografije su grupisane po sobi tako da možete brzo da pregledate prostor i proverite da li sve ispunjava vaša očekivanja.",
+    "badge": "Primopredaja pri dolasku i bezbrižan boravak",
+    "titleNamed": "Dobrodošli u {{apartmentName}}! Hajde da se smestite.",
+    "titleDefault": "Dobrodošli u vaš smeštaj! Hajde da se smestite.",
+    "description": "Želimo da vaš boravak protekne potpuno bezbrižno. Pre nego što se raspakujete i opustite, odvojite 2 minuta da završite primopredaju.",
+    "howItWorks": {
+      "title": "Kako funkcioniše i kako vas štiti",
+      "description": "Vaš domaćin je napravio referentne fotografije stana neposredno pre vašeg dolaska. Kratkim pregledom fotografija potvrđujete stanje prostora u kom ste ga zatekli. Ovo stvara fer zapis sa vremenskim žigom za vas i domaćina — garantujući da nećete odgovarati za ranije nastala oštećenja ili nedostatke."
+    },
     "pitch": {
       "peaceOfMind": {
-        "title": "Za vaš mir",
-        "description": "Uspostavlja poštenu evidenciju sa vremenskim oznakama tako da nemate već postojeće habanje ili tragove."
+        "title": "Za vašu sigurnost",
+        "description": "Štiti vaš depozit i kreira zvaničan zapis stanja apartmana u trenutku prijave."
       },
       "effortlessCheck": {
-        "title": "Provera sobe bez napora",
-        "description": "Pregledajte referentne fotografije domaćina po prostoriji i označite fotografije samo ako primetite da nešto nije u redu."
+        "title": "Jednostavan pregled prostorija",
+        "description": "Pregledajte fotografije domaćina po prostorijama i prijavite fotografiju samo ako se nešto ne poklapa sa onim što vidite."
       }
     },
     "buttons": {
-      "loading": "Učitavanje detalja dolaska...",
-      "start": "Početak primopredaje dolaska"
-    }
-  },
-  "instructionsShort": {
-    "title": "Kako to funkcioniše u 3 jednostavna koraka:",
-    "steps": {
-      "step1": "Dodirnite bilo koju sobu ispod dok ulazite u nju da biste videli referentne fotografije domaćina.",
-      "step2": "Brzo pogledajte okolo da biste se uverili da sve odgovara prostoru i da izgleda spremno za uživanje.",
-      "step3": "Ako uočite prethodnu štetu ili predmete koji nedostaju, označite tu fotografiju i obavestite domaćina."
-    },
-    "buttons": {
-      "hide": "Sakrij detaljne korake",
-      "show": "Kako ovo funkcioniše?"
+      "loading": "Učitavanje detalja...",
+      "start": "Započni primopredaju"
     }
   },
   "roomDetails": {
@@ -99,14 +91,16 @@
     "viewRoom": "Pogledajte sobu"
   },
   "roomFlowList": {
-    "title": "Promena soba",
-    "description": "Izaberite bilo koju sobu ispod da biste podesili referencu."
+    "badge": "Pregled prostorija",
+    "title": "Istražite svoj smeštaj",
+    "subtitle": "Napravite kratak obilazak stana i upoznajte se sa prostorom.",
+    "description": "Dodirnite bilo koju prostoriju da pogledate referentne fotografije domaćina i uverite se da se sve poklapa sa onim što vidite u prostoru. Možete ići redom ili prelaziti sa jedne na drugu kako vam odgovara."
   },
   "roomPhotoItem": {
     "flagIssueTitle": "Problem sa zastavicom sa ovom fotografijom",
-    "flagItem": "Označi stavku",
     "capturedOn": "Snimljeno {{val, datetime}}",
-    "verifyItemsPlural": "Proverite da li su ove stavke jasno vidljive u prostoru:",
-    "verifyItemSingular": "Uverite se da je ova stavka jasno vidljiva u prostoru:"
+    "flagItem": "Prijavite problem",
+    "verifyItemsPlural": "Uporedite fotografiju sa svojom sobom — ove stvari bi trebalo da budu tačno tamo gde ih vidite:",
+    "verifyItemSingular": "Uporedite fotografiju sa svojom sobom — ova stvar bi trebalo da bude tačno tamo gde je vidite:"
   }
 }

@@ -86,7 +86,11 @@
   },
   "header": {
     "language": "Sprache",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "signIn": "Anmelden",
+    "guestUser": "Gast",
+    "guestSubtitle": "Willkommen zu Ihrem Aufenthalt",
+    "userFallback": "Benutzer"
   },
   "common": {
     "noReferencePhoto": "Noch kein Referenzfoto hochgeladen",

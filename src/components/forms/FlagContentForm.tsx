@@ -189,14 +189,8 @@ export function FlagContentForm({
       <input type="hidden" {...register("shotId")} />
 
       <div className="space-y-1">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {t("flagContentForm.title")}
-        </h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("flagContentForm.flaggingLabel")}{" "}
-          <span className="font-medium text-gray-800 dark:text-gray-200">
-            {shot.title}
-          </span>
+          {t("flagContentForm.flaggingLabel")}
         </p>
       </div>
 

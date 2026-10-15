@@ -4,6 +4,7 @@ import type { Asset } from "@/api/generated/requests/types.gen";
 import { AssetItemCard } from "./AssetItemCard";
 import Typography from "../Typography";
 import { useTranslation } from "react-i18next";
+import { Card } from "../shared/Card";
 
 interface ApartmentAssetsManagerProps {
   assets: Asset[];
@@ -29,32 +30,45 @@ function RoomCard({
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="rounded-xl bg-white border border-gray-200 shadow-xs overflow-hidden dark:bg-gray-900/40 dark:border-gray-800">
-      <div className="flex items-center justify-between p-4 sm:px-6 bg-white border-b border-gray-200 dark:bg-gray-900/50 dark:border-gray-800">
+    <Card
+      variant="blueGradient"
+      padding="none"
+      radius="xxl"
+      className="overflow-hidden"
+    >
+      <div className="flex items-center justify-between p-6 sm:px-8 border-b border-blue-100/60 dark:border-blue-900/30">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity cursor-pointer"
+          className="flex items-center gap-3 text-left hover:opacity-85 transition-opacity cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50/80 text-indigo-600 border border-indigo-100/70 shrink-0 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-900/50">
-            <Sofa className="h-4 w-4" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50/80 text-blue-600 border border-blue-100/70 shrink-0 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900/50 shadow-xs">
+            <Sofa className="h-5 w-5" />
           </div>
           <div>
-            <Typography type="h4" className="text-gray-900 font-semibold dark:text-white">
+            <Typography
+              type="h4"
+              className="text-gray-900 font-bold tracking-tight dark:text-white text-base sm:text-lg"
+            >
               {t(`roomLocations.${roomName}`, roomName)}
             </Typography>
-            <Typography type="caption" className="text-gray-500 dark:text-gray-400 mt-0.5 block">
-              {t("apartmentAssetsManager.roomCard.assetCount", { count: assets.length })}
+            <Typography
+              type="caption"
+              className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 block font-medium"
+            >
+              {t("apartmentAssetsManager.roomCard.assetCount", {
+                count: assets.length,
+              })}
             </Typography>
           </div>
         </button>
 
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors cursor-pointer"
+          className="p-2 text-gray-400 hover:text-gray-600 rounded-xl hover:bg-white/80 dark:hover:bg-gray-800/60 dark:hover:text-gray-300 transition-colors cursor-pointer"
           aria-label={t("apartmentAssetsManager.roomCard.toggleAriaLabel")}
         >
           <ChevronDown
-            className={`h-4 w-4 transition-transform duration-200 ${
+            className={`h-5 w-5 transition-transform duration-200 ${
               isOpen ? "rotate-180" : ""
             }`}
           />
@@ -62,8 +76,8 @@ function RoomCard({
       </div>
 
       {isOpen && (
-        <div className="p-4 sm:p-6 bg-gray-50/50 dark:bg-gray-900/20">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="p-6 sm:p-8 bg-white/40 dark:bg-gray-900/20">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {assets.map((asset) => (
               <AssetItemCard
                 key={asset.id}
@@ -75,7 +89,7 @@ function RoomCard({
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -83,7 +97,10 @@ function AssetsSkeleton() {
   return (
     <div className="flex flex-col gap-4 animate-pulse">
       {[1, 2].map((i) => (
-        <div key={i} className="rounded-xl bg-white border border-gray-200 p-6 dark:bg-gray-900/40 dark:border-gray-800">
+        <div
+          key={i}
+          className="rounded-xl bg-white border border-gray-200 p-6 dark:bg-gray-900/40 dark:border-gray-800"
+        >
           <div className="flex items-center justify-between border-b border-gray-100 pb-4 dark:border-gray-800">
             <div className="flex items-center gap-3">
               <div className="h-9 w-9 rounded-lg bg-gray-200 dark:bg-gray-800" />
@@ -169,7 +186,10 @@ export function ApartmentAssetsManager({
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 mb-3">
             <Package className="h-6 w-6" />
           </div>
-          <Typography type="h4" className="text-gray-700 dark:text-gray-300 mb-1">
+          <Typography
+            type="h4"
+            className="text-gray-700 dark:text-gray-300 mb-1"
+          >
             {t("apartmentAssetsManager.emptyState.title")}
           </Typography>
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">

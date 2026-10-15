@@ -61,13 +61,19 @@ export function ApartmentReservationsManager({
           page,
           limit,
           sortBy: "checkInDatetime",
-          order: "asc", // 'asc' puts nearest/earliest check-in dates first
+          history: true,
+          order: "desc",
         },
       });
       return response.data;
     },
-    enabled: !apartmentId,
+    enabled: !!apartmentId,
   });
+
+  const isPastDate = (dateString: string): boolean => {
+    if (!dateString) return false;
+    return new Date(dateString).getTime() < Date.now();
+  };
 
   const reservations = useMemo<ReservationRow[]>(() => {
     if (!reservationsResponse) return [];
@@ -196,6 +202,7 @@ export function ApartmentReservationsManager({
           data={reservations}
           columns={columns}
           isLoading={isLoading}
+          isRowDisabled={(reservation) => isPastDate(reservation.checkOutDatetime)}
           pagination={{
             page,
             limit,

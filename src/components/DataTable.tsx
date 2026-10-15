@@ -2,13 +2,19 @@ import type { DataTableProps } from "@/types/component.types";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+// Extend props inline or inside @/types/component.types
+export interface ExtendedDataTableProps<T> extends DataTableProps<T> {
+  isRowDisabled?: (row: T) => boolean;
+}
+
 export function DataTable<T>({
   data,
   columns,
   isLoading,
   emptyMessage,
   pagination,
-}: DataTableProps<T>) {
+  isRowDisabled,
+}: ExtendedDataTableProps<T>) {
   const { t } = useTranslation("general");
 
   const resolvedEmptyMessage =
@@ -62,28 +68,37 @@ export function DataTable<T>({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
-            {data.map((row, rowIdx) => (
-              <tr
-                key={rowIdx}
-                className="hover:bg-gray-50/70 dark:hover:bg-gray-800/40 transition-colors"
-              >
-                {columns.map((column, colIdx) => {
-                  const content =
-                    typeof column.accessorKey === "function"
-                      ? column.accessorKey(row)
-                      : (row[column.accessorKey as keyof T] as React.ReactNode);
+            {data.map((row, rowIdx) => {
+              const disabled = isRowDisabled ? isRowDisabled(row) : false;
 
-                  return (
-                    <td
-                      key={colIdx}
-                      className={`px-6 py-4 whitespace-nowrap align-middle ${column.className || ""}`}
-                    >
-                      {content}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+              return (
+                <tr
+                  key={rowIdx}
+                  aria-disabled={disabled}
+                  className={`transition-colors ${
+                    disabled
+                      ? "opacity-50 bg-gray-50/50 dark:bg-gray-800/30 pointer-events-none select-none cursor-not-allowed"
+                      : "hover:bg-gray-50/70 dark:hover:bg-gray-800/40"
+                  }`}
+                >
+                  {columns.map((column, colIdx) => {
+                    const content =
+                      typeof column.accessorKey === "function"
+                        ? column.accessorKey(row)
+                        : (row[column.accessorKey as keyof T] as React.ReactNode);
+
+                    return (
+                      <td
+                        key={colIdx}
+                        className={`px-6 py-4 whitespace-nowrap align-middle ${column.className || ""}`}
+                      >
+                        {content}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

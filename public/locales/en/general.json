@@ -86,7 +86,11 @@
   },
   "header": {
     "language": "Language",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "signIn": "Sign in",
+    "guestUser": "Guest",
+    "guestSubtitle": "Welcome to your stay",
+    "userFallback": "User"
   },
   "common": {
     "noReferencePhoto": "No reference photo uploaded yet",

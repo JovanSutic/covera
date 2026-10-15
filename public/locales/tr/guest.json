@@ -1,7 +1,7 @@
 {
   "flagContentForm": {
     "title": "Sorun Bildir",
-    "flaggingLabel": "İşaretleme:",
+    "flaggingLabel": "Farklı bir şey mi fark ettiniz? Konaklamanız için doğru şekilde kaydedebilmemiz adına neyin farklı olduğunu bize bildirin. Sadece bir dakikanızı alacak.",
     "validation": {
       "shotIdRequired": "Çekim kimliği gerekli",
       "reasonRequired": "Lütfen işaretleme için geçerli bir neden seçin",
@@ -55,35 +55,27 @@
     }
   },
   "inspectionIntro": {
-    "badge": "Varış Devri ve Huzuru",
-    "titleNamed": "{{apartmentName}}'a hoş geldiniz! Hadi seni halledelim.",
-    "titleDefault": "Konaklamanıza hoş geldiniz! Hadi seni halledelim.",
-    "description": "Konaklamanızın tamamen endişesiz olmasını istiyoruz. Paketinizi açıp dinlenmeden önce, varış teslim işlemini tamamlamak için 2 dakikanızı ayırın. Fotoğraflar oda oda gruplandırılmıştır, böylece alanı hızlı bir şekilde inceleyebilir ve her şeyin beklentilerinizi karşıladığını doğrulayabilirsiniz.",
+    "badge": "Varış Devir Teslimi ve Huzurlu Konaklama",
+    "titleNamed": "{{apartmentName}} tesisine hoş geldiniz! Sizi yerleştirelim.",
+    "titleDefault": "Konaklamanıza hoş geldiniz! Sizi yerleştirelim.",
+    "description": "Konaklamanızın tamamen sorunsuz geçmesini istiyoruz. Bavullarınızı açıp dinlenmeden önce, giriş devir teslimini tamamlamak için 2 dakikanızı ayırın.",
+    "howItWorks": {
+      "title": "Nasıl çalışır ve sizi nasıl korur?",
+      "description": "Ev sahibiniz varışınızdan hemen önce dairenin referans fotoğraflarını çekti. Bu fotoğraflara hızlıca göz atarak mekanı bulduğunuz durumu onaylamış olursunuz. Bu işlem hem sizin hem de ev sahibiniz için adil bir kayıt oluşturur — önceden var olan aşınma veya eksiklerden sorumlu tutulmamanızı sağlar."
+    },
     "pitch": {
       "peaceOfMind": {
-        "title": "İç Huzurunuz İçin",
-        "description": "Adil, zaman damgalı bir kayıt oluşturarak önceden var olan aşınma veya izlerin üzerinizde olmamasını sağlar."
+        "title": "İçinizin Rahat Etmesi İçin",
+        "description": "Depozitonuzu korur ve giriş anındaki durumun zaman damgalı bir kaydını oluşturur."
       },
       "effortlessCheck": {
         "title": "Zahmetsiz Oda Kontrolü",
-        "description": "Toplantı sahibi referans fotoğraflarına odaya göre göz atın ve yalnızca dikkatinizi çeken bir şey fark ederseniz fotoğrafları işaretleyin."
+        "description": "Ev sahibinin fotoğraflarını oda oda inceleyin ve yalnızca gördüğünüzle eşleşmeyen bir durum varsa bildirimde bulunun."
       }
     },
     "buttons": {
-      "loading": "Varış ayrıntıları yükleniyor...",
-      "start": "Varış Devir Teslimine Başlayın"
-    }
-  },
-  "instructionsShort": {
-    "title": "3 kolay adımda nasıl çalışır:",
-    "steps": {
-      "step1": "Ev sahibinin referans fotoğraflarını görüntülemek için içeri girerken aşağıdaki herhangi bir odaya dokunun.",
-      "step2": "Her şeyin alanla eşleştiğinden ve eğlenmeye hazır göründüğünden emin olmak için etrafınıza hızlıca bir göz atın.",
-      "step3": "Önceden hasar olduğunu veya eksik eşyaları tespit ederseniz, o fotoğrafı işaretleyin ve ev sahibini bilgilendirin."
-    },
-    "buttons": {
-      "hide": "Ayrıntılı adımları gizle",
-      "show": "Bu nasıl çalışıyor?"
+      "loading": "Giriş detayları yükleniyor...",
+      "start": "Devir Teslimi Başlat"
     }
   },
   "roomDetails": {
@@ -99,14 +91,16 @@
     "viewRoom": "Odayı Görüntüle"
   },
   "roomFlowList": {
-    "title": "Oda Açıklaması",
-    "description": "Referans fotoğraflarını incelemek ve mülk kurulumunu onaylamak için aşağıdan herhangi bir odayı seçin."
+    "badge": "Oda Keşfi",
+    "title": "Evinizi keşfedin",
+    "subtitle": "Her şeyin nasıl düzenlendiğini görmek için dairede kısa bir tura çıkın.",
+    "description": "Ev sahibinin referans fotoğraflarını görmek ve mekandakilerle eşleştiğinden emin olmak için herhangi bir odaya dokunun. İster sıra sıra gezin, ister dilediğiniz odaya geçin."
   },
   "roomPhotoItem": {
     "flagIssueTitle": "Bu fotoğrafla ilgili sorunu işaretle",
-    "flagItem": "Öğeyi işaretle",
     "capturedOn": "{{val, datetime}} tarihinde yakalandı",
-    "verifyItemsPlural": "Bu öğelerin alanda açıkça göründüğünü doğrulayın:",
-    "verifyItemSingular": "Bu öğenin alanda açıkça göründüğünü doğrulayın:"
+    "flagItem": "Sorun bildir",
+    "verifyItemsPlural": "Fotoğrafı odanızla karşılaştırın — bu eşyalar tam gördüğünüz yerde olmalıdır:",
+    "verifyItemSingular": "Fotoğrafı odanızla karşılaştırın — bu eşya tam gördüğünüz yerde olmalıdır:"
   }
 }

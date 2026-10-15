@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { RoomFlowStep } from "./RoomFlowList";
 import { getRoomIcon } from "@/lib/helpers/icons";
 import type { InspectionFlag } from "@/api/generated/requests/types.gen";
+import { Card } from "../shared/Card";
 
 interface RoomFlowItemProps {
   step: RoomFlowStep;
@@ -19,10 +20,14 @@ export const RoomFlowItem: React.FC<RoomFlowItemProps> = ({
   const RoomIcon = getRoomIcon(step.room);
 
   return (
-    <button
+    <Card
+      as="button"
       type="button"
       onClick={() => onSelectRoom?.(step)}
-      className="group shadow-xs hover:shadow-md flex w-full cursor-pointer items-center justify-between rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/40 to-white p-4 text-left transition-all duration-200 hover:border-blue-200 dark:border-blue-900/30 dark:from-blue-950/20 dark:to-gray-900 dark:hover:border-blue-800 sm:p-5"
+      hoverable
+      variant="blueGradient"
+      padding="md"
+      className="group flex w-full items-center justify-between text-left"
     >
       {/* Left: Icon & Room Metadata */}
       <div className="flex min-w-0 items-center gap-3.5 pr-3">
@@ -36,9 +41,7 @@ export const RoomFlowItem: React.FC<RoomFlowItemProps> = ({
           </span>
           <span className="mt-0.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
             <Camera className="h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-gray-500" />
-            <span>
-              {t("roomFlowItem.photo", { count: step.proofNumber })}
-            </span>
+            <span>{t("roomFlowItem.photo", { count: step.proofNumber })}</span>
           </span>
         </div>
       </div>
@@ -50,6 +53,6 @@ export const RoomFlowItem: React.FC<RoomFlowItemProps> = ({
         </span>
         <ChevronRight className="h-5 w-5 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:text-gray-600 dark:group-hover:text-gray-200" />
       </div>
-    </button>
+    </Card>
   );
 };
