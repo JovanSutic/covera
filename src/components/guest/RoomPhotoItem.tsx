@@ -76,15 +76,21 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
               : t("roomPhotoItem.verifyItemSingular")}
           </p>
           <div className="flex flex-wrap gap-1.5">
-            {shot.assets.map((asset) => (
-              <span
-                key={asset.id}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50/60 px-2.5 py-1 text-xs font-medium text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-300"
-              >
-                <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                {asset.name}
-              </span>
-            ))}
+            {/* `asset_type` is required in the generated type, so this guard is unreachable
+                against a current backend — it only fires when the deployed worker predates
+                D26. An asset with no type drops its chip rather than crashing the page. */}
+            {shot.assets.map(
+              (asset) =>
+                asset.asset_type && (
+                  <span
+                    key={asset.id}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50/60 px-2.5 py-1 text-xs font-medium text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-300"
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                    {asset.asset_type.code}
+                  </span>
+                ),
+            )}
           </div>
         </div>
       )}

@@ -174,11 +174,16 @@ export function FlagContentForm({
     },
   });
 
-  const assetOptions = (shot.assets || []).map((asset) => ({
-    value: asset.id,
-    label: asset.name,
-    subLabel: `${t("flagContentForm.labels.category")} ${asset.category.replace(/_/g, " ")}`,
-  }));
+  // `asset_type` is required in the generated type, so the filter only drops anything when the
+  // deployed worker predates D26. An asset with no type is left out of the picker rather than
+  // crashing the page — it is never replaced by the flat `name`.
+  const assetOptions = (shot.assets || [])
+    .filter((asset) => asset.asset_type)
+    .map((asset) => ({
+      value: asset.id,
+      label: asset.asset_type.code,
+      subLabel: `${t("flagContentForm.labels.category")} ${asset.asset_type.category.replace(/_/g, " ")}`,
+    }));
 
   const onSubmit = (data: FlagFormData) => {
     createFlagMutation.mutate(data);

@@ -331,7 +331,7 @@ export function ShotStudioFlow({
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-1">
                           <h6 className="text-xs font-semibold text-gray-900 dark:text-gray-100">
-                            {asset.name}
+                            {asset.asset_type.code}
                           </h6>
                           {isLinked && (
                             <span className="bg-blue-600 text-white rounded-full h-4 w-4 flex items-center justify-center text-[9px] font-bold shrink-0">
@@ -340,7 +340,7 @@ export function ShotStudioFlow({
                           )}
                         </div>
                         <p className="text-[10px] text-gray-500 mb-2">
-                          {t(`categories.${asset.category}`)}
+                          {t(`categories.${asset.asset_type.category}`)}
                         </p>
                       </div>
 

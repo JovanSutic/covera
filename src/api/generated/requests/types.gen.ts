@@ -20,11 +20,22 @@ export type StandardError = {
     error: {
         code: string;
         message: string;
-        details?: Array<{
-            field: string;
-            message: string;
-        }>;
+        /**
+         * Present only when the failure was caused by request input.
+         */
+        details?: Array<ErrorDetail>;
+        /**
+         * Developer diagnostics. Omitted entirely in production.
+         */
+        meta?: {
+            [key: string]: unknown;
+        };
     };
+};
+
+export type ErrorDetail = {
+    field: string;
+    message: string;
 };
 
 export type CreateUser = {
@@ -177,7 +188,19 @@ export type Asset = {
     description: string | null;
     photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
     approximateValueCents: number | null;
+    assetTypeId: string;
+    ageBracket: 'UNDER_1_YEAR' | 'ONE_TO_THREE_YEARS' | 'THREE_TO_FIVE_YEARS' | 'OVER_FIVE_YEARS' | null;
+    valueTier: 'BUDGET' | 'STANDARD' | 'PREMIUM' | 'LUXURY' | null;
     isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    asset_type: AssetType;
+};
+
+export type AssetType = {
+    id: string;
+    code: string;
+    category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
     createdAt: string;
     updatedAt: string;
 };
@@ -190,13 +213,17 @@ export type CreateAsset = {
     description?: string | null;
     photoProofRequirement?: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
     approximateValueCents?: number | null;
-    isActive?: boolean;
+    assetTypeId: string;
+    ageBracket?: 'UNDER_1_YEAR' | 'ONE_TO_THREE_YEARS' | 'THREE_TO_FIVE_YEARS' | 'OVER_FIVE_YEARS' | null;
+    valueTier?: 'BUDGET' | 'STANDARD' | 'PREMIUM' | 'LUXURY' | null;
 };
 
 export type DeleteAssetResponse = {
     success: boolean;
     id: string;
 };
+
+export type AssetTypesList = Array<AssetType>;
 
 export type ApartmentShotsList = Array<ApartmentShot>;
 
@@ -242,19 +269,7 @@ export type InspectionFlag = {
     resolvedByUserId: string | null;
     createdAt: string;
     updatedAt: string;
-    assets?: Array<{
-        id: string;
-        apartmentId: string;
-        name: string;
-        category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
-        roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
-        description: string | null;
-        photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
-        approximateValueCents: number | null;
-        isActive: boolean;
-        createdAt: string;
-        updatedAt: string;
-    }>;
+    assets?: Array<Asset>;
 };
 
 export type CreateInspectionFlag = {
@@ -303,19 +318,7 @@ export type ShotWithAssets = {
     instructions: string;
     createdAt: string;
     updatedAt: string;
-    assets: Array<{
-        id: string;
-        apartmentId: string;
-        name: string;
-        category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
-        roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
-        description: string | null;
-        photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
-        approximateValueCents: number | null;
-        isActive: boolean;
-        createdAt: string;
-        updatedAt: string;
-    }>;
+    assets: Array<Asset>;
     images: Array<{
         id: string;
         apartmentId: string;
@@ -354,6 +357,27 @@ export type GetUsersData = {
     url: '/users';
 };
 
+export type GetUsersErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetUsersError = GetUsersErrors[keyof GetUsersErrors];
+
 export type GetUsersResponses = {
     /**
      * Get all users
@@ -372,23 +396,23 @@ export type PostUsersData = {
 
 export type PostUsersErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. AUTH_PROVIDER_ERROR: The authentication provider rejected the request.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested User could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
      */
-    404: StandardError;
+    403: StandardError;
     /**
-     * Conflict: This User already exists.
+     * DUPLICATE_RECORD: A record with these values already exists.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -415,23 +439,19 @@ export type GetUsersByIdData = {
 
 export type GetUsersByIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested User could not be found.
+     * USER_NOT_FOUND: User does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This User already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -458,23 +478,23 @@ export type PostUsersByIdInviteData = {
 
 export type PostUsersByIdInviteErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * INVITATION_ERROR: The invitation could not be dispatched.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested User could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * USER_NOT_FOUND: User does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This User already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -505,23 +525,15 @@ export type PostUsersUpdatePasswordData = {
 
 export type PostUsersUpdatePasswordErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. AUTH_PROVIDER_ERROR: The authentication provider rejected the request.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested User could not be found.
-     */
-    404: StandardError;
-    /**
-     * Conflict: This User already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -549,23 +561,11 @@ export type GetApartmentsData = {
 
 export type GetApartmentsErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
-     */
-    400: StandardError;
-    /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Apartment could not be found.
-     */
-    404: StandardError;
-    /**
-     * Conflict: This Apartment already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -590,23 +590,27 @@ export type PostApartmentsData = {
 
 export type PostApartmentsErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Apartment could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * USER_NOT_FOUND: User does not exist. LOCATION_NOT_FOUND: Location does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Apartment already exists.
+     * RELATED_RECORD_INVALID: A referenced record does not exist or is still in use.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -633,23 +637,19 @@ export type GetApartmentsByIdData = {
 
 export type GetApartmentsByIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Apartment could not be found.
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Apartment already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -678,23 +678,23 @@ export type PostApartmentsByIdPhotosUploadTokensData = {
 
 export type PostApartmentsByIdPhotosUploadTokensErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. MAX_PHOTOS_EXCEEDED: The apartment photo limit would be exceeded.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Apartment could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Apartment already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -733,23 +733,27 @@ export type PostApartmentsByIdPhotosConfirmData = {
 
 export type PostApartmentsByIdPhotosConfirmErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. MAX_PHOTOS_EXCEEDED: The apartment photo limit would be exceeded.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Apartment could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Apartment already exists.
+     * DUPLICATE_RECORD: A record with these values already exists.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -777,23 +781,19 @@ export type GetApartmentsHostMeData = {
 
 export type GetApartmentsHostMeErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
-     */
-    400: StandardError;
-    /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Apartment could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * USER_NOT_FOUND: User does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Apartment already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -841,23 +841,23 @@ export type GetReservationsApartmentByApartmentIdData = {
 
 export type GetReservationsApartmentByApartmentIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Reservation could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Reservation already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -882,23 +882,27 @@ export type PostReservationsData = {
 
 export type PostReservationsErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. RESERVATION_INVALID_RANGE: Check-out must be strictly after check-in.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Reservation could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Reservation already exists.
+     * RESERVATION_OVERLAP: Reservation overlaps an existing reservation. RELATED_RECORD_INVALID: A referenced record does not exist or is still in use.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -925,23 +929,23 @@ export type DeleteReservationsByIdData = {
 
 export type DeleteReservationsByIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Reservation could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * RESERVATION_NOT_FOUND: Reservation does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Reservation already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -968,23 +972,27 @@ export type PatchReservationsByIdData = {
 
 export type PatchReservationsByIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. RESERVATION_INVALID_RANGE: Check-out must be strictly after check-in.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Reservation could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * RESERVATION_NOT_FOUND: Reservation does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Reservation already exists.
+     * RESERVATION_OVERLAP: Reservation overlaps an existing reservation.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1007,6 +1015,23 @@ export type GetLocationsData = {
     url: '/locations';
 };
 
+export type GetLocationsErrors = {
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetLocationsError = GetLocationsErrors[keyof GetLocationsErrors];
+
 export type GetLocationsResponses = {
     /**
      * List locations
@@ -1022,6 +1047,27 @@ export type PostLocationsData = {
     query?: never;
     url: '/locations';
 };
+
+export type PostLocationsErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostLocationsError = PostLocationsErrors[keyof PostLocationsErrors];
 
 export type PostLocationsResponses = {
     /**
@@ -1043,23 +1089,23 @@ export type GetAssetsApartmentByApartmentIdData = {
 
 export type GetAssetsApartmentByApartmentIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Asset could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Asset already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1084,23 +1130,27 @@ export type PostAssetsData = {
 
 export type PostAssetsErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. ASSET_TYPE_INVALID: The referenced asset type does not exist.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Asset could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Asset already exists.
+     * RELATED_RECORD_INVALID: A referenced record does not exist or is still in use.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1127,23 +1177,27 @@ export type DeleteAssetsByIdData = {
 
 export type DeleteAssetsByIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Asset could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * ASSET_NOT_FOUND: Asset does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Asset already exists.
+     * ASSET_LOCKED: Asset is locked by an active reservation.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1159,34 +1213,72 @@ export type DeleteAssetsByIdResponses = {
 
 export type DeleteAssetsByIdResponse = DeleteAssetsByIdResponses[keyof DeleteAssetsByIdResponses];
 
+export type GetAssetsTypesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/assets/types';
+};
+
+export type GetAssetsTypesErrors = {
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetAssetsTypesError = GetAssetsTypesErrors[keyof GetAssetsTypesErrors];
+
+export type GetAssetsTypesResponses = {
+    /**
+     * List all asset types, ordered A-Z by code
+     */
+    200: AssetTypesList;
+};
+
+export type GetAssetsTypesResponse = GetAssetsTypesResponses[keyof GetAssetsTypesResponses];
+
 export type GetApartmentShotsApartmentByApartmentIdData = {
     body?: never;
     path: {
         apartmentId: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * Optional reservation ID to filter shots and assets created before or at reservation booking time
+         */
+        reservationId?: string;
+    };
     url: '/apartment-shots/apartment/{apartmentId}';
 };
 
 export type GetApartmentShotsApartmentByApartmentIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested ApartmentShot could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. RESERVATION_NOT_FOUND: Reservation does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This ApartmentShot already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1213,23 +1305,27 @@ export type PutApartmentShotsApartmentByApartmentIdData = {
 
 export type PutApartmentShotsApartmentByApartmentIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested ApartmentShot could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This ApartmentShot already exists.
+     * APARTMENT_SHOTS_LOCKED: Shots are locked by an active reservation. RELATED_RECORD_INVALID: A referenced record does not exist or is still in use.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1254,23 +1350,27 @@ export type PostInspectionsData = {
 
 export type PostInspectionsErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. RESERVATION_NOT_COVERED: The reservation is not in the COVERED state. INSPECTION_NO_PHOTO_PROOF: The reservation has no satisfied photo proof. INSPECTION_WINDOW_EXPIRED: The inspection creation window has expired.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Inspection could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * RESERVATION_NOT_FOUND: Reservation does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Inspection already exists.
+     * INSPECTION_ALREADY_EXISTS: An inspection already exists for this reservation.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1300,23 +1400,19 @@ export type PostInspectionsByIdFlagsData = {
 
 export type PostInspectionsByIdFlagsErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation. FLAG_WINDOW_EXPIRED: The flag submission window has expired.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
-     */
-    401: StandardError;
-    /**
-     * Not Found: The requested Inspection could not be found.
+     * INSPECTION_NOT_FOUND: Inspection does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Inspection already exists.
+     * FLAG_ALREADY_EXISTS: A flag already exists for this shot.
      */
     409: StandardError;
     /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1351,23 +1447,15 @@ export type GetInspectionsByIdData = {
 
 export type GetInspectionsByIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
-     */
-    401: StandardError;
-    /**
-     * Not Found: The requested Inspection could not be found.
+     * INSPECTION_NOT_FOUND: Inspection does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Inspection already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1397,23 +1485,23 @@ export type GetInspectionsReservationByReservationIdData = {
 
 export type GetInspectionsReservationByReservationIdErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
     /**
-     * Not Found: The requested Inspection could not be found.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     */
+    403: StandardError;
+    /**
+     * RESERVATION_NOT_FOUND: Reservation does not exist. INSPECTION_NOT_FOUND: Inspection does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Inspection already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };
@@ -1443,23 +1531,15 @@ export type PostInspectionsByIdPingData = {
 
 export type PostInspectionsByIdPingErrors = {
     /**
-     * Bad Request: One or more parameters failed validation.
+     * VALIDATION_ERROR: The request failed validation.
      */
     400: StandardError;
     /**
-     * Unauthorized: Missing or invalid token.
-     */
-    401: StandardError;
-    /**
-     * Not Found: The requested Inspection could not be found.
+     * INSPECTION_NOT_FOUND: Inspection does not exist.
      */
     404: StandardError;
     /**
-     * Conflict: This Inspection already exists.
-     */
-    409: StandardError;
-    /**
-     * Internal Server Error: Something went wrong on our end.
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
      */
     500: StandardError;
 };

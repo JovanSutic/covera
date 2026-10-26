@@ -106,6 +106,15 @@
       "description": {
         "label": "Açıklama / Muayene Notları (Opsiyonel)",
         "placeholder": "Doğu duvarında bulunan uzaktan kumandayı inceleyin..."
+      },
+      "assetType": {
+        "label": "Varlık Türü"
+      },
+      "ageBracket": {
+        "label": "Yaş Aralığı (İsteğe Bağlı)"
+      },
+      "valueTier": {
+        "label": "Değer Kademesi (İsteğe Bağlı)"
       }
     },
     "buttons": {
@@ -116,7 +125,8 @@
       "nameRequired": "Öğe adı gerekli",
       "categoryRequired": "Lütfen geçerli bir kategori seçin",
       "roomLocationRequired": "Lütfen bir oda konumu seçin",
-      "invalidValue": "Değer, negatif olmayan geçerli bir sayı olmalıdır"
+      "invalidValue": "Değer, negatif olmayan geçerli bir sayı olmalıdır",
+      "assetTypeRequired": "Lütfen bir varlık türü seçin"
     },
     "messages": {
       "createSuccess": "Öğe başarıyla oluşturuldu!",
@@ -189,5 +199,17 @@
     "selectShotPrompt": "Daire varlıklarını görüntülemek ve bağlamak için soldan bir çekim seçin.",
     "cancel": "İptal",
     "add": "Ekle"
+  },
+  "ageBrackets": {
+    "UNDER_1_YEAR": "1 yıldan az",
+    "ONE_TO_THREE_YEARS": "1–3 yıl",
+    "THREE_TO_FIVE_YEARS": "3–5 yıl",
+    "OVER_FIVE_YEARS": "5 yıldan fazla"
+  },
+  "valueTiers": {
+    "BUDGET": "Bütçe",
+    "STANDARD": "Standart",
+    "PREMIUM": "Premium",
+    "LUXURY": "Lüks"
   }
 }

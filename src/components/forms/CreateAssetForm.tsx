@@ -7,35 +7,32 @@ import Input from "@/components/formItems/Input";
 import Select from "@/components/formItems/Select";
 import Button from "@/components/formItems/Button";
 import { withAuth } from "@/lib/api/api";
-import { postAssets } from "@/api/generated/requests/services.gen";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getAssetsTypes, postAssets } from "@/api/generated/requests/sdk.gen";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { toast } from "sonner";
 import { useEffect, useMemo } from "react";
 import type { SelectOption } from "@/types/component.types";
 import {
-  ASSET_CATEGORIES,
+  AGE_BRACKETS,
   ROOM_LOCATIONS,
   SHOT_TYPES,
+  VALUE_TIERS,
 } from "@/types/assets.types";
+import {
+  resolveAssetIdentity,
+  toAssetTypeOptions,
+} from "@/lib/helpers/assetTypes";
 
 const createAssetSchema = z.object({
-  name: z.string().min(1, "createAssetForm.validation.nameRequired"),
-  category: z.enum(ASSET_CATEGORIES, {
-    message: "createAssetForm.validation.categoryRequired",
-  }),
+  assetTypeId: z.string().min(1, "createAssetForm.validation.assetTypeRequired"),
   roomLocation: z.enum(ROOM_LOCATIONS, {
     message: "createAssetForm.validation.roomLocationRequired",
   }),
-  description: z.string().optional(),
   photoProofRequirement: z.enum(["SWEEP_ONLY", "CLOSEUP", "FUNCTIONAL_ACTION"]),
-  approximateValue: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !val || (!isNaN(Number(val)) && Number(val) >= 0),
-      "createAssetForm.validation.invalidValue",
-    ),
+  ageBracket: z.union([z.enum(AGE_BRACKETS), z.literal("")]),
+  valueTier: z.union([z.enum(VALUE_TIERS), z.literal("")]),
+  description: z.string().optional(),
 });
 
 type CreateAssetFormValues = z.infer<typeof createAssetSchema>;
@@ -47,12 +44,12 @@ interface CreateAssetFormProps {
 }
 
 const DEFAULT_FORM_VALUES: CreateAssetFormValues = {
-  name: "",
-  category: "" as any,
+  assetTypeId: "",
   roomLocation: "" as any,
-  description: "",
   photoProofRequirement: "SWEEP_ONLY",
-  approximateValue: "",
+  ageBracket: "",
+  valueTier: "",
+  description: "",
 };
 
 export default function CreateAssetForm({
@@ -62,20 +59,43 @@ export default function CreateAssetForm({
 }: CreateAssetFormProps) {
   const { t } = useTranslation("assets");
 
+  const { data: assetTypes = [], isLoading: assetTypesLoading } = useQuery({
+    queryKey: [...QUERY_ACTIONS.ASSET_TYPES_GET_ALL],
+    queryFn: async ({ signal }) => {
+      const config = await withAuth({ signal });
+      const response = await getAssetsTypes({ ...config });
+      return response.data || [];
+    },
+  });
+
+  const assetTypeOptions: SelectOption[] = useMemo(
+    () => toAssetTypeOptions(assetTypes, t),
+    [assetTypes, t],
+  );
+
+  const ageBracketOptions: SelectOption[] = useMemo(
+    () =>
+      AGE_BRACKETS.map((bracket) => ({
+        value: bracket,
+        label: t(`ageBrackets.${bracket}`, bracket),
+      })),
+    [t],
+  );
+
+  const valueTierOptions: SelectOption[] = useMemo(
+    () =>
+      VALUE_TIERS.map((tier) => ({
+        value: tier,
+        label: t(`valueTiers.${tier}`, tier),
+      })),
+    [t],
+  );
+
   const photoProofOptions: SelectOption[] = useMemo(
     () =>
       SHOT_TYPES.map((type) => ({
         value: type,
         label: t(`photoProofs.${type}`, type),
-      })),
-    [t],
-  );
-
-  const categoryOptions: SelectOption[] = useMemo(
-    () =>
-      ASSET_CATEGORIES.map((cat) => ({
-        value: cat,
-        label: t(`categories.${cat}`, cat),
       })),
     [t],
   );
@@ -104,22 +124,26 @@ export default function CreateAssetForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (formData: CreateAssetFormValues) => {
-      const config = await withAuth();
+      const identity = resolveAssetIdentity(assetTypes, formData.assetTypeId);
 
-      const approximateValueCents = formData.approximateValue
-        ? Math.round(parseFloat(formData.approximateValue) * 100)
-        : null;
+      if (!identity) {
+        throw new Error(t("createAssetForm.validation.assetTypeRequired"));
+      }
+
+      const config = await withAuth();
 
       const response = await postAssets({
         ...config,
         body: {
-          name: formData.name,
-          category: formData.category,
-          roomLocation: formData.roomLocation,
           apartmentId,
+          name: identity.name,
+          category: identity.category,
+          assetTypeId: formData.assetTypeId,
+          roomLocation: formData.roomLocation,
           description: formData.description || null,
           photoProofRequirement: formData.photoProofRequirement,
-          approximateValueCents,
+          ageBracket: formData.ageBracket || null,
+          valueTier: formData.valueTier || null,
         },
       });
       return response.data;
@@ -157,24 +181,17 @@ export default function CreateAssetForm({
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-5 w-full max-w-xl bg-white"
     >
-      <Input
-        label={t("createAssetForm.fields.name.label")}
-        type="text"
-        placeholder={t("createAssetForm.fields.name.placeholder")}
-        error={errors.name?.message ? t(errors.name.message) : undefined}
-        {...register("name")}
-      />
-
       <Controller
-        name="category"
+        name="assetTypeId"
         control={control}
         render={({ field }) => (
           <Select
-            label={t("createAssetForm.fields.category.label")}
-            options={categoryOptions}
+            label={t("createAssetForm.fields.assetType.label")}
+            options={assetTypeOptions}
+            disabled={assetTypesLoading}
             error={
-              errors.category?.message
-                ? t(errors.category.message)
+              errors.assetTypeId?.message
+                ? t(errors.assetTypeId.message)
                 : undefined
             }
             value={field.value}
@@ -222,17 +239,42 @@ export default function CreateAssetForm({
         )}
       />
 
-      <Input
-        label={t("createAssetForm.fields.approximateValue.label")}
-        type="number"
-        step="0.01"
-        placeholder={t("createAssetForm.fields.approximateValue.placeholder")}
-        error={
-          errors.approximateValue?.message
-            ? t(errors.approximateValue.message)
-            : undefined
-        }
-        {...register("approximateValue")}
+      <Controller
+        name="ageBracket"
+        control={control}
+        render={({ field }) => (
+          <Select
+            label={t("createAssetForm.fields.ageBracket.label")}
+            options={ageBracketOptions}
+            error={
+              errors.ageBracket?.message
+                ? t(errors.ageBracket.message)
+                : undefined
+            }
+            value={field.value}
+            onChange={field.onChange}
+            ref={field.ref}
+          />
+        )}
+      />
+
+      <Controller
+        name="valueTier"
+        control={control}
+        render={({ field }) => (
+          <Select
+            label={t("createAssetForm.fields.valueTier.label")}
+            options={valueTierOptions}
+            error={
+              errors.valueTier?.message
+                ? t(errors.valueTier.message)
+                : undefined
+            }
+            value={field.value}
+            onChange={field.onChange}
+            ref={field.ref}
+          />
+        )}
       />
 
       <Input
