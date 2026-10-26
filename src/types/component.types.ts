@@ -37,6 +37,7 @@ export interface TabsProps {
 export interface SelectOption {
   value: string;
   label: string;
+  subLabel?: string;
 }
 
 export interface ReservationRow {

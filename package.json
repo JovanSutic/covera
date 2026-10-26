@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "i18n:translate": "tsx scripts/translate-locales.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "gate": "tsc -b && eslint . --quiet && vitest run"
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.13.1",

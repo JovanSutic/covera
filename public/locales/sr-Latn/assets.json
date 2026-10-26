@@ -106,6 +106,15 @@
       "description": {
         "label": "Nalazi se na istočnom zidu, pregledajte daljinski upravljač...",
         "placeholder": "Kreirajte sredstvo"
+      },
+      "assetType": {
+        "label": "Vrsta imovine"
+      },
+      "ageBracket": {
+        "label": "Starosna grupa (opciono)"
+      },
+      "valueTier": {
+        "label": "Vrednost Izaberite nivo (Op)"
       }
     },
     "buttons": {
@@ -116,7 +125,8 @@
       "nameRequired": "Asset name is required",
       "categoryRequired": "Izaberite važeću kategoriju",
       "roomLocationRequired": "Izaberite lokaciju sobe",
-      "invalidValue": "Vrednost mora biti važeći nenegativan broj"
+      "invalidValue": "Vrednost mora biti važeći nenegativan broj",
+      "assetTypeRequired": "Please select an asset type"
     },
     "messages": {
       "createSuccess": "Uspešno kreirano sredstvo!",
@@ -189,5 +199,17 @@
     "selectShotPrompt": "Izaberite snimak sa leve strane da biste videli i povezali imovinu stana.",
     "cancel": "Otkaži",
     "add": "Dodaj"
+  },
+  "ageBrackets": {
+    "UNDER_1_YEAR": "Manje od 1 godine",
+    "ONE_TO_THREE_YEARS": "1–3 godine",
+    "THREE_TO_FIVE_YEARS": "3–5 godina",
+    "OVER_FIVE_YEARS": "Više od 5 godina"
+  },
+  "valueTiers": {
+    "BUDGET": "Budžet",
+    "STANDARD": "Standard",
+    "PREMIUM": "Premium",
+    "LUXURY": "Luksuzni"
   }
 }

@@ -1,22 +1,5 @@
 import type { Asset } from "@/api/generated/requests/types.gen";
 
-export const ASSET_CATEGORIES = [
-  "ELECTRONICS",
-  "APPLIANCES_LARGE",
-  "APPLIANCES_SMALL",
-  "FURNITURE",
-  "STRUCTURAL_SURFACES",
-  "BATH_PLUMBING_FIXTURES",
-  "RUGS_CARPETS_TEXTILES",
-  "LIGHTING_FIXTURES",
-  "SAFETY_SECURITY",
-  "ENTERTAINMENT_RECREATION",
-  "DECOR_ART",
-  "UTILITIES_INFRASTRUCTURE",
-  "OUTDOOR_PATIO",
-  "OTHER",
-] as const satisfies readonly Asset["category"][];
-
 export const ROOM_LOCATIONS = [
   "ENTRANCE_HALLWAY",
   "STAIRCASE_CORRIDOR",
@@ -49,3 +32,17 @@ export const ROOM_LOCATIONS = [
 
 
 export const SHOT_TYPES = ["SWEEP_ONLY", "CLOSEUP", "FUNCTIONAL_ACTION"] as const satisfies readonly Asset["photoProofRequirement"][];
+
+export const AGE_BRACKETS = [
+  "UNDER_1_YEAR",
+  "ONE_TO_THREE_YEARS",
+  "THREE_TO_FIVE_YEARS",
+  "OVER_FIVE_YEARS",
+] as const satisfies readonly NonNullable<Asset["ageBracket"]>[];
+
+export const VALUE_TIERS = [
+  "BUDGET",
+  "STANDARD",
+  "PREMIUM",
+  "LUXURY",
+] as const satisfies readonly NonNullable<Asset["valueTier"]>[];

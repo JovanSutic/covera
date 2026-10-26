@@ -72,27 +72,21 @@ export const StandardErrorSchema = {
                 },
                 message: {
                     type: 'string',
-                    example: 'The request parameters failed validation tests.'
+                    example: 'The request body failed validation (2 problems).'
                 },
                 details: {
                     type: 'array',
                     items: {
-                        type: 'object',
-                        properties: {
-                            field: {
-                                type: 'string',
-                                example: 'body.password'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'Password must be at least 8 characters long.'
-                            }
-                        },
-                        required: [
-                            'field',
-                            'message'
-                        ]
-                    }
+                        $ref: '#/components/schemas/ErrorDetail'
+                    },
+                    description: 'Present only when the failure was caused by request input.'
+                },
+                meta: {
+                    type: 'object',
+                    additionalProperties: {
+                        nullable: true
+                    },
+                    description: 'Developer diagnostics. Omitted entirely in production.'
                 }
             },
             required: [
@@ -104,6 +98,24 @@ export const StandardErrorSchema = {
     required: [
         'success',
         'error'
+    ]
+} as const;
+
+export const ErrorDetailSchema = {
+    type: 'object',
+    properties: {
+        field: {
+            type: 'string',
+            example: 'body.password'
+        },
+        message: {
+            type: 'string',
+            example: 'Password must be at least 8 characters long.'
+        }
+    },
+    required: [
+        'field',
+        'message'
     ]
 } as const;
 
@@ -811,8 +823,95 @@ export const AssetSchema = {
             minimum: -2147483648,
             maximum: 2147483647
         },
+        assetTypeId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        ageBracket: {
+            type: 'string',
+            nullable: true,
+            enum: [
+                'UNDER_1_YEAR',
+                'ONE_TO_THREE_YEARS',
+                'THREE_TO_FIVE_YEARS',
+                'OVER_FIVE_YEARS',
+                null
+            ]
+        },
+        valueTier: {
+            type: 'string',
+            nullable: true,
+            enum: [
+                'BUDGET',
+                'STANDARD',
+                'PREMIUM',
+                'LUXURY',
+                null
+            ]
+        },
         isActive: {
             type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        asset_type: {
+            $ref: '#/components/schemas/AssetType'
+        }
+    },
+    required: [
+        'id',
+        'apartmentId',
+        'name',
+        'category',
+        'roomLocation',
+        'description',
+        'photoProofRequirement',
+        'approximateValueCents',
+        'assetTypeId',
+        'ageBracket',
+        'valueTier',
+        'isActive',
+        'createdAt',
+        'updatedAt',
+        'asset_type'
+    ]
+} as const;
+
+export const AssetTypeSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        code: {
+            type: 'string',
+            maxLength: 100
+        },
+        category: {
+            type: 'string',
+            enum: [
+                'ELECTRONICS',
+                'APPLIANCES_LARGE',
+                'APPLIANCES_SMALL',
+                'FURNITURE',
+                'STRUCTURAL_SURFACES',
+                'BATH_PLUMBING_FIXTURES',
+                'RUGS_CARPETS_TEXTILES',
+                'LIGHTING_FIXTURES',
+                'SAFETY_SECURITY',
+                'ENTERTAINMENT_RECREATION',
+                'DECOR_ART',
+                'UTILITIES_INFRASTRUCTURE',
+                'OUTDOOR_PATIO',
+                'OTHER'
+            ]
         },
         createdAt: {
             type: 'string',
@@ -825,14 +924,8 @@ export const AssetSchema = {
     },
     required: [
         'id',
-        'apartmentId',
-        'name',
+        'code',
         'category',
-        'roomLocation',
-        'description',
-        'photoProofRequirement',
-        'approximateValueCents',
-        'isActive',
         'createdAt',
         'updatedAt'
     ]
@@ -918,15 +1011,39 @@ export const CreateAssetSchema = {
             minimum: -2147483648,
             maximum: 2147483647
         },
-        isActive: {
-            type: 'boolean'
+        assetTypeId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        ageBracket: {
+            type: 'string',
+            nullable: true,
+            enum: [
+                'UNDER_1_YEAR',
+                'ONE_TO_THREE_YEARS',
+                'THREE_TO_FIVE_YEARS',
+                'OVER_FIVE_YEARS',
+                null
+            ]
+        },
+        valueTier: {
+            type: 'string',
+            nullable: true,
+            enum: [
+                'BUDGET',
+                'STANDARD',
+                'PREMIUM',
+                'LUXURY',
+                null
+            ]
         }
     },
     required: [
         'apartmentId',
         'name',
         'category',
-        'roomLocation'
+        'roomLocation',
+        'assetTypeId'
     ]
 } as const;
 
@@ -945,6 +1062,13 @@ export const DeleteAssetResponseSchema = {
         'success',
         'id'
     ]
+} as const;
+
+export const AssetTypesListSchema = {
+    type: 'array',
+    items: {
+        $ref: '#/components/schemas/AssetType'
+    }
 } as const;
 
 export const ApartmentShotsListSchema = {
@@ -1214,114 +1338,7 @@ export const InspectionFlagSchema = {
         assets: {
             type: 'array',
             items: {
-                type: 'object',
-                properties: {
-                    id: {
-                        type: 'string',
-                        format: 'uuid'
-                    },
-                    apartmentId: {
-                        type: 'string',
-                        format: 'uuid'
-                    },
-                    name: {
-                        type: 'string',
-                        maxLength: 255
-                    },
-                    category: {
-                        type: 'string',
-                        enum: [
-                            'ELECTRONICS',
-                            'APPLIANCES_LARGE',
-                            'APPLIANCES_SMALL',
-                            'FURNITURE',
-                            'STRUCTURAL_SURFACES',
-                            'BATH_PLUMBING_FIXTURES',
-                            'RUGS_CARPETS_TEXTILES',
-                            'LIGHTING_FIXTURES',
-                            'SAFETY_SECURITY',
-                            'ENTERTAINMENT_RECREATION',
-                            'DECOR_ART',
-                            'UTILITIES_INFRASTRUCTURE',
-                            'OUTDOOR_PATIO',
-                            'OTHER'
-                        ]
-                    },
-                    roomLocation: {
-                        type: 'string',
-                        enum: [
-                            'ENTRANCE_HALLWAY',
-                            'STAIRCASE_CORRIDOR',
-                            'LIVING_ROOM',
-                            'DINING_ROOM',
-                            'GAME_ENTERTAINMENT_ROOM',
-                            'HOME_OFFICE_STUDY',
-                            'KITCHEN',
-                            'PANTRY_LAUNDRY_ROOM',
-                            'BEDROOM_PRIMARY',
-                            'BEDROOM_2',
-                            'BEDROOM_3',
-                            'BEDROOM_4',
-                            'BEDROOM_5',
-                            'BATHROOM_FULL_1',
-                            'BATHROOM_FULL_2',
-                            'BATHROOM_FULL_3',
-                            'BATHROOM_HALF_POWDER',
-                            'SAUNA_SPA_ROOM',
-                            'GYM_FITNESS_ROOM',
-                            'BALCONY_TERRACE',
-                            'PATIO_DECK',
-                            'GARDEN_YARD',
-                            'SWIMMING_POOL_AREA',
-                            'STORAGE_ROOM',
-                            'GARAGE_PARKING',
-                            'UTILITY_BOILER_ROOM',
-                            'OTHER'
-                        ]
-                    },
-                    description: {
-                        type: 'string',
-                        nullable: true
-                    },
-                    photoProofRequirement: {
-                        type: 'string',
-                        enum: [
-                            'SWEEP_ONLY',
-                            'CLOSEUP',
-                            'FUNCTIONAL_ACTION'
-                        ]
-                    },
-                    approximateValueCents: {
-                        type: 'integer',
-                        nullable: true,
-                        minimum: -2147483648,
-                        maximum: 2147483647
-                    },
-                    isActive: {
-                        type: 'boolean'
-                    },
-                    createdAt: {
-                        type: 'string',
-                        format: 'date-time'
-                    },
-                    updatedAt: {
-                        type: 'string',
-                        format: 'date-time'
-                    }
-                },
-                required: [
-                    'id',
-                    'apartmentId',
-                    'name',
-                    'category',
-                    'roomLocation',
-                    'description',
-                    'photoProofRequirement',
-                    'approximateValueCents',
-                    'isActive',
-                    'createdAt',
-                    'updatedAt'
-                ]
+                $ref: '#/components/schemas/Asset'
             },
             default: []
         }
@@ -1614,114 +1631,7 @@ export const ShotWithAssetsSchema = {
         assets: {
             type: 'array',
             items: {
-                type: 'object',
-                properties: {
-                    id: {
-                        type: 'string',
-                        format: 'uuid'
-                    },
-                    apartmentId: {
-                        type: 'string',
-                        format: 'uuid'
-                    },
-                    name: {
-                        type: 'string',
-                        maxLength: 255
-                    },
-                    category: {
-                        type: 'string',
-                        enum: [
-                            'ELECTRONICS',
-                            'APPLIANCES_LARGE',
-                            'APPLIANCES_SMALL',
-                            'FURNITURE',
-                            'STRUCTURAL_SURFACES',
-                            'BATH_PLUMBING_FIXTURES',
-                            'RUGS_CARPETS_TEXTILES',
-                            'LIGHTING_FIXTURES',
-                            'SAFETY_SECURITY',
-                            'ENTERTAINMENT_RECREATION',
-                            'DECOR_ART',
-                            'UTILITIES_INFRASTRUCTURE',
-                            'OUTDOOR_PATIO',
-                            'OTHER'
-                        ]
-                    },
-                    roomLocation: {
-                        type: 'string',
-                        enum: [
-                            'ENTRANCE_HALLWAY',
-                            'STAIRCASE_CORRIDOR',
-                            'LIVING_ROOM',
-                            'DINING_ROOM',
-                            'GAME_ENTERTAINMENT_ROOM',
-                            'HOME_OFFICE_STUDY',
-                            'KITCHEN',
-                            'PANTRY_LAUNDRY_ROOM',
-                            'BEDROOM_PRIMARY',
-                            'BEDROOM_2',
-                            'BEDROOM_3',
-                            'BEDROOM_4',
-                            'BEDROOM_5',
-                            'BATHROOM_FULL_1',
-                            'BATHROOM_FULL_2',
-                            'BATHROOM_FULL_3',
-                            'BATHROOM_HALF_POWDER',
-                            'SAUNA_SPA_ROOM',
-                            'GYM_FITNESS_ROOM',
-                            'BALCONY_TERRACE',
-                            'PATIO_DECK',
-                            'GARDEN_YARD',
-                            'SWIMMING_POOL_AREA',
-                            'STORAGE_ROOM',
-                            'GARAGE_PARKING',
-                            'UTILITY_BOILER_ROOM',
-                            'OTHER'
-                        ]
-                    },
-                    description: {
-                        type: 'string',
-                        nullable: true
-                    },
-                    photoProofRequirement: {
-                        type: 'string',
-                        enum: [
-                            'SWEEP_ONLY',
-                            'CLOSEUP',
-                            'FUNCTIONAL_ACTION'
-                        ]
-                    },
-                    approximateValueCents: {
-                        type: 'integer',
-                        nullable: true,
-                        minimum: -2147483648,
-                        maximum: 2147483647
-                    },
-                    isActive: {
-                        type: 'boolean'
-                    },
-                    createdAt: {
-                        type: 'string',
-                        format: 'date-time'
-                    },
-                    updatedAt: {
-                        type: 'string',
-                        format: 'date-time'
-                    }
-                },
-                required: [
-                    'id',
-                    'apartmentId',
-                    'name',
-                    'category',
-                    'roomLocation',
-                    'description',
-                    'photoProofRequirement',
-                    'approximateValueCents',
-                    'isActive',
-                    'createdAt',
-                    'updatedAt'
-                ]
+                $ref: '#/components/schemas/Asset'
             }
         },
         images: {

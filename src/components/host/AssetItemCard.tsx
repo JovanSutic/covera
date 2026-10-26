@@ -1,20 +1,18 @@
 import { useState } from "react";
-import { Check, Trash2, Tag, MapPin, Camera, FileText, AlertCircle } from "lucide-react";
-import type {
-  Asset,
-  ApartmentWithLocation,
-} from "@/api/generated/requests/types.gen";
+import {
+  Check,
+  Trash2,
+  Tag,
+  MapPin,
+  Camera,
+  FileText,
+  AlertCircle,
+  CalendarClock,
+  Coins,
+} from "lucide-react";
+import type { Asset } from "@/api/generated/requests/types.gen";
 import { useTranslation } from "react-i18next";
-import Typography from "../Typography";
 import { Card } from "../shared/Card";
-
-function formatCentsToDecimal(cents: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "decimal",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(cents / 100);
-}
 
 function DescriptionTooltip({ content }: { content: string }) {
   const { t } = useTranslation("assets");
@@ -45,11 +43,9 @@ export function AssetItemCard({
   asset,
   isCovered = true,
   onDeleteAsset,
-  currency = "EUR",
 }: {
   asset: Asset;
   isCovered?: boolean;
-  currency?: ApartmentWithLocation["currency"];
   onDeleteAsset: (assetId: string) => Promise<void> | void;
 }) {
   const { t } = useTranslation("assets");
@@ -66,11 +62,6 @@ export function AssetItemCard({
     }
   };
 
-  const formattedAmount =
-    asset.approximateValueCents != null
-      ? formatCentsToDecimal(asset.approximateValueCents)
-      : null;
-
   return (
     <Card
       variant={!isCovered ? "amber" : "white"}
@@ -82,7 +73,7 @@ export function AssetItemCard({
       <div>
         <div className="flex items-center justify-between gap-2">
           <h4 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-1 dark:text-white">
-            {asset.name}
+            {asset.asset_type.code}
           </h4>
 
           <div className="flex items-center gap-0.5 shrink-0">
@@ -121,12 +112,13 @@ export function AssetItemCard({
         </div>
 
         <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-          {asset.category && (
-            <span className="inline-flex items-center gap-1 rounded-lg bg-gray-100/80 px-2 py-0.5 text-[11px] font-medium text-gray-600 border border-gray-200/50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700/50">
-              <Tag className="h-3 w-3 text-gray-400 dark:text-gray-500" />
-              {t(`categories.${asset.category}`, asset.category)}
-            </span>
-          )}
+          <span className="inline-flex items-center gap-1 rounded-lg bg-gray-100/80 px-2 py-0.5 text-[11px] font-medium text-gray-600 border border-gray-200/50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700/50">
+            <Tag className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+            {t(
+              `categories.${asset.asset_type.category}`,
+              asset.asset_type.category,
+            )}
+          </span>
 
           {asset.roomLocation && (
             <span className="inline-flex items-center gap-1 rounded-lg bg-gray-100/80 px-2 py-0.5 text-[11px] font-medium text-gray-600 border border-gray-200/50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700/50">
@@ -140,6 +132,20 @@ export function AssetItemCard({
             {t(`photoProofs.${asset.photoProofRequirement}`)}
           </span>
 
+          {asset.ageBracket && (
+            <span className="inline-flex items-center gap-1 rounded-lg bg-gray-100/80 px-2 py-0.5 text-[11px] font-medium text-gray-600 border border-gray-200/50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700/50">
+              <CalendarClock className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              {t(`ageBrackets.${asset.ageBracket}`, asset.ageBracket)}
+            </span>
+          )}
+
+          {asset.valueTier && (
+            <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-50/80 px-2 py-0.5 text-[11px] font-medium text-emerald-700 border border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50">
+              <Coins className="h-3 w-3 text-emerald-500 dark:text-emerald-400" />
+              {t(`valueTiers.${asset.valueTier}`, asset.valueTier)}
+            </span>
+          )}
+
           {!isCovered && (
             <span className="inline-flex items-center gap-1 rounded-lg bg-amber-100/80 px-2 py-0.5 text-[11px] font-medium text-amber-800 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-900/60">
               <AlertCircle className="h-3 w-3 text-amber-600 dark:text-amber-400" />
@@ -148,17 +154,6 @@ export function AssetItemCard({
           )}
         </div>
       </div>
-
-      {formattedAmount && (
-        <div className="mt-3.5 border-t border-gray-100/80 pt-2.5 dark:border-gray-800">
-          <Typography type="caption" className="text-gray-400 block text-[11px] font-medium dark:text-gray-500">
-            {t("assetCard.labels.approxValue")}
-          </Typography>
-          <Typography type="body-sm" className="font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5 text-sm">
-            {formattedAmount} {currency}
-          </Typography>
-        </div>
-      )}
     </Card>
   );
 }
