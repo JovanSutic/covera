@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "i18n:translate": "tsx scripts/translate-locales.ts",
     "test": "vitest",
-    "gate": "tsc -b && eslint . --quiet && vitest run"
+    "gate": "tsc -b && eslint . --quiet && vitest run",
+    "perf:bundle": "tsx scripts/check-bundle-budget.ts"
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.13.1",

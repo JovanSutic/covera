@@ -1,6 +1,7 @@
 import type { ApartmentWithLocation } from "@/api/generated/requests/types.gen";
 import { Building2, MapPin, Calendar, Coins, ArrowLeft } from "lucide-react";
-import { Link } from "react-router";
+import { AccessLink } from "@/components/router/AccessLink";
+import { appPaths } from "@/lib/router";
 import { Trans, useTranslation } from "react-i18next";
 import Typography from "../Typography";
 
@@ -33,8 +34,8 @@ export function ApartmentOverviewHeader({
   return (
     <div className="rounded-xl bg-white p-4 dark:bg-gray-900/50">
       <div className="mb-3">
-        <Link
-          to="/host/apartments"
+        <AccessLink
+          to={appPaths.hostApartments}
           className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors group dark:text-gray-400 dark:hover:text-white"
         >
           <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
@@ -44,7 +45,7 @@ export function ApartmentOverviewHeader({
           >
             {t("apartments.overviewHeader.backLink")}
           </Typography>
-        </Link>
+        </AccessLink>
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

@@ -8,6 +8,7 @@ import Button from "@/components/formItems/Button";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseTask } from "@/hooks/supabase";
 import { getAuthUserFromJwt } from "@/lib/auth";
+import { buildPath, appPaths } from "@/lib/router";
 
 export default function PassUpdatePage() {
   const { t } = useTranslation("general");
@@ -120,7 +121,10 @@ export default function PassUpdatePage() {
             <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-sm text-rose-700">
               {errorMsg}
             </div>
-            <Button onClick={() => navigate("/login")} className="w-full py-3">
+            <Button
+              onClick={() => navigate(buildPath(appPaths.login))}
+              className="w-full py-3"
+            >
               {t("login.passUpdate.goToLogin")}
             </Button>
           </div>

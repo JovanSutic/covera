@@ -19,6 +19,10 @@
     "notFoundSubtitle": "Die angeforderte Inspektion oder Seite existiert nicht.",
     "serverErrorTitle": "Serverfehler",
     "serverErrorSubtitle": "Auf unserer Seite ist ein Problem aufgetreten. Bitte versuchen Sie es später noch einmal.",
+    "forbiddenTitle": "Nicht erlaubt",
+    "forbiddenSubtitle": "Sie haben keinen Zugriff auf diese Seite.",
+    "reloadFailedTitle": "Seite konnte nicht geladen werden",
+    "reloadFailedSubtitle": "Bitte laden Sie die Seite neu, um die aktuelle Version zu erhalten.",
     "backToHome": "Zurück nach Hause"
   },
   "adminDashboard": {
@@ -43,6 +47,8 @@
   "apartmentPage": {
     "errors": {
       "apartmentIdRequired": "Ein Wohnungsausweis ist erforderlich",
+      "notFoundTitle": "Wohnung nicht gefunden",
+      "notFoundSubtitle": "Diese Wohnung existiert nicht oder Sie haben keinen Zugriff mehr darauf.",
       "deleteAssetFailed": "Beim Löschen des Assets ist ein Fehler aufgetreten.",
       "saveShotsFailed": "Beim Speichern der Aufnahmen ist ein Fehler aufgetreten.",
       "missingInspectionDetails": "Fehlender Apartment- oder Reservierungsausweis",

@@ -5,7 +5,6 @@ import {
   getInspectionsById,
   postInspectionsByIdPing,
 } from "@/api/generated/requests/services.gen";
-import Header from "@/components/Header";
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
@@ -148,7 +147,6 @@ function InspectionPage() {
   if (!isLoading && (isError || !inspection)) {
     return (
       <PageLayout size="lg">
-        <Header />
         <PageTitle
           title="Handover Not Found"
           subtitle="Unable to load the requested property details."
@@ -165,7 +163,6 @@ function InspectionPage() {
 
   return (
     <PageLayout size="sm">
-      <Header />
 
       {currentStep === "intro" && (
         <InspectionIntroduction

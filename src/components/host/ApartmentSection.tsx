@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { withAuth } from "@/lib/api/api";
-import { Link } from "react-router";
+import { AccessLink } from "@/components/router/AccessLink";
+import { appPaths } from "@/lib/router/paths";
 import { getApartmentsHostMe } from "@/api/generated/requests/sdk.gen";
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
@@ -26,12 +27,13 @@ export default function ApartmentsSection() {
       {
         header: t("apartments.list.columns.name"),
         accessorKey: (row) => (
-          <Link
-            to={`/host/apartments/${row.id}`}
+          <AccessLink
+            to={appPaths.hostApartment}
+            params={{ id: row.id }}
             className="font-medium text-gray-900 hover:text-blue-600 hover:underline transition-colors"
           >
             {row.name}
-          </Link>
+          </AccessLink>
         ),
       },
       {
