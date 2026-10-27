@@ -10,7 +10,8 @@ import Input from "@/components/formItems/Input";
 import Button from "@/components/formItems/Button";
 import { postUsersUpdatePassword } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
-import { getAuthRole } from "@/lib/auth";
+import { dashboardPathForRole } from "@/lib/router";
+import { useSessionStore } from "@/lib/router/AppContext";
 
 const passwordSchema = z
   .string()
@@ -38,6 +39,8 @@ type UpdatePasswordFormValues = z.infer<typeof updatePasswordSchema>;
 export default function PassUpdateForm() {
   const { t } = useTranslation("general");
   const navigate = useNavigate();
+  const session = useSessionStore();
+  const sessionRefresh = session.refresh;
 
   const {
     register,
@@ -68,12 +71,9 @@ export default function PassUpdateForm() {
       toast.success(t("passUpdateForm.toast.success"));
       reset();
 
-      const role = await getAuthRole();
-      if (role !== "guest") {
-        navigate(`/${role}/dashboard`);
-      } else {
-        navigate("/");
-      }
+      await sessionRefresh();
+      const { role } = session.getSnapshot();
+      navigate(dashboardPathForRole(role ?? "guest"), { replace: true });
     },
     onError: (error: any) => {
       console.error("Mutation failed:", error);

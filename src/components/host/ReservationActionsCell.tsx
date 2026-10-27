@@ -9,11 +9,10 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { appPaths, buildPath } from "@/lib/router";
 import type { ReservationRow } from "@/types/component.types";
 import { ConfirmActionButton } from "../ConfirmationButton";
 import { GuestInspectionMessage } from "./GuestInspectionMessage";
-
-const VITE_APP_BASE_PATH = import.meta.env.VITE_APP_BASE_PATH;
 
 export function ReservationActionsCell({
   reservation,
@@ -58,7 +57,7 @@ export function ReservationActionsCell({
     Boolean(checkInTime) && !hasSubmittedProofs && !isTooEarly && !isTooLate;
 
   const guestInspectionUrl = reservation.inspection?.id
-    ? `${VITE_APP_BASE_PATH}/inspection/${reservation.inspection.id}`
+    ? buildPath(appPaths.inspection, { id: reservation.inspection.id })
     : "";
 
   const deleteMutation = useMutation({

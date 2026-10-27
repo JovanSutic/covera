@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import Header from "@/components/Header";
 import ApartmentsSection from "@/components/host/ApartmentSection";
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
@@ -19,7 +18,6 @@ export default function DashboardPage() {
 
   return (
     <PageLayout size="lg">
-      <Header />
       <PageTitle
         title={t("hostDashboard.title")}
         subtitle={t("hostDashboard.subtitle")}

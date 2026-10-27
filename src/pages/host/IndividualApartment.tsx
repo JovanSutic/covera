@@ -1,21 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
-import { Navigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import {
   deleteAssetsById,
-  getApartmentsById,
   getAssetsApartmentByApartmentId,
   getApartmentShotsApartmentByApartmentId,
   putApartmentShotsApartmentByApartmentId,
 } from "@/api/generated/requests/sdk.gen";
 import type { SyncShotItem } from "@/api/generated/requests/types.gen";
 
-import Header from "@/components/Header";
 import PageLayout from "@/components/layout/PageLayout";
+import PageTitle from "@/components/PageTitle";
 import Drawer from "@/components/Drawer";
 import { Modal } from "@/components/Modal";
 import { ApartmentOverviewHeader } from "@/components/host/ApartmentHeader";
@@ -29,6 +27,9 @@ import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
 
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { useApartment } from "@/lib/api/queries/apartment";
+import { useRouteParams } from "@/lib/router";
+import { appPaths } from "@/lib/router";
 import { validateAssetShotCoverage } from "@/lib/validations/shots";
 import {
   submitInspectionPhotos,
@@ -49,7 +50,7 @@ export default function IndividualApartmentPage() {
   );
   const [isInspectionModalOpen, setIsInspectionModalOpen] = useState(false);
 
-  const { id } = useParams<{ id: string }>();
+  const { id } = useRouteParams(appPaths.hostApartment) as { id: string };
   const queryClient = useQueryClient();
 
   // --- QUERIES ---
@@ -58,19 +59,7 @@ export default function IndividualApartmentPage() {
     data: apartment,
     isLoading: apartmentLoading,
     isFetching: apartmentFetching,
-  } = useQuery({
-    queryKey: [...QUERY_ACTIONS.APARTMENTS_GET_ID, id],
-    queryFn: async ({ signal }) => {
-      if (!id) throw new Error(t("apartmentPage.errors.apartmentIdRequired"));
-      const config = await withAuth({ signal });
-      const response = await getApartmentsById({
-        ...config,
-        path: { id },
-      });
-      return response.data;
-    },
-    enabled: !!id,
-  });
+  } = useApartment(id);
 
   const {
     data: assets = [],
@@ -237,13 +226,19 @@ export default function IndividualApartmentPage() {
     }
   };
 
-  if (!id || (!apartment && !apartmentLoading)) {
-    return <Navigate to="/apartments" replace />;
+  if (!apartmentLoading && !apartmentFetching && !apartment) {
+    return (
+      <PageLayout size="lg">
+        <PageTitle
+          title={t("apartmentPage.errors.notFoundTitle")}
+          subtitle={t("apartmentPage.errors.notFoundSubtitle")}
+        />
+      </PageLayout>
+    );
   }
 
   return (
     <PageLayout size="lg">
-      <Header />
       <ApartmentOverviewHeader
         apartment={apartment}
         isLoading={apartmentLoading || apartmentFetching}

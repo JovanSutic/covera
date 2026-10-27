@@ -6,7 +6,8 @@ import Input from "@/components/formItems/Input";
 import Button from "@/components/formItems/Button";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseTask } from "@/hooks/supabase";
-import { getAuthRole } from "@/lib/auth";
+import { dashboardPathForRole } from "@/lib/router";
+import { useSessionStore } from "@/lib/router/AppContext";
 import { useNavigate } from "react-router";
 
 const loginSchema = z.object({
@@ -29,6 +30,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const { t } = useTranslation("general");
   const navigate = useNavigate();
+  const session = useSessionStore();
+  const sessionRefresh = session.refresh;
 
   const {
     register,
@@ -55,12 +58,9 @@ export default function LoginForm() {
     );
 
     if (sessionData) {
-      const role = await getAuthRole();
-      if (role !== "guest") {
-        navigate(`/${role}/dashboard`);
-      } else {
-        navigate("/");
-      }
+      await sessionRefresh();
+      const { role } = session.getSnapshot();
+      navigate(dashboardPathForRole(role ?? "guest"), { replace: true });
     }
   };
 

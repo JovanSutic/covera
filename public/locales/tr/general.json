@@ -19,6 +19,10 @@
     "notFoundSubtitle": "İstenen inceleme veya sayfa mevcut değil.",
     "serverErrorTitle": "Sunucu Hatası",
     "serverErrorSubtitle": "Tarafımızdan bir sorunla karşılaştık. Lütfen daha sonra tekrar deneyin.",
+    "forbiddenTitle": "İzin Verilmedi",
+    "forbiddenSubtitle": "Bu sayfaya erişiminiz yok.",
+    "reloadFailedTitle": "Sayfa Yüklenemedi",
+    "reloadFailedSubtitle": "En son sürümü almak için lütfen sayfayı yenileyin.",
     "backToHome": "Ana Sayfaya Geri Dön"
   },
   "adminDashboard": {
@@ -43,6 +47,8 @@
   "apartmentPage": {
     "errors": {
       "apartmentIdRequired": "Daire kimliği gerekli",
+      "notFoundTitle": "Daire Bulunamadı",
+      "notFoundSubtitle": "Bu daire mevcut değil veya artık erişiminiz yok.",
       "deleteAssetFailed": "Varlık silinirken bir hata oluştu.",
       "saveShotsFailed": "Çekimler kaydedilirken bir hata oluştu.",
       "missingInspectionDetails": "Eksik daire veya rezervasyon kimliği",

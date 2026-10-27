@@ -1,0 +1,99 @@
+# Router maximization — decisions
+
+Every choice the executor would otherwise make mid-flight. Status is `APPROVED` for all rows: the
+operator approved the four Stage-1 questions (`AskUserQuestion`, 2026-10-27) and this table is the
+consequence. An executor that finds a case no row covers **halts**; it does not decide.
+
+Facts below were read from the working tree on 2026-10-27, not recalled: `react-router@7.14.0` and
+`react@19.1.1` in `package-lock.json`; `format: 'uuid'` on both `:id` schemas in
+`src/api/generated/requests/schemas.gen.ts`; `npm run gate` green with 1 test file / 4 tests.
+
+## A. Access and session
+
+| Id | Decision | Rationale | Status |
+| --- | --- | --- | --- |
+| D1 | Access is **synchronous** and **403 in place**. A role mismatch renders a 403 at the URL the user opened. No cross-role redirect survives. | Operator-approved. Principle 2. Today `requireRoleGuard` redirects a host at `/admin/dashboard` to `/host/dashboard`, which hides the denial and cannot be cached or preloaded. | APPROVED |
+| D2 | **Authentication** keeps exactly one redirect: an anonymous visitor on a login-only route goes to `/login`. In this app no route is login-only (D3), so the redirect path is built but never taken. | Principle 2 allows redirects for identity, never for permission. Keeping the branch means phase 2's rule work is complete rather than special-cased. | APPROVED |
+| D3 | Legal rules: `public` (every visitor), `canUseApp` (authenticated), `canOpenAdmin` (authenticated + admin), `canOpenHost` (authenticated + host). Route → rule: `/` `public`; `/login` `public`; `/update-password` `public`; `/inspection/:id` `public`; `/admin*` `canOpenAdmin`; `/host*` `canOpenHost`; `*` `public`. | `getAuthUserFromJwt` defaults an unknown role to `guest`, and `guest` is a real signed-in user; `/` and `/inspection/:id` are today reachable without a session, so they stay `public` and no existing reachability is removed. `canUseApp` exists as the rule for a future login-only page and is exercised by its own test. | APPROVED |
+| D4 | Session source: `supabase.auth.getSession()` read through the existing `getAuthUserFromJwt()` in `src/lib/auth.ts`. The store's snapshot is `{ status, user, role }`. | It is the only session source in the repo and it is a local read (no network), which is what lets the access check cost ~0 ms. `getAuthUserFromJwt` is kept, not rewritten. | APPROVED |
+| D5 | The store is created by `createSessionStore()` in `src/lib/router/session.ts`, instantiated **once in `src/main.tsx`**, and passed to both the router factory and a React context. No module-level singleton. | Principle 6 ("nothing at module level") is what lets tests build the real tree with a stub session. A module-level store would be untestable without mocking. | APPROVED |
+| D6 | Live access changes (R13): the store notifies subscribers; `createAccess()` recomputes all rule results and calls `router.revalidate()` **only when a boolean flips**. | R13's pitfall is revalidating on object identity. Comparing results is the specified fix. | APPROVED |
+| D7 | Role and permission literals live only in `src/lib/router/access.ts` (`"admin"`, `"host"`, `"guest"` appear in `selectSources` alone). Lint bans them elsewhere from phase 9. | Principle 4. Without the ban the layer decays back into ad-hoc checks. | APPROVED |
+| D8 | `UserRole` stays in `src/lib/auth.ts` and is imported by `access.ts`. | It is already the app's role type and is used by `LoginForm`/`PassUpdateForm`; moving it would touch files no step needs to touch. | APPROVED |
+| D9 | Post-sign-in navigation: `LoginForm` and `PassUpdateForm` stop calling `getAuthRole()` and instead read `dashboardPathForRole(role)` from the access store's snapshot after `signIn`. | Their current `navigate(\`/${role}/dashboard\`)` is a hand-built path (R20) and an extra `getAuthUserFromJwt()` call. The store already holds the role. | APPROVED |
+| D10 | `requireRoleGuard`, `redirectIfAuthenticated` and `getAuthRole` are **deleted** from `src/lib/auth.ts` in phase 4, once nothing imports them. | Dead access helpers are exactly the "old helpers" R26 says to delete; leaving them invites a reintroduction. | APPROVED |
+| D11 | `useAuthUser` (`src/hooks/auth.ts`) is replaced by `useSession()`; `Header` reads the session snapshot. | The Header currently fires a TanStack Query that calls `getAuthUserFromJwt` on every mount — a duplicate session read on every page in the app. | APPROVED |
+
+## B. Route tree
+
+| Id | Decision | Rationale | Status |
+| --- | --- | --- | --- |
+| D12 | Route ids are `pattern` with suffixes: `#index`, `#layout`, `#boundary`. The pathless boundary under a layout is `"<layoutId>#boundary"`. | R1/§3: stable ids make `useMatches`, revalidation and tests predictable. | APPROVED |
+| D13 | Four kinds only — page, layout, group, index redirect. `src/lib/router/routes/*.ts` may not contain `lazy`, `element`, `Component`, `ErrorBoundary` or a hand-written `loader`. Lint bans `lazy` under `src/lib/router/` from phase 9; until then the H13 tree test and review enforce it. | R1. `src/lib/router/defineRoutes.tsx` is the only file that writes `loader`/`Component`. | APPROVED |
+| D14 | Every `:param` is typed, and **no route uses an optional segment** (`:x?`). Types: `/inspection/:id` → `uuid`; `/host/apartments/:id` → `uuid`. | Both ids are `format: 'uuid'` in `schemas.gen.ts` (read, not guessed). Omitting optional segments is what keeps the compile-time param extractor in `paths.ts` simple and correct. | APPROVED |
+| D15 | `params.ts` ships the full `ParamType` union (`number`, `uuid`, `numbersList`, `name`, `oneOf`) with `isValidParam`/`parseParam`/`stringifyParam`/`areParamsValid`/`parseParams`, even though only `uuid` is used. | H1's edge cases (missing optional, no free `string`, round-trip) are a contract others will rely on; shipping a partial union means the first new param type is added by an improviser. | APPROVED |
+| D16 | `defineRoutes(routes, deps)` computes `handle.guard = { pattern, rules, params, redirect?, preload? }`; `handle.crumb` carries the title key. `handle` carries **no** `guard` written by hand. | §3: static tests, the preloader and breadcrumbs read it; app code never writes it. | APPROVED |
+| D17 | The builder writes `shouldRevalidate`: identical `href` → `defaultShouldRevalidate` (so an explicit `revalidate()` still runs); equal `pathname` but different search → `false`; otherwise `defaultShouldRevalidate`. | R6 verbatim. The first clause must exist or R13's `revalidate()` on an access flip becomes a no-op. | APPROVED |
+| D18 | Build variants: a route is kept when it declares no `variants`, or `deps.variant` is in them. No route in this app declares `variants`. | §3 wants the filter to live in the builder and nowhere else. No offline/white-label build exists, so nothing declares one. | APPROVED |
+| D19 | Stage 2 lands in **two phases** (P3 core + public tree, P4 host and admin sections); the hybrid state where one section is migrated and another is not lives for exactly one commit boundary. Playbook stage 2b (R37) is **not** otherwise used. | The app has 13 routes, so R37's per-section migration does not apply — but stage 2's full change is ~700 lines of new code, which is too large for one reviewable phase file or one reviewable commit. Splitting by section keeps every phase boundary a working app. | APPROVED |
+| D20 | The `*` route moves **inside** the shell in phase 5, rendering the new `src/components/router/NotFoundPage.tsx`. | F6: today `*` renders `ErrorPage` with no frame. | APPROVED |
+| D21 | The two existing `/apartments` fixes are **in scope as bugs found during the work**: (a) `src/pages/host/IndividualApartment.tsx` currently renders `<Navigate to="/apartments" replace />` for a missing id, and no `/apartments` route exists; it becomes a 404 by letting the invalid param be an invalid param. (b) `/host/apartments` and `/host/dashboard` stay exactly as they are. | (a) turns an existing dead-end (a `Navigate` to a route that does not exist, i.e. a blank screen) into the correct 404. Leaving it would mean phase 4 ships a route that still cannot be reached. | APPROVED |
+| D22 | `Tabs` (used by both dashboards) keeps its `?tab=` search param with `replace: true` and does **not** become routes. | R22's tab clause costs two new routes and an index redirect per dashboard; R6 (D17) already removes the loader cost, which is the part that makes tabs feel slow. Deferred as a separate feature. | APPROVED |
+| D23 | `handle.crumb` holds a translation key; the document title is derived from the deepest two crumbs. No breadcrumb **component** is added. | H15's contract has two halves; this app has no breadcrumb UI, so only the title half has a consumer. Adding UI nobody asked for is scope creep. | APPROVED |
+
+## C. Shell, errors, URL
+
+| Id | Decision | Rationale | Status |
+| --- | --- | --- | --- |
+| D24 | The `Shell` renders `<Header />` once, for every in-shell route. All in-shell pages **delete** their own `<Header />`. | R7's exit check ("an error in a page keeps the header") is only true if the header is outside the page. It also removes one `useSession` subscription per page. Pages that drop it: `FormPage`, `InspectionPage`, `host/Dashboard`, `host/ApartmentList`, `host/IndividualApartment`, `admin/Dashboard`, `components/host/ApartmentHeader`'s consumers are unaffected. | APPROVED |
+| D25 | Two error components: `src/pages/ErrorPage.tsx` is rewritten as the **Backstop** (root `errorElement`, renders inside a bare `PageLayout` + its own `<Header />`, because it is outside the shell); `src/components/router/RouteError.tsx` is the **in-shell** error element and renders no header. | The root backstop must not depend on the shell (the shell may be what failed). The in-shell boundary must not duplicate the header. One component cannot do both. | APPROVED |
+| D26 | Stale-chunk recovery reloads **once** per session, guarded by `sessionStorage` key `covera:chunk-reload`, cleared after the next successful idle navigation. The Vite `vite:preloadError` event goes through the same handler. | R8. `sessionStorage` access is wrapped in `try/catch` and a throw means "do not reload", so a blocked-storage browser can never loop. | APPROVED |
+| D27 | `<ScrollRestoration getKey={(location) => location.pathname} />` is mounted in the Shell. | R10 verbatim: search changes do not scroll, new pages start at top, back/forward restores. | APPROVED |
+| D28 | Route focus + announcer (H17): on a **pathname** change that is not the first render, focus the `<main tabIndex={-1}>` with `preventScroll`, and write the document title into a visually hidden `aria-live="polite"` region. A search-only change does neither. | R33. Focus target is `<main>` rather than a heading because several pages (`IndividualApartment`) have no `<h1>` — `PageTitle` renders one, but not all pages use it. | APPROVED |
+| D29 | The pending progress bar shows after `useNavigation().state === "loading"` has lasted **200 ms**, and hides on return to idle. | R9's stated threshold. | APPROVED |
+| D30 | `AccessLink` renders plain text when `canOpen` is false. `useAccessPath` returns `{ href, canOpen }` for buttons and `navigate()` calls. | R20. Nothing may show a link that ends in a 403 (principle 4). | APPROVED |
+| D31 | `buildPath` is the only href builder from phase 9. The four call sites converted are: `ApartmentSection`'s `to={\`/host/apartments/${row.id}\`}`, `ApartmentHeader`'s `to="/host/apartments"`, `LoginForm`/`PassUpdateForm`'s two `navigate(\`/${role}/dashboard\`)`, and `ReservationActionsCell`'s inspection link. `VITE_APP_BASE_PATH` is dropped from that last one. | R20/R21. `ReservationActionsCell` concatenates `VITE_APP_BASE_PATH` (the env var is unused everywhere else, so it silently produces `/undefined/inspection/...` when unset), and the path has no route definition. | APPROVED |
+| D32 | View transitions (R25) are **not** implemented. | Deferred: they need a CSS pass and a `prefers-reduced-motion` strategy, and the plan is already large. | APPROVED |
+| D33 | `useBlockWhenDirty` (H16) is **not** implemented. | No form in this app blocks today. Adding blocking to a drawer form changes behaviour no requirement asked for. | APPROVED |
+| D34 | Locale delivery is **unchanged**: `i18next-http-backend` keeps fetching `public/locales/<lng>/<ns>.json` at runtime and `src/i18n.tsx` is not modified. The bootstrap does **not** await i18n readiness. | Changing it would alter which ns loads when, across four locales, and risks rendering raw keys. `i18n.tsx` already declares `fallbackLng: "en"`, so a late ns degrades to English, not to a key. Recorded as a deliberate startup cost in the phase-8 bundle work. | APPROVED |
+
+## D. Data
+
+| Id | Decision | Rationale | Status |
+| --- | --- | --- | --- |
+| D35 | Data **track A**: the existing TanStack Query cache. Prefetch is `queryClient.prefetchQuery` with the query's own `queryKey` + `queryFn`. No new dependency. | Operator-approved. The repo already runs TanStack Query everywhere with a 15-minute `staleTime` (`src/main.tsx`), and the generated client ships `ensureQueryData`/`prefetch` helpers. Track B would mean adopting a second cache; track C would mean rewriting every page's data reads. | APPROVED |
+| D36 | Prefetch candidates, exactly two: (a) `/host/apartments/:id` route — `QUERY_ACTIONS.APARTMENTS_GET_ID` (the page blocks its header on it, and `IndividualApartment` renders nothing useful without it); (b) the `host` section layout route — `QUERY_ACTIONS.APARTMENTS_GET_HOST`, because `host/Dashboard` and `host/ApartmentList` both read it. | Playbook §5 step 3: main request > 200 ms, or nothing useful renders without it. Both qualify; `assets`, `shots` and `reservations` do not (the page renders its tabs without them). | APPROVED |
+| D37 | Freshness: prefetched queries get `staleTime: 30_000` set **on the query definition**, not on the client default (which stays 15 min). | §4: a 0 freshness window makes the page's hook refetch on mount, which would waste the prefetch. 30 s sits in the specified 10–60 s band. `src/main.tsx`'s 15-minute default is left alone so unprefetched queries are unaffected. | APPROVED |
+| D38 | `src/lib/api/queries/apartment.ts` owns the apartment-detail `queryKey` + `queryFn` pair. The route's `prefetch` and `IndividualApartment`'s `useQuery` both import it. | §4's "same key = same args" is the rule that decides whether a prefetch is reused; two copies of the key would break it silently. This is the feature's only pure-logic module worth a test beyond the router core. | APPROVED |
+| D39 | No loader awaits data. `prefetch` is called without `await` and its rejection is swallowed. | Principle 5, and stage 9 is out of scope. | APPROVED |
+| D40 | `IndividualApartment`'s `["APARTMENT_SHOTS_GET_BY_APARTMENT", id]` literal (query key not in `QUERY_ACTIONS`) is **left as it is**. | Invariant 5 violation that predates this feature and is not in a file any step rewrites for that reason. Fixed only if a step happens to rewrite the file; otherwise it is a `Noticed, untouched:` line. | APPROVED |
+
+## E. Verification and process
+
+| Id | Decision | Rationale | Status |
+| --- | --- | --- | --- |
+| D41 | Acceptance is `npm run gate` for every code step, with narrow greps or a single test file (`npx vitest run <path>`) only for a step that introduces a module nothing else can compile against yet. The phase boundary gate is mandatory. | Operator-approved. `covera` has no CI and no git hooks, so `npm run gate` is the only thing that catches a regression, and nothing runs it unless a human or agent types it. | APPROVED |
+| D42 | Pure logic gets a test in the phase that introduces it. `src/lib/router/**` (params, paths, access, builder, redirects, tree) and `src/lib/api/queries/apartment.ts` are pure logic. Presentational phases (shell markup, link conversion, copy) are exempt **only** through a row in this table. | The skill's test rule. This feature is unusually test-friendly because the router core is pure data + pure functions. | APPROVED |
+| D43 | Phases and their test steps: P1 `session.test.ts`; P2 `access.test.ts` + `params.test.ts`; P3 `defineRoutes.test.ts` + `paths.test.ts`; P4 `routes.test.ts`; P5 exempt (D44); P6 exempt (D45); P7 `apartment.test.ts`; P8 `bundleBudget.test.ts`; P9 `tree.test.ts` + `router.behaviour.test.ts`. | Every phase with logic carries its test, and the two exempt phases say so explicitly rather than by silence. | APPROVED |
+| D44 | P5 (shell) is exempt: it is markup, two error components and three hooks whose behaviour is DOM timing. | A jsdom render of a progress bar proves nothing about the 200 ms threshold, and the stale-chunk path needs a real `import()` failure. The phase file carries a numbered manual checklist instead. | APPROVED |
+| D45 | P6 (links and preload) is exempt **except** `usePreloadRoute`'s timer, which lands as `src/hooks/usePreloadRoute.test.ts` with fake timers (100 ms fires; 50 ms then leave does not; disabled never). | H8's contract is explicitly a timer contract, so it is testable without a browser; the rest of the phase is JSX prop plumbing. | APPROVED |
+| D46 | P8 does not add Lighthouse CI. It adds `npm run perf:bundle` (a size assertion over `dist/`) + `src/lib/router/__checks__/bundleBudget.test.ts`, which skips itself when `dist/` is absent. | Operator-approved. There is no CI to run Lighthouse and no deploy config in the repo. A budget test that skips on a missing build keeps the gate green on a clean checkout while still failing a real regression. | APPROVED |
+| D47 | Server caching headers (R35) are **documented, not configured**: phase 8 appends a "Deployment requirements" section to `docs/router-maximization/00-index.md`. | There is no netlify/vercel/Dockerfile/nginx/caddy config in the repo (checked). A step cannot configure a host it cannot see. | APPROVED |
+| D48 | The bundle analyzer (`rollup-plugin-visualizer`) is **not** added as a dependency. The budget is measured from `dist/assets/*.js` sizes with `node:fs`. | Keeps the diff free of a new dev dependency whose only job is a one-off manual look. The size check itself is what must live in the gate. | APPROVED |
+| D49 | Commit granularity: **one commit per phase** on `feature/49_router-improvements`, made by the operator at the phase boundary, docs separate from code. | The kickoff skill's division of labour. Nothing enforces it, so it is stated rather than assumed. | APPROVED |
+| D50 | Every phase ends with the app **runnable** (`npm run dev`) and a stated observable gain. The gain is verified by the phase's numbered manual checklist when it is browser-only, and by a test when it is not. | The operator's requirement that each phase be independently shippable and show a performance gain. | APPROVED |
+
+## Rejected alternatives worth recording
+
+- **Keep `requireRoleGuard` and make only its internals synchronous.** Rejected: `lazy` starts at
+  match time in parallel with the loader, so the denied page still downloads. Without the builder
+  (P3/P4) there is no way to get the download behind the check (R3).
+- **A `roles` array instead of named rules.** Rejected: principle 4 needs *one name* that the guard,
+  the menu and the link all read, so a menu can never show a link that ends in a 403.
+- **Track C (`<Await>`/`use()`) to avoid touching the query cache.** Rejected: hover preload cannot
+  fill a loader's return value, so R11 and R12 would stop composing (playbook §4).
+- **Converting Tabs to routes in the same change as the tree.** Rejected: it multiplies P4's size and
+  its rollback surface for a gain R6 already delivers.
+- **Making `/update-password` login-only.** Rejected: it is reached from an emailed invite link
+  *before* a session exists (`PassUpdatePage` verifies a `token_hash`), so a login guard would lock
+  out the flow it exists to serve.

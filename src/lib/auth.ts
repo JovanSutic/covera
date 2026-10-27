@@ -1,4 +1,3 @@
-import { redirect } from "react-router";
 import { supabase } from "../lib/supabase";
 import { jwtDecode } from "jwt-decode";
 
@@ -42,36 +41,4 @@ export async function getAuthUserFromJwt(): Promise<AuthenticatedUser | null> {
     console.error("Failed parsing JWT payloads:", error);
     return null;
   }
-}
-
-export async function getAuthRole(): Promise<UserRole | null> {
-  const user = await getAuthUserFromJwt();
-  return user ? user.role : null;
-}
-
-export async function requireRoleGuard(allowedRole: UserRole) {
-  const actualRole = await getAuthRole();
-
-  if (!actualRole) {
-    return redirect("/login");
-  }
-
-  if (actualRole !== allowedRole) {
-    return redirect(`/${actualRole}/dashboard`);
-  }
-
-  return null;
-}
-
-export async function redirectIfAuthenticated() {
-  const user = await getAuthUserFromJwt();
-
-  if (user) {
-    if (user.role === "admin" || user.role === "host") {
-      return redirect(`/${user.role}/dashboard`);
-    }
-    return redirect("/");
-  }
-
-  return null;
 }

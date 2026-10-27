@@ -19,6 +19,10 @@
     "notFoundSubtitle": "Tražena inspekcija ili stranica ne postoji.",
     "serverErrorTitle": "Greška servera",
     "serverErrorSubtitle": "Naišli smo na problem na našoj strani. Pokušajte ponovo kasnije.",
+    "forbiddenTitle": "Nije dozvoljeno",
+    "forbiddenSubtitle": "Nemate pristup ovoj stranici.",
+    "reloadFailedTitle": "Stranica nije mogla da se učita",
+    "reloadFailedSubtitle": "Osvežite stranicu da biste dobili najnoviju verziju.",
     "backToHome": "Nazad na početnu"
   },
   "adminDashboard": {
@@ -43,6 +47,8 @@
   "apartmentPage": {
     "errors": {
       "apartmentIdRequired": "ID stana je potreban",
+      "notFoundTitle": "Stan nije pronađen",
+      "notFoundSubtitle": "Ovaj stan ne postoji ili više nemate pristup.",
       "deleteAssetFailed": "Došlo je do greške prilikom brisanja.",
       "saveShotsFailed": "Došlo je do greške pri čuvanju snimaka.",
       "missingInspectionDetails": "Nedostaje identifikacija apartmana ili rezervacije",

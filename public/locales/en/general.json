@@ -19,6 +19,10 @@
     "notFoundSubtitle": "The requested inspection or page does not exist.",
     "serverErrorTitle": "Server Error",
     "serverErrorSubtitle": "We encountered a problem on our end. Please try again later.",
+    "forbiddenTitle": "Not Allowed",
+    "forbiddenSubtitle": "You do not have access to this page.",
+    "reloadFailedTitle": "Page Failed to Load",
+    "reloadFailedSubtitle": "Please reload the page to get the latest version.",
     "backToHome": "Back to Home"
   },
   "adminDashboard": {
@@ -43,6 +47,8 @@
   "apartmentPage": {
     "errors": {
       "apartmentIdRequired": "Apartment ID is required",
+      "notFoundTitle": "Apartment Not Found",
+      "notFoundSubtitle": "This apartment does not exist or you no longer have access to it.",
       "deleteAssetFailed": "An error occurred while deleting the asset.",
       "saveShotsFailed": "An error occurred while saving shots.",
       "missingInspectionDetails": "Missing apartment or reservation identification",

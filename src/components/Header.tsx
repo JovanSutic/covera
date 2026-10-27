@@ -4,7 +4,8 @@ import { useNavigate, useSearchParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
-import { useAuthUser } from "@/hooks/auth";
+import { useSession } from "@/lib/router/AppContext";
+import { buildPath, appPaths } from "@/lib/router";
 import { cn } from "@/lib/utils";
 import CustomSelect from "./formItems/Select";
 
@@ -21,7 +22,8 @@ export default function Header() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data: user, isLoading } = useAuthUser();
+  const { user, status } = useSession();
+  const isLoading = status === "loading";
   const { i18n } = useTranslation("general");
 
   // Read language from query param or fallback to "en"
@@ -53,7 +55,7 @@ export default function Header() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     queryClient.clear();
-    navigate("/login");
+    navigate(buildPath(appPaths.login));
   };
 
   return (
@@ -211,7 +213,7 @@ function ProfileDropdown({
           <button
             onClick={() => {
               setIsOpen(false);
-              navigate("/login");
+              navigate(buildPath(appPaths.login));
             }}
             className="flex w-full cursor-pointer items-center rounded-lg px-3 py-2 text-left text-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/40 transition-colors focus:outline-none"
             role="menuitem"

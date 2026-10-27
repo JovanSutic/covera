@@ -4,7 +4,6 @@ import Tabs from "@/components/Tabs";
 import UsersSection from "@/components/admin/UsersSection";
 import ApartmentsSection from "@/components/admin/ApartmentsSection";
 import type { TabItem } from "@/types/component.types";
-import Header from "@/components/Header";
 import PageTitle from "@/components/PageTitle";
 
 export default function AdminDashboard() {
@@ -25,7 +24,6 @@ export default function AdminDashboard() {
 
   return (
     <PageLayout size="lg">
-      <Header />
       <PageTitle
         title={t("adminDashboard.title")}
         subtitle={t("adminDashboard.subtitle")}
