@@ -7,16 +7,24 @@ Playbook stages 0–8, one phase each. Baseline verified green on 2026-10-27: `n
 
 ## Phases
 
+**Status 2026-10-27: phases 1–9 are complete; the phase files (`p1.md`–`p8.md`) have been deleted.**
+The tree is green (`npm run gate` → exit 0, `Test Files 12 passed (12)`, `Tests 108 passed (108)`).
+Steps 9.5 and 9.6 were walked on 2026-10-27 in headless Chrome over CDP: the tracker and `## Final`
+carry real numbers, and **12 of step 9.6's 13 rows pass — the A11y row fails** (see `p9.md` §9.6
+result). Remaining operator work is commits only.
+
+The table below is the original plan of record; the "Requires" column is historical.
+
 | Phase | File | Touches | Outcome (observable gain) | Requires |
 | --- | --- | --- | --- | --- |
-| 1 | [p1.md](./p1.md) | `src/lib/router/session.ts` (new), `src/lib/router/session.test.ts` (new), `src/lib/router/AppContext.tsx` (new), `src/main.tsx`, `src/components/Header.tsx`, `src/hooks/auth.ts` (delete), `docs/routing-performance-baseline.md` (new) | The session is loaded **once** before the router exists, so access answers cost 0 requests; the baseline numbers this feature must beat are written down | — |
-| 2 | [p2.md](./p2.md) | `src/lib/router/params.ts` (new), `src/lib/router/access.ts` (new), `src/lib/router/params.test.ts` (new), `src/lib/router/access.test.ts` (new) | Access answers are **synchronous** and cost 0 requests; params are typed and validated as pure functions | 1 |
-| 3 | [p3.md](./p3.md) | `src/lib/router/paths.ts` (new), `src/lib/router/redirects.ts` (new), `src/lib/router/defineRoutes.tsx` (new), `src/lib/router/routes/public.ts` (new), `src/lib/router/routes/index.ts` (new), `src/lib/router/createAppRouter.tsx` (new), `src/lib/router/navigationTiming.ts` (new), `src/lib/router/paths.test.ts` (new), `src/lib/router/defineRoutes.test.ts` (new), `src/App.tsx`, `src/pages/LoginPage.tsx`, `src/pages/PassUpdatePage.tsx`, `src/pages/FormPage.tsx`, `src/pages/InspectionPage.tsx` | The router is built by a factory; `public` URLs are typed data; `/inspection/<garbage>` is a 404 **before** the chunk downloads; navigation timing becomes measurable | 2 |
-| 4 | [p4.md](./p4.md) | `src/lib/router/routes/host.ts` (new), `src/lib/router/routes/admin.ts` (new), `src/lib/router/routes/index.ts`, `src/lib/router/routes.test.ts` (new), `src/lib/router/createAppRouter.tsx`, `src/lib/auth.ts`, `src/pages/host/*`, `src/pages/admin/Dashboard.tsx`, `src/components/host/ApartmentHeader.tsx`, `src/pages/InspectionPage.tsx`, `src/components/forms/LoginForm.tsx`, `src/components/forms/PassUpdateForm.tsx` | A host opening `/admin/dashboard` sees a 403 **at that URL** with 0 bytes of admin code; `/host` lands on `/host/dashboard` instead of a blank page | 3 |
-| 5 | [p5.md](./p5.md) | `src/components/router/Shell.tsx` (new), `src/components/router/RouteError.tsx` (new), `src/components/router/NotFoundPage.tsx` (new), `src/components/router/ProgressBar.tsx` (new), `src/components/router/RouteAnnouncer.tsx` (new), `src/pages/ErrorPage.tsx`, `src/lib/router/createAppRouter.tsx`, `src/lib/router/routes/public.ts`, `src/lib/router/routes/index.ts`, `src/lib/router/routes.test.ts`, `src/App.tsx`, `vite.config.ts`, six in-shell pages, `public/locales/*/general.json` | The layout survives an error, an unknown URL is a 404 **inside** the shell, a slow navigation keeps the old page and shows a bar after 200 ms, and the header renders exactly once | 4 |
-| 6 | [p6.md](./p6.md) | `src/lib/router/preloadRegistry.ts` (new), `src/lib/router/paths.ts`, `src/lib/router/routes/*.ts`, `src/lib/api/queries/apartment.ts` (new), `src/hooks/usePreloadRoute.ts` (new), `src/hooks/usePreloadRoute.test.ts` (new), `src/components/router/AccessLink.tsx` (new), `src/components/host/ApartmentSection.tsx`, `src/components/Header.tsx` | Hovering a menu/link item for 100 ms downloads its chunk, so the click shows no progress bar; the apartment detail's main request starts **with** its chunk instead of after it | 5 |
-| 7 | [p7.md](./p7.md) | `src/pages/host/IndividualApartment.tsx`, `src/pages/InspectionPage.tsx`, `src/components/host/ReservationActionsCell.tsx`, `src/components/host/ApartmentHeader.tsx`, `src/lib/router/useRouteParams.ts` (new), `src/lib/api/queries/apartment.ts`, `src/lib/api/queries/apartment.test.ts` (new), `src/components/router/AccessLink.tsx` | No hand-built URL survives; `:id` is read parsed and validated, so a malformed id never reaches the API; the route and the page share one apartment query definition | 6 |
-| 8 | [p8.md](./p8.md) | `vite.config.ts`, `package.json`, `scripts/check-bundle-budget.ts` (new), `src/lib/router/createAppRouter.tsx`, `src/components/router/PageSkeleton.tsx` (new), `src/App.tsx`, `src/lib/router/__checks__/bundleBudget.test.ts` (new), `docs/router-maximization/00-index.md` | The main bundle is vendor-split and under a budget `npm run perf:bundle` enforces; the shell paints before page loaders; deployment headers are documented | 7 |
+| 1 | ~~p1.md~~ | `src/lib/router/session.ts` (new), `src/lib/router/session.test.ts` (new), `src/lib/router/AppContext.tsx` (new), `src/main.tsx`, `src/components/Header.tsx`, `src/hooks/auth.ts` (delete), `docs/routing-performance-baseline.md` (new) | The session is loaded **once** before the router exists, so access answers cost 0 requests; the baseline numbers this feature must beat are written down | — |
+| 2 | ~~p2.md~~ | `src/lib/router/params.ts` (new), `src/lib/router/access.ts` (new), `src/lib/router/params.test.ts` (new), `src/lib/router/access.test.ts` (new) | Access answers are **synchronous** and cost 0 requests; params are typed and validated as pure functions | 1 |
+| 3 | ~~p3.md~~ | `src/lib/router/paths.ts` (new), `src/lib/router/redirects.ts` (new), `src/lib/router/defineRoutes.tsx` (new), `src/lib/router/routes/public.ts` (new), `src/lib/router/routes/index.ts` (new), `src/lib/router/createAppRouter.tsx` (new), `src/lib/router/navigationTiming.ts` (new), `src/lib/router/paths.test.ts` (new), `src/lib/router/defineRoutes.test.ts` (new), `src/App.tsx`, `src/pages/LoginPage.tsx`, `src/pages/PassUpdatePage.tsx`, `src/pages/FormPage.tsx`, `src/pages/InspectionPage.tsx` | The router is built by a factory; `public` URLs are typed data; `/inspection/<garbage>` is a 404 **before** the chunk downloads; navigation timing becomes measurable | 2 |
+| 4 | ~~p4.md~~ | `src/lib/router/routes/host.ts` (new), `src/lib/router/routes/admin.ts` (new), `src/lib/router/routes/index.ts`, `src/lib/router/routes.test.ts` (new), `src/lib/router/createAppRouter.tsx`, `src/lib/auth.ts`, `src/pages/host/*`, `src/pages/admin/Dashboard.tsx`, `src/components/host/ApartmentHeader.tsx`, `src/pages/InspectionPage.tsx`, `src/components/forms/LoginForm.tsx`, `src/components/forms/PassUpdateForm.tsx` | A host opening `/admin/dashboard` sees a 403 **at that URL** with 0 bytes of admin code; `/host` lands on `/host/dashboard` instead of a blank page | 3 |
+| 5 | ~~p5.md~~ | `src/components/router/Shell.tsx` (new), `src/components/router/RouteError.tsx` (new), `src/components/router/NotFoundPage.tsx` (new), `src/components/router/ProgressBar.tsx` (new), `src/components/router/RouteAnnouncer.tsx` (new), `src/pages/ErrorPage.tsx`, `src/lib/router/createAppRouter.tsx`, `src/lib/router/routes/public.ts`, `src/lib/router/routes/index.ts`, `src/lib/router/routes.test.ts`, `src/App.tsx`, `vite.config.ts`, six in-shell pages, `public/locales/*/general.json` | The layout survives an error, an unknown URL is a 404 **inside** the shell, a slow navigation keeps the old page and shows a bar after 200 ms, and the header renders exactly once | 4 |
+| 6 | ~~p6.md~~ | `src/lib/router/preloadRegistry.ts` (new), `src/lib/router/paths.ts`, `src/lib/router/routes/*.ts`, `src/lib/api/queries/apartment.ts` (new), `src/hooks/usePreloadRoute.ts` (new), `src/hooks/usePreloadRoute.test.ts` (new), `src/components/router/AccessLink.tsx` (new), `src/components/host/ApartmentSection.tsx`, `src/components/Header.tsx` | Hovering a menu/link item for 100 ms downloads its chunk, so the click shows no progress bar; the apartment detail's main request starts **with** its chunk instead of after it | 5 |
+| 7 | ~~p7.md~~ | `src/pages/host/IndividualApartment.tsx`, `src/pages/InspectionPage.tsx`, `src/components/host/ReservationActionsCell.tsx`, `src/components/host/ApartmentHeader.tsx`, `src/lib/router/useRouteParams.ts` (new), `src/lib/api/queries/apartment.ts`, `src/lib/api/queries/apartment.test.ts` (new), `src/components/router/AccessLink.tsx` | No hand-built URL survives; `:id` is read parsed and validated, so a malformed id never reaches the API; the route and the page share one apartment query definition | 6 |
+| 8 | ~~p8.md~~ | `vite.config.ts`, `package.json`, `scripts/check-bundle-budget.ts` (new), `src/lib/router/createAppRouter.tsx`, `src/components/router/PageSkeleton.tsx` (new), `src/App.tsx`, `src/lib/router/__checks__/bundleBudget.test.ts` (new), `docs/router-maximization/00-index.md` | The main bundle is vendor-split and under a budget `npm run perf:bundle` enforces; the shell paints before page loaders; deployment headers are documented | 7 |
 | 9 | [p9.md](./p9.md) | `src/lib/router/__checks__/tree.test.ts` (new), `src/lib/router/__checks__/router.behaviour.test.ts` (new), `eslint.config.js`, `docs/routing-performance-baseline.md` | The static tree, the path definitions and the router's behaviour are checked on every `npm run gate`, and four lint locks stop the tree being rebuilt by hand | 8 |
 
 ## Dependency graph
@@ -182,6 +190,19 @@ reality.
 If a service worker is ever added to precache route chunks, it **must not** serve a cached
 `index.html` — that is the one file whose staleness breaks a deploy (R35).
 
+## Phase 9's lint-lock lesson (flat-config trapping)
+
+Step 9.4 proved two of the four locks were dead. Under flat config, `no-restricted-syntax` is
+**replaced wholesale** by the last matching config object — the selector arrays do *not* merge. The
+original `eslint.config.js` had four objects all matching `src/**/*.{ts,tsx}`, each redefining that
+rule, so only the last one survived; the "routes are data" (R1/R34) and role-comparison (R26) locks
+never fired.
+
+The rule for this repo: **one `no-restricted-syntax` entry per `files` scope, with selectors combined
+in a single array, and `ignores` covering every rule in that object.** If you add a fifth lock, add it
+to an existing object's selector array — do not create a new object with the same `files` glob. The
+config is verified load-bearing by step 9.4's seven cases; re-run them if you touch it.
+
 ## Halt conditions
 
 - `npm run gate` red and one honest fix attempt does not clear it
@@ -201,16 +222,24 @@ If a service worker is ever added to precache route chunks, it **must not** serv
 
 ## Definition of done
 
-- [ ] `npm run gate` green on `feature/49_router-improvements`
-- [ ] Every phase's manual checklist (P3–P8) walked and ticked by the operator in a browser
-- [ ] Row 0 of the tracker in `docs/routing-performance-baseline.md` filled (P1) and the final row
-      filled after P8
-- [ ] `npm run dev` shows: warm navigation with no progress bar, `/host` → `/host/dashboard`, unknown
-      URL → 404 inside the shell, host at `/admin/dashboard` → 403 with no admin chunk requested
-- [ ] No hand-edits under `src/api/generated/`
-- [ ] No route object contains `lazy` / `element` / `Component` / `ErrorBoundary` / a hand-written
-      `loader` outside `defineRoutes.tsx`
-- [ ] Role literals appear only in `src/lib/router/access.ts`
-- [ ] Docs commits separate from code commits; one commit per phase
+- [x] `npm run gate` green on `feature/49_router-improvements` (2026-10-27: exit 0, `Test Files 12 passed (12)`, `Tests 108 passed (108)`)
+- [ ] Every phase's manual checklist (P3–P8) walked and ticked by the operator in a browser — these are
+      superseded by **step 9.6**, which is their superset; walk that one
+- [x] Row 0 of the tracker in `docs/routing-performance-baseline.md` filled (P1) and the final row
+      filled after P8 — **done 2026-10-27** (step 9.5): row `8` is `9.2 | 7.2 | 0 | 1 | 90566 | 3/3`
+- [x] `npm run dev` shows: warm navigation with no progress bar, `/host` → `/host/dashboard`, unknown
+      URL → 404 inside the shell, host at `/admin/dashboard` → 403 with no admin chunk requested —
+      **all four confirmed 2026-10-27** (step 9.6), except the A11y row, which fails
+- [x] No hand-edits under `src/api/generated/` (`git status --porcelain src/api/generated/` → empty)
+- [x] No route object contains `lazy` / `element` / `Component` / `ErrorBoundary` / a hand-written
+      `loader` outside `defineRoutes.tsx` — now enforced by the repaired R1/R34 lint lock (step 9.4)
+- [x] Role literals appear only in `src/lib/router/access.ts` (plus `src/lib/auth.ts`, the role type's
+      home, and tests) — now enforced by the repaired R26 lint lock (step 9.4)
+- [ ] Docs commits separate from code commits; one commit per phase — **operator**
 - [ ] The PR calls out the deliberate replacement of repo invariant 4 (D5) and the three observable
       behaviour changes: 403 in place (D1), `/host` index redirect, and 404-inside-the-shell
+
+### Open items (both operator-only)
+
+1. **Step 9.5** — fill the `8` row and the `## Final` metrics in `docs/routing-performance-baseline.md`.
+2. **Step 9.6** — the browser pass, which covers every earlier phase's checklist.
