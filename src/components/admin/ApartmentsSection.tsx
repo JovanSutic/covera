@@ -2,14 +2,11 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Drawer from "../Drawer";
 import CreateApartmentForm from "../forms/CreateApartmentForm";
-import { withAuth } from "@/lib/api/api";
 import {
-  getLocations,
-  getUsers,
-  getApartments,
-} from "@/api/generated/requests/sdk.gen";
-import { useQuery } from "@tanstack/react-query";
-import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+  useApartmentsAll,
+  useLocations,
+  useUsers,
+} from "@/lib/api/queries/admin";
 import Button from "../formItems/Button";
 import type { SelectOption } from "@/types/component.types";
 import type { ApartmentWithLocation } from "@/api/generated/requests/types.gen";
@@ -20,39 +17,9 @@ export default function ApartmentsSection() {
   const { t, i18n } = useTranslation("general");
   const [isApartmentDrawerOpen, setIsApartmentDrawerOpen] = useState(false);
 
-  const { data: apartments, isLoading: apartmentsIsLoading } = useQuery({
-    queryKey: [...QUERY_ACTIONS.APARTMENTS_GET_ALL],
-    queryFn: async ({ signal }) => {
-      const config = await withAuth({ signal });
-      const response = await getApartments(config);
-      return response.data;
-    },
-  });
-
-  const { data: locations, isLoading: locationsIsLoading } = useQuery({
-    queryKey: [...QUERY_ACTIONS.LOCATIONS_GET_ALL],
-    queryFn: async ({ signal }) => {
-      const config = await withAuth({ signal });
-      const response = await getLocations(config);
-      return response.data;
-    },
-  });
-
-  const { data: users, isLoading: usersIsLoading } = useQuery({
-    queryKey: [...QUERY_ACTIONS.USERS_GET_ALL, { role: "host" }],
-
-    queryFn: async ({ signal }) => {
-      const config = await withAuth({ signal });
-      const response = await getUsers({
-        ...config,
-        query: {
-          role: "host",
-        },
-      });
-
-      return response.data;
-    },
-  });
+  const { data: apartments, isLoading: apartmentsIsLoading } = useApartmentsAll();
+  const { data: locations, isLoading: locationsIsLoading } = useLocations();
+  const { data: users, isLoading: usersIsLoading } = useUsers({ role: "host" });
 
   const locationMap = useMemo(() => {
     const map = new Map<string, string>();

@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, it, vi } from "vitest";
 import { matchRoutes } from "react-router";
+import { QueryClient } from "@tanstack/react-query";
+import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { defineRoutes } from "./defineRoutes";
 import type { RouteNode } from "./defineRoutes";
+import type { GuardMeta } from "./defineRoutes";
 import type { RuleName } from "./access";
 
 const ALLOW_ALL = () => true;
@@ -202,5 +205,103 @@ describe("the page loader", () => {
     expect(matches).not.toBeNull();
     expect(matches?.at(-1)?.route.id).toBe("/host/apartments/:id#page");
     expect(matches?.at(-1)?.params.id).toBe(VALID_UUID);
+  });
+});
+
+describe("data declarations and group preloads", () => {
+  it("a group route with data gets a preload (hole 1's regression test)", () => {
+    const built = build([
+      {
+        path: "section",
+        requires: "public",
+        data: [{ resource: "apartmentsHost", params: () => ({}) }],
+        children: [],
+      } as RouteNode,
+    ]);
+
+    const guard = (built[0].handle as { guard?: GuardMeta }).guard;
+    const started: string[] = [];
+    vi.spyOn(QueryClient.prototype, "prefetchQuery").mockImplementation(
+      async (options: { queryKey: readonly unknown[] }) => {
+        started.push(JSON.stringify(options.queryKey));
+        return undefined as never;
+      },
+    );
+
+    expect(guard?.preload).toBeDefined();
+    guard?.preload?.({}, new URLSearchParams());
+
+    expect(started).toEqual([
+      JSON.stringify([...QUERY_ACTIONS.APARTMENTS_GET_HOST]),
+    ]);
+
+    vi.restoreAllMocks();
+  });
+
+  it("a route with neither a module nor data has no preload", () => {
+    const built = build([
+      { path: "empty", requires: "public", children: [] } as RouteNode,
+    ]);
+
+    const guard = (built[0].handle as { guard?: GuardMeta }).guard;
+    expect(guard?.preload).toBeUndefined();
+  });
+
+  it("prefetch receives the href's search params", () => {
+    const seen: (string | null)[] = [];
+
+    const built = build([
+      {
+        path: "tabs",
+        requires: "public",
+        prefetch: (_params, searchParams) => {
+          seen.push(searchParams.get("tab"));
+        },
+      } as RouteNode,
+    ]);
+
+    const guard = (built[0].handle as { guard?: GuardMeta }).guard;
+    guard?.preload?.({}, new URLSearchParams("tab=users"));
+
+    expect(seen).toEqual(["users"]);
+  });
+
+  it("a declined declaration starts nothing", () => {
+    const built = build([
+      {
+        path: "gated",
+        requires: "public",
+        data: [{ resource: "users", params: () => null }],
+        children: [],
+      } as RouteNode,
+    ]);
+
+    const spy = vi.spyOn(QueryClient.prototype, "prefetchQuery");
+    const guard = (built[0].handle as { guard?: GuardMeta }).guard;
+    guard?.preload?.({}, new URLSearchParams());
+
+    expect(spy).not.toHaveBeenCalled();
+    vi.restoreAllMocks();
+  });
+
+  it("the loader no longer carries recordCheck (D10)", async () => {
+    const load = loaderOf(
+      build([
+        {
+          path: "apartments/:id",
+          requires: "public",
+          params: { id: "uuid" },
+          page: async () => ({ default: () => null }),
+        } as RouteNode,
+      ]),
+      "/apartments/:id#page",
+    );
+
+    await expect(
+      load({
+        params: { id: VALID_UUID },
+        request: new Request(`https://x.test/apartments/${VALID_UUID}`),
+      }),
+    ).resolves.toBeNull();
   });
 });

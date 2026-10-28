@@ -1,25 +1,12 @@
-import { queryClient } from "@/lib/api/queryClient";
-import { apartmentQueryKey, fetchApartment } from "@/lib/api/queries/apartment";
-import { getApartmentsHostMe } from "@/api/generated/requests/sdk.gen";
-import { withAuth } from "@/lib/api/api";
-import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import type { SectionRoute } from "../defineRoutes";
 
 export const hostRoutes: SectionRoute = {
   path: "host",
   requires: "canOpenHost",
   // R15: apartment data every host page needs, started once for the section.
-  prefetch: () => {
-    void queryClient.prefetchQuery({
-      queryKey: [...QUERY_ACTIONS.APARTMENTS_GET_HOST],
-      queryFn: async ({ signal }) => {
-        const config = await withAuth({ signal });
-        const response = await getApartmentsHostMe(config);
-        return response.data;
-      },
-      staleTime: 30_000,
-    });
-  },
+  // D4/phase 2: this now actually runs on the hover path — the route is a group
+  // with no `page`, and the old builder bailed on exactly that shape (hole 1).
+  data: [{ resource: "apartmentsHost", params: () => ({}) }],
   children: [
     { index: true, loader: { to: "dashboard" } },
     {
@@ -36,14 +23,15 @@ export const hostRoutes: SectionRoute = {
       path: "apartments/:id",
       params: { id: "uuid" },
       page: () => import("@/pages/host/IndividualApartment"),
-      // R12: starts the page's main query; never awaited, so it cannot block.
-      prefetch: ({ id }) => {
-        void queryClient.prefetchQuery({
-          queryKey: apartmentQueryKey(String(id)),
-          queryFn: ({ signal }) => fetchApartment(String(id), signal),
-          staleTime: 30_000,
-        });
-      },
+      // D8: ALL FOUR queries this page reads, not just the apartment. Prefetching
+      // one left three mount-time requests after the chunk — the dominant
+      // waterfall on this route (hole 2).
+      data: [
+        { resource: "apartment", params: (params) => ({ id: String(params.id) }) },
+        { resource: "assets", params: (params) => ({ apartmentId: String(params.id) }) },
+        { resource: "shots", params: (params) => ({ apartmentId: String(params.id) }) },
+        { resource: "reservations", params: (params) => ({ apartmentId: String(params.id) }) },
+      ],
       handle: { crumb: "apartmentPage.tabs.ariaLabel" },
     },
   ],

@@ -114,6 +114,9 @@ export function createAppRouter({
     }
 
     // Pass 2: the checks passed for the whole chain, so start the work.
+    // D3: the href's search params go with it, so a declaration can gate on
+    // `?tab=` — `Tabs` renders only the active tab, so a tab-scoped query is
+    // otherwise unreachable by path params alone.
     for (const match of matches) {
       const guard = (match.route.handle as { guard?: GuardMeta } | undefined)?.guard;
       if (!guard) continue;
@@ -121,7 +124,7 @@ export function createAppRouter({
       const present: Record<string, string | undefined> = {};
       for (const key of Object.keys(guard.params)) present[key] = match.params[key];
 
-      guard.preload?.(present as ParsedParams);
+      guard.preload?.(present as ParsedParams, url.searchParams);
     }
   });
 
@@ -146,6 +149,9 @@ export function createAppRouter({
 
   if (timing && typeof window !== "undefined") {
     (window as unknown as { __routeTimings?: unknown }).__routeTimings = timing;
+    // D11: one call an operator can paste during a measurement run (phase 6).
+    (window as unknown as { __routeMedians?: unknown }).__routeMedians = () =>
+      timing.getMedians();
   }
 
   return {

@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import {
   deleteAssetsById,
-  getAssetsApartmentByApartmentId,
-  getApartmentShotsApartmentByApartmentId,
   putApartmentShotsApartmentByApartmentId,
 } from "@/api/generated/requests/sdk.gen";
 import type { SyncShotItem } from "@/api/generated/requests/types.gen";
@@ -28,6 +26,13 @@ import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { useApartment } from "@/lib/api/queries/apartment";
+import { useAssets } from "@/lib/api/queries/assets";
+import { shotsQueryKey, useShots } from "@/lib/api/queries/shots";
+import {
+  RESERVATIONS_DEFAULT_LIMIT,
+  RESERVATIONS_DEFAULT_PAGE,
+  useReservations,
+} from "@/lib/api/queries/reservations";
 import { useRouteParams } from "@/lib/router";
 import { appPaths } from "@/lib/router";
 import { validateAssetShotCoverage } from "@/lib/validations/shots";
@@ -65,36 +70,21 @@ export default function IndividualApartmentPage() {
     data: assets = [],
     isLoading: assetsLoading,
     isFetching: assetsFetching,
-  } = useQuery({
-    queryKey: [...QUERY_ACTIONS.ASSETS_GET_BY_APARTMENT, id],
-    queryFn: async ({ signal }) => {
-      if (!id) throw new Error(t("apartmentPage.errors.apartmentIdRequired"));
-      const config = await withAuth({ signal });
-      const response = await getAssetsApartmentByApartmentId({
-        ...config,
-        path: { apartmentId: id },
-      });
-      return response.data || [];
-    },
-    enabled: !!id,
-  });
+  } = useAssets(id);
 
   const {
     data: shots = [],
     isLoading: shotsLoading,
     isFetching: shotsFetching,
-  } = useQuery({
-    queryKey: ["APARTMENT_SHOTS_GET_BY_APARTMENT", id],
-    queryFn: async ({ signal }) => {
-      if (!id) throw new Error(t("apartmentPage.errors.apartmentIdRequired"));
-      const config = await withAuth({ signal });
-      const response = await getApartmentShotsApartmentByApartmentId({
-        ...config,
-        path: { apartmentId: id },
-      });
-      return response.data || [];
-    },
-    enabled: !!id,
+  } = useShots(id);
+
+  // The reservations manager owns its own paging state, but the page needs the
+  // default page's data for the unmatched-assets banner — the same key the route
+  // prefetches (D8), so this is a cache read, not a second request.
+  useReservations({
+    apartmentId: id,
+    page: RESERVATIONS_DEFAULT_PAGE,
+    limit: RESERVATIONS_DEFAULT_LIMIT,
   });
 
   // --- MUTATIONS ---
@@ -137,9 +127,7 @@ export default function IndividualApartmentPage() {
     },
     onSuccess: () => {
       if (id) {
-        queryClient.invalidateQueries({
-          queryKey: ["APARTMENT_SHOTS_GET_BY_APARTMENT", id],
-        });
+        queryClient.invalidateQueries({ queryKey: shotsQueryKey(id) });
       }
       toast.success(t("apartmentPage.toast.saveShotsSuccess"));
       setIsShotStudioOpen(false);

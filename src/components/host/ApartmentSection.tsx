@@ -1,10 +1,7 @@
 import { useMemo } from "react";
-import { withAuth } from "@/lib/api/api";
 import { AccessLink } from "@/components/router/AccessLink";
 import { appPaths } from "@/lib/router/paths";
-import { getApartmentsHostMe } from "@/api/generated/requests/sdk.gen";
-import { useQuery } from "@tanstack/react-query";
-import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import type { ApartmentWithLocation } from "@/api/generated/requests/types.gen";
 import type { ColumnDef } from "@/types/component.types";
 import { DataTable } from "../DataTable";
@@ -13,14 +10,7 @@ import { useTranslation } from "react-i18next";
 export default function ApartmentsSection() {
   const { t, i18n } = useTranslation("assets");
 
-  const { data: apartments, isLoading: apartmentsIsLoading } = useQuery({
-    queryKey: [...QUERY_ACTIONS.APARTMENTS_GET_HOST],
-    queryFn: async ({ signal }) => {
-      const config = await withAuth({ signal });
-      const response = await getApartmentsHostMe(config);
-      return response.data;
-    },
-  });
+  const { data: apartments, isLoading: apartmentsIsLoading } = useApartmentsHost();
 
   const columns: ColumnDef<ApartmentWithLocation>[] = useMemo(
     () => [
