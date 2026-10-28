@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { defineRoutes } from "./defineRoutes";
 import type { RouteNode } from "./defineRoutes";
 import { adminRoutes, appRoutes, hostRoutes, outsideRoutes } from "./routes";
+import type { AccessSources } from "./access";
 
 const TREE: readonly RouteNode[] = [
   ...appRoutes,
@@ -10,8 +11,21 @@ const TREE: readonly RouteNode[] = [
   ...outsideRoutes,
 ];
 
+/** No session: the common case for a builder test. */
+const ANONYMOUS_SOURCES: AccessSources = {
+  isAuthenticated: false,
+  role: null,
+  isAdmin: false,
+  isHost: false,
+  userId: null,
+};
+
 function build() {
-  return defineRoutes(TREE, { isAllowed: () => true, errorElement: null });
+  return defineRoutes(TREE, {
+    isAllowed: () => true,
+    getSources: () => ANONYMOUS_SOURCES,
+    errorElement: null,
+  });
 }
 
 interface WalkedRoute {

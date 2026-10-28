@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
 import type { ParsedParams } from "./params";
-import type { RuleName } from "./access";
+import type { AccessSources, RuleName } from "./access";
 
 export type RedirectTarget = string | ((params: ParsedParams) => string);
 
@@ -27,6 +27,16 @@ export function resolveRedirect(
 
   return { pathname, search: searchParams.toString() ? `?${searchParams.toString()}` : "" };
 }
+
+/**
+ * Why a route was denied, and where the visitor belongs instead. Unlike
+ * `RedirectSpec`, the target depends on the SESSION, not on URL params — a signed-in
+ * visitor goes to their role's dashboard (login-redirect D10).
+ *
+ * Returning `null` means "fall through", so the caller throws the usual 403. That is
+ * what keeps every route that declares no `denyRedirect` behaving exactly as before.
+ */
+export type DenyRedirect = (sources: AccessSources) => string | null;
 
 export interface FirstAllowedTarget {
   rule: RuleName;

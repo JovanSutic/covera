@@ -26,9 +26,14 @@ describe("rule registry", () => {
     expect(new Set(names).size).toBe(names.length);
   });
 
-  it("names every rule can… or public", () => {
+  it("names every rule can…, public, or isAnonymous", () => {
+    // `isAnonymous` is an identity rule, not a permission rule, so it cannot take
+    // the `can…` prefix without reading backwards — a `canLogin` name would pass
+    // precisely when the visitor CANNOT log in (login-redirect D9, R4).
+    const ALLOWED = ["public", "isAnonymous"];
+
     for (const name of Object.keys(ACCESS_RULES)) {
-      expect(name === "public" || name.startsWith("can")).toBe(true);
+      expect(ALLOWED.includes(name) || name.startsWith("can")).toBe(true);
     }
   });
 });
@@ -39,6 +44,10 @@ describe("rule tables", () => {
     ["public", "guest", true],
     ["public", "host", true],
     ["public", "admin", true],
+    ["isAnonymous", null, true],
+    ["isAnonymous", "guest", false],
+    ["isAnonymous", "host", false],
+    ["isAnonymous", "admin", false],
     ["canUseApp", null, false],
     ["canUseApp", "guest", true],
     ["canUseApp", "host", true],

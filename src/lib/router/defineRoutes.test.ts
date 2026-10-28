@@ -6,17 +6,31 @@ import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { defineRoutes } from "./defineRoutes";
 import type { RouteNode } from "./defineRoutes";
 import type { GuardMeta } from "./defineRoutes";
-import type { RuleName } from "./access";
+import type { AccessSources, RuleName } from "./access";
 
 const ALLOW_ALL = () => true;
 const ALLOW_NONE = () => false;
+
+/** No session: the common case for a builder test. */
+const ANONYMOUS_SOURCES: AccessSources = {
+  isAuthenticated: false,
+  role: null,
+  isAdmin: false,
+  isHost: false,
+  userId: null,
+};
 
 function build(
   routes: readonly RouteNode[],
   allow: (rule: RuleName) => boolean = ALLOW_ALL,
   variant?: string,
 ) {
-  return defineRoutes(routes, { isAllowed: allow, errorElement: null, variant });
+  return defineRoutes(routes, {
+    isAllowed: allow,
+    getSources: () => ANONYMOUS_SOURCES,
+    errorElement: null,
+    variant,
+  });
 }
 
 // The pathless boundary a layout or grouped node wraps its children in (D12).
@@ -303,5 +317,125 @@ describe("data declarations and group preloads", () => {
         request: new Request(`https://x.test/apartments/${VALID_UUID}`),
       }),
     ).resolves.toBeNull();
+  });
+});
+
+describe("denyRedirect (login-redirect D10)", () => {
+  const page = async () => ({ default: () => null });
+  const HOST_SOURCES: AccessSources = {
+    isAuthenticated: true,
+    role: "host",
+    isAdmin: false,
+    isHost: true,
+    userId: "user-host",
+  };
+
+  async function thrownBy(
+    routes: readonly RouteNode[],
+    id: string,
+  ): Promise<unknown> {
+    // ALLOW_NONE denies every rule, which is the state a deny-redirect exists for.
+    const built = build(routes, ALLOW_NONE);
+    return loaderOf(built, id)({
+      params: {},
+      request: new Request("http://localhost/login"),
+    }).catch((error: unknown) => error);
+  }
+
+  it("throws the usual 403 when the node declares no denyRedirect", async () => {
+    const thrown = await thrownBy(
+      [{ path: "login", requires: "isAnonymous", page }],
+      "/login#page",
+    );
+
+    // A loader throws `data(null, { status: 403 })`, which is a DataWithResponseInit
+    // rather than a Response — `isRouteErrorResponse` only answers true on the value
+    // RouterProvider has already converted (RouteError.tsx:49). Matched by shape, as
+    // the tests above do.
+    expect(thrown).toMatchObject({ init: { status: 403 } });
+  });
+
+  it("falls through to the 403 when the resolver declines", async () => {
+    const thrown = await thrownBy(
+      [{ path: "login", requires: "isAnonymous", page, denyRedirect: () => null }],
+      "/login#page",
+    );
+
+    expect(thrown).toMatchObject({ init: { status: 403 } });
+  });
+
+  it("redirects to the node's target when it declares one", async () => {
+    const thrown = await thrownBy(
+      [
+        {
+          path: "login",
+          requires: "isAnonymous",
+          page,
+          denyRedirect: () => "/host/dashboard",
+        },
+      ],
+      "/login#page",
+    );
+
+    expect(thrown).toBeInstanceOf(Response);
+    expect((thrown as Response).status).toBe(302);
+    expect((thrown as Response).headers.get("Location")).toBe("/host/dashboard");
+  });
+
+  it("hands the resolver the session sources, not a stub", async () => {
+    // `build` stubs getSources as anonymous; this asserts the resolver actually
+    // receives what the access layer holds, which is what makes the target
+    // role-dependent in production.
+    const seen: AccessSources[] = [];
+    const built = defineRoutes(
+      [
+        {
+          path: "login",
+          requires: "isAnonymous",
+          page,
+          denyRedirect: (sources) => {
+            seen.push(sources);
+            return sources.role === "host" ? "/host/dashboard" : null;
+          },
+        },
+      ],
+      {
+        isAllowed: ALLOW_NONE,
+        getSources: () => HOST_SOURCES,
+        errorElement: null,
+      },
+    );
+
+    const thrown = await loaderOf(built, "/login#page")({
+      params: {},
+      request: new Request("http://localhost/login"),
+    }).catch((error: unknown) => error);
+
+    expect(seen).toEqual([HOST_SOURCES]);
+    expect((thrown as Response).headers.get("Location")).toBe("/host/dashboard");
+  });
+
+  it("runs no page import on the redirect path", async () => {
+    // The property that makes this an identity redirect rather than F1: a denied
+    // visitor must not download the page chunk they are being sent away from.
+    const page = vi.fn(async () => ({ default: () => null }));
+    const built = build(
+      [
+        {
+          path: "login",
+          requires: "isAnonymous",
+          page,
+          denyRedirect: () => "/host/dashboard",
+        },
+      ],
+      ALLOW_NONE,
+    );
+
+    await loaderOf(built, "/login#page")({
+      params: {},
+      request: new Request("http://localhost/login"),
+    }).catch(() => undefined);
+
+    expect(page).not.toHaveBeenCalled();
   });
 });

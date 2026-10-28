@@ -51,7 +51,15 @@ async function buildRouter(role: UserRole | null, initialEntry: string) {
 }
 
 async function settle(router: DataRouter): Promise<void> {
-  await vi.waitFor(() => expect(router.state.initialized).toBe(true));
+  // An explicit timeout, not Vitest's 1000 ms default: the FIRST navigation built
+  // in a worker process costs ~1150 ms because Vite transforms the lazy page graph
+  // cold, while every later one costs ~10 ms. Under the full gate's parallel
+  // workers that first navigation crosses 1000 ms and this is the test that times
+  // out. 10 s is ~10x the observed cold cost, so it tolerates a slow machine
+  // without hiding a genuinely hung navigation.
+  await vi.waitFor(() => expect(router.state.initialized).toBe(true), {
+    timeout: 10_000,
+  });
 }
 
 describe("routing behaviour on the real tree", () => {
@@ -97,6 +105,49 @@ describe("routing behaviour on the real tree", () => {
 
     expect(router.state.errors).toBeNull();
     expect(router.state.location.pathname).toBe("/login");
+  });
+
+  it("sends a signed-in host from /login to their dashboard", async () => {
+    const { router } = await buildRouter("host", "/login");
+
+    expect(router.state.location.pathname).toBe("/host/dashboard");
+    expect(router.state.errors).toBeNull();
+  });
+
+  it("sends a signed-in admin from /login to the admin dashboard", async () => {
+    const { router } = await buildRouter("admin", "/login");
+
+    expect(router.state.location.pathname).toBe("/admin/dashboard");
+    expect(router.state.errors).toBeNull();
+  });
+
+  it("sends a signed-in guest from /login to /", async () => {
+    // A guest has no dashboard; dashboardPathForRole returns "/" (login-redirect D5).
+    const { router } = await buildRouter("guest", "/login");
+
+    expect(router.state.location.pathname).toBe("/");
+    expect(router.state.errors).toBeNull();
+  });
+
+  it("does not redirect a host away from a route they are denied by ROLE", async () => {
+    // The redirect is identity-only (login-redirect D1/D2). /admin is denied by
+    // role, so it must still 403 in place — no dashboard redirect, and the URL
+    // must not change.
+    const { router } = await buildRouter("host", "/admin/dashboard");
+
+    const error = Object.values(router.state.errors ?? {})[0] as { status?: number };
+
+    expect(error?.status).toBe(403);
+    expect(router.state.location.pathname).toBe("/admin/dashboard");
+  });
+
+  it("does not redirect a signed-out visitor away from /", async () => {
+    // "/" is public and must stay public: no denyRedirect, and isAnonymous is not
+    // inherited from the login route's siblings.
+    const { router } = await buildRouter(null, "/");
+
+    expect(router.state.errors).toBeNull();
+    expect(router.state.location.pathname).toBe("/");
   });
 
   it("matches an unknown URL in the tree, so the 404 is a page not a router error", async () => {

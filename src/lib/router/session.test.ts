@@ -69,4 +69,22 @@ describe("createSessionStore", () => {
     expect(store.getSnapshot().role).toBe("admin");
     expect(readUser).toHaveBeenCalledTimes(2);
   });
+
+  it("clears the user on refresh after a sign-out, so a stale role cannot leak", async () => {
+    let user: AuthenticatedUser | null = HOST;
+
+    const store = createSessionStore({ readUser: async () => user });
+    await store.bootstrap();
+
+    expect(store.getSnapshot().user?.role).toBe("host");
+
+    // What supabase.auth.signOut() leaves behind: the next read returns no user.
+    // handleLogout awaits this before navigating to /login.
+    user = null;
+    const after = await store.refresh();
+
+    expect(after.user).toBeNull();
+    expect(after.role).toBeNull();
+    expect(store.getSnapshot().user).toBeNull();
+  });
 });

@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
-import { useSession } from "@/lib/router/AppContext";
+import { useSession, useSessionStore } from "@/lib/router/AppContext";
 import { buildPath, appPaths } from "@/lib/router";
 import { cn } from "@/lib/utils";
 import CustomSelect from "./formItems/Select";
@@ -23,6 +23,8 @@ export default function Header() {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, status } = useSession();
+  const session = useSessionStore();
+  const sessionRefresh = session.refresh;
   const isLoading = status === "loading";
   const { i18n } = useTranslation("general");
 
@@ -55,6 +57,10 @@ export default function Header() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     queryClient.clear();
+    // Refresh BEFORE navigating. /login denies signed-in users (login-redirect D1),
+    // so navigating first would let the stale session deny the now-anonymous
+    // visitor and bounce them back to their dashboard — logout would look broken.
+    await sessionRefresh();
     navigate(buildPath(appPaths.login));
   };
 
