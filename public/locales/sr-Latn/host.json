@@ -75,7 +75,8 @@
   "unmatchedAssetsBanner": {
     "missingCoverage_one": "<bold>{{count}} asset</bold> nedostaje foto pokrivenost.",
     "missingCoverage_other": "<bold>{{count}} sredstva</bold> nedostaje foto pokrivenost.",
-    "reviewInStudio": "Pregled u Shot Studiju →"
+    "reviewInStudio": "Pregled u Shot Studiju →",
+    "missingCoverage": "Nedostaje foto pokrivenost"
   },
   "createApartmentForm": {
     "validation": {

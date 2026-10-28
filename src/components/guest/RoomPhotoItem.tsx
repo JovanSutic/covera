@@ -13,7 +13,7 @@ interface RoomPhotoItemProps {
 const R2_IMAGE_URL = import.meta.env.VITE_R2_IMAGE_URL;
 
 export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoItemProps) {
-  const { t } = useTranslation("guest");
+  const { t } = useTranslation(["guest", "assets"]);
 
   const activeImage = shot.images.find(
     (img) => img.status === "active" && !img.deletedAt,
@@ -87,7 +87,7 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
                     className="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50/60 px-2.5 py-1 text-xs font-medium text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-300"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                    {asset.asset_type.code}
+                    {t(`assets:asset_types.${asset.asset_type.code}`)}
                   </span>
                 ),
             )}

@@ -75,7 +75,8 @@
   "unmatchedAssetsBanner": {
     "missingCoverage_one": "<bold>{{count}} öğenin</bold> fotoğraf kapsamı eksik.",
     "missingCoverage_other": "<bold>{{count}} öğelerde</bold> fotoğraf kapsamı eksik.",
-    "reviewInStudio": "Shot Studio'da İncele →"
+    "reviewInStudio": "Shot Studio'da İncele →",
+    "missingCoverage": "Eksik Fotoğraf Kapsamı"
   },
   "createApartmentForm": {
     "validation": {

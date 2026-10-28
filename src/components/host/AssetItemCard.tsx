@@ -73,7 +73,7 @@ export function AssetItemCard({
       <div>
         <div className="flex items-center justify-between gap-2">
           <h4 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-1 dark:text-white">
-            {asset.asset_type.code}
+            {t(`asset_types.${asset.asset_type.code}`)}
           </h4>
 
           <div className="flex items-center gap-0.5 shrink-0">
