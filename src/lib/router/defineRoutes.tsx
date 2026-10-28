@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { data } from "react-router";
+import { data, redirect } from "react-router";
 import type { RouteObject } from "react-router";
 import type { ComponentType } from "react";
 import { createElement, lazy, Suspense } from "react";
 
 import { areParamsValid, parseParams } from "./params";
 import type { ParamsDeclaration, ParsedParams } from "./params";
-import type { RuleName } from "./access";
+import type { AccessSources, RuleName } from "./access";
 import { redirectResponse } from "./redirects";
-import type { RedirectSpec } from "./redirects";
+import type { DenyRedirect, RedirectSpec } from "./redirects";
 import { resolveResource } from "@/lib/api/queries/registry";
 import type { ResourceRequest } from "@/lib/api/queries/registry";
 import { prefetchQuietly } from "@/lib/api/queries/shared";
@@ -37,6 +37,12 @@ export interface RouteBase {
   params?: ParamsDeclaration;
   variants?: readonly string[];
   data?: readonly ResourceRequest[];
+  /**
+   * Where a visitor goes when `requires` denies them. Returning `null` falls
+   * through to the usual 403, so declaring nothing changes nothing
+   * (login-redirect D10).
+   */
+  denyRedirect?: DenyRedirect;
   handle?: { crumb?: Crumb };
 }
 
@@ -76,6 +82,8 @@ export type SectionRoute = (PageRoute | LayoutRoute | GroupRoute) & {
 
 export interface DefineRoutesDeps {
   isAllowed(rule: RuleName): boolean;
+  /** The session-derived facts a `denyRedirect` resolves its target from (D11). */
+  getSources(): AccessSources;
   errorElement: React.ReactNode;
   /** Rendered by `<Suspense>` while a route's module resolves. */
   pendingElement?: React.ReactNode;
@@ -300,7 +308,16 @@ function makeLoader(
 
   return async ({ params, request }) => {
     for (const rule of guard.rules) {
-      if (!deps.isAllowed(rule)) throw data(null, { status: 403 });
+      if (deps.isAllowed(rule)) continue;
+
+      // A denied route may name where the visitor belongs instead (login-redirect
+      // D10). `null` — the result for every route that declares nothing — keeps the
+      // 403-in-place behaviour (router-maximization D1).
+      const target = ((node as any).denyRedirect as DenyRedirect | undefined)?.(deps.getSources());
+
+      if (target === null || target === undefined) throw data(null, { status: 403 });
+
+      throw redirect(target);
     }
 
     if (!areParamsValid(params, guard.params)) throw data(null, { status: 404 });

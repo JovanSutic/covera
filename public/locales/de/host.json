@@ -75,7 +75,8 @@
   "unmatchedAssetsBanner": {
     "missingCoverage_one": "<bold>{{count}} Asset</bold> fehlende Fotoabdeckung.",
     "missingCoverage_other": "Bei <bold>{{count}} Assets</bold> fehlt die Fotoabdeckung.",
-    "reviewInStudio": "Rezension im Shot Studio →"
+    "reviewInStudio": "Rezension im Shot Studio →",
+    "missingCoverage": "Fehlende Fotoabdeckung"
   },
   "createApartmentForm": {
     "validation": {

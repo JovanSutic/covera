@@ -57,6 +57,9 @@ export function createAppRouter({
 
   const deps: DefineRoutesDeps = {
     isAllowed: (rule) => access.isAllowed(rule),
+    // D11: the builder resolves a denied route's redirect target from the session,
+    // so the access layer's already-computed sources are passed straight through.
+    getSources: () => access.getSources(),
     errorElement,
     pendingElement,
     variant,

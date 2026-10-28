@@ -73,6 +73,7 @@
     "savingButton": "Saving..."
   },
   "unmatchedAssetsBanner": {
+    "missingCoverage": "Missing Photo Coverage",
     "missingCoverage_one": "<bold>{{count}} asset</bold> missing photo coverage.",
     "missingCoverage_other": "<bold>{{count}} assets</bold> missing photo coverage.",
     "reviewInStudio": "Review in Shot Studio →"

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { defineRoutes } from "../defineRoutes";
 import type { GuardMeta, RouteNode } from "../defineRoutes";
 import { ACCESS_RULES } from "../access";
+import type { AccessSources } from "../access";
 import { appPaths } from "../paths";
 import { adminRoutes, appRoutes, hostRoutes, outsideRoutes } from "../routes";
 
@@ -12,8 +13,21 @@ const TREE: readonly RouteNode[] = [
   hostRoutes,
 ];
 
+/** No session: the common case for a builder test. */
+const ANONYMOUS_SOURCES: AccessSources = {
+  isAuthenticated: false,
+  role: null,
+  isAdmin: false,
+  isHost: false,
+  userId: null,
+};
+
 /** A stub access layer: every rule passes, so the tree builds for inspection (H13). */
-const deps = { isAllowed: () => true, errorElement: null };
+const deps = {
+  isAllowed: () => true,
+  getSources: () => ANONYMOUS_SOURCES,
+  errorElement: null,
+};
 
 /** One built RouteObject, narrowed to the parts the builder is contracted to write. */
 interface Built {

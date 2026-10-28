@@ -64,7 +64,7 @@ export function FlagContentForm({
   onSubmitSuccess,
   onCancel,
 }: FlagContentFormProps) {
-  const { t } = useTranslation("guest");
+  const { t } = useTranslation(["guest", "assets"]);
   const queryClient = useQueryClient();
 
   const reasonOptions = [
@@ -181,7 +181,7 @@ export function FlagContentForm({
     .filter((asset) => asset.asset_type)
     .map((asset) => ({
       value: asset.id,
-      label: asset.asset_type.code,
+      label: t(`assets:asset_types.${asset.asset_type.code}`),
       subLabel: `${t("flagContentForm.labels.category")} ${asset.asset_type.category.replace(/_/g, " ")}`,
     }));
 

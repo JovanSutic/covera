@@ -24,6 +24,12 @@ export function selectSources(state: SessionState): AccessSources {
 
 export const ACCESS_RULES = {
   public: () => true,
+  /**
+   * The complement of `canUseApp`, and deliberately not a reuse of it: a signed-in
+   * GUEST passes `canUseApp`, so that rule cannot express "no session". /login is
+   * the only route that requires this (login-redirect D8).
+   */
+  isAnonymous: (sources: AccessSources) => !sources.isAuthenticated,
   canUseApp: (sources: AccessSources) => sources.isAuthenticated,
   canOpenAdmin: (sources: AccessSources) =>
     sources.isAuthenticated && sources.isAdmin,

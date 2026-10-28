@@ -66,7 +66,7 @@ export function buildPath<D extends PathDefinition>(
  */
 export const appPaths = definePaths({
   root: { pattern: "/", requires: ["public"], params: {} },
-  login: { pattern: "/login", requires: ["public"], params: {} },
+  login: { pattern: "/login", requires: ["isAnonymous"], params: {} },
   updatePassword: { pattern: "/update-password", requires: ["public"], params: {} },
   inspection: {
     pattern: "/inspection/:id",
