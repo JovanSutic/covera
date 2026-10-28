@@ -1,13 +1,10 @@
 import { useMemo, useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router";
-import {
-  getInspectionsById,
-  postInspectionsByIdPing,
-} from "@/api/generated/requests/services.gen";
+import { useMutation } from "@tanstack/react-query";
+import { postInspectionsByIdPing } from "@/api/generated/requests/services.gen";
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
-import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { useInspection } from "@/lib/api/queries/inspection";
+import { appPaths, useRouteParams } from "@/lib/router";
 import {
   RoomFlowList,
   type RoomFlowStep,
@@ -28,7 +25,7 @@ import { useTranslation } from "react-i18next";
 type InspectionStep = "intro" | "rooms" | "details";
 
 function InspectionPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useRouteParams(appPaths.inspection) as { id: string };
   const { t } = useTranslation(["assets", "guest"]);
 
   const [currentStep, setCurrentStep] = useState<InspectionStep>("intro");
@@ -42,24 +39,7 @@ function InspectionPage() {
     isLoading,
     isError,
     error,
-  } = useQuery({
-    queryKey: [...QUERY_ACTIONS.INSPECTION_GET_BY_ID, id],
-    queryFn: async () => {
-      if (!id) throw new Error("Inspection ID is required");
-
-      const response = await getInspectionsById({
-        path: { id },
-        query: { detailed: true },
-      });
-
-      if (!response.data) {
-        throw new Error("Inspection not found");
-      }
-
-      return response.data;
-    },
-    enabled: Boolean(id),
-  });
+  } = useInspection(id);
 
   // Ping mutation
   const { mutate: pingInspection } = useMutation({

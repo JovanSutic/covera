@@ -31,6 +31,10 @@ export const appRoutes: readonly RouteNode[] = [
     requires: "public",
     params: { id: "uuid" },
     page: () => import("@/pages/InspectionPage"),
+    // Hole 3: this route had no prefetch at all while the structurally identical
+    // apartment route did. D7: the query stays ANONYMOUS — this URL is shared to a
+    // guest with no session.
+    data: [{ resource: "inspection", params: (params) => ({ id: String(params.id) }) }],
     handle: { crumb: "guest:inspectionIntroduction.title" },
   },
   {

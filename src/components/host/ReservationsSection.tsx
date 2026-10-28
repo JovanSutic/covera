@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
 import Typography from "@/components/Typography";
 import { DataTable } from "@/components/DataTable";
-import { getReservationsApartmentByApartmentId } from "@/api/generated/requests/services.gen";
-import { withAuth } from "@/lib/api/api";
-import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { useReservations } from "@/lib/api/queries/reservations";
 import type { ColumnDef, ReservationRow } from "@/types/component.types";
 import { ReservationActionsCell } from "./ReservationActionsCell";
 
@@ -43,32 +40,7 @@ export function ApartmentReservationsManager({
     isLoading,
     isError,
     error,
-  } = useQuery({
-    queryKey: [
-      ...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT,
-      apartmentId,
-      page,
-      limit,
-      "checkInDatetime",
-      "asc",
-    ],
-    queryFn: async () => {
-      const config = await withAuth();
-      const response = await getReservationsApartmentByApartmentId({
-        ...config,
-        path: { apartmentId },
-        query: {
-          page,
-          limit,
-          sortBy: "checkInDatetime",
-          history: true,
-          order: "desc",
-        },
-      });
-      return response.data;
-    },
-    enabled: !!apartmentId,
-  });
+  } = useReservations({ apartmentId, page, limit });
 
   const isPastDate = (dateString: string): boolean => {
     if (!dateString) return false;

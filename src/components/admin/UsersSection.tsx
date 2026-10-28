@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  getUsers,
   postUsersByIdInvite,
 } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
@@ -13,6 +12,7 @@ import CreateUserForm from "@/components/forms/CreateUserForm";
 import type { User } from "@/api/generated/requests/types.gen";
 import type { ColumnDef } from "@/types/component.types";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { useUsers } from "@/lib/api/queries/admin";
 
 export default function UsersSection() {
   const { t, i18n } = useTranslation("general");
@@ -20,14 +20,7 @@ export default function UsersSection() {
   const [invitingUserId, setInvitingUserId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: users, isLoading: usersIsLoading } = useQuery({
-    queryKey: [...QUERY_ACTIONS.USERS_GET_ALL],
-    queryFn: async ({ signal }) => {
-      const config = await withAuth({ signal });
-      const response = await getUsers(config);
-      return response.data;
-    },
-  });
+  const { data: users, isLoading: usersIsLoading } = useUsers();
 
   const sendInviteMutation = useMutation({
     mutationFn: async (userId: string) => {

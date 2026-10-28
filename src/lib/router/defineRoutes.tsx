@@ -9,6 +9,9 @@ import type { ParamsDeclaration, ParsedParams } from "./params";
 import type { RuleName } from "./access";
 import { redirectResponse } from "./redirects";
 import type { RedirectSpec } from "./redirects";
+import { resolveResource } from "@/lib/api/queries/registry";
+import type { ResourceRequest } from "@/lib/api/queries/registry";
+import { prefetchQuietly } from "@/lib/api/queries/shared";
 
 export type Crumb = string;
 
@@ -17,7 +20,7 @@ export interface GuardMeta {
   rules: readonly RuleName[];
   params: ParamsDeclaration;
   redirect?: RedirectSpec;
-  preload?: (params: ParsedParams) => void;
+  preload?: (params: ParsedParams, searchParams: URLSearchParams) => void;
 }
 
 export interface Handle {
@@ -25,10 +28,15 @@ export interface Handle {
   crumb?: Crumb;
 }
 
+/**
+ * A route's data dependencies, as data (D2). `data` is what the coverage check
+ * reads; `prefetch` stays for anything a descriptor cannot express.
+ */
 export interface RouteBase {
   requires?: RuleName;
   params?: ParamsDeclaration;
   variants?: readonly string[];
+  data?: readonly ResourceRequest[];
   handle?: { crumb?: Crumb };
 }
 
@@ -38,15 +46,14 @@ export interface PageRoute extends RouteBase {
   path?: string;
   index?: boolean;
   page: () => Promise<PageModule>;
-  prefetch?: (params: ParsedParams) => void;
-  recordCheck?: (params: ParsedParams, options: { signal: AbortSignal }) => Promise<void>;
+  prefetch?: (params: ParsedParams, searchParams: URLSearchParams) => void;
   children?: RouteNode[];
 }
 
 export interface LayoutRoute extends RouteBase {
   path?: string;
   layout: () => Promise<PageModule>;
-  prefetch?: (params: ParsedParams) => void;
+  prefetch?: (params: ParsedParams, searchParams: URLSearchParams) => void;
   children: RouteNode[];
 }
 
@@ -231,19 +238,36 @@ function assertParamsDeclared(pattern: string, params: ParamsDeclaration): void 
   }
 }
 
+/**
+ * D4: this is hole 1's fix. The old version returned `undefined` when a node had
+ * no page/layout module, so a GROUP route's `prefetch` — e.g. the `host`
+ * section's apartments query — never ran on the hover path and the ~100 ms
+ * intent window was thrown away. A node now preloads when it has a module to
+ * import OR data/prefetch work to start; the import is simply skipped when there
+ * is no module.
+ */
 function buildPreload(
   node: RouteNode,
   deps: DefineRoutesDeps,
-): ((params: ParsedParams) => void) | undefined {
+): ((params: ParsedParams, searchParams: URLSearchParams) => void) | undefined {
   const loadModule = (node as any).page ?? (node as any).layout;
-  if (!loadModule) return undefined;
+  const prefetch = (node as any).prefetch as
+    | ((params: ParsedParams, searchParams: URLSearchParams) => void)
+    | undefined;
+  const data = ((node as any).data ?? []) as readonly ResourceRequest[];
 
-  const prefetch = (node as any).prefetch as ((params: ParsedParams) => void) | undefined;
+  if (!loadModule && !prefetch && data.length === 0) return undefined;
 
-  return (params: ParsedParams) => {
+  return (params: ParsedParams, searchParams: URLSearchParams) => {
     if (!guardPasses(node, deps, params)) return;
-    prefetch?.(params);
-    void loadModule().catch(() => undefined);
+
+    for (const request of data) {
+      const spec = resolveResource(request, params, searchParams);
+      if (spec) prefetchQuietly(spec);
+    }
+
+    prefetch?.(params, searchParams);
+    if (loadModule) void loadModule().catch(() => undefined);
   };
 }
 
@@ -269,10 +293,10 @@ function makeLoader(
   const loadModule = ((node as any).page ?? (node as any).layout) as
     | (() => Promise<PageModule>)
     | undefined;
-  const prefetch = (node as any).prefetch as ((params: ParsedParams) => void) | undefined;
-  const recordCheck = (node as any).recordCheck as
-    | ((params: ParsedParams, options: { signal: AbortSignal }) => Promise<void>)
+  const prefetch = (node as any).prefetch as
+    | ((params: ParsedParams, searchParams: URLSearchParams) => void)
     | undefined;
+  const declaredData = ((node as any).data ?? []) as readonly ResourceRequest[];
 
   return async ({ params, request }) => {
     for (const rule of guard.rules) {
@@ -282,13 +306,18 @@ function makeLoader(
     if (!areParamsValid(params, guard.params)) throw data(null, { status: 404 });
 
     const parsed = parseParams(params, guard.params);
+    const searchParams = new URL(request.url).searchParams;
 
-    prefetch?.(parsed);
+    // D2: the same work the intent path does, so a cold load (no hover) still
+    // starts every request alongside the chunk instead of after it.
+    for (const item of declaredData) {
+      const spec = resolveResource(item, parsed, searchParams);
+      if (spec) prefetchQuietly(spec);
+    }
 
-    await Promise.all([
-      loadModule ? loadModule() : Promise.resolve(),
-      recordCheck?.(parsed, { signal: request.signal }),
-    ]);
+    prefetch?.(parsed, searchParams);
+
+    await (loadModule ? loadModule() : Promise.resolve());
 
     return null;
   };
