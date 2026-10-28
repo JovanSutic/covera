@@ -149,6 +149,9 @@ export function createAppRouter({
 
   if (timing && typeof window !== "undefined") {
     (window as unknown as { __routeTimings?: unknown }).__routeTimings = timing;
+    // D11: one call an operator can paste during a measurement run (phase 6).
+    (window as unknown as { __routeMedians?: unknown }).__routeMedians = () =>
+      timing.getMedians();
   }
 
   return {
