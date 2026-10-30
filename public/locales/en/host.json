@@ -29,6 +29,10 @@
       "copyMessage": "Copy guest message for Airbnb",
       "delete": "Delete reservation",
       "cannotDelete": "Cannot delete reservations that have already started",
+      "stayPast": "This stay is over, so photo proofs can no longer be taken",
+      "hasInspectionPast": "This stay is over, so a new guest inspection link cannot be created",
+      "copyMessagePast": "This stay is over, so the guest message is no longer available",
+      "cannotDeletePast": "This stay is over, so it can no longer be deleted",
       "notStarted": "This reservation has no check-in date, so the proof window cannot be calculated"
     },
     "confirm": {
