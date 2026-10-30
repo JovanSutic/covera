@@ -13,7 +13,6 @@ import { ReservationActionsMenu } from "./ReservationActionsMenu";
 
 interface ReservationsTableProps {
   apartmentId: string;
-  onOpenCreateReservation?: () => void;
   onTakeProofs?: (reservation: ReservationRow) => void;
 }
 
@@ -31,13 +30,16 @@ const STATUS_BADGE_CLASSES: Record<string, string> = {
 };
 
 /**
- * D15: `ReservationsSection`'s view and query, extracted and renamed. It owns the
- * page/limit state and the read — the same `useReservations` call the route
- * prefetches, so this is a cache read, not a second request.
+ * D7/D8: the reusable part only — the read, the columns, the rows, the paging, and the
+ * loading / empty / error states. The heading, the description and the create button are
+ * the composing page's (D8), which is what lets this table be dropped anywhere that wants
+ * a reservations list without also wanting that chrome.
+ *
+ * D15: the read is the same `useReservations` call the route prefetches, so this is a cache
+ * read, not a second request.
  */
 export function ReservationsTable({
   apartmentId,
-  onOpenCreateReservation,
   onTakeProofs,
 }: ReservationsTableProps) {
   const { t } = useTranslation("host");
@@ -51,11 +53,6 @@ export function ReservationsTable({
     isError,
     error,
   } = useReservations({ apartmentId, page, limit });
-
-  const isPastDate = (dateString: string): boolean => {
-    if (!dateString) return false;
-    return new Date(dateString).getTime() < Date.now();
-  };
 
   const reservations = useMemo<ReservationRow[]>(() => {
     if (!reservationsResponse) return [];
@@ -104,7 +101,7 @@ export function ReservationsTable({
               {row.guestName}
             </AccessLink>
             {row.guestEmail && (
-              <div className="text-xs text-gray-500 dark:text-gray-400">
+              <div className="text-gray-500 dark:text-gray-400">
                 {row.guestEmail}
               </div>
             )}
@@ -121,7 +118,6 @@ export function ReservationsTable({
       },
       {
         header: t("apartmentReservationsManager.columns.platformId"),
-        className: "font-mono text-xs text-gray-500 dark:text-gray-400",
         accessorKey: (row) => row.platformReservationId || "-",
       },
       {
@@ -161,26 +157,6 @@ export function ReservationsTable({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <Typography type="h3">
-            {t("apartmentReservationsManager.title")}
-          </Typography>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {t("apartmentReservationsManager.description")}
-          </p>
-        </div>
-        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-          <button
-            type="button"
-            onClick={onOpenCreateReservation}
-            className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-lg shadow-sm hover:bg-gray-800 transition-colors cursor-pointer dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-          >
-            {t("apartmentReservationsManager.newReservationButton")}
-          </button>
-        </div>
-      </div>
-
       {isError && !isLoading && (
         <div className="border border-rose-200 dark:border-rose-900/50 rounded-xl p-6 text-center bg-rose-50/50 dark:bg-rose-950/20">
           <Typography
@@ -201,7 +177,6 @@ export function ReservationsTable({
           data={reservations}
           columns={columns}
           isLoading={isLoading}
-          isRowDisabled={(reservation) => isPastDate(reservation.checkOutDatetime)}
           onRowClick={openReservation}
           pagination={{
             page,
@@ -221,16 +196,9 @@ export function ReservationsTable({
               >
                 {t("apartmentReservationsManager.empty.title")}
               </Typography>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
+              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
                 {t("apartmentReservationsManager.empty.description")}
               </p>
-              <button
-                type="button"
-                onClick={onOpenCreateReservation}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-              >
-                {t("apartmentReservationsManager.newReservationButton")}
-              </button>
             </div>
           }
         />

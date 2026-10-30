@@ -13,6 +13,7 @@ import type { SyncShotItem } from "@/api/generated/requests/types.gen";
 
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
+import Typography from "@/components/Typography";
 import Drawer from "@/components/Drawer";
 import { ApartmentOverviewHeader } from "@/components/host/ApartmentHeader";
 import { ApartmentAssetsManager } from "@/components/host/ApartmentAssetsManager";
@@ -39,6 +40,7 @@ import type { ReservationRow } from "@/types/component.types";
 
 export default function IndividualApartmentPage() {
   const { t } = useTranslation("general");
+  const { t: tHost } = useTranslation("host");
 
   const [activeTab, setActiveTab] = useState<"reservations" | "assets">(
     "reservations"
@@ -245,11 +247,27 @@ export default function IndividualApartmentPage() {
 
       {/* Tab Views */}
       {activeTab === "reservations" ? (
-        <ReservationsTable
-          apartmentId={id}
-          onOpenCreateReservation={() => setIsDrawerOpen(true)}
-          onTakeProofs={handleTakeProofs}
-        />
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <Typography type="h3">
+                {tHost("apartmentReservationsManager.title")}
+              </Typography>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {tHost("apartmentReservationsManager.description")}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsDrawerOpen(true)}
+              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-lg shadow-sm hover:bg-gray-800 transition-colors cursor-pointer dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
+            >
+              {tHost("apartmentReservationsManager.newReservationButton")}
+            </button>
+          </div>
+
+          <ReservationsTable apartmentId={id} onTakeProofs={handleTakeProofs} />
+        </div>
       ) : (
         <ApartmentAssetsManager
           assets={assets}
