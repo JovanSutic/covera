@@ -30,6 +30,10 @@ export interface ProofWindowState {
   hoursUntilWindow: number;
   /** Whether the host has already satisfied the reservation. */
   hasSubmittedProofs: boolean;
+  /** True once the effective check-out — the alternative when one is set — has passed (D3). */
+  isPast: boolean;
+  /** True once the plain check-out has passed. The alternative, if any, is ignored (D3). */
+  isPastEnd: boolean;
   /** True only for `OPEN`. The single answer to "may I take shots". */
   canTakeShots: boolean;
 }
@@ -46,6 +50,8 @@ export interface ProofWindowSubject {
   hasPhotoProof?: boolean | null;
   status?: string | null;
   alternativeCheckOutDatetime?: string | null;
+  /** The plain check-out. Optional so the type stays satisfiable without it (D2a). */
+  checkOutDatetime?: string | null;
 }
 
 /**
@@ -93,6 +99,17 @@ export function getProofWindowState(
   const hasSubmittedProofs =
     Boolean(reservation.hasPhotoProof) || reservation.status === "COVERED";
 
+  // D3: the same precedence the check-in already uses — the alternative wins when one is set.
+  // A missing or unparseable value reads as "not past": a reservation with no usable check-out
+  // cannot be a finished stay, and reporting it as one would disable every action on it.
+  // `||` and not `??`: an empty-string alternative must fall through to the plain check-out,
+  // exactly as `effectiveCheckInDatetime` does with the same operator.
+  const effectiveCheckOutDatetime =
+    reservation.alternativeCheckOutDatetime || reservation.checkOutDatetime || null;
+
+  const isPast = isAfterNow(effectiveCheckOutDatetime, now);
+  const isPastEnd = isAfterNow(reservation.checkOutDatetime, now);
+
   const state = resolveState({
     checkInTime,
     windowStartTime,
@@ -115,6 +132,8 @@ export function getProofWindowState(
         ? Math.ceil((windowStartTime - now) / (1000 * 60 * 60))
         : 0,
     hasSubmittedProofs,
+    isPast,
+    isPastEnd,
     canTakeShots: state === "OPEN",
   };
 }
@@ -147,4 +166,18 @@ function resolveState({
   if (now > windowEndTime) return "EXPIRED";
 
   return "OPEN";
+}
+
+/**
+ * D2/D3: "has this instant already passed", for a value that may be missing or corrupt.
+ * `Number.isFinite` for the same reason `getProofWindowState` uses it on the check-in: an
+ * unparseable date must read as "no such instant", which here means "not past" — never as
+ * epoch 0, which would read as "past" and disable everything.
+ */
+function isAfterNow(value: string | null | undefined, now: number): boolean {
+  if (!value) return false;
+
+  const parsed = new Date(value).getTime();
+
+  return Number.isFinite(parsed) && parsed < now;
 }

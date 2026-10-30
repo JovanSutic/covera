@@ -150,3 +150,69 @@ describe("getProofWindowState — the hours default and degenerate input", () =>
     expect(corrupt.hoursUntilWindow).toBe(0);
   });
 });
+
+describe("isPast and isPastEnd — has the stay ended", () => {
+  it("reports both as past once the check-out has gone by", () => {
+    // Check-out at +2h, the clock at +3h: the stay is over.
+    const state = getProofWindowState(subject({ checkOutDatetime: new Date(at(2 * HOUR)).toISOString() }), at(3 * HOUR));
+
+    expect(state.isPast).toBe(true);
+    expect(state.isPastEnd).toBe(true);
+  });
+
+  it("reports neither as past for a stay that has not ended", () => {
+    const state = getProofWindowState(subject({ checkOutDatetime: new Date(at(24 * HOUR)).toISOString() }), at(HOUR));
+
+    expect(state.isPast).toBe(false);
+    expect(state.isPastEnd).toBe(false);
+  });
+
+  it("lets the alternative check-out win, which is the precedence rule", () => {
+    // The plain check-out is 1h gone; the alternative is two days out. The stay is NOT
+    // over, because the alternative is the effective one — but the plain end HAS passed,
+    // and that is exactly what isPastEnd is for (D3).
+    const state = getProofWindowState(
+      subject({
+        checkOutDatetime: new Date(at(2 * HOUR)).toISOString(),
+        alternativeCheckOutDatetime: new Date(at(48 * HOUR)).toISOString(),
+      }),
+      at(3 * HOUR),
+    );
+
+    expect(state.isPast).toBe(false);
+    expect(state.isPastEnd).toBe(true);
+  });
+
+  it("is never past when the check-out is missing, null, empty or unparseable", () => {
+    for (const checkOutDatetime of [undefined, null, "", "not-a-date"]) {
+      const state = getProofWindowState(subject({ checkOutDatetime }), at(24 * HOUR));
+
+      expect(state.isPast).toBe(false);
+      expect(state.isPastEnd).toBe(false);
+    }
+  });
+
+  it("stays independent of the window state, in both directions", () => {
+    // Both have proofs submitted, so both report ALREADY_SUBMITTED — the window answer must
+    // not shadow the past answer, and the past answer must not shadow the window's.
+    const past = getProofWindowState(
+      subject({ checkOutDatetime: new Date(at(2 * HOUR)).toISOString(), hasPhotoProof: true }),
+      at(3 * HOUR),
+    );
+    const upcoming = getProofWindowState(
+      subject({ checkOutDatetime: new Date(at(24 * HOUR)).toISOString(), hasPhotoProof: true }),
+      at(HOUR),
+    );
+
+    expect(past.state).toBe("ALREADY_SUBMITTED");
+    expect(upcoming.state).toBe("ALREADY_SUBMITTED");
+    expect(past.isPast).toBe(true);
+    expect(upcoming.isPast).toBe(false);
+  });
+
+  it("treats the exact check-out instant as not yet past", () => {
+    const state = getProofWindowState(subject({ checkOutDatetime: new Date(at(3 * HOUR)).toISOString() }), at(3 * HOUR));
+
+    expect(state.isPast).toBe(false);
+  });
+});
