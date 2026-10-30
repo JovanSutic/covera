@@ -28,13 +28,104 @@
       "createInspection": "Generate new guest inspection link",
       "copyMessage": "Copy guest message for Airbnb",
       "delete": "Delete reservation",
-      "cannotDelete": "Cannot delete reservations that have already started"
+      "cannotDelete": "Cannot delete reservations that have already started",
+      "stayPast": "This stay is over, so photo proofs can no longer be taken",
+      "hasInspectionPast": "This stay is over, so a new guest inspection link cannot be created",
+      "copyMessagePast": "This stay is over, so the guest message is no longer available",
+      "cannotDeletePast": "This stay is over, so it can no longer be deleted",
+      "notStarted": "This reservation has no check-in date, so the proof window cannot be calculated"
     },
     "confirm": {
       "createMessage": "Create guest inspection?",
       "createLabel": "Create",
       "deleteMessage": "Delete reservation?",
       "deleteLabel": "Delete"
+    }
+  },
+  "reservationActionsMenu": {
+    "triggerTitle": "Reservation actions",
+    "takeProofs": "Take photo proofs",
+    "createInspection": "Create guest inspection link",
+    "copyGuestMessage": "Copy guest message",
+    "delete": "Delete reservation"
+  },
+  "reservationPage": {
+    "title": "Reservation",
+    "validation": {
+      "altCheckInFuture": "The alternative check-in must be in the future",
+      "altCheckOutFuture": "The alternative check-out must be in the future",
+      "altCheckOutAfterAltCheckIn": "The alternative check-out must be after the alternative check-in",
+      "checkInFuture": "Check-in must be in the future"
+    },
+    "notAvailable": "—",
+    "loading": "Loading reservation…",
+    "backToApartment": "Back to apartment",
+    "subtitle": "Check-in {{checkIn}}",
+    "guest": {
+      "title": "Guest",
+      "name": "Guest name",
+      "email": "Guest email"
+    },
+    "time": {
+      "title": "Time",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "alternativeCheckIn": "Alternative check-in",
+      "alternativeCheckOut": "Alternative check-out",
+      "noAlternative": "Not set",
+      "editAlternatives": "Edit alternative dates",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "toast": {
+        "saveSuccess": "Alternative dates updated",
+        "saveError": "Could not update the alternative dates. Please try again."
+      }
+    },
+    "proof": {
+      "title": "Proof",
+      "takeProofs": "Take photo proofs",
+      "alreadySubmitted": "Photo proofs have already been submitted for this reservation.",
+      "tooEarly": "The proof window opens {{windowHours}}h before check-in (in about {{hoursUntilWindow}}h).",
+      "expired": "The proof window has closed. Photo proofs can no longer be submitted.",
+      "notStarted": "This reservation has no check-in date, so the proof window cannot be calculated.",
+      "showPhotos": "Show the submitted photos",
+      "hidePhotos": "Hide the submitted photos",
+      "photosLoading": "Loading photos…",
+      "photosError": "Could not load the photos for this reservation.",
+      "photosEmpty": "No photos have been uploaded for this reservation yet."
+    },
+    "other": {
+      "title": "Other",
+      "platformId": "Platform reservation ID",
+      "createdAt": "Created",
+      "proofWindow": "Proof window",
+      "proofWindowValue": "{{hours}}h before check-in"
+    },
+    "notFound": {
+      "title": "Reservation not found",
+      "subtitle": "This reservation does not exist, or it does not belong to one of your apartments."
+    }
+  },
+  "inspectionGuidePage": {
+    "title": "Inspection guide",
+    "subtitle": "Photo proofs for {{guestName}}",
+    "loading": "Loading the guide…",
+    "backToReservation": "Back to reservation",
+    "notFound": {
+      "title": "Reservation not found",
+      "subtitle": "This reservation does not exist, or it does not belong to one of your apartments."
+    },
+    "unavailable": {
+      "title": "Proofs cannot be taken right now",
+      "alreadySubmitted": "Photo proofs have already been submitted for this reservation. You can view them on the reservation page.",
+      "expired": "The proof window has closed. Photo proofs can no longer be submitted.",
+      "notStarted": "This reservation has no check-in date, so the proof window cannot be calculated.",
+      "tooEarly": "The proof window has not opened yet. Come back closer to check-in."
+    },
+    "toast": {
+      "submitSuccess": "Photo proofs submitted",
+      "submitError": "Could not submit the photo proofs. Please try again."
     }
   },
   "apartmentReservationsManager": {

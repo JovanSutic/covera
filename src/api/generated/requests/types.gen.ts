@@ -873,51 +873,6 @@ export type GetReservationsApartmentByApartmentIdResponses = {
 
 export type GetReservationsApartmentByApartmentIdResponse = GetReservationsApartmentByApartmentIdResponses[keyof GetReservationsApartmentByApartmentIdResponses];
 
-export type PostReservationsData = {
-    body?: CreateReservation;
-    path?: never;
-    query?: never;
-    url: '/reservations';
-};
-
-export type PostReservationsErrors = {
-    /**
-     * VALIDATION_ERROR: The request failed validation. RESERVATION_INVALID_RANGE: Check-out must be strictly after check-in.
-     */
-    400: StandardError;
-    /**
-     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
-     */
-    401: StandardError;
-    /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
-     */
-    403: StandardError;
-    /**
-     * APARTMENT_NOT_FOUND: Apartment does not exist.
-     */
-    404: StandardError;
-    /**
-     * RESERVATION_OVERLAP: Reservation overlaps an existing reservation. RELATED_RECORD_INVALID: A referenced record does not exist or is still in use.
-     */
-    409: StandardError;
-    /**
-     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
-     */
-    500: StandardError;
-};
-
-export type PostReservationsError = PostReservationsErrors[keyof PostReservationsErrors];
-
-export type PostReservationsResponses = {
-    /**
-     * Reservation created successfully
-     */
-    201: Reservation;
-};
-
-export type PostReservationsResponse = PostReservationsResponses[keyof PostReservationsResponses];
-
 export type DeleteReservationsByIdData = {
     body?: never;
     path: {
@@ -960,6 +915,49 @@ export type DeleteReservationsByIdResponses = {
 };
 
 export type DeleteReservationsByIdResponse = DeleteReservationsByIdResponses[keyof DeleteReservationsByIdResponses];
+
+export type GetReservationsByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/reservations/{id}';
+};
+
+export type GetReservationsByIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * RESERVATION_NOT_FOUND: Reservation does not exist. APARTMENT_NOT_FOUND: Apartment does not exist.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetReservationsByIdError = GetReservationsByIdErrors[keyof GetReservationsByIdErrors];
+
+export type GetReservationsByIdResponses = {
+    /**
+     * A single reservation with its inspection
+     */
+    200: ReservationWithInspection;
+};
+
+export type GetReservationsByIdResponse = GetReservationsByIdResponses[keyof GetReservationsByIdResponses];
 
 export type PatchReservationsByIdData = {
     body?: UpdateReservation;
@@ -1007,6 +1005,51 @@ export type PatchReservationsByIdResponses = {
 };
 
 export type PatchReservationsByIdResponse = PatchReservationsByIdResponses[keyof PatchReservationsByIdResponses];
+
+export type PostReservationsData = {
+    body?: CreateReservation;
+    path?: never;
+    query?: never;
+    url: '/reservations';
+};
+
+export type PostReservationsErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. RESERVATION_INVALID_RANGE: Check-out must be strictly after check-in.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
+     */
+    404: StandardError;
+    /**
+     * RESERVATION_OVERLAP: Reservation overlaps an existing reservation. RELATED_RECORD_INVALID: A referenced record does not exist or is still in use.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostReservationsError = PostReservationsErrors[keyof PostReservationsErrors];
+
+export type PostReservationsResponses = {
+    /**
+     * Reservation created successfully
+     */
+    201: Reservation;
+};
+
+export type PostReservationsResponse = PostReservationsResponses[keyof PostReservationsResponses];
 
 export type GetLocationsData = {
     body?: never;

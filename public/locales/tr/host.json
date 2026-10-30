@@ -28,7 +28,8 @@
       "createInspection": "Yeni misafir inceleme bağlantısı oluştur",
       "copyMessage": "Airbnb için misafir mesajını kopyala",
       "delete": "Rezervasyonu sil",
-      "cannotDelete": "Zaten başlamış olan rezervasyonlar silinemez"
+      "cannotDelete": "Zaten başlamış olan rezervasyonlar silinemez",
+      "notStarted": "Bu rezervasyonun giriş tarihi yok, dolayısıyla prova penceresi hesaplanamıyor"
     },
     "confirm": {
       "createMessage": "Konuk incelemesi oluşturulsun mu?",
@@ -144,6 +145,92 @@
     "toast": {
       "success": "Rezervasyon başarıyla oluşturuldu!",
       "error": "Rezervasyon oluşturulurken bir hata oluştu."
+    }
+  },
+  "reservationActionsMenu": {
+    "triggerTitle": "Rezervasyon işlemleri",
+    "takeProofs": "Fotoğraf provaları alın",
+    "createInspection": "Konuk inceleme bağlantısı oluşturun",
+    "copyGuestMessage": "Konuk mesajını kopyalayın",
+    "delete": "Rezervasyonu silin"
+  },
+  "reservationPage": {
+    "title": "Rezervasyon",
+    "validation": {
+      "altCheckInFuture": "Alternatif giriş gelecekte olmalıdır",
+      "altCheckOutFuture": "Alternatif çıkış gelecekte olmalıdır",
+      "altCheckOutAfterAltCheckIn": "Alternatif çıkış, alternatif girişten sonra olmalıdır",
+      "checkInFuture": "Giriş gelecekte olmalı"
+    },
+    "notAvailable": "—",
+    "loading": "Rezervasyon yükleniyor…",
+    "backToApartment": "Daireye geri dön",
+    "subtitle": "Giriş {{checkIn}}",
+    "guest": {
+      "title": "Misafir",
+      "name": "Misafir adı",
+      "email": "Misafir e-postası"
+    },
+    "time": {
+      "title": "Saat",
+      "checkIn": "Giriş",
+      "checkOut": "Çıkış",
+      "alternativeCheckIn": "Alternatif giriş",
+      "alternativeCheckOut": "Alternatif çıkış",
+      "noAlternative": "Ayarlanmadı",
+      "editAlternatives": "Alternatif tarihleri ​​düzenle",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor…",
+      "cancel": "İptal et",
+      "toast": {
+        "saveSuccess": "Alternatif tarihler güncellendi",
+        "saveError": "Alternatif tarihler güncellenemedi. Lütfen tekrar deneyin."
+      }
+    },
+    "proof": {
+      "title": "Kanıt",
+      "takeProofs": "Fotoğraflı provalar çekin",
+      "alreadySubmitted": "Bu rezervasyon için fotoğraflı provalar zaten gönderildi.",
+      "tooEarly": "Prova penceresi check-in işleminden {{windowHours}}h önce açılır (yaklaşık {{hoursUntilWindow}}h içinde).",
+      "expired": "Prova penceresi kapandı. Fotoğraf provaları artık gönderilemiyor.",
+      "notStarted": "Bu rezervasyonun giriş tarihi yoktur, dolayısıyla prova penceresi hesaplanamaz.",
+      "showPhotos": "Gönderilen fotoğrafları göster",
+      "hidePhotos": "Gönderilen fotoğrafları gizle",
+      "photosLoading": "Fotoğraflar yükleniyor…",
+      "photosError": "Bu rezervasyon için fotoğraflar yüklenemedi.",
+      "photosEmpty": "Bu rezervasyon için henüz fotoğraf yüklenmedi."
+    },
+    "other": {
+      "title": "Diğer",
+      "platformId": "Platform rezervasyon kimliği",
+      "createdAt": "Oluşturuldu",
+      "proofWindow": "Prova penceresi",
+      "proofWindowValue": "{{hours}}h girişten önce"
+    },
+    "notFound": {
+      "title": "Rezervasyon bulunamadı",
+      "subtitle": "Bu rezervasyon mevcut değil veya dairelerinizden birine ait değil."
+    }
+  },
+  "inspectionGuidePage": {
+    "title": "İnceleme kılavuzu",
+    "subtitle": "{{guestName}} için fotoğraflı provalar",
+    "loading": "Kılavuz yükleniyor…",
+    "backToReservation": "Rezervasyona geri dön",
+    "notFound": {
+      "title": "Rezervasyon bulunamadı",
+      "subtitle": "Bu rezervasyon mevcut değil veya dairelerinizden birine ait değil."
+    },
+    "unavailable": {
+      "title": "Kanıtlar şu anda alınamıyor",
+      "alreadySubmitted": "Bu rezervasyon için fotoğraflı kanıtlar zaten gönderildi. Bunları rezervasyon sayfasında görebilirsiniz.",
+      "expired": "Prova penceresi kapandı. Fotoğraf provaları artık gönderilemiyor.",
+      "notStarted": "Bu rezervasyonun giriş tarihi yoktur, dolayısıyla prova penceresi hesaplanamaz.",
+      "tooEarly": "Prova penceresi henüz açılmadı. Check-in işlemine tekrar yaklaşın."
+    },
+    "toast": {
+      "submitSuccess": "Fotoğraflı provalar gönderildi",
+      "submitError": "Fotoğraflı provalar gönderilemedi. Lütfen tekrar deneyin."
     }
   }
 }

@@ -73,6 +73,11 @@ export const appPaths = definePaths({
     requires: ["public"],
     params: { id: "uuid" },
   },
+  inspectionGuide: {
+    pattern: "/inspection-guide/:apartmentId/:reservationId",
+    requires: ["canOpenHost"],
+    params: { apartmentId: "uuid", reservationId: "uuid" },
+  },
   adminDashboard: {
     pattern: "/admin/dashboard",
     requires: ["canOpenAdmin"],
@@ -92,5 +97,10 @@ export const appPaths = definePaths({
     pattern: "/host/apartments/:id",
     requires: ["canOpenHost"],
     params: { id: "uuid" },
+  },
+  hostReservation: {
+    pattern: "/host/apartments/:id/reservations/:reservationId",
+    requires: ["canOpenHost"],
+    params: { id: "uuid", reservationId: "uuid" },
   },
 } as const);

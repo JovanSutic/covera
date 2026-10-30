@@ -34,5 +34,25 @@ export const hostRoutes: SectionRoute = {
       ],
       handle: { crumb: "apartmentPage.tabs.ariaLabel" },
     },
+    {
+      // A SIBLING of apartments/:id, not a child of it — and this is load-bearing.
+      // A child route renders into its parent's <Outlet />, and
+      // IndividualApartment.tsx has no <Outlet /> (grep -rn "Outlet" src/ finds one
+      // occurrence, in Shell.tsx). Nested as a child, this route's loader would run,
+      // the URL would match, and the page would never mount — a blank screen that
+      // still passes every gate check. The URL still NESTS because the pattern is
+      // written out in full.
+      path: "apartments/:id/reservations/:reservationId",
+      params: { id: "uuid", reservationId: "uuid" },
+      page: () => import("@/pages/host/ReservationPage"),
+      // The inspection read is declared but resolves to null (D10): the photos are
+      // loaded only when the host opens the control, and a declaration that returns
+      // null is how this registry says "not on this navigation" (registry.ts).
+      data: [
+        { resource: "reservation", params: (params) => ({ id: String(params.reservationId) }) },
+        { resource: "inspection", params: () => null },
+      ],
+      handle: { crumb: "reservationPage.title" },
+    },
   ],
 };

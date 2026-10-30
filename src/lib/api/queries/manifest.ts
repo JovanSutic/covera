@@ -2,6 +2,7 @@ import * as admin from "./admin";
 import * as apartment from "./apartment";
 import * as assets from "./assets";
 import * as inspection from "./inspection";
+import * as reservation from "./reservation";
 import * as reservations from "./reservations";
 import * as shots from "./shots";
 import { QUERY_RESOURCES } from "./registry";
@@ -22,7 +23,7 @@ import { QUERY_RESOURCES } from "./registry";
  * This is a module map, not a hand-written list: a new query module is added here
  * once, and from then on any page that forgets to declare it fails the gate.
  */
-const MODULES = { admin, apartment, assets, inspection, reservations, shots } as const;
+const MODULES = { admin, apartment, assets, inspection, reservation, reservations, shots } as const;
 
 /** The definition object → the resource name `QUERY_RESOURCES` registers it under. */
 const RESOURCE_NAME_BY_DEFINITION = new Map<unknown, string>(

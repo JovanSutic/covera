@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteAssetsByIdData, DeleteAssetsByIdErrors, DeleteAssetsByIdResponses, DeleteReservationsByIdData, DeleteReservationsByIdErrors, DeleteReservationsByIdResponses, GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsHostMeData, GetApartmentsHostMeErrors, GetApartmentsHostMeResponses, GetApartmentShotsApartmentByApartmentIdData, GetApartmentShotsApartmentByApartmentIdErrors, GetApartmentShotsApartmentByApartmentIdResponses, GetApartmentsResponses, GetAssetsApartmentByApartmentIdData, GetAssetsApartmentByApartmentIdErrors, GetAssetsApartmentByApartmentIdResponses, GetAssetsTypesData, GetAssetsTypesErrors, GetAssetsTypesResponses, GetInspectionsByIdData, GetInspectionsByIdErrors, GetInspectionsByIdResponses, GetInspectionsReservationByReservationIdData, GetInspectionsReservationByReservationIdErrors, GetInspectionsReservationByReservationIdResponses, GetLocationsData, GetLocationsErrors, GetLocationsResponses, GetReservationsApartmentByApartmentIdData, GetReservationsApartmentByApartmentIdErrors, GetReservationsApartmentByApartmentIdResponses, GetUsersByIdData, GetUsersByIdErrors, GetUsersByIdResponses, GetUsersData, GetUsersErrors, GetUsersResponses, PatchReservationsByIdData, PatchReservationsByIdErrors, PatchReservationsByIdResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostAssetsData, PostAssetsErrors, PostAssetsResponses, PostInspectionsByIdFlagsData, PostInspectionsByIdFlagsErrors, PostInspectionsByIdFlagsResponses, PostInspectionsByIdPingData, PostInspectionsByIdPingErrors, PostInspectionsByIdPingResponses, PostInspectionsData, PostInspectionsErrors, PostInspectionsResponses, PostLocationsData, PostLocationsErrors, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersByIdInviteData, PostUsersByIdInviteErrors, PostUsersByIdInviteResponses, PostUsersData, PostUsersErrors, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses, PutApartmentShotsApartmentByApartmentIdData, PutApartmentShotsApartmentByApartmentIdErrors, PutApartmentShotsApartmentByApartmentIdResponses } from './types.gen';
+import type { DeleteAssetsByIdData, DeleteAssetsByIdErrors, DeleteAssetsByIdResponses, DeleteReservationsByIdData, DeleteReservationsByIdErrors, DeleteReservationsByIdResponses, GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsHostMeData, GetApartmentsHostMeErrors, GetApartmentsHostMeResponses, GetApartmentShotsApartmentByApartmentIdData, GetApartmentShotsApartmentByApartmentIdErrors, GetApartmentShotsApartmentByApartmentIdResponses, GetApartmentsResponses, GetAssetsApartmentByApartmentIdData, GetAssetsApartmentByApartmentIdErrors, GetAssetsApartmentByApartmentIdResponses, GetAssetsTypesData, GetAssetsTypesErrors, GetAssetsTypesResponses, GetInspectionsByIdData, GetInspectionsByIdErrors, GetInspectionsByIdResponses, GetInspectionsReservationByReservationIdData, GetInspectionsReservationByReservationIdErrors, GetInspectionsReservationByReservationIdResponses, GetLocationsData, GetLocationsErrors, GetLocationsResponses, GetReservationsApartmentByApartmentIdData, GetReservationsApartmentByApartmentIdErrors, GetReservationsApartmentByApartmentIdResponses, GetReservationsByIdData, GetReservationsByIdErrors, GetReservationsByIdResponses, GetUsersByIdData, GetUsersByIdErrors, GetUsersByIdResponses, GetUsersData, GetUsersErrors, GetUsersResponses, PatchReservationsByIdData, PatchReservationsByIdErrors, PatchReservationsByIdResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostAssetsData, PostAssetsErrors, PostAssetsResponses, PostInspectionsByIdFlagsData, PostInspectionsByIdFlagsErrors, PostInspectionsByIdFlagsResponses, PostInspectionsByIdPingData, PostInspectionsByIdPingErrors, PostInspectionsByIdPingResponses, PostInspectionsData, PostInspectionsErrors, PostInspectionsResponses, PostLocationsData, PostLocationsErrors, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersByIdInviteData, PostUsersByIdInviteErrors, PostUsersByIdInviteResponses, PostUsersData, PostUsersErrors, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses, PutApartmentShotsApartmentByApartmentIdData, PutApartmentShotsApartmentByApartmentIdErrors, PutApartmentShotsApartmentByApartmentIdResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -77,16 +77,9 @@ export const getApartmentsHostMe = <ThrowOnError extends boolean = false>(option
 
 export const getReservationsApartmentByApartmentId = <ThrowOnError extends boolean = false>(options: Options<GetReservationsApartmentByApartmentIdData, ThrowOnError>) => (options.client ?? client).get<GetReservationsApartmentByApartmentIdResponses, GetReservationsApartmentByApartmentIdErrors, ThrowOnError>({ url: '/reservations/apartment/{apartmentId}', ...options });
 
-export const postReservations = <ThrowOnError extends boolean = false>(options?: Options<PostReservationsData, ThrowOnError>) => (options?.client ?? client).post<PostReservationsResponses, PostReservationsErrors, ThrowOnError>({
-    url: '/reservations',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers
-    }
-});
-
 export const deleteReservationsById = <ThrowOnError extends boolean = false>(options: Options<DeleteReservationsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteReservationsByIdResponses, DeleteReservationsByIdErrors, ThrowOnError>({ url: '/reservations/{id}', ...options });
+
+export const getReservationsById = <ThrowOnError extends boolean = false>(options: Options<GetReservationsByIdData, ThrowOnError>) => (options.client ?? client).get<GetReservationsByIdResponses, GetReservationsByIdErrors, ThrowOnError>({ url: '/reservations/{id}', ...options });
 
 export const patchReservationsById = <ThrowOnError extends boolean = false>(options: Options<PatchReservationsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchReservationsByIdResponses, PatchReservationsByIdErrors, ThrowOnError>({
     url: '/reservations/{id}',
@@ -94,6 +87,15 @@ export const patchReservationsById = <ThrowOnError extends boolean = false>(opti
     headers: {
         'Content-Type': 'application/json',
         ...options.headers
+    }
+});
+
+export const postReservations = <ThrowOnError extends boolean = false>(options?: Options<PostReservationsData, ThrowOnError>) => (options?.client ?? client).post<PostReservationsResponses, PostReservationsErrors, ThrowOnError>({
+    url: '/reservations',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
     }
 });
 

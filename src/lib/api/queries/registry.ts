@@ -3,6 +3,7 @@ import { apartmentResource, apartmentsHostResource } from "./apartment";
 import { assetsResource } from "./assets";
 import { shotsResource } from "./shots";
 import { reservationsResource } from "./reservations";
+import { reservationResource } from "./reservation";
 import { inspectionResource } from "./inspection";
 import {
   apartmentsAllResource,
@@ -24,6 +25,7 @@ export const QUERY_RESOURCES = {
   assets: assetsResource,
   shots: shotsResource,
   reservations: reservationsResource,
+  reservation: reservationResource,
   inspection: inspectionResource,
   users: usersResource,
   locations: locationsResource,
