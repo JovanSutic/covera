@@ -36,6 +36,7 @@ export function ReservationHeaderActions({
   const {
     hasInspection,
     isDeletable,
+    isPast,
     guestInspectionUrl,
     deleteMutation,
     createInspectionMutation,
@@ -61,38 +62,54 @@ export function ReservationHeaderActions({
           icon={<ClipboardPlus className="w-4 h-4" />}
           variant="success"
           confirmLabel={t("reservationActionsCell.confirm.createLabel")}
-          disabled={hasInspection}
+          disabled={isPast || hasInspection}
           title={
-            hasInspection
-              ? t("reservationActionsCell.tooltip.hasInspection")
-              : t("reservationActionsCell.tooltip.createInspection")
+            isPast
+              ? t("reservationActionsCell.tooltip.hasInspectionPast")
+              : hasInspection
+                ? t("reservationActionsCell.tooltip.hasInspection")
+                : t("reservationActionsCell.tooltip.createInspection")
           }
           isLoading={createInspectionMutation.isPending}
           onConfirm={() => createInspectionMutation.mutateAsync()}
         />
       </div>
 
-      {hasInspection && (
-        <Popover>
-          {/* `PopoverTrigger` is itself a <div onClick={toggleOpen}> — the button
-              inside it carries NO handler, exactly as phase 4's kebab menu does.
-              A second onClick here would bubble and toggle twice. */}
-          <PopoverTrigger>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-blue-200 dark:border-blue-800 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50 transition-colors cursor-pointer"
-            >
-              <LinkIcon className="w-4 h-4 shrink-0" />
-              {t("reservationActionsMenu.copyGuestMessage")}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="right">
-            <GuestInspectionMessage
-              guestName={reservation.guestName}
-              guestInspectionUrl={guestInspectionUrl}
-            />
-          </PopoverContent>
-        </Popover>
+      {isPast ? (
+        // Same reason as the table's kebab: `PopoverTrigger` is the click target, so a
+        // disabled button inside one would still open. No Popover on this path.
+        <button
+          type="button"
+          disabled
+          title={t("reservationActionsCell.tooltip.copyMessagePast")}
+          className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-blue-200 dark:border-blue-800 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <LinkIcon className="w-4 h-4 shrink-0" />
+          {t("reservationActionsMenu.copyGuestMessage")}
+        </button>
+      ) : (
+        hasInspection && (
+          <Popover>
+            {/* `PopoverTrigger` is itself a <div onClick={toggleOpen}> — the button
+                inside it carries NO handler, exactly as phase 4's kebab menu does.
+                A second onClick here would bubble and toggle twice. */}
+            <PopoverTrigger>
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-blue-200 dark:border-blue-800 text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50 transition-colors cursor-pointer"
+              >
+                <LinkIcon className="w-4 h-4 shrink-0" />
+                {t("reservationActionsMenu.copyGuestMessage")}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="right">
+              <GuestInspectionMessage
+                guestName={reservation.guestName}
+                guestInspectionUrl={guestInspectionUrl}
+              />
+            </PopoverContent>
+          </Popover>
+        )
       )}
 
       <div
@@ -108,11 +125,13 @@ export function ReservationHeaderActions({
           icon={<Trash2 className="w-4 h-4" />}
           variant="danger"
           confirmLabel={t("reservationActionsCell.confirm.deleteLabel")}
-          disabled={!isDeletable}
+          disabled={isPast || !isDeletable}
           title={
-            isDeletable
-              ? t("reservationActionsCell.tooltip.delete")
-              : t("reservationActionsCell.tooltip.cannotDelete")
+            isPast
+              ? t("reservationActionsCell.tooltip.cannotDeletePast")
+              : isDeletable
+                ? t("reservationActionsCell.tooltip.delete")
+                : t("reservationActionsCell.tooltip.cannotDelete")
           }
           isLoading={deleteMutation.isPending}
           onConfirm={() => deleteMutation.mutateAsync()}

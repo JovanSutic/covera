@@ -53,6 +53,11 @@ export function useReservationActions({
   // inline cell had, now read off the helper's own effective value.
   const isDeletable = window.checkInTime !== null && window.checkInTime > now;
 
+  // D4/D5: a reservation whose stay is over offers no actions. The answer is the helper's
+  // (D2), so the table's menu and the page's header compute it the same way and can never
+  // disagree — and neither re-derives it from a check-out date.
+  const isPast = window.isPast;
+
   const guestInspectionUrl = inspectionId
     ? buildPath(appPaths.inspection, { id: inspectionId })
     : "";
@@ -130,6 +135,7 @@ export function useReservationActions({
     window,
     hasInspection,
     isDeletable,
+    isPast,
     guestInspectionUrl,
     takeShotsTooltip,
     deleteMutation,

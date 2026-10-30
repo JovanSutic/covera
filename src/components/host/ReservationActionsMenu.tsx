@@ -33,6 +33,7 @@ export function ReservationActionsMenu({
     window,
     hasInspection,
     isDeletable,
+    isPast,
     guestInspectionUrl,
     takeShotsTooltip,
     deleteMutation,
@@ -65,8 +66,12 @@ export function ReservationActionsMenu({
           <div className="w-64 py-1">
             <button
               type="button"
-              disabled={!window.canTakeShots}
-              title={takeShotsTooltip()}
+              disabled={isPast || !window.canTakeShots}
+              title={
+                isPast
+                  ? t("reservationActionsCell.tooltip.stayPast")
+                  : takeShotsTooltip()
+              }
               onClick={() => window.canTakeShots && onTakeProofs(reservation)}
               className={ITEM_CLASSES}
             >
@@ -88,32 +93,49 @@ export function ReservationActionsMenu({
                 icon={<ClipboardPlus className="w-4 h-4" />}
                 variant="success"
                 confirmLabel={t("reservationActionsCell.confirm.createLabel")}
-                disabled={hasInspection}
+                disabled={isPast || hasInspection}
                 title={
-                  hasInspection
-                    ? t("reservationActionsCell.tooltip.hasInspection")
-                    : t("reservationActionsCell.tooltip.createInspection")
+                  isPast
+                    ? t("reservationActionsCell.tooltip.hasInspectionPast")
+                    : hasInspection
+                      ? t("reservationActionsCell.tooltip.hasInspection")
+                      : t("reservationActionsCell.tooltip.createInspection")
                 }
                 isLoading={createInspectionMutation.isPending}
                 onConfirm={() => createInspectionMutation.mutateAsync()}
               />
             </div>
 
-            {hasInspection && (
-              <Popover>
-                <PopoverTrigger>
-                  <button type="button" className={ITEM_CLASSES}>
-                    <LinkIcon className="w-4 h-4 shrink-0" />
-                    {t("reservationActionsMenu.copyGuestMessage")}
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="left">
-                  <GuestInspectionMessage
-                    guestName={reservation.guestName}
-                    guestInspectionUrl={guestInspectionUrl}
-                  />
-                </PopoverContent>
-              </Popover>
+            {isPast ? (
+              // A past stay has no guest message to copy, and `PopoverTrigger` is the
+              // click target, not this button — so a disabled button inside a Popover
+              // would still open it. This renders the same item without one.
+              <button
+                type="button"
+                disabled
+                title={t("reservationActionsCell.tooltip.copyMessagePast")}
+                className={ITEM_CLASSES}
+              >
+                <LinkIcon className="w-4 h-4 shrink-0" />
+                {t("reservationActionsMenu.copyGuestMessage")}
+              </button>
+            ) : (
+              hasInspection && (
+                <Popover>
+                  <PopoverTrigger>
+                    <button type="button" className={ITEM_CLASSES}>
+                      <LinkIcon className="w-4 h-4 shrink-0" />
+                      {t("reservationActionsMenu.copyGuestMessage")}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="left">
+                    <GuestInspectionMessage
+                      guestName={reservation.guestName}
+                      guestInspectionUrl={guestInspectionUrl}
+                    />
+                  </PopoverContent>
+                </Popover>
+              )
             )}
 
             <div className="px-3 py-2 flex items-center justify-between gap-2">
@@ -125,11 +147,13 @@ export function ReservationActionsMenu({
                 icon={<Trash2 className="w-4 h-4" />}
                 variant="danger"
                 confirmLabel={t("reservationActionsCell.confirm.deleteLabel")}
-                disabled={!isDeletable}
+                disabled={isPast || !isDeletable}
                 title={
-                  isDeletable
-                    ? t("reservationActionsCell.tooltip.delete")
-                    : t("reservationActionsCell.tooltip.cannotDelete")
+                  isPast
+                    ? t("reservationActionsCell.tooltip.cannotDeletePast")
+                    : isDeletable
+                      ? t("reservationActionsCell.tooltip.delete")
+                      : t("reservationActionsCell.tooltip.cannotDelete")
                 }
                 isLoading={deleteMutation.isPending}
                 onConfirm={() => deleteMutation.mutateAsync()}
