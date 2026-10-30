@@ -161,6 +161,76 @@
       "altCheckOutFuture": "Der alternative Check-out muss in der Zukunft liegen",
       "altCheckOutAfterAltCheckIn": "Der alternative Check-out muss nach dem alternativen Check-in erfolgen",
       "checkInFuture": "Der Check-in muss in erfolgen Zukunft"
+    },
+    "notAvailable": "—",
+    "loading": "Reservierung wird geladen…",
+    "backToApartment": "Zurück zur Wohnung",
+    "subtitle": "Check-in {{checkIn}}",
+    "guest": {
+      "title": "Gast",
+      "name": "Gastname",
+      "email": "Gast-E-Mail"
+    },
+    "time": {
+      "title": "Uhrzeit",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "alternativeCheckIn": "Alternativer Check-in",
+      "alternativeCheckOut": "Alternativer Check-out",
+      "noAlternative": "Nicht festgelegt",
+      "editAlternatives": "Alternative Daten bearbeiten",
+      "save": "Speichern",
+      "saving": "Wird gespeichert...",
+      "cancel": "Abbrechen",
+      "toast": {
+        "saveSuccess": "Alternative Termine aktualisiert",
+        "saveError": "Die alternativen Termine konnten nicht aktualisiert werden. Bitte versuchen Sie es erneut."
+      }
+    },
+    "proof": {
+      "title": "Beweis",
+      "takeProofs": "Machen Sie Fotobeweise",
+      "alreadySubmitted": "Für diese Reservierung wurden bereits Fotobeweise eingereicht.",
+      "tooEarly": "Das Proof-Fenster öffnet sich {{windowHours}}h vor dem Einchecken (in etwa {{hoursUntilWindow}}h).",
+      "expired": "The proof window has closed. Photo proofs can no longer be submitted.",
+      "notStarted": "Diese Reservierung hat kein Check-in-Datum, daher kann das Nachweisfenster nicht berechnet werden.",
+      "showPhotos": "Eingereichte Fotos anzeigen",
+      "hidePhotos": "Eingereichte Fotos ausblenden",
+      "photosLoading": "Fotos werden geladen…",
+      "photosError": "Die Fotos für diese Reservierung konnten nicht geladen werden.",
+      "photosEmpty": "Für diese Reservierung wurden noch keine Fotos hochgeladen."
+    },
+    "other": {
+      "title": "Andere",
+      "platformId": "Plattformreservierungs-ID",
+      "createdAt": "Erstellt",
+      "proofWindow": "Nachweisfenster",
+      "proofWindowValue": "{{hours}}h vor dem Check-in"
+    },
+    "notFound": {
+      "title": "Reservierung nicht gefunden",
+      "subtitle": "Diese Reservierung existiert nicht oder sie gehört nicht zu einem Ihrer Apartments."
+    }
+  },
+  "inspectionGuidePage": {
+    "title": "Inspektionsleitfaden",
+    "subtitle": "Fotonachweise für {{guestName}}",
+    "loading": "Leitfaden wird geladen…",
+    "backToReservation": "Zurück zur Reservierung",
+    "notFound": {
+      "title": "Reservierung nicht gefunden",
+      "subtitle": "Diese Reservierung existiert nicht oder sie gehört nicht zu einer Ihrer Wohnungen."
+    },
+    "unavailable": {
+      "title": "Es können derzeit keine Nachweise erstellt werden.",
+      "alreadySubmitted": "Für diese Reservierung wurden bereits Fotonachweise eingereicht. Sie können diese auf der Reservierungsseite einsehen.",
+      "expired": "Das Proof-Fenster wurde geschlossen. Fotonachweise können nicht mehr eingereicht werden.",
+      "notStarted": "Diese Reservierung hat kein Check-in-Datum, daher kann das Nachweisfenster nicht berechnet werden.",
+      "tooEarly": "Das Proof-Fenster wurde noch nicht geöffnet. Kommen Sie näher zum Check-in zurück."
+    },
+    "toast": {
+      "submitSuccess": "Fotonachweise übermittelt",
+      "submitError": "Die Fotonachweise konnten nicht übermittelt werden. Bitte versuchen Sie es erneut."
     }
   }
 }

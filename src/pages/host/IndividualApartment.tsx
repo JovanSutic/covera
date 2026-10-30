@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -13,12 +14,10 @@ import type { SyncShotItem } from "@/api/generated/requests/types.gen";
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
 import Drawer from "@/components/Drawer";
-import { Modal } from "@/components/Modal";
 import { ApartmentOverviewHeader } from "@/components/host/ApartmentHeader";
 import { ApartmentAssetsManager } from "@/components/host/ApartmentAssetsManager";
 import { ReservationsTable } from "@/components/host/ReservationsTable";
 import { ShotStudioModal } from "@/components/host/ShotStudioModal";
-import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
 import CreateAssetForm from "@/components/forms/CreateAssetForm";
 import CreateReservationForm from "@/components/forms/CreateReservationForm";
 import { UnmatchedAssetsBanner } from "../../components/host/UnmatchedAssets";
@@ -33,14 +32,10 @@ import {
   RESERVATIONS_DEFAULT_PAGE,
   useReservations,
 } from "@/lib/api/queries/reservations";
-import { useRouteParams } from "@/lib/router";
-import { appPaths } from "@/lib/router";
+import { appPaths, buildPath, useRouteParams } from "@/lib/router";
 import { validateAssetShotCoverage } from "@/lib/validations/shots";
-import {
-  submitInspectionPhotos,
-  type CapturedApartmentShot,
-} from "@/lib/api/submitPhotoProofs";
 import { addClientId } from "@/lib/helpers/uuid";
+import type { ReservationRow } from "@/types/component.types";
 
 export default function IndividualApartmentPage() {
   const { t } = useTranslation("general");
@@ -50,12 +45,9 @@ export default function IndividualApartmentPage() {
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isShotStudioOpen, setIsShotStudioOpen] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState<any | null>(
-    null
-  );
-  const [isInspectionModalOpen, setIsInspectionModalOpen] = useState(false);
 
   const { id } = useRouteParams(appPaths.hostApartment) as { id: string };
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // --- QUERIES ---
@@ -140,34 +132,6 @@ export default function IndividualApartmentPage() {
     },
   });
 
-  const submitInspectionMutation = useMutation({
-    mutationFn: async (completedShots: CapturedApartmentShot[]) => {
-      if (!id || !selectedReservation?.id) {
-        throw new Error(t("apartmentPage.errors.missingInspectionDetails"));
-      }
-      return submitInspectionPhotos({
-        apartmentId: id,
-        reservationId: selectedReservation.id,
-        shots: completedShots,
-      });
-    },
-    onSuccess: () => {
-      if (id) {
-        queryClient.invalidateQueries({
-          queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, id],
-        });
-      }
-      toast.success(t("apartmentPage.toast.submitInspectionSuccess"));
-      handleCloseInspectionGuide();
-    },
-    onError: (error: any) => {
-      console.error("Failed to submit inspection photos:", error);
-      toast.error(
-        error?.message || t("apartmentPage.errors.submitInspectionFailed")
-      );
-    },
-  });
-
   // --- COMPUTED VALUES ---
 
   const coverageSummary = useMemo(
@@ -189,14 +153,13 @@ export default function IndividualApartmentPage() {
 
   // --- HANDLERS ---
 
-  const handleOpenInspectionGuide = (reservation: any) => {
-    setSelectedReservation(reservation);
-    setIsInspectionModalOpen(true);
-  };
-
-  const handleCloseInspectionGuide = () => {
-    setIsInspectionModalOpen(false);
-    setSelectedReservation(null);
+  const handleTakeProofs = (reservation: ReservationRow) => {
+    navigate(
+      buildPath(appPaths.inspectionGuide, {
+        apartmentId: id,
+        reservationId: reservation.id,
+      }),
+    );
   };
 
   const handleFormSuccess = () => {
@@ -285,7 +248,7 @@ export default function IndividualApartmentPage() {
         <ReservationsTable
           apartmentId={id}
           onOpenCreateReservation={() => setIsDrawerOpen(true)}
-          onTakeProofs={handleOpenInspectionGuide}
+          onTakeProofs={handleTakeProofs}
         />
       ) : (
         <ApartmentAssetsManager
@@ -336,31 +299,6 @@ export default function IndividualApartmentPage() {
         />
       )}
 
-      {/* Inspection Shot Guide Modal */}
-      {isInspectionModalOpen && selectedReservation && (
-        <Modal
-          isOpen={isInspectionModalOpen}
-          onClose={handleCloseInspectionGuide}
-          title={t("apartmentPage.modal.inspectionTitle")}
-          subtitle={
-            <span className="hidden sm:inline">
-              {t("apartmentPage.modal.reservationFor", {
-                guestName: selectedReservation.guestName,
-              })}
-            </span>
-          }
-          size="xl"
-          bodyClassName="px-4 py-2"
-        >
-          <ApartmentShotGuide
-            initialShots={shots}
-            isSubmitting={submitInspectionMutation.isPending}
-            onSubmit={(completedShots) =>
-              submitInspectionMutation.mutate(completedShots)
-            }
-          />
-        </Modal>
-      )}
     </PageLayout>
   );
 }

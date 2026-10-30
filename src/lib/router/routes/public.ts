@@ -46,6 +46,25 @@ export const appRoutes: readonly RouteNode[] = [
     handle: { crumb: "guest:inspectionIntroduction.title" },
   },
   {
+    // D2/D8: TOP LEVEL, not under the `host` section. The section carries
+    // `requires: "canOpenHost"` as a rule every child inherits, so a guide page
+    // nested there could only ever be host-only without restructuring the section.
+    // At top level the route owns its own rule, and the future capability guard
+    // (the host-issued `?openFor=` identifier) replaces exactly this line.
+    path: "inspection-guide/:apartmentId/:reservationId",
+    requires: "canOpenHost",
+    params: { apartmentId: "uuid", reservationId: "uuid" },
+    page: () => import("@/pages/InspectionGuidePage"),
+    // Both reads are declared from URL params alone — which is the whole reason
+    // D2 keeps `apartmentId` in the pattern. Without it the shots request could not
+    // start until the reservation resolved, serialising the cold load.
+    data: [
+      { resource: "reservation", params: (params) => ({ id: String(params.reservationId) }) },
+      { resource: "shots", params: (params) => ({ apartmentId: String(params.apartmentId) }) },
+    ],
+    handle: { crumb: "inspectionGuidePage.title" },
+  },
+  {
     path: "*",
     requires: "public",
     page: () => import("@/components/router/NotFoundPage"),

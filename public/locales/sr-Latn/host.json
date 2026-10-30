@@ -161,6 +161,76 @@
       "altCheckOutFuture": "Alternativno odjavljivanje mora biti u budućnosti",
       "altCheckOutAfterAltCheckIn": "Alternativno odjavljivanje mora biti nakon alternativnog prijavljivanja",
       "checkInFuture": "Prijavljivanje mora biti u budućnosti"
+    },
+    "notAvailable": "—",
+    "loading": "Učitavanje rezervacije…",
+    "backToApartment": "Povratak u apartman",
+    "subtitle": "Prijava {{checkIn}}",
+    "guest": {
+      "title": "Gost",
+      "name": "Ime gosta",
+      "email": "E-pošta gosta"
+    },
+    "time": {
+      "title": "Vreme",
+      "checkIn": "Prijava",
+      "checkOut": "Odjava",
+      "alternativeCheckIn": "Alternativno prijavljivanje",
+      "alternativeCheckOut": "Alternativa <lit/odjavljivanje> Alternativno <lit/odjavljivanje> datumi",
+      "noAlternative": "Sačuvaj",
+      "editAlternatives": "Edit alternative dates",
+      "save": "Save",
+      "saving": "Čuvanje…",
+      "cancel": "Otkaži",
+      "toast": {
+        "saveSuccess": "Ažurirani alternativni datumi",
+        "saveError": "Nije moguće ažurirati alternativne datume. Pokušajte ponovo."
+      }
+    },
+    "proof": {
+      "title": "Dokaz",
+      "takeProofs": "Snimite dokaze fotografija",
+      "alreadySubmitted": "Probe fotografija su već poslate za ovu rezervaciju.",
+      "tooEarly": "Prozor za proveru se otvara {{windowHours}}h pre prijave (za oko {{hoursUntilWindow}}h).",
+      "expired": "Prozor za proveru je zatvoren. Foto dokazi se više ne mogu slati.",
+      "notStarted": "Ova rezervacija nema datum prijave, tako da se prozor za proveru ne može izračunati.",
+      "showPhotos": "Prikaži poslate fotografije",
+      "hidePhotos": "Sakrij poslate fotografije",
+      "photosLoading": "Učitavanje fotografija…",
+      "photosError": "Nije moguće učitati fotografije za ovu rezervaciju.",
+      "photosEmpty": "Još uvek nije otpremljena nijedna fotografija za ovu rezervaciju."
+    },
+    "other": {
+      "title": "Ostalo",
+      "platformId": "ID rezervacije platforme",
+      "createdAt": "Kreirano",
+      "proofWindow": "Prozor za proveru",
+      "proofWindowValue": "{{hours}}h pre prijave"
+    },
+    "notFound": {
+      "title": "Rezervacija nije pronađena",
+      "subtitle": "Ova rezervacija ne postoji, ili ne pripada nekom od vaših apartmana."
+    }
+  },
+  "inspectionGuidePage": {
+    "title": "Vodič za inspekciju",
+    "subtitle": "Probe fotografija za {{guestName}}",
+    "loading": "Učitavanje vodiča…",
+    "backToReservation": "Nazad na rezervaciju",
+    "notFound": {
+      "title": "Rezervacija nije pronađena",
+      "subtitle": "Ova rezervacija ne postoji, ili ne pripada nekom od vaših apartmana."
+    },
+    "unavailable": {
+      "title": "Provere se trenutno ne mogu uzeti",
+      "alreadySubmitted": "Probe fotografija su već poslate za ovu rezervaciju. Možete ih pogledati na stranici za rezervacije.",
+      "expired": "Prozor za proveru je zatvoren. Foto dokazi se više ne mogu slati.",
+      "notStarted": "Ova rezervacija nema datum prijave, tako da se prozor za proveru ne može izračunati.",
+      "tooEarly": "Prozor za proveru još nije otvoren. Vrati se bliže da se prijaviš."
+    },
+    "toast": {
+      "submitSuccess": "Dostavljeni dokazi fotografija",
+      "submitError": "Nije moguće poslati dokaze fotografija. Pokušajte ponovo."
     }
   }
 }
