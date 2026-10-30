@@ -28,7 +28,8 @@
       "createInspection": "Erstellen Sie einen neuen Link zur Gästebesichtigung",
       "copyMessage": "Gastnachricht für Airbnb kopieren",
       "delete": "Reservierung löschen",
-      "cannotDelete": "Bereits begonnene Reservierungen können nicht gelöscht werden"
+      "cannotDelete": "Bereits begonnene Reservierungen können nicht gelöscht werden",
+      "notStarted": "Diese Reservierung hat kein Check-in-Datum, daher kann das Nachweisfenster nicht berechnet werden"
     },
     "confirm": {
       "createMessage": "Gästebesichtigung erstellen?",
@@ -144,6 +145,22 @@
     "toast": {
       "success": "Reservierung erfolgreich erstellt!",
       "error": "Beim Erstellen der Reservierung ist ein Fehler aufgetreten."
+    }
+  },
+  "reservationActionsMenu": {
+    "triggerTitle": "Reservierungsaktionen",
+    "takeProofs": "Fotobeweise erstellen",
+    "createInspection": "Link zur Gästebesichtigung erstellen",
+    "copyGuestMessage": "Gastnachricht kopieren",
+    "delete": "Reservierung löschen"
+  },
+  "reservationPage": {
+    "title": "Reservierung",
+    "validation": {
+      "altCheckInFuture": "Der alternative Check-in muss in der Zukunft liegen",
+      "altCheckOutFuture": "Der alternative Check-out muss in der Zukunft liegen",
+      "altCheckOutAfterAltCheckIn": "Der alternative Check-out muss nach dem alternativen Check-in erfolgen",
+      "checkInFuture": "Der Check-in muss in erfolgen Zukunft"
     }
   }
 }

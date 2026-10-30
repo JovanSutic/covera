@@ -19,6 +19,12 @@ export interface DataTableProps<T> {
   isLoading?: boolean;
   emptyMessage?: React.ReactNode;
   pagination?: PaginationProps;
+  /**
+   * D14: optional and additive. When given, a click anywhere in a row that is not
+   * inside an element carrying `data-row-click-stop` calls this. The three existing
+   * callers pass nothing and are untouched.
+   */
+  onRowClick?: (row: T) => void;
 }
 export interface TabItem {
   id: string;

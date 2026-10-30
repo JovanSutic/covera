@@ -14,6 +14,7 @@ export function DataTable<T>({
   emptyMessage,
   pagination,
   isRowDisabled,
+  onRowClick,
 }: ExtendedDataTableProps<T>) {
   const { t } = useTranslation("general");
 
@@ -75,10 +76,31 @@ export function DataTable<T>({
                 <tr
                   key={rowIdx}
                   aria-disabled={disabled}
+                  onClick={
+                    onRowClick && !disabled
+                      ? (event) => {
+                          // D14: an action inside the row (the kebab, its menu, a
+                          // confirm button) must not ALSO navigate. It opts out by
+                          // putting `data-row-click-stop` on its container, which is
+                          // narrower than stopPropagation on every interactive child
+                          // — a cell that forgets it degrades to "the row navigates",
+                          // the pre-existing behaviour, rather than to a dead button.
+                          if (
+                            event.target instanceof Element &&
+                            event.target.closest("[data-row-click-stop]")
+                          ) {
+                            return;
+                          }
+                          onRowClick(row);
+                        }
+                      : undefined
+                  }
                   className={`transition-colors ${
                     disabled
                       ? "opacity-50 bg-gray-50/50 dark:bg-gray-800/30 pointer-events-none select-none cursor-not-allowed"
-                      : "hover:bg-gray-50/70 dark:hover:bg-gray-800/40"
+                      : `hover:bg-gray-50/70 dark:hover:bg-gray-800/40${
+                          onRowClick ? " cursor-pointer" : ""
+                        }`
                   }`}
                 >
                   {columns.map((column, colIdx) => {

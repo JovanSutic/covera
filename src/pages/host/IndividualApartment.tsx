@@ -16,7 +16,7 @@ import Drawer from "@/components/Drawer";
 import { Modal } from "@/components/Modal";
 import { ApartmentOverviewHeader } from "@/components/host/ApartmentHeader";
 import { ApartmentAssetsManager } from "@/components/host/ApartmentAssetsManager";
-import { ApartmentReservationsManager } from "@/components/host/ReservationsSection";
+import { ReservationsTable } from "@/components/host/ReservationsTable";
 import { ShotStudioModal } from "@/components/host/ShotStudioModal";
 import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
 import CreateAssetForm from "@/components/forms/CreateAssetForm";
@@ -282,10 +282,10 @@ export default function IndividualApartmentPage() {
 
       {/* Tab Views */}
       {activeTab === "reservations" ? (
-        <ApartmentReservationsManager
+        <ReservationsTable
           apartmentId={id}
           onOpenCreateReservation={() => setIsDrawerOpen(true)}
-          onSelectReservation={handleOpenInspectionGuide}
+          onTakeProofs={handleOpenInspectionGuide}
         />
       ) : (
         <ApartmentAssetsManager

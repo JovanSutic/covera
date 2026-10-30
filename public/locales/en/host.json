@@ -28,13 +28,30 @@
       "createInspection": "Generate new guest inspection link",
       "copyMessage": "Copy guest message for Airbnb",
       "delete": "Delete reservation",
-      "cannotDelete": "Cannot delete reservations that have already started"
+      "cannotDelete": "Cannot delete reservations that have already started",
+      "notStarted": "This reservation has no check-in date, so the proof window cannot be calculated"
     },
     "confirm": {
       "createMessage": "Create guest inspection?",
       "createLabel": "Create",
       "deleteMessage": "Delete reservation?",
       "deleteLabel": "Delete"
+    }
+  },
+  "reservationActionsMenu": {
+    "triggerTitle": "Reservation actions",
+    "takeProofs": "Take photo proofs",
+    "createInspection": "Create guest inspection link",
+    "copyGuestMessage": "Copy guest message",
+    "delete": "Delete reservation"
+  },
+  "reservationPage": {
+    "title": "Reservation",
+    "validation": {
+      "altCheckInFuture": "The alternative check-in must be in the future",
+      "altCheckOutFuture": "The alternative check-out must be in the future",
+      "altCheckOutAfterAltCheckIn": "The alternative check-out must be after the alternative check-in",
+      "checkInFuture": "Check-in must be in the future"
     }
   },
   "apartmentReservationsManager": {

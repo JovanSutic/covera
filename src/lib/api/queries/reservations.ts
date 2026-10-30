@@ -15,7 +15,7 @@ export interface ReservationsParams {
 }
 
 /**
- * §4: this key reproduces `ReservationsSection`'s literal EXACTLY — same element
+ * §4: this key reproduces `ReservationsTable`'s literal EXACTLY — same element
  * count and order, including the trailing "asc". The request below sends
  * `order: "desc"`; the key's "asc" is pre-existing (see Noticed) and is preserved
  * because changing it would change cache identity and invalidate nothing.

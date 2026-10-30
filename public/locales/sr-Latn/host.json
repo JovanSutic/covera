@@ -28,7 +28,8 @@
       "createInspection": "Generiši novu vezu za inspekciju gostiju",
       "copyMessage": "Kopiraj poruku gosta za Airbnb",
       "delete": "Izbriši rezervaciju",
-      "cannotDelete": "Ne možete izbrisati rezervacije koje su već započete"
+      "cannotDelete": "Ne možete izbrisati rezervacije koje su već započete",
+      "notStarted": "Ova rezervacija nema datum prijave, tako da se prozor za proveru ne može izračunati"
     },
     "confirm": {
       "createMessage": "Kreirati inspekciju gosta?",
@@ -144,6 +145,22 @@
     "toast": {
       "success": "Rezervacija je uspešno napravljena!",
       "error": "Došlo je do greške pri kreiranju rezervacije."
+    }
+  },
+  "reservationActionsMenu": {
+    "triggerTitle": "Radnje rezervacije",
+    "takeProofs": "Snimite dokaze fotografija",
+    "createInspection": "Kreirajte vezu za inspekciju gostiju",
+    "copyGuestMessage": "Kopirajte poruku gosta",
+    "delete": "Izbriši rezervaciju"
+  },
+  "reservationPage": {
+    "title": "Rezervacija",
+    "validation": {
+      "altCheckInFuture": "Alternativno prijavljivanje mora biti u budućnosti",
+      "altCheckOutFuture": "Alternativno odjavljivanje mora biti u budućnosti",
+      "altCheckOutAfterAltCheckIn": "Alternativno odjavljivanje mora biti nakon alternativnog prijavljivanja",
+      "checkInFuture": "Prijavljivanje mora biti u budućnosti"
     }
   }
 }

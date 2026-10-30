@@ -28,7 +28,8 @@
       "createInspection": "Yeni misafir inceleme bağlantısı oluştur",
       "copyMessage": "Airbnb için misafir mesajını kopyala",
       "delete": "Rezervasyonu sil",
-      "cannotDelete": "Zaten başlamış olan rezervasyonlar silinemez"
+      "cannotDelete": "Zaten başlamış olan rezervasyonlar silinemez",
+      "notStarted": "Bu rezervasyonun giriş tarihi yok, dolayısıyla prova penceresi hesaplanamıyor"
     },
     "confirm": {
       "createMessage": "Konuk incelemesi oluşturulsun mu?",
@@ -144,6 +145,22 @@
     "toast": {
       "success": "Rezervasyon başarıyla oluşturuldu!",
       "error": "Rezervasyon oluşturulurken bir hata oluştu."
+    }
+  },
+  "reservationActionsMenu": {
+    "triggerTitle": "Rezervasyon işlemleri",
+    "takeProofs": "Fotoğraf provaları alın",
+    "createInspection": "Konuk inceleme bağlantısı oluşturun",
+    "copyGuestMessage": "Konuk mesajını kopyalayın",
+    "delete": "Rezervasyonu silin"
+  },
+  "reservationPage": {
+    "title": "Rezervasyon",
+    "validation": {
+      "altCheckInFuture": "Alternatif giriş gelecekte olmalıdır",
+      "altCheckOutFuture": "Alternatif çıkış gelecekte olmalıdır",
+      "altCheckOutAfterAltCheckIn": "Alternatif çıkış, alternatif girişten sonra olmalıdır",
+      "checkInFuture": "Giriş gelecekte olmalı"
     }
   }
 }
