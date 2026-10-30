@@ -93,4 +93,9 @@ export const appPaths = definePaths({
     requires: ["canOpenHost"],
     params: { id: "uuid" },
   },
+  hostReservation: {
+    pattern: "/host/apartments/:id/reservations/:reservationId",
+    requires: ["canOpenHost"],
+    params: { id: "uuid", reservationId: "uuid" },
+  },
 } as const);
