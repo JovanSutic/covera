@@ -25,8 +25,12 @@ Spec: [../reservation-table-extraction.md](../reservation-table-extraction.md) �
 - Inside phase 2, step 2.1 precedes its two consumers (2.2, 2.3) — it is what puts the field they
   read on the hook.
 - Inside phase 3, step 3.3 restores the create affordance step 3.1 removes from the table, so **3.3
-  must not be skipped or reordered before 3.1** or the screen loses its only way to create a
-  reservation. The tree compiles at every boundary regardless; the gate is what proves it.
+  must not be skipped**, or the screen loses its only way to create a reservation. Note that steps
+  3.1 and 3.2 leave the tree **not compiling**: 3.1 drops `onOpenCreateReservation` from the table's
+  props while `IndividualApartment.tsx` still passes it, so `tsc -b` reports TS2322 until 3.3 lands.
+  That is expected — the two steps are one atomic change split for readability, and a step's
+  `Verify` in between is not the thing that publishes them. Run the gate at the **phase** boundary,
+  not between 3.1 and 3.3; a red `tsc` in that window is the plan working as written, not a halt.
 - **No router file is touched.** No path, route entry, or lazy import changes.
 - **No generated file is touched.** No `api:generate` run, no hard stop.
 
