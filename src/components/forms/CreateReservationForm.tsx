@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +12,7 @@ import Button from "@/components/formItems/Button";
 import { withAuth } from "@/lib/api/api";
 import { postReservations } from "@/api/generated/requests/services.gen";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { appPaths, buildPath } from "@/lib/router";
 
 // Formats current local date-time into 'YYYY-MM-THH:mm' required by datetime-local min attribute
 const getMinDatetimeLocal = () => {
@@ -135,6 +137,7 @@ export default function CreateReservationForm({
   const selectedAltCheckIn = watch("alternativeCheckInDatetime");
 
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (formData: CreateReservationFormValues) => {
@@ -174,15 +177,28 @@ export default function CreateReservationForm({
       });
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (created) => {
       queryClient.invalidateQueries({
         queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, apartmentId],
       });
 
-      toast.success(t("createReservationForm.toast.success"));
+      // Prep §2: no success toast on this path — the host is taken to the new
+      // reservation instead, which is a better confirmation than a snackbar and
+      // saves the trip through the table.
       reset(DEFAULT_FORM_VALUES);
       setShowAlternativeDates(false);
-      if (onSuccess) onSuccess();
+      onSuccess();
+
+      // The drawer this form lives in is the composing page's state, so it is told
+      // before we leave; otherwise it stays open behind the page we navigate to.
+      if (created?.id) {
+        navigate(
+          buildPath(appPaths.hostReservation, {
+            id: apartmentId,
+            reservationId: created.id,
+          }),
+        );
+      }
     },
     onError: (error: any) => {
       console.error("Mutation failed:", error);

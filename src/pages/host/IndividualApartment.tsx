@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -33,10 +32,9 @@ import {
   RESERVATIONS_DEFAULT_PAGE,
   useReservations,
 } from "@/lib/api/queries/reservations";
-import { appPaths, buildPath, useRouteParams } from "@/lib/router";
+import { appPaths, useRouteParams } from "@/lib/router";
 import { validateAssetShotCoverage } from "@/lib/validations/shots";
 import { addClientId } from "@/lib/helpers/uuid";
-import type { ReservationRow } from "@/types/component.types";
 
 export default function IndividualApartmentPage() {
   const { t } = useTranslation("general");
@@ -49,7 +47,6 @@ export default function IndividualApartmentPage() {
   const [isShotStudioOpen, setIsShotStudioOpen] = useState(false);
 
   const { id } = useRouteParams(appPaths.hostApartment) as { id: string };
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // --- QUERIES ---
@@ -155,15 +152,6 @@ export default function IndividualApartmentPage() {
 
   // --- HANDLERS ---
 
-  const handleTakeProofs = (reservation: ReservationRow) => {
-    navigate(
-      buildPath(appPaths.inspectionGuide, {
-        apartmentId: id,
-        reservationId: reservation.id,
-      }),
-    );
-  };
-
   const handleFormSuccess = () => {
     setIsDrawerOpen(false);
     if (!id) return;
@@ -266,7 +254,7 @@ export default function IndividualApartmentPage() {
             </button>
           </div>
 
-          <ReservationsTable apartmentId={id} onTakeProofs={handleTakeProofs} />
+          <ReservationsTable apartmentId={id} />
         </div>
       ) : (
         <ApartmentAssetsManager
