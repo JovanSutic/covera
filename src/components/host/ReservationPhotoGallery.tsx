@@ -5,10 +5,13 @@ import Typography from "@/components/Typography";
 
 /**
  * D11: the photos are rendered by the SAME component the guest sees
- * (`RoomPhotoItem`), grouped by room, unmodified. Only the flag affordance
- * differs: `isFlagDisabled` is passed `true` because flagging an issue is the
- * guest's action, and the host's copy of this view is a record of what the guest
- * submitted.
+ * (`RoomPhotoItem`), grouped by room — in `mode="host"`, which drops the flag
+ * affordance and the "verify these items" prompt. That is prep §4's ask: flagging an
+ * issue is the guest's action, and the host's copy of this view is a record of what
+ * the guest submitted, not a form they fill in.
+ *
+ * There is no `isFlagDisabled` here any more: the prop is about a control host mode
+ * does not render, so passing it would be a claim with no reader.
  */
 export function ReservationPhotoGallery({
   shots,
@@ -36,7 +39,7 @@ export function ReservationPhotoGallery({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {roomShots.map((shot) => (
-              <RoomPhotoItem key={shot.id} shot={shot} isFlagDisabled />
+              <RoomPhotoItem key={shot.id} shot={shot} mode="host" />
             ))}
           </div>
         </div>

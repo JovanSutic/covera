@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 import Input from "@/components/formItems/Input";
 import Button from "@/components/formItems/Button";
-import Typography from "@/components/Typography";
+import { SectionCard } from "@/components/shared/SectionCard";
 import { patchReservationsById } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
@@ -159,11 +159,10 @@ export function ReservationTimeSection({
   );
 
   return (
-    <section className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 bg-white dark:bg-gray-900">
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <Typography type="h3">{t("reservationPage.time.title")}</Typography>
-
-        {canEdit && !isEditing && (
+    <SectionCard
+      title={t("reservationPage.time.title")}
+      action={
+        canEdit && !isEditing ? (
           <button
             type="button"
             onClick={() => setIsEditing(true)}
@@ -171,9 +170,9 @@ export function ReservationTimeSection({
           >
             {t("reservationPage.time.editAlternatives")}
           </button>
-        )}
-      </div>
-
+        ) : undefined
+      }
+    >
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {fieldRow(
           "reservationPage.time.checkIn",
@@ -250,6 +249,6 @@ export function ReservationTimeSection({
           )}
         </dl>
       )}
-    </section>
+    </SectionCard>
   );
 }

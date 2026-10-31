@@ -127,6 +127,7 @@ export default function ReservationPage() {
 
         <ReservationProofSection
           reservation={reservation}
+          window={window}
           onTakeProofs={() =>
             navigate(
               buildPath(appPaths.inspectionGuide, {
