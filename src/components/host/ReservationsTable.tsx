@@ -13,7 +13,6 @@ import { ReservationActionsMenu } from "./ReservationActionsMenu";
 
 interface ReservationsTableProps {
   apartmentId: string;
-  onTakeProofs?: (reservation: ReservationRow) => void;
 }
 
 const STATUS_BADGE_CLASSES: Record<string, string> = {
@@ -38,10 +37,7 @@ const STATUS_BADGE_CLASSES: Record<string, string> = {
  * D15: the read is the same `useReservations` call the route prefetches, so this is a cache
  * read, not a second request.
  */
-export function ReservationsTable({
-  apartmentId,
-  onTakeProofs,
-}: ReservationsTableProps) {
+export function ReservationsTable({ apartmentId }: ReservationsTableProps) {
   const { t } = useTranslation("host");
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -141,18 +137,14 @@ export function ReservationsTable({
         },
       },
       {
-        header: "",
+        header: t("apartmentReservationsManager.columns.actions"),
         className: "text-right w-20",
         accessorKey: (row) => (
-          <ReservationActionsMenu
-            reservation={row}
-            apartmentId={apartmentId}
-            onTakeProofs={(reservation) => onTakeProofs?.(reservation)}
-          />
+          <ReservationActionsMenu reservation={row} apartmentId={apartmentId} />
         ),
       },
     ],
-    [t, formatDate, apartmentId, onTakeProofs],
+    [t, formatDate, apartmentId],
   );
 
   return (

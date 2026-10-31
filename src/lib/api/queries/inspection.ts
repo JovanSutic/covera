@@ -31,14 +31,24 @@ export async function fetchInspection(id: string) {
   return response.data;
 }
 
-export function useInspection(id: string | undefined) {
+/**
+ * `enabled` lets the caller hold the request (D8). `ReservationProofSection` reads
+ * eager-and-conditional: the photos are wanted as soon as the page opens, but only
+ * when the reservation actually HAS an inspection.
+ *
+ * It is not cosmetic. Without it a caller passing `undefined` for `id` gets
+ * `isLoading: true` forever — `enabled: Boolean(undefined)` is false, so the query
+ * never runs and never resolves, and a section reading `isLoading` would sit in its
+ * loading branch for the life of the page. The signature mirrors `useReservation`'s.
+ */
+export function useInspection(id: string | undefined, enabled = true) {
   return useQuery({
     queryKey: inspectionQueryKey(id ?? ""),
     queryFn: () => {
       if (!id) throw new Error("Inspection ID is required");
       return fetchInspection(id);
     },
-    enabled: Boolean(id),
+    enabled: Boolean(id) && enabled,
     staleTime: PREFETCH_STALE_TIME_MS,
   });
 }

@@ -3,10 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
-import Typography from "@/components/Typography";
-import { ReservationHeaderActions } from "@/components/host/ReservationHeaderActions";
+import { ReservationHeader } from "@/components/host/ReservationHeader";
+import { ReservationActionsBar } from "@/components/host/ReservationActionsBar";
 import { ReservationTimeSection } from "@/components/host/ReservationTimeSection";
 import { ReservationProofSection } from "@/components/host/ReservationProofSection";
+import { SectionCard } from "@/components/shared/SectionCard";
+import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useReservation } from "@/lib/api/queries/reservation";
 import { getProofWindowState } from "@/lib/helpers/proofWindow";
 import { appPaths, buildPath, useRouteParams } from "@/lib/router";
@@ -22,17 +24,13 @@ export default function ReservationPage() {
 
   const { data: reservation, isLoading, isError } = useReservation(reservationId);
 
-  const apartmentPath = buildPath(appPaths.hostApartment, { id });
+  // D15: matched from the section's already-prefetched list. No new request — the
+  // `host` route group declares `apartmentsHost`, and prefetchCoverage credits the
+  // chain, so this adds no gap.
+  const { data: apartments } = useApartmentsHost();
+  const apartment = apartments?.find((entry) => entry.id === reservation?.apartmentId);
 
-  const backToApartment = (
-    <button
-      type="button"
-      onClick={() => navigate(apartmentPath)}
-      className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer transition-colors"
-    >
-      {t("reservationPage.backToApartment")}
-    </button>
-  );
+  const apartmentPath = buildPath(appPaths.hostApartment, { id });
 
   if (isLoading) {
     return (
@@ -55,7 +53,6 @@ export default function ReservationPage() {
           title={t("reservationPage.notFound.title")}
           subtitle={t("reservationPage.notFound.subtitle")}
         />
-        {backToApartment}
       </PageLayout>
     );
   }
@@ -68,50 +65,38 @@ export default function ReservationPage() {
 
   return (
     <PageLayout size="lg">
-      <PageTitle
-        title={reservation.guestName}
-        subtitle={t("reservationPage.subtitle", {
-          checkIn: new Date(reservation.checkInDatetime).toLocaleDateString(),
-        })}
-      />
+      {/* Prep §3. The back link, the guest's name and email, the check-in and the
+          apartment's name and address are all in here, which is why there is no
+          `PageTitle` and no Guest section any more (D16) — `PageTitle` would render
+          the guest name a second time, and a guest opening a shared link has no
+          other way to know which apartment the reservation is for. */}
+      <div className="space-y-6">
+        <ReservationHeader reservation={reservation} apartment={apartment} />
 
-      <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
-        {backToApartment}
-        <ReservationHeaderActions
+        {/* D17: a toolbar above the sections, not a SectionCard. Prep §3 puts the
+            general actions before every section, and a heading on a row of buttons
+            would make the first thing on the page read as content. */}
+        <ReservationActionsBar
           reservation={reservation}
           apartmentId={id}
+          inspectionId={reservation.inspection?.id ?? null}
           // D17: the page this action is standing on is gone once the reservation
           // is, so the apartment is the only destination that still exists.
           onDeleted={() => navigate(apartmentPath)}
         />
-      </div>
 
-      <div className="space-y-6">
-        <section className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 bg-white dark:bg-gray-900">
-          <Typography type="h3" className="mb-4">
-            {t("reservationPage.guest.title")}
-          </Typography>
-
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                {t("reservationPage.guest.name")}
-              </dt>
-              <dd className="text-sm text-gray-900 dark:text-gray-100 mt-1">
-                {reservation.guestName}
-              </dd>
-            </div>
-
-            <div>
-              <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                {t("reservationPage.guest.email")}
-              </dt>
-              <dd className="text-sm text-gray-900 dark:text-gray-100 mt-1">
-                {reservation.guestEmail || t("reservationPage.notAvailable")}
-              </dd>
-            </div>
-          </dl>
-        </section>
+        <ReservationProofSection
+          reservation={reservation}
+          window={window}
+          onTakeProofs={() =>
+            navigate(
+              buildPath(appPaths.inspectionGuide, {
+                apartmentId: id,
+                reservationId,
+              }),
+            )
+          }
+        />
 
         <ReservationTimeSection
           reservationId={reservation.id}
@@ -125,23 +110,7 @@ export default function ReservationPage() {
           canEdit={window.checkInTime !== null && window.checkInTime > now}
         />
 
-        <ReservationProofSection
-          reservation={reservation}
-          onTakeProofs={() =>
-            navigate(
-              buildPath(appPaths.inspectionGuide, {
-                apartmentId: id,
-                reservationId,
-              }),
-            )
-          }
-        />
-
-        <section className="border border-gray-200 dark:border-gray-800 rounded-xl p-5 bg-white dark:bg-gray-900">
-          <Typography type="h3" className="mb-4">
-            {t("reservationPage.other.title")}
-          </Typography>
-
+        <SectionCard title={t("reservationPage.other.title")}>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <dt className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
@@ -173,7 +142,7 @@ export default function ReservationPage() {
               </dd>
             </div>
           </dl>
-        </section>
+        </SectionCard>
       </div>
     </PageLayout>
   );

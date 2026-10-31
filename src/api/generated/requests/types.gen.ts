@@ -121,6 +121,57 @@ export type VisitLogEvent = {
     userAgent: string;
 };
 
+export type ReservationPhotos = Array<ShotWithAssets>;
+
+export type ShotWithAssets = {
+    id: string;
+    apartmentId: string;
+    roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+    shotType: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+    title: string;
+    instructions: string;
+    createdAt: string;
+    updatedAt: string;
+    assets: Array<Asset>;
+    images: Array<{
+        id: string;
+        apartmentId: string;
+        shotId: string;
+        reservationId: string;
+        type: 'checkin_state' | 'damage';
+        storageKey: string;
+        uploadedAt: string;
+        status: 'active' | 'soft_deleted';
+        deletedAt: string | null;
+    }>;
+};
+
+export type Asset = {
+    id: string;
+    apartmentId: string;
+    name: string;
+    category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
+    roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+    description: string | null;
+    photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
+    approximateValueCents: number | null;
+    assetTypeId: string;
+    ageBracket: 'UNDER_1_YEAR' | 'ONE_TO_THREE_YEARS' | 'THREE_TO_FIVE_YEARS' | 'OVER_FIVE_YEARS' | null;
+    valueTier: 'BUDGET' | 'STANDARD' | 'PREMIUM' | 'LUXURY' | null;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    asset_type: AssetType;
+};
+
+export type AssetType = {
+    id: string;
+    code: string;
+    category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
+    createdAt: string;
+    updatedAt: string;
+};
+
 export type Reservation = {
     id: string;
     apartmentId: string;
@@ -178,32 +229,6 @@ export type CreateLocation = {
 };
 
 export type AssetsList = Array<Asset>;
-
-export type Asset = {
-    id: string;
-    apartmentId: string;
-    name: string;
-    category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
-    roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
-    description: string | null;
-    photoProofRequirement: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
-    approximateValueCents: number | null;
-    assetTypeId: string;
-    ageBracket: 'UNDER_1_YEAR' | 'ONE_TO_THREE_YEARS' | 'THREE_TO_FIVE_YEARS' | 'OVER_FIVE_YEARS' | null;
-    valueTier: 'BUDGET' | 'STANDARD' | 'PREMIUM' | 'LUXURY' | null;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-    asset_type: AssetType;
-};
-
-export type AssetType = {
-    id: string;
-    code: string;
-    category: 'ELECTRONICS' | 'APPLIANCES_LARGE' | 'APPLIANCES_SMALL' | 'FURNITURE' | 'STRUCTURAL_SURFACES' | 'BATH_PLUMBING_FIXTURES' | 'RUGS_CARPETS_TEXTILES' | 'LIGHTING_FIXTURES' | 'SAFETY_SECURITY' | 'ENTERTAINMENT_RECREATION' | 'DECOR_ART' | 'UTILITIES_INFRASTRUCTURE' | 'OUTDOOR_PATIO' | 'OTHER';
-    createdAt: string;
-    updatedAt: string;
-};
 
 export type CreateAsset = {
     apartmentId: string;
@@ -307,29 +332,6 @@ export type DetailedInspection = Inspection & {
         createdAt: string;
     } | null;
     flags?: Array<InspectionFlag>;
-};
-
-export type ShotWithAssets = {
-    id: string;
-    apartmentId: string;
-    roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
-    shotType: 'SWEEP_ONLY' | 'CLOSEUP' | 'FUNCTIONAL_ACTION';
-    title: string;
-    instructions: string;
-    createdAt: string;
-    updatedAt: string;
-    assets: Array<Asset>;
-    images: Array<{
-        id: string;
-        apartmentId: string;
-        shotId: string;
-        reservationId: string;
-        type: 'checkin_state' | 'damage';
-        storageKey: string;
-        uploadedAt: string;
-        status: 'active' | 'soft_deleted';
-        deletedAt: string | null;
-    }>;
 };
 
 export type PingInspectionResponse = {
@@ -1005,6 +1007,49 @@ export type PatchReservationsByIdResponses = {
 };
 
 export type PatchReservationsByIdResponse = PatchReservationsByIdResponses[keyof PatchReservationsByIdResponses];
+
+export type GetReservationsByIdPhotosData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/reservations/{id}/photos';
+};
+
+export type GetReservationsByIdPhotosErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * RESERVATION_NOT_FOUND: Reservation does not exist. APARTMENT_NOT_FOUND: Apartment does not exist.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetReservationsByIdPhotosError = GetReservationsByIdPhotosErrors[keyof GetReservationsByIdPhotosErrors];
+
+export type GetReservationsByIdPhotosResponses = {
+    /**
+     * The photo proofs submitted for this reservation
+     */
+    200: ReservationPhotos;
+};
+
+export type GetReservationsByIdPhotosResponse = GetReservationsByIdPhotosResponses[keyof GetReservationsByIdPhotosResponses];
 
 export type PostReservationsData = {
     body?: CreateReservation;

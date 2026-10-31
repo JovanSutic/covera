@@ -45,12 +45,13 @@ export const hostRoutes: SectionRoute = {
       path: "apartments/:id/reservations/:reservationId",
       params: { id: "uuid", reservationId: "uuid" },
       page: () => import("@/pages/host/ReservationPage"),
-      // The inspection read is declared but resolves to null (D10): the photos are
-      // loaded only when the host opens the control, and a declaration that returns
-      // null is how this registry says "not on this navigation" (registry.ts).
+      // The photo reads are declared but resolve to null (D10/D12): the photos are
+      // loaded only when the host opens the proof control, and a declaration that
+      // returns null is how this registry says "not on this navigation" (registry.ts).
       data: [
         { resource: "reservation", params: (params) => ({ id: String(params.reservationId) }) },
         { resource: "inspection", params: () => null },
+        { resource: "reservationPhotos", params: () => null },
       ],
       handle: { crumb: "reservationPage.title" },
     },

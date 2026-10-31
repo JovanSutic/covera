@@ -10,6 +10,7 @@ import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { getProofWindowState } from "@/lib/helpers/proofWindow";
 import type { ProofWindowSubject } from "@/lib/helpers/proofWindow";
+import { getReservationActionAvailability } from "@/lib/helpers/reservationActions";
 import { appPaths, buildPath } from "@/lib/router";
 
 /**
@@ -47,15 +48,21 @@ export function useReservationActions({
   const now = Date.now();
   const window = getProofWindowState(reservation, now);
 
+  // D10: the disable rules and the tooltip reason are the shared helper's, so the page's
+  // bar and the table's menu cannot drift. `now` is the same render-time value the window
+  // above was computed with (invariant 10) — this is not a second clock.
+  const rules = getReservationActionAvailability({
+    reservation,
+    inspectionId,
+    now,
+  });
+
   const hasInspection = Boolean(inspectionId);
 
-  // Deletion is allowed strictly before the effective check-in — the rule the
-  // inline cell had, now read off the helper's own effective value.
-  const isDeletable = window.checkInTime !== null && window.checkInTime > now;
-
-  // D4/D5: a reservation whose stay is over offers no actions. The answer is the helper's
-  // (D2), so the table's menu and the page's header compute it the same way and can never
-  // disagree — and neither re-derives it from a check-out date.
+  // Both stay on the hook's public surface because `ReservationHeaderActions.tsx` (on no
+  // route) still destructures them. They are now READ OFF the rule table rather than
+  // re-derived, so there is still exactly one definition of each rule.
+  const isDeletable = rules.delete.enabled;
   const isPast = window.isPast;
 
   const guestInspectionUrl = inspectionId
@@ -86,7 +93,7 @@ export function useReservationActions({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message || t("reservationActionsCell.toast.deleteError"),
+        error?.error?.message || t("reservationActionsCell.toast.deleteError"),
       );
     },
   });
@@ -107,7 +114,7 @@ export function useReservationActions({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message || t("reservationActionsCell.toast.createError"),
+        error?.error?.message || t("reservationActionsCell.toast.createError"),
       );
     },
   });
@@ -133,6 +140,7 @@ export function useReservationActions({
 
   return {
     window,
+    rules,
     hasInspection,
     isDeletable,
     isPast,

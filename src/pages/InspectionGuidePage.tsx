@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
 import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
+import { BackLink } from "@/components/shared/BackLink";
 import { useReservation } from "@/lib/api/queries/reservation";
 import { useShots } from "@/lib/api/queries/shots";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
@@ -67,6 +68,15 @@ export default function InspectionGuidePage() {
       queryClient.invalidateQueries({
         queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, apartmentId],
       });
+      // D28: the shots are read under this key, and the eager count phase 4 renders
+      // comes from it. Without this the host returns to a stale "no photos captured
+      // yet" — exactly the bug prep §4 asks to fix.
+      queryClient.invalidateQueries({
+        queryKey: [
+          ...QUERY_ACTIONS.INSPECTION_GET_BY_ID,
+          reservation?.inspection?.id ?? "",
+        ],
+      });
       toast.success(t("inspectionGuidePage.toast.submitSuccess"));
       // D17's destination: the reservation the proofs belong to, which now renders
       // the "already submitted" state and the photo control.
@@ -75,19 +85,17 @@ export default function InspectionGuidePage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message || t("inspectionGuidePage.toast.submitError"),
+        error?.error?.message || t("inspectionGuidePage.toast.submitError"),
       );
     },
   });
 
   const backToReservation = (
-    <button
-      type="button"
-      onClick={() => navigate(reservationPath)}
-      className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer transition-colors"
-    >
-      {t("inspectionGuidePage.backToReservation")}
-    </button>
+    <BackLink
+      to={appPaths.hostReservation}
+      params={{ id: apartmentId, reservationId }}
+      label={t("inspectionGuidePage.backToReservation")}
+    />
   );
 
   if (reservationLoading || shotsLoading) {
