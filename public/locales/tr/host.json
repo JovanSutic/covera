@@ -245,7 +245,12 @@
         "createInspection": "Dairenin varış durumunu kendilerinin doğrulayabilmesi için konuğa gönderilecek bir bağlantı oluşturur.",
         "delete": "Bu rezervasyonu siler. Onaylamanız istenecektir.",
         "hasInspection": "Bu rezervasyon için misafir inceleme bağlantısı zaten oluşturuldu.",
-        "hasInspectionPast": "Bu konaklama sona erdiğinden yeni bir misafir inceleme bağlantısı oluşturulamıyor."
+        "hasInspectionPast": "Bu konaklama sona erdiğinden yeni bir misafir inceleme bağlantısı oluşturulamıyor.",
+        "actionPast": "Bu konaklama zaten başladı, dolayısıyla bu işlem artık gerçekleştirilemiyor.",
+        "copyNotCovered": "Konuk mesajı yalnızca rezervasyon tamamlandıktan sonra kopyalanabilir.",
+        "noInspection": "Bu rezervasyon için henüz misafir inceleme bağlantısı yok.",
+        "noPhotoProof": "Konuk inceleme bağlantısı yalnızca bu rezervasyonun fotoğraflı kanıtı karşılandıktan sonra oluşturulabilir.",
+        "notCovered": "Misafir inceleme bağlantısı yalnızca rezervasyon tamamlandıktan sonra oluşturulabilir."
       }
     }
   },

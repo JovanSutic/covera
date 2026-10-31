@@ -245,7 +245,12 @@
         "createInspection": "Erstellt einen Link, der an den Gast gesendet wird, damit dieser den Ankunftsstatus des Apartments selbst überprüfen kann.",
         "delete": "Löscht diese Reservierung. Sie werden um eine Bestätigung gebeten.",
         "hasInspection": "Der Link zur Gästebesichtigung wurde für diese Reservierung bereits erstellt.",
-        "hasInspectionPast": "Dieser Aufenthalt ist beendet, daher kann kein neuer Gästebesichtigungslink erstellt werden."
+        "hasInspectionPast": "Dieser Aufenthalt ist beendet, daher kann kein neuer Gästebesichtigungslink erstellt werden.",
+        "actionPast": "Dieser Aufenthalt hat bereits begonnen, daher ist diese Aktion nicht mehr verfügbar.",
+        "copyNotCovered": "Die Gastnachricht kann erst kopiert werden, wenn die Reservierung gedeckt ist.",
+        "noInspection": "Für diese Reservierung gibt es noch keinen Link zur Gästebesichtigung.",
+        "noPhotoProof": "Der Link zur Gästekontrolle kann erst erstellt werden, wenn der Fotonachweis dieser Reservierung erfüllt ist.",
+        "notCovered": "Der Link zur Gästekontrolle kann erst erstellt werden, wenn die Reservierung gedeckt ist."
       }
     }
   },

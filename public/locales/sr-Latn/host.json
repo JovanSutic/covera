@@ -245,7 +245,12 @@
         "createInspection": "Veza za inspekciju gostiju je već kreirana za ovu rezervaciju.",
         "delete": "Deletes this reservation. You will be asked to confirm.",
         "hasInspection": "The guest inspection link has already been created for this reservation.",
-        "hasInspectionPast": "Ovaj boravak je završen, tako da se ne može kreirati nova veza za inspekciju gostiju."
+        "hasInspectionPast": "Ovaj boravak je završen, tako da se ne može kreirati nova veza za inspekciju gostiju.",
+        "actionPast": "Ovaj boravak je već počeo, tako da ova akcija više nije dostupna.",
+        "copyNotCovered": "Poruka gosta se može kopirati samo kada je rezervacija pokrivena.",
+        "noInspection": "Još uvek ne postoji veza za inspekciju gostiju za ovu rezervaciju.",
+        "noPhotoProof": "Link za inspekciju gosta može se kreirati samo kada se potvrdi foto dokaz ove rezervacije.",
+        "notCovered": "Link za inspekciju gostiju može se kreirati samo kada je rezervacija pokrivena."
       }
     }
   },

@@ -123,6 +123,11 @@ export interface PopoverContentProps extends React.HTMLAttributes<HTMLDivElement
   align?: "left" | "right" | "center";
 }
 
+/**
+ * Rendered through a portal on `document.body`, which is why it carries
+ * `data-row-click-stop`: inside a `DataTable` row, a click that lands here would otherwise
+ * bubble to the row and navigate it. See `DataTable`'s own D14 comment for the protocol.
+ */
 export function PopoverContent({
   children,
   className = "",
@@ -177,6 +182,17 @@ export function PopoverContent({
         top: `${coords.top}px`,
         left: `${coords.left}px`,
       }}
+      // Invariant 12, and the fix for prep §1. A popover inside a clickable row must not
+      // navigate that row. `DataTable` checks `event.target.closest(...)`, which walks the
+      // real DOM — so the opt-out has to be on the PORTAL, not on the component that
+      // renders the trigger. React bubbles this click through the React tree from
+      // `document.body` up to the `DataTable` row, and without this attribute that
+      // `closest()` call finds nothing and the row navigates.
+      //
+      // It is safe to put it here rather than at each call site: the attribute is inert
+      // everywhere except inside `DataTable`'s row handler, and a caller that wants the
+      // row to navigate can override it through `{...props}` below.
+      data-row-click-stop
       className={`z-9999 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-2xl p-4 ${className}`}
       {...props}
     >

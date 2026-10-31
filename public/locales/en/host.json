@@ -67,14 +67,19 @@
       "createInspection": "Create guest inspection link",
       "delete": "Delete reservation",
       "tooltip": {
+        "actionPast": "This stay has already started, so this action is no longer available.",
         "cannotDelete": "Reservations that have already started cannot be deleted.",
         "cannotDeletePast": "This stay is over, so it can no longer be deleted.",
         "copyGuestMessage": "Copies a ready-made message with the guest's inspection link, so you can paste it into your booking platform.",
         "copyMessagePast": "This stay is over, so the guest message is no longer available.",
+        "copyNotCovered": "The guest message can only be copied once the reservation is covered.",
         "createInspection": "Creates a link to send to the guest so they can verify the apartment's arrival state themselves.",
         "delete": "Deletes this reservation. You will be asked to confirm.",
         "hasInspection": "The guest inspection link has already been created for this reservation.",
-        "hasInspectionPast": "This stay is over, so a new guest inspection link cannot be created."
+        "hasInspectionPast": "This stay is over, so a new guest inspection link cannot be created.",
+        "noInspection": "There is no guest inspection link for this reservation yet.",
+        "noPhotoProof": "The guest inspection link can only be created once this reservation's photo proof is satisfied.",
+        "notCovered": "The guest inspection link can only be created once the reservation is covered."
       }
     },
     "guest": {

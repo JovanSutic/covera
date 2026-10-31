@@ -14,20 +14,21 @@ interface ReservationActionsMenuProps {
 
 /**
  * Prep §1. Each entry is ONE button: the icon and the label highlight together, an
- * enabled row shows the pointer, and a disabled one shows `cursor-not-allowed` and
- * no hover background. The previous version rendered a `<span>` label next to a
- * second clickable control inside a `px-3 py-2` row, so every row looked clickable
- * while only part of it was — and the icon appeared twice.
+ * enabled row shows the pointer, and a disabled one shows `cursor-not-allowed` and no
+ * hover background.
  *
- * The two removed entries are *take proofs* and *create guest inspection link*
- * (prep §1). Neither capability is lost: both are on the reservation page, which is
- * where the guest link is created with a confirmation step and where taking proofs
- * is the Proof section's own control. What the table keeps is the read-and-triage
- * pair: copy guest message, and delete.
+ * Prep §1's second symptom — clicking delete navigating to the reservation instead of
+ * deleting — was NOT the confirmation step, which `ConfirmButton` already provided. It
+ * was the popover's portal; `PopoverContent` now carries `data-row-click-stop` itself,
+ * and `ReservationActionsMenu.test.tsx` guards it.
  *
- * No `InfoTooltip` here. The trigger is a 16px icon with no room for a second one,
- * and D6a makes tooltips a desktop-only affordance that cannot be placed inside a
- * table cell without clipping.
+ * Prep §7's rule — no hide and show, only enable and disable — applies to this menu too
+ * (operator decision), so the copy row is always rendered. Both rows' reasons come from
+ * the shared rule table, which is what stops this menu and the page's bar disagreeing.
+ *
+ * No `InfoTooltip` here. The trigger is a 16px icon with no room for a second one, and
+ * the panel would be clipped inside a table cell; the rows use native `title`, which is
+ * always present rather than width-gated (invariant 11).
  */
 const ITEM_CLASSES =
   "w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent cursor-pointer transition-colors";
@@ -38,13 +39,7 @@ export function ReservationActionsMenu({
 }: ReservationActionsMenuProps) {
   const { t } = useTranslation("host");
 
-  const {
-    hasInspection,
-    isDeletable,
-    isPast,
-    guestInspectionUrl,
-    deleteMutation,
-  } = useReservationActions({
+  const { rules, guestInspectionUrl, deleteMutation } = useReservationActions({
     reservation,
     apartmentId,
     inspectionId: reservation.inspection?.id ?? null,
@@ -70,65 +65,56 @@ export function ReservationActionsMenu({
 
         <PopoverContent align="right">
           <div className="w-64 py-1">
-            {isPast ? (
-              // `PopoverTrigger` is the click target, not the button inside it, so a
-              // disabled button nested in one would still open the popover. A past
-              // stay renders the same row without the nested popover.
+            {/* Always rendered, enabled or not (prep §7). A disabled button inside
+                `PopoverTrigger` would still open the panel — the trigger div is the click
+                target — so an unavailable copy action renders the same row with no
+                popover around it. */}
+            {rules.copyMessage.enabled ? (
+              <Popover>
+                <PopoverTrigger>
+                  <button
+                    type="button"
+                    title={t(rules.copyMessage.tooltipKey ?? "")}
+                    className={ITEM_CLASSES}
+                  >
+                    <LinkIcon className="w-4 h-4 shrink-0" />
+                    {t("reservationActionsMenu.copyGuestMessage")}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="left">
+                  <GuestInspectionMessage
+                    guestName={reservation.guestName}
+                    guestInspectionUrl={guestInspectionUrl}
+                  />
+                </PopoverContent>
+              </Popover>
+            ) : (
               <button
                 type="button"
                 disabled
-                title={t("reservationActionsCell.tooltip.copyMessagePast")}
+                title={t(rules.copyMessage.tooltipKey ?? "")}
                 className={ITEM_CLASSES}
               >
                 <LinkIcon className="w-4 h-4 shrink-0" />
                 {t("reservationActionsMenu.copyGuestMessage")}
               </button>
-            ) : (
-              hasInspection && (
-                <Popover>
-                  <PopoverTrigger>
-                    <button
-                      type="button"
-                      title={t("reservationActionsCell.tooltip.copyMessage")}
-                      className={ITEM_CLASSES}
-                    >
-                      <LinkIcon className="w-4 h-4 shrink-0" />
-                      {t("reservationActionsMenu.copyGuestMessage")}
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="left">
-                    <GuestInspectionMessage
-                      guestName={reservation.guestName}
-                      guestInspectionUrl={guestInspectionUrl}
-                    />
-                  </PopoverContent>
-                </Popover>
-              )
             )}
 
-            {/* Delete is the one row that keeps its confirmation step, now the
-                shared primitive (D3). `ConfirmButton` renders the row itself as the
-                trigger and swaps in the Yes/No pair in place, so the row is a single
-                button until it is asked to confirm. The cancel label is the same
-                `reservationPage.actions.confirmCancel` key the page's bar uses. */}
+            {/* Delete is the one row that keeps its confirmation step, the shared
+                primitive (D3). `ConfirmButton` renders the row itself as the trigger and
+                swaps in the Yes/No pair in place. No `title` — prep §2: deleting is
+                self-explanatory. */}
             <ConfirmButton
               confirmLabel={t("reservationActionsCell.confirm.deleteLabel")}
               cancelLabel={t("reservationPage.actions.confirmCancel")}
-              disabled={isPast || !isDeletable}
+              disabled={!rules.delete.enabled}
               isLoading={deleteMutation.isPending}
               onConfirm={() => deleteMutation.mutateAsync()}
               className="w-full px-3 py-2"
             >
               <button
                 type="button"
-                disabled={isPast || !isDeletable}
-                title={
-                  isPast
-                    ? t("reservationActionsCell.tooltip.cannotDeletePast")
-                    : isDeletable
-                      ? t("reservationActionsCell.tooltip.delete")
-                      : t("reservationActionsCell.tooltip.cannotDelete")
-                }
+                disabled={!rules.delete.enabled}
                 className={ITEM_CLASSES}
               >
                 <Trash2 className="w-4 h-4 shrink-0" />
