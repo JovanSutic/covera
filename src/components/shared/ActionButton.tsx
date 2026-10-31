@@ -16,7 +16,8 @@ import { InfoTooltip } from "./InfoTooltip";
  * button for forms with no icon slot, and it styles with four tokens that do not
  * exist in `index.css`. It stays as it is (D20).
  *
- * The rendered shape is a fragment so this stays ONE flex item's worth of layout.
+ * The rendered shape is one flex item — button and its own tooltip, `gap-1` apart — so a
+ * button's tooltip reads as belonging to it rather than to its neighbour.
  */
 const actionButtonVariants = cva(
   "inline-flex items-center justify-center gap-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed",
@@ -74,7 +75,7 @@ export function ActionButton({
   ...props
 }: ActionButtonProps) {
   return (
-    <>
+    <span className="inline-flex shrink-0 items-center gap-1">
       <button
         type={type}
         disabled={disabled || loading}
@@ -87,16 +88,11 @@ export function ActionButton({
       </button>
 
       {tooltip && (
-        // D6a: desktop-only. `hidden sm:contents` makes the wrapper vanish from the
-        // layout at `sm` and up, so the tooltip becomes a real flex item beside the
-        // button and the row's `gap` applies to it — and below `sm` there is simply
-        // no tooltip. The BUTTON itself is unaffected at every width; only the
-        // explanation is desktop-only. Putting this here rather than at each call
-        // site is what makes "is this a desktop surface" one decision, not eight.
-        <span className="hidden sm:contents">
-          <InfoTooltip content={tooltip} label={tooltipLabel ?? label} />
-        </span>
+        // Invariant 11: no width gate. The panel is absolutely positioned, so the
+        // surfaces that host it must not clip it — that is the host's job, not this
+        // component's (see `ReservationActionsBar`).
+        <InfoTooltip content={tooltip} label={tooltipLabel ?? label} />
       )}
-    </>
+    </span>
   );
 }

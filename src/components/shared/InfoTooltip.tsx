@@ -41,9 +41,9 @@ export function InfoTooltip({ content, label, className }: InfoTooltipProps) {
         <Info className="h-3.5 w-3.5" />
       </button>
 
-      <span className="pointer-events-none absolute left-0 top-full z-30 mt-1.5 hidden w-64 max-w-xs animate-in fade-in zoom-in-95 duration-150 group-hover/tooltip:block group-focus-within/tooltip:block">
+      <span className="pointer-events-none absolute bottom-full left-0 z-30 mb-1.5 hidden w-64 max-w-xs animate-in fade-in zoom-in-95 duration-150 group-hover/tooltip:block group-focus-within/tooltip:block">
         <span className="relative block rounded-xl border border-gray-800 bg-gray-900 p-3 text-xs font-normal text-gray-100 shadow-xl dark:border-gray-700 dark:bg-gray-950">
-          <span className="absolute -top-1 left-2.5 h-2 w-2 rotate-45 border-l border-t border-gray-800 bg-gray-900 dark:border-gray-700 dark:bg-gray-950" />
+          <span className="absolute -bottom-1 left-2.5 h-2 w-2 rotate-45 border-b border-r border-gray-800 bg-gray-900 dark:border-gray-700 dark:bg-gray-950" />
           <span className="relative z-10 block whitespace-normal break-words leading-relaxed text-gray-200">
             {content}
           </span>
