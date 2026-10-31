@@ -4,6 +4,7 @@ import { assetsResource } from "./assets";
 import { shotsResource } from "./shots";
 import { reservationsResource } from "./reservations";
 import { reservationResource } from "./reservation";
+import { reservationPhotosResource } from "./reservationPhotos";
 import { inspectionResource } from "./inspection";
 import {
   apartmentsAllResource,
@@ -26,6 +27,7 @@ export const QUERY_RESOURCES = {
   shots: shotsResource,
   reservations: reservationsResource,
   reservation: reservationResource,
+  reservationPhotos: reservationPhotosResource,
   inspection: inspectionResource,
   users: usersResource,
   locations: locationsResource,

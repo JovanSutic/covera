@@ -9,5 +9,6 @@ export const QUERY_ACTIONS = {
   LOCATIONS_GET_ALL: ["locations", "getAll"],
   RESERVATIONS_GET_BY_APARTMENT: ["reservations", "getByApartment"],
   RESERVATIONS_GET_ID: ["reservations", "getId"],
+  RESERVATIONS_GET_PHOTOS: ["reservations", "getPhotos"],
   INSPECTION_GET_BY_ID: ["inspections", "getById"],
 } as const;

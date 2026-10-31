@@ -11,12 +11,11 @@ import {
 import { Modal } from "@/components/Modal";
 import { ActionButton } from "@/components/shared/ActionButton";
 import { SectionCard } from "@/components/shared/SectionCard";
-import { useInspection } from "@/lib/api/queries/inspection";
+import { useReservationPhotos } from "@/lib/api/queries/reservationPhotos";
 import { proofStatusCopy, summarizeShotProofs } from "@/lib/helpers/proofSummary";
 import { cn } from "@/lib/utils";
 import type { ProofStatusTone } from "@/lib/helpers/proofSummary";
 import type { ProofWindowState } from "@/lib/helpers/proofWindow";
-import type { DetailedInspection } from "@/api/generated/requests/types.gen";
 import type { ReservationWithInspection } from "@/api/generated/requests/types.gen";
 import { ReservationPhotoGallery } from "./ReservationPhotoGallery";
 
@@ -69,6 +68,10 @@ function ToneIcon({ tone }: { tone: ProofStatusTone }) {
  * The controls carry no `InfoTooltip`. Prep §3 asks for the info affordance on the
  * page's *general action buttons*; here the explanation is the body line below the
  * chip, rendered once rather than attached to each of two buttons (D33).
+ *
+ * The photos are read from the reservation, never from the inspection (invariant 9).
+ * `apartment_images.reservationId` is the key that always exists; `inspectionId` is
+ * absent on a reservation whose host has not yet run the separate inspection action.
  */
 export function ReservationProofSection({
   reservation,
@@ -78,22 +81,16 @@ export function ReservationProofSection({
   const { t } = useTranslation("host");
   const [isPhotosOpen, setIsPhotosOpen] = useState(false);
 
-  const inspectionId = reservation.inspection?.id;
-
-  // D8: eager and conditional. `enabled` is what stops a reservation with no
-  // inspection from sitting in a loading branch forever — with `enabled: false` the
-  // query never runs, so `isLoading` is false and the section renders its real
-  // content on the first paint.
+  // Eager and unconditional: the read is scoped to the reservation, so it needs no
+  // inspection to exist. That is the whole fix — `apartment_images` is keyed by
+  // `reservationId`, and a covered reservation whose photos were submitted without a
+  // follow-up inspection has them on disk and, before this, nowhere to read them.
   const {
-    data: inspection,
+    data: shots = [],
     isLoading: isPhotosLoading,
     isError: isPhotosError,
-  } = useInspection(inspectionId, Boolean(inspectionId));
+  } = useReservationPhotos(reservation.id);
 
-  // `GetInspectionsByIdResponse` is `Inspection | DetailedInspection`, and plain
-  // `Inspection` has no `shots` field at all — so the narrow is required, not
-  // decorative. `InspectionPage.tsx` performs the same one.
-  const shots = (inspection as DetailedInspection | undefined)?.shots ?? [];
   const { photoCount, lastCapturedAt } = summarizeShotProofs(shots);
 
   const copy = proofStatusCopy({
@@ -136,19 +133,17 @@ export function ReservationProofSection({
           real Date: i18next's `datetime` formatter runs Intl's formatter, which
           rejects a string — the same reason `RoomPhotoItem` passes a Date. */}
       <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-        {inspectionId
-          ? photoCount === 0
-            ? t("reservationPage.proof.lastCapturedNever")
-            : `${t("reservationPage.proof.photoCount", { count: photoCount })} · ${t(
-                "reservationPage.proof.lastCaptured",
-                {
-                  date: new Date(lastCapturedAt ?? ""),
-                  formatParams: {
-                    date: { dateStyle: "medium", timeStyle: "short" },
-                  },
+        {photoCount === 0
+          ? t("reservationPage.proof.lastCapturedNever")
+          : `${t("reservationPage.proof.photoCount", { count: photoCount })} · ${t(
+              "reservationPage.proof.lastCaptured",
+              {
+                date: new Date(lastCapturedAt ?? ""),
+                formatParams: {
+                  date: { dateStyle: "medium", timeStyle: "short" },
                 },
-              )}`
-          : t("reservationPage.proof.noInspection")}
+              },
+            )}`}
       </p>
 
       {/* Both controls, always, side by side and identical in shape (D31). On a

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
@@ -10,9 +11,9 @@ import { createSessionStore } from "@/lib/router/session";
 import type { AccessLayer } from "@/lib/router/access";
 import type { Inspection, ReservationWithInspection } from "@/api/generated/requests/types.gen";
 
-const { useReservation, useInspection, useApartmentsHost } = vi.hoisted(() => ({
+const { useReservation, useReservationPhotos, useApartmentsHost } = vi.hoisted(() => ({
   useReservation: vi.fn(),
-  useInspection: vi.fn(),
+  useReservationPhotos: vi.fn(),
   useApartmentsHost: vi.fn(),
 }));
 
@@ -28,9 +29,9 @@ vi.mock("@/lib/api/queries/reservation", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/api/queries/reservation")>()),
   useReservation,
 }));
-vi.mock("@/lib/api/queries/inspection", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/lib/api/queries/inspection")>()),
-  useInspection,
+vi.mock("@/lib/api/queries/reservationPhotos", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/api/queries/reservationPhotos")>()),
+  useReservationPhotos,
 }));
 vi.mock("@/lib/api/queries/apartment", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/api/queries/apartment")>()),
@@ -154,7 +155,11 @@ beforeEach(() => {
     isLoading: false,
   });
 
-  useInspection.mockReturnValue({ data: undefined, isLoading: false, isError: false });
+  useReservationPhotos.mockReturnValue({
+    data: [],
+    isLoading: false,
+    isError: false,
+  });
 });
 
 describe("ReservationPage", () => {
@@ -196,7 +201,7 @@ describe("ReservationPage", () => {
 
   it("renders both proof controls even with no photos, with the photo control disabled", () => {
     useReservation.mockReturnValue({ data: reservation(), isLoading: false, isError: false });
-    useInspection.mockReturnValue({ data: { shots: [] }, isLoading: false, isError: false });
+    useReservationPhotos.mockReturnValue({ data: [], isLoading: false, isError: false });
 
     render(<ReservationPage />, { wrapper: Wrapper });
 
@@ -217,7 +222,7 @@ describe("ReservationPage", () => {
 
   it("enables the photo control once there are active photos, and reports the count", () => {
     useReservation.mockReturnValue({ data: reservation(), isLoading: false, isError: false });
-    useInspection.mockReturnValue({ data: { shots: shots(2) }, isLoading: false, isError: false });
+    useReservationPhotos.mockReturnValue({ data: shots(2), isLoading: false, isError: false });
 
     render(<ReservationPage />, { wrapper: Wrapper });
 
@@ -231,15 +236,19 @@ describe("ReservationPage", () => {
   });
 
   it("enables the photo control for a COVERED reservation before the photos resolve", () => {
-    // Prep §5's second half. The inspection read is deliberately left with no data:
-    // COVERED is the backend's own statement that the proof was satisfied, so the
-    // control must not sit disabled waiting for a refetch to agree.
+    // The enable rule is D9's `canViewPhotos` — photos exist, OR the reservation is
+    // COVERED. COVERED is the backend's own statement that the proof was satisfied,
+    // so the control must not sit disabled waiting on the read to settle.
     useReservation.mockReturnValue({
       data: reservation({ status: "COVERED", hasPhotoProof: true }),
       isLoading: false,
       isError: false,
     });
-    useInspection.mockReturnValue({ data: undefined, isLoading: false, isError: false });
+    useReservationPhotos.mockReturnValue({
+      data: [],
+      isLoading: true,
+      isError: false,
+    });
 
     render(<ReservationPage />, { wrapper: Wrapper });
 
@@ -254,5 +263,64 @@ describe("ReservationPage", () => {
     render(<ReservationPage />, { wrapper: Wrapper });
 
     expect(screen.getByText("reservationPage.notFound.title")).toBeInTheDocument();
+  });
+
+  it("shows the photos of a COVERED reservation that has no inspection", async () => {
+    // The reported bug, end to end. `inspection` is deliberately absent: the photos
+    // live on `apartment_images.reservationId`, which always exists, and the
+    // inspection row only appears once the host runs a separate action the backend
+    // refuses before COVERED. Reading them through the inspection is what left them
+    // unreachable.
+    useReservation.mockReturnValue({
+      data: reservation({ status: "COVERED", hasPhotoProof: true, inspection: undefined }),
+      isLoading: false,
+      isError: false,
+    });
+    useReservationPhotos.mockReturnValue({
+      data: shots(1),
+      isLoading: false,
+      isError: false,
+    });
+
+    render(<ReservationPage />, { wrapper: Wrapper });
+
+    // D20: the argument IS the fix. With the hook mocked, a render-only assertion
+    // cannot tell `useReservationPhotos(reservation.id)` from
+    // `useReservationPhotos(reservation.inspection?.id)` — the latter returns the
+    // mock's data too. Reverting the component to the inspection-scoped argument
+    // makes exactly this line fail (negative-controlled while writing the plan).
+    expect(useReservationPhotos).toHaveBeenCalledWith(RESERVATION_ID);
+
+    await act(async () => {
+      await userEvent.click(
+        screen.getByRole("button", { name: "reservationPage.proof.viewProofs" }),
+      );
+    });
+
+    // `RoomPhotoItem` builds its URL as `${VITE_R2_IMAGE_URL}/${storageKey}` —
+    // asserted exactly (`new URL(url).pathname`), not as a substring, so a storage
+    // key that merely shares a prefix cannot satisfy it.
+    expect(screen.getByRole("img", { name: "Hallway" })).toHaveAttribute(
+      "src",
+      `${import.meta.env.VITE_R2_IMAGE_URL}/key-0`,
+    );
+    expect(screen.queryByText("reservationPage.proof.photosEmpty")).not.toBeInTheDocument();
+  });
+
+  it("reports the photos, not an inspection, on the count line", () => {
+    // D13: with no inspection the line used to read `noInspection` — "no photos to
+    // check" — which is false precisely because of this fix. It now reports the
+    // count, or `lastCapturedNever` when there are none.
+    useReservation.mockReturnValue({
+      data: reservation({ status: "COVERED", hasPhotoProof: true, inspection: undefined }),
+      isLoading: false,
+      isError: false,
+    });
+    useReservationPhotos.mockReturnValue({ data: [], isLoading: false, isError: false });
+
+    render(<ReservationPage />, { wrapper: Wrapper });
+
+    expect(screen.getByText("reservationPage.proof.lastCapturedNever")).toBeInTheDocument();
+    expect(screen.queryByText("reservationPage.proof.noInspection")).not.toBeInTheDocument();
   });
 });
