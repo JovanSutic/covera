@@ -29,7 +29,11 @@
       "copyMessage": "Kopiraj poruku gosta za Airbnb",
       "delete": "Izbriši rezervaciju",
       "cannotDelete": "Ne možete izbrisati rezervacije koje su već započete",
-      "notStarted": "Ova rezervacija nema datum prijave, tako da se prozor za proveru ne može izračunati"
+      "notStarted": "Ova rezervacija nema datum prijave, tako da se prozor za proveru ne može izračunati",
+      "stayPast": "Ovaj boravak je završen, tako da se dokazi fotografija više ne mogu uzimati",
+      "hasInspectionPast": "Ovaj boravak je završen, tako da se ne može kreirati nova veza za inspekciju gostiju",
+      "copyMessagePast": "Ovaj boravak je završen, tako da poruka gosta više nije dostupna",
+      "cannotDeletePast": "Ovaj boravak je završen, tako da više ne može da se briše"
     },
     "confirm": {
       "createMessage": "Kreirati inspekciju gosta?",
@@ -47,7 +51,8 @@
       "checkIn": "Prijava",
       "checkOut": "Odjava",
       "platformId": "ID platforme",
-      "status": "Status"
+      "status": "Status",
+      "actions": "Akcije"
     },
     "status": {
       "PENDING_PROOF": "NA DOKAZU",
@@ -198,7 +203,23 @@
       "hidePhotos": "Sakrij poslate fotografije",
       "photosLoading": "Učitavanje fotografija…",
       "photosError": "Nije moguće učitati fotografije za ovu rezervaciju.",
-      "photosEmpty": "Još uvek nije otpremljena nijedna fotografija za ovu rezervaciju."
+      "photosEmpty": "Još uvek nije otpremljena nijedna fotografija za ovu rezervaciju.",
+      "photosTitle": "Probe fotografija",
+      "photoCount": "{{count}} fotografije",
+      "photoCount_one": "{{count}} fotografija",
+      "lastCaptured": "Poslednje snimljeno {{date, datetime}}",
+      "lastCapturedNever": "Još nema snimljenih fotografija",
+      "noInspection": "Još uvek nije napravljena inspekcija gostiju za ovu rezervaciju, tako da nema slika za proveru.",
+      "viewProofs": "Pogledajte dokaze fotografija",
+      "status": {
+        "open": "Prozor za probu je otvoren — sada možete da snimite fotografije.",
+        "tooEarly": "Prozor za proveru se otvara {{windowHours}}h pre prijave, za oko {{hoursUntilWindow}}h.",
+        "submitted": "Dostavljeni su foto dokazi za ovu rezervaciju.",
+        "expired": "Prozor za proveru je zatvoren i nijedna fotografija nije poslata na vreme.",
+        "notStarted": "Ova rezervacija nema datum prijave, tako da se prozor za proveru ne može izračunati.",
+        "disputed": "Ova rezervacija je sporna. Pregledajte fotografije pre nego što se vaš boravak reši.",
+        "settled": "Ova rezervacija je rešena i nisu potrebne nikakve dodatne radnje."
+      }
     },
     "other": {
       "title": "Ostalo",
@@ -210,6 +231,22 @@
     "notFound": {
       "title": "Rezervacija nije pronađena",
       "subtitle": "Ova rezervacija ne postoji, ili ne pripada nekom od vaših apartmana."
+    },
+    "actions": {
+      "confirmCancel": "Otkaži",
+      "copyGuestMessage": "Kopiraj poruku za goste <split inspection/>",
+      "createInspection": "Rezervacije koje su već započete ne mogu se izbrisati.",
+      "delete": "Ovaj boravak je završen, tako da se više ne može izbrisati.",
+      "tooltip": {
+        "cannotDelete": "Kopira gotovu poruku sa vezom za inspekciju gosta, tako da možete da je nalepite u svoju platformu za rezervaciju.",
+        "cannotDeletePast": "Ovaj boravak je završen, tako da poruka gosta više nije dostupna.",
+        "copyGuestMessage": "Pravi vezu za slanje gostu kako bi oni sami mogli da verifikuju stanje dolaska u apartman.",
+        "copyMessagePast": "Briše ovu rezervaciju. Od vas će se tražiti da potvrdite.",
+        "createInspection": "Veza za inspekciju gostiju je već kreirana za ovu rezervaciju.",
+        "delete": "Deletes this reservation. You will be asked to confirm.",
+        "hasInspection": "The guest inspection link has already been created for this reservation.",
+        "hasInspectionPast": "Ovaj boravak je završen, tako da se ne može kreirati nova veza za inspekciju gostiju."
+      }
     }
   },
   "inspectionGuidePage": {

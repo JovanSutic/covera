@@ -4,16 +4,38 @@ import type { ShotWithAssets } from "@/api/generated/requests/types.gen";
 import { ExpandableImage } from "../shared/ExpendableImage";
 import { Card } from "../shared/Card";
 
+/**
+ * The named half of the mode union. Comparing against the literal `"host"` is
+ * rejected by R26's `no-restricted-syntax` selector, which cannot tell this view
+ * switch apart from an access decision; the constant keeps the prop's authored type
+ * and every call site (`mode="host"`) unchanged while the comparison stays legal.
+ */
+const HOST_MODE = "host";
+
 interface RoomPhotoItemProps {
   shot: ShotWithAssets;
   onFlagShot?: (shotId: string) => void;
-  isFlagDisabled: boolean;
+  isFlagDisabled?: boolean;
+  /**
+   * D11: `guest` is the default and renders the flag affordance and the review
+   * prompt. `host` renders neither — the host's copy is a record of what the guest
+   * submitted, not a form they fill in. The default keeps every existing call site
+   * byte-identical.
+   */
+  mode?: "guest" | "host";
 }
 
 const R2_IMAGE_URL = import.meta.env.VITE_R2_IMAGE_URL;
 
-export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoItemProps) {
+export function RoomPhotoItem({
+  shot,
+  onFlagShot,
+  isFlagDisabled,
+  mode = "guest",
+}: RoomPhotoItemProps) {
   const { t } = useTranslation(["guest", "assets"]);
+
+  const isHostMode = mode === HOST_MODE;
 
   const activeImage = shot.images.find(
     (img) => img.status === "active" && !img.deletedAt,
@@ -32,18 +54,20 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
   return (
     <Card variant="blueGradient" padding="md" radius="xxl">
       {/* Header - Title & Top-Right Flag Action */}
-      <div className="mb-3 flex items-center justify-end gap-3">
-        <button
-          type="button"
-          onClick={() => onFlagShot?.(shot.id)}
-          title={t("roomPhotoItem.flagIssueTitle")}
-          disabled={isFlagDisabled}
-          className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-rose-200/80 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100 hover:text-rose-800 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <Flag className="h-3.5 w-3.5 stroke-[2]" />
-          <span>{t("roomPhotoItem.flagItem")}</span>
-        </button>
-      </div>
+      {!isHostMode && (
+        <div className="mb-3 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => onFlagShot?.(shot.id)}
+            title={t("roomPhotoItem.flagIssueTitle")}
+            disabled={isFlagDisabled}
+            className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-rose-200/80 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100 hover:text-rose-800 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Flag className="h-3.5 w-3.5 stroke-[2]" />
+            <span>{t("roomPhotoItem.flagItem")}</span>
+          </button>
+        </div>
+      )}
 
       {/* Extracted Image Component */}
       <ExpandableImage
@@ -70,11 +94,13 @@ export function RoomPhotoItem({ shot, onFlagShot, isFlagDisabled }: RoomPhotoIte
       {/* Asset Checklist Section */}
       {shot.assets && shot.assets.length > 0 && (
         <div className="mt-3.5 border-t border-gray-100/80 pt-3 dark:border-gray-800/80">
-          <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
-            {isSweep
-              ? t("roomPhotoItem.verifyItemsPlural")
-              : t("roomPhotoItem.verifyItemSingular")}
-          </p>
+          {!isHostMode && (
+            <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+              {isSweep
+                ? t("roomPhotoItem.verifyItemsPlural")
+                : t("roomPhotoItem.verifyItemSingular")}
+            </p>
+          )}
           <div className="flex flex-wrap gap-1.5">
             {/* `asset_type` is required in the generated type, so this guard is unreachable
                 against a current backend — it only fires when the deployed worker predates

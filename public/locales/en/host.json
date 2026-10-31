@@ -61,6 +61,22 @@
     "loading": "Loading reservation…",
     "backToApartment": "Back to apartment",
     "subtitle": "Check-in {{checkIn}}",
+    "actions": {
+      "confirmCancel": "Cancel",
+      "copyGuestMessage": "Copy guest message",
+      "createInspection": "Create guest inspection link",
+      "delete": "Delete reservation",
+      "tooltip": {
+        "cannotDelete": "Reservations that have already started cannot be deleted.",
+        "cannotDeletePast": "This stay is over, so it can no longer be deleted.",
+        "copyGuestMessage": "Copies a ready-made message with the guest's inspection link, so you can paste it into your booking platform.",
+        "copyMessagePast": "This stay is over, so the guest message is no longer available.",
+        "createInspection": "Creates a link to send to the guest so they can verify the apartment's arrival state themselves.",
+        "delete": "Deletes this reservation. You will be asked to confirm.",
+        "hasInspection": "The guest inspection link has already been created for this reservation.",
+        "hasInspectionPast": "This stay is over, so a new guest inspection link cannot be created."
+      }
+    },
     "guest": {
       "title": "Guest",
       "name": "Guest name",
@@ -93,7 +109,23 @@
       "hidePhotos": "Hide the submitted photos",
       "photosLoading": "Loading photos…",
       "photosError": "Could not load the photos for this reservation.",
-      "photosEmpty": "No photos have been uploaded for this reservation yet."
+      "photosEmpty": "No photos have been uploaded for this reservation yet.",
+      "photosTitle": "Photo proofs",
+      "photoCount": "{{count}} photos",
+      "photoCount_one": "{{count}} photo",
+      "lastCaptured": "Last captured {{date, datetime}}",
+      "lastCapturedNever": "No photos captured yet",
+      "noInspection": "No guest inspection has been created for this reservation yet, so there are no photos to check.",
+      "viewProofs": "Check out the photo proofs",
+      "status": {
+        "open": "The proof window is open — you can take the photos now.",
+        "tooEarly": "The proof window opens {{windowHours}}h before check-in, in about {{hoursUntilWindow}}h.",
+        "submitted": "The photo proofs for this reservation have been submitted.",
+        "expired": "The proof window has closed and no photos were submitted in time.",
+        "notStarted": "This reservation has no check-in date, so the proof window cannot be calculated.",
+        "disputed": "This reservation is under dispute. Review the photos before your stay is settled.",
+        "settled": "This reservation is settled and no further action is needed."
+      }
     },
     "other": {
       "title": "Other",
@@ -137,7 +169,8 @@
       "checkIn": "Check-In",
       "checkOut": "Check-Out",
       "platformId": "Platform ID",
-      "status": "Status"
+      "status": "Status",
+      "actions": "Actions"
     },
     "status": {
       "PENDING_PROOF": "PENDING PROOF",

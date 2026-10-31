@@ -29,7 +29,11 @@
       "copyMessage": "Gastnachricht für Airbnb kopieren",
       "delete": "Reservierung löschen",
       "cannotDelete": "Bereits begonnene Reservierungen können nicht gelöscht werden",
-      "notStarted": "Diese Reservierung hat kein Check-in-Datum, daher kann das Nachweisfenster nicht berechnet werden"
+      "notStarted": "Diese Reservierung hat kein Check-in-Datum, daher kann das Nachweisfenster nicht berechnet werden",
+      "stayPast": "Dieser Aufenthalt ist zu Ende, daher können keine Fotonachweise mehr erstellt werden",
+      "hasInspectionPast": "Dieser Aufenthalt ist zu Ende, daher kann kein neuer Gästebesichtigungslink erstellt werden",
+      "copyMessagePast": "Dieser Aufenthalt ist zu Ende, daher ist die Gastnachricht nicht mehr verfügbar",
+      "cannotDeletePast": "Dieser Aufenthalt ist zu Ende und kann daher nicht mehr gelöscht werden"
     },
     "confirm": {
       "createMessage": "Gästebesichtigung erstellen?",
@@ -47,7 +51,8 @@
       "checkIn": "Einchecken",
       "checkOut": "Auschecken",
       "platformId": "Plattform-ID",
-      "status": "Status"
+      "status": "Status",
+      "actions": "Aktionen"
     },
     "status": {
       "PENDING_PROOF": "Der Beweis steht noch aus",
@@ -198,7 +203,23 @@
       "hidePhotos": "Eingereichte Fotos ausblenden",
       "photosLoading": "Fotos werden geladen…",
       "photosError": "Die Fotos für diese Reservierung konnten nicht geladen werden.",
-      "photosEmpty": "Für diese Reservierung wurden noch keine Fotos hochgeladen."
+      "photosEmpty": "Für diese Reservierung wurden noch keine Fotos hochgeladen.",
+      "photosTitle": "Fotobeweise",
+      "photoCount": "{{count}} Fotos",
+      "photoCount_one": "{{count}} Foto",
+      "lastCaptured": "Zuletzt aufgenommen {{date, datetime}}",
+      "lastCapturedNever": "Noch keine Fotos aufgenommen",
+      "noInspection": "Für diese Reservierung wurde noch keine Gästebesichtigung erstellt, daher gibt es keine zu überprüfenden Fotos.",
+      "viewProofs": "Schauen Sie sich die Foto-Proofe an",
+      "status": {
+        "open": "Das Proof-Fenster ist geöffnet – Sie können jetzt die Fotos machen.",
+        "tooEarly": "Das Proof-Fenster öffnet sich {{windowHours}}h vor dem Einchecken, also etwa {{hoursUntilWindow}}h.",
+        "submitted": "Die Fotonachweise für diese Reservierung wurden eingereicht.",
+        "expired": "Das Proof-Fenster wurde geschlossen und es wurden keine Fotos rechtzeitig eingereicht.",
+        "notStarted": "Diese Reservierung hat kein Check-in-Datum, daher kann das Nachweisfenster nicht berechnet werden.",
+        "disputed": "Diese Reservierung ist umstritten. Sehen Sie sich die Fotos noch einmal an, bevor Sie Ihren Aufenthalt buchen.",
+        "settled": "Diese Reservierung ist erledigt und es sind keine weiteren Maßnahmen erforderlich."
+      }
     },
     "other": {
       "title": "Andere",
@@ -210,6 +231,22 @@
     "notFound": {
       "title": "Reservierung nicht gefunden",
       "subtitle": "Diese Reservierung existiert nicht oder sie gehört nicht zu einem Ihrer Apartments."
+    },
+    "actions": {
+      "confirmCancel": "Abbrechen",
+      "copyGuestMessage": "Gastnachricht kopieren",
+      "createInspection": "Gastbesichtigungslink erstellen",
+      "delete": "Reservierung löschen",
+      "tooltip": {
+        "cannotDelete": "Bereits gestartete Reservierungen können nicht gelöscht werden.",
+        "cannotDeletePast": "Dieser Aufenthalt ist beendet und kann daher nicht mehr gelöscht werden.",
+        "copyGuestMessage": "Kopiert eine vorgefertigte Nachricht mit dem Inspektionslink des Gastes, damit Sie ihn in Ihre Buchungsplattform einfügen können.",
+        "copyMessagePast": "Dieser Aufenthalt ist vorbei, daher ist die Gastnachricht nicht mehr verfügbar.",
+        "createInspection": "Erstellt einen Link, der an den Gast gesendet wird, damit dieser den Ankunftsstatus des Apartments selbst überprüfen kann.",
+        "delete": "Löscht diese Reservierung. Sie werden um eine Bestätigung gebeten.",
+        "hasInspection": "Der Link zur Gästebesichtigung wurde für diese Reservierung bereits erstellt.",
+        "hasInspectionPast": "Dieser Aufenthalt ist beendet, daher kann kein neuer Gästebesichtigungslink erstellt werden."
+      }
     }
   },
   "inspectionGuidePage": {

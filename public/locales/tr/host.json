@@ -29,7 +29,11 @@
       "copyMessage": "Airbnb için misafir mesajını kopyala",
       "delete": "Rezervasyonu sil",
       "cannotDelete": "Zaten başlamış olan rezervasyonlar silinemez",
-      "notStarted": "Bu rezervasyonun giriş tarihi yok, dolayısıyla prova penceresi hesaplanamıyor"
+      "notStarted": "Bu rezervasyonun giriş tarihi yok, dolayısıyla prova penceresi hesaplanamıyor",
+      "stayPast": "Bu konaklama sona erdi, dolayısıyla fotoğraf provaları artık alınamaz",
+      "hasInspectionPast": "Bu konaklama sona erdi, dolayısıyla yeni bir misafir inceleme bağlantısı oluşturulamaz",
+      "copyMessagePast": "Bu konaklama sona erdi, dolayısıyla misafir mesajı artık mevcut değil",
+      "cannotDeletePast": "Bu konaklama bitti, dolayısıyla artık silinemez"
     },
     "confirm": {
       "createMessage": "Konuk incelemesi oluşturulsun mu?",
@@ -47,7 +51,8 @@
       "checkIn": "Giriş",
       "checkOut": "Çıkış",
       "platformId": "Platform Kimliği",
-      "status": "Durum"
+      "status": "Durum",
+      "actions": "Eylemler"
     },
     "status": {
       "PENDING_PROOF": "BEKLENEN KANIT",
@@ -198,7 +203,23 @@
       "hidePhotos": "Gönderilen fotoğrafları gizle",
       "photosLoading": "Fotoğraflar yükleniyor…",
       "photosError": "Bu rezervasyon için fotoğraflar yüklenemedi.",
-      "photosEmpty": "Bu rezervasyon için henüz fotoğraf yüklenmedi."
+      "photosEmpty": "Bu rezervasyon için henüz fotoğraf yüklenmedi.",
+      "photosTitle": "Fotoğraf provaları",
+      "photoCount": "{{count}} fotoğraflar",
+      "photoCount_one": "{{count}} fotoğraf",
+      "lastCaptured": "Son çekilen {{date, datetime}}",
+      "lastCapturedNever": "Henüz fotoğraf çekilmedi",
+      "noInspection": "Bu rezervasyon için henüz misafir incelemesi oluşturulmadığından kontrol edilecek fotoğraf yok.",
+      "viewProofs": "Fotoğraf provalarına göz atın",
+      "status": {
+        "open": "Prova penceresi açık — şimdi fotoğraf çekebilirsiniz.",
+        "tooEarly": "Prova penceresi check-in işleminden {{windowHours}}h önce, yaklaşık {{hoursUntilWindow}}h içinde açılıyor.",
+        "submitted": "Bu rezervasyonun fotoğraflı provaları gönderildi.",
+        "expired": "Prova penceresi kapandı ve hiçbir fotoğraf zamanında gönderilmedi.",
+        "notStarted": "Bu rezervasyonun giriş tarihi yoktur, dolayısıyla prova penceresi hesaplanamaz.",
+        "disputed": "Bu rezervasyona itiraz ediliyor. Konaklamanız kararlaştırılmadan önce fotoğrafları inceleyin.",
+        "settled": "Bu rezervasyon tamamlandı ve başka bir işleme gerek yok."
+      }
     },
     "other": {
       "title": "Diğer",
@@ -210,6 +231,22 @@
     "notFound": {
       "title": "Rezervasyon bulunamadı",
       "subtitle": "Bu rezervasyon mevcut değil veya dairelerinizden birine ait değil."
+    },
+    "actions": {
+      "confirmCancel": "İptal",
+      "copyGuestMessage": "Konuk mesajını kopyala",
+      "createInspection": "Misafir inceleme bağlantısı oluştur",
+      "delete": "Rezervasyonu sil",
+      "tooltip": {
+        "cannotDelete": "Zaten başlamış olan rezervasyonlar silinemez.",
+        "cannotDeletePast": "Bu konaklama sona erdi, dolayısıyla artık silinemez.",
+        "copyGuestMessage": "Konuğun inceleme bağlantısını içeren hazır bir mesajı kopyalar, böylece bunu rezervasyon platformunuza yapıştırabilirsiniz.",
+        "copyMessagePast": "Bu konaklama sona erdiğinden misafir mesajı artık kullanılamıyor.",
+        "createInspection": "Dairenin varış durumunu kendilerinin doğrulayabilmesi için konuğa gönderilecek bir bağlantı oluşturur.",
+        "delete": "Bu rezervasyonu siler. Onaylamanız istenecektir.",
+        "hasInspection": "Bu rezervasyon için misafir inceleme bağlantısı zaten oluşturuldu.",
+        "hasInspectionPast": "Bu konaklama sona erdiğinden yeni bir misafir inceleme bağlantısı oluşturulamıyor."
+      }
     }
   },
   "inspectionGuidePage": {

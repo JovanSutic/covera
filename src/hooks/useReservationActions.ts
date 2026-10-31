@@ -86,7 +86,7 @@ export function useReservationActions({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message || t("reservationActionsCell.toast.deleteError"),
+        error?.error?.message || t("reservationActionsCell.toast.deleteError"),
       );
     },
   });
@@ -107,7 +107,7 @@ export function useReservationActions({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       toast.error(
-        error?.message || t("reservationActionsCell.toast.createError"),
+        error?.error?.message || t("reservationActionsCell.toast.createError"),
       );
     },
   });
