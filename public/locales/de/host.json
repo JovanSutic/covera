@@ -165,7 +165,9 @@
       "altCheckInFuture": "Der alternative Check-in muss in der Zukunft liegen",
       "altCheckOutFuture": "Der alternative Check-out muss in der Zukunft liegen",
       "altCheckOutAfterAltCheckIn": "Der alternative Check-out muss nach dem alternativen Check-in erfolgen",
-      "checkInFuture": "Der Check-in muss in erfolgen Zukunft"
+      "checkInFuture": "Der Check-in muss in erfolgen Zukunft",
+      "altCheckInTooLate": "Der alternative Check-in kann maximal 8 Stunden nach dem gebuchten Check-in erfolgen.",
+      "altCheckOutTooLate": "Der alternative Check-out kann maximal 8 Stunden nach dem gebuchten Check-out erfolgen."
     },
     "notAvailable": "—",
     "loading": "Reservierung wird geladen…",

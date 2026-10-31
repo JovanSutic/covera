@@ -165,7 +165,9 @@
       "altCheckInFuture": "Alternativno prijavljivanje mora biti u budućnosti",
       "altCheckOutFuture": "Alternativno odjavljivanje mora biti u budućnosti",
       "altCheckOutAfterAltCheckIn": "Alternativno odjavljivanje mora biti nakon alternativnog prijavljivanja",
-      "checkInFuture": "Prijavljivanje mora biti u budućnosti"
+      "checkInFuture": "Prijavljivanje mora biti u budućnosti",
+      "altCheckInTooLate": "Alternativno čekiranje može biti najviše 8 sati nakon rezervisanog dolaska.",
+      "altCheckOutTooLate": "Alternativno odjavljivanje može biti najviše 8 sati nakon rezervisanog odjavljivanja."
     },
     "notAvailable": "—",
     "loading": "Učitavanje rezervacije…",

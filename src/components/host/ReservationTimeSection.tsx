@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,8 +13,9 @@ import { patchReservationsById } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import {
-  alternativeDatesSchema,
+  createAlternativeDatesSchema,
   fromDatetimeLocalValue,
+  latestAlternativeLocalValue,
   toDatetimeLocalValue,
 } from "@/lib/validations/reservationDates";
 import type { AlternativeDatesValues } from "@/lib/validations/reservationDates";
@@ -71,16 +72,30 @@ export function ReservationTimeSection({
     ),
   };
 
+  // D13: the schema is per-reservation because the 8h cap is measured from the booked
+  // times. Memoised on those two values so the resolver identity is stable — a fresh
+  // schema each render is a fresh resolver, and `mode: "onChange"` would re-run the whole
+  // form validation on every keystroke of an unrelated field.
+  const schema = useMemo(
+    () => createAlternativeDatesSchema({ checkInDatetime, checkOutDatetime }),
+    [checkInDatetime, checkOutDatetime],
+  );
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<AlternativeDatesValues>({
-    resolver: zodResolver(alternativeDatesSchema),
+    resolver: zodResolver(schema),
     defaultValues: emptyValues,
     mode: "onChange",
   });
+
+  // Prep §8: "the values in the date input should also permit this as well" — `max` stops
+  // the picker offering a date the schema would reject.
+  const maxAlternativeCheckIn = latestAlternativeLocalValue(checkInDatetime);
+  const maxAlternativeCheckOut = latestAlternativeLocalValue(checkOutDatetime);
 
   // The reservation is the source of truth for the fields, so a refetch must not
   // leave stale text behind. `isEditing` is deliberately NOT a dependency:
@@ -201,6 +216,7 @@ export function ReservationTimeSection({
                   : undefined
               }
               {...register("alternativeCheckInDatetime")}
+              max={maxAlternativeCheckIn ?? undefined}
             />
 
             <Input
@@ -212,6 +228,7 @@ export function ReservationTimeSection({
                   : undefined
               }
               {...register("alternativeCheckOutDatetime")}
+              max={maxAlternativeCheckOut ?? undefined}
             />
           </div>
 

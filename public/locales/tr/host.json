@@ -165,7 +165,9 @@
       "altCheckInFuture": "Alternatif giriş gelecekte olmalıdır",
       "altCheckOutFuture": "Alternatif çıkış gelecekte olmalıdır",
       "altCheckOutAfterAltCheckIn": "Alternatif çıkış, alternatif girişten sonra olmalıdır",
-      "checkInFuture": "Giriş gelecekte olmalı"
+      "checkInFuture": "Giriş gelecekte olmalı",
+      "altCheckInTooLate": "Alternatif check-in işlemi, rezervasyon yapılan check-in işleminden en fazla 8 saat sonra yapılabilir.",
+      "altCheckOutTooLate": "Alternatif çıkış, rezervasyonu yapılan çıkıştan en fazla 8 saat sonra yapılabilir."
     },
     "notAvailable": "—",
     "loading": "Rezervasyon yükleniyor…",
