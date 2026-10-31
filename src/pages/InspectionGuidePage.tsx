@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
 import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
+import { BackLink } from "@/components/shared/BackLink";
 import { useReservation } from "@/lib/api/queries/reservation";
 import { useShots } from "@/lib/api/queries/shots";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
@@ -81,13 +82,11 @@ export default function InspectionGuidePage() {
   });
 
   const backToReservation = (
-    <button
-      type="button"
-      onClick={() => navigate(reservationPath)}
-      className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer transition-colors"
-    >
-      {t("inspectionGuidePage.backToReservation")}
-    </button>
+    <BackLink
+      to={appPaths.hostReservation}
+      params={{ id: apartmentId, reservationId }}
+      label={t("inspectionGuidePage.backToReservation")}
+    />
   );
 
   if (reservationLoading || shotsLoading) {
