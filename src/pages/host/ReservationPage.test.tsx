@@ -230,6 +230,24 @@ describe("ReservationPage", () => {
     expect(screen.getByText(/reservationPage\.proof\.photoCount/)).toBeInTheDocument();
   });
 
+  it("enables the photo control for a COVERED reservation before the photos resolve", () => {
+    // Prep §5's second half. The inspection read is deliberately left with no data:
+    // COVERED is the backend's own statement that the proof was satisfied, so the
+    // control must not sit disabled waiting for a refetch to agree.
+    useReservation.mockReturnValue({
+      data: reservation({ status: "COVERED", hasPhotoProof: true }),
+      isLoading: false,
+      isError: false,
+    });
+    useInspection.mockReturnValue({ data: undefined, isLoading: false, isError: false });
+
+    render(<ReservationPage />, { wrapper: Wrapper });
+
+    expect(
+      screen.getByRole("button", { name: "reservationPage.proof.viewProofs" }),
+    ).not.toBeDisabled();
+  });
+
   it("renders the page's own not-found branch for an unknown reservation", () => {
     useReservation.mockReturnValue({ data: undefined, isLoading: false, isError: true });
 

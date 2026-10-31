@@ -58,6 +58,10 @@ function ToneIcon({ tone }: { tone: ProofStatusTone }) {
  * control entirely without an inspection — which is the layout shift the prep
  * asks to remove.
  *
+ * The photo control is enabled when photos exist OR the reservation is COVERED (D9) —
+ * the second half of prep §5, and the reason a host returning from the inspection guide
+ * sees an enabled control immediately rather than a disabled one waiting on a refetch.
+ *
  * What the section reports is derived, never recomputed: the window answer arrives
  * as a prop, the status label and its explanation come from `proofStatusCopy`, and
  * the count and last capture time come from `summarizeShotProofs`.
@@ -97,7 +101,11 @@ export function ReservationProofSection({
     status: reservation.status ?? null,
   });
 
-  const canViewPhotos = photoCount > 0;
+  // D9 / prep §5: photos exist, OR the reservation is COVERED — which means the backend
+  // already recorded a satisfied photo proof, so the photos are there to look at even
+  // while the inspection read is still in flight. `status` is already a prop, so this
+  // adds no request and no second clock.
+  const canViewPhotos = photoCount > 0 || reservation.status === "COVERED";
   const canTakeProofs = window.canTakeShots;
 
   return (
