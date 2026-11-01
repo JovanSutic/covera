@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
-import { ApartmentShotGuide } from "@/components/host/ShotsGuide";
+import { InspectionGuideFlow } from "@/components/host/guide/InspectionGuideFlow";
 import { BackLink } from "@/components/shared/BackLink";
 import { useReservation } from "@/lib/api/queries/reservation";
 import { useShots } from "@/lib/api/queries/shots";
@@ -158,9 +158,12 @@ export default function InspectionGuidePage() {
 
       <div className="mb-6">{backToReservation}</div>
 
-      {/* Unchanged from the dialog it replaces: same component, same props. The
-          flow needed no rewrite, only a URL. */}
-      <ApartmentShotGuide
+      {/* Phase 5: the flow is now composed from src/components/host/guide/. The page's
+          own responsibilities — the two reads, the window gate, the mutation, the
+          toasts, the three invalidations, the back link — are unchanged, and so is the
+          prop boundary: the flow takes the shots, the pending flag and the submit
+          callback, and nothing else. */}
+      <InspectionGuideFlow
         initialShots={preparedShots}
         isSubmitting={submitMutation.isPending}
         onSubmit={(completedShots) => submitMutation.mutate(completedShots)}

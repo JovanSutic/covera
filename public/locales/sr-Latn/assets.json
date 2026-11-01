@@ -174,7 +174,27 @@
       "previous": "← Prethodno",
       "next": "Sledeće →",
       "uploading": "Otpremanje...",
-      "finishAndSave": "Završi i sačuvaj sve"
+      "finishAndSave": "Završi i sačuvaj sve",
+      "goToCurrent": "Idite na trenutni korak",
+      "takePhotoFirst": "Snimite fotografiju da biste nastavili"
+    },
+    "strip": {
+      "ariaLabel": "Slike za snimanje",
+      "pendingItem": "Fotografija {{index}} od {{total}}, još nije snimljena",
+      "capturedItem": "Slika {{index}} od {{total}}, snimljeno — pogledajte je",
+      "currentItem": "Trenutni korak"
+    },
+    "review": {
+      "title": "Sve fotografije ste sakupili za sve fotografije koje ste snimili <split__.",
+      "description": "Proverite gornju listu fotografija pre nego što pošaljete. Kada se predaju, dokazi se evidentiraju uz ovu rezervu i ne mogu se menjati.",
+      "checklist": "Pošaljite fotografije",
+      "submit": "Želite da napustite vodič?"
+    },
+    "leave": {
+      "title": "Imate fotografije koje još uvek nisu poslate. Ako sada odete, oni će biti izgubljeni.",
+      "description": "Napusti",
+      "confirm": "Ostani",
+      "cancel": "Stay"
     }
   },
   "shotStudio": {
