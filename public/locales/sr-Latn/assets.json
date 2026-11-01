@@ -174,7 +174,27 @@
       "previous": "← Prethodno",
       "next": "Sledeće →",
       "uploading": "Otpremanje...",
-      "finishAndSave": "Završi i sačuvaj sve"
+      "finishAndSave": "Završi i sačuvaj sve",
+      "goToCurrent": "Go to current step",
+      "takePhotoFirst": "Take the photo to continue"
+    },
+    "strip": {
+      "ariaLabel": "Photos to take",
+      "pendingItem": "Photo {{index}} of {{total}}, not taken yet",
+      "capturedItem": "Photo {{index}} of {{total}}, taken — view it",
+      "currentItem": "Current step"
+    },
+    "review": {
+      "title": "All photos collected",
+      "description": "You have taken all {{total}} photos for this stay.",
+      "checklist": "Check the photo list above before you submit. Once submitted, the proofs are recorded against this reservation and cannot be changed.",
+      "submit": "Submit photos"
+    },
+    "leave": {
+      "title": "Leave the guide?",
+      "description": "You have photos that have not been submitted yet. If you leave now they will be lost.",
+      "confirm": "Leave",
+      "cancel": "Stay"
     }
   },
   "shotStudio": {
