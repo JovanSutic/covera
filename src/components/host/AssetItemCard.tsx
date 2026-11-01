@@ -5,7 +5,6 @@ import {
   Tag,
   MapPin,
   Camera,
-  FileText,
   AlertCircle,
   CalendarClock,
   Coins,
@@ -13,31 +12,7 @@ import {
 import type { Asset } from "@/api/generated/requests/types.gen";
 import { useTranslation } from "react-i18next";
 import { Card } from "../shared/Card";
-
-function DescriptionTooltip({ content }: { content: string }) {
-  const { t } = useTranslation("assets");
-
-  return (
-    <div className="relative group/tooltip inline-block">
-      <button
-        type="button"
-        aria-label={t("assetCard.tooltips.viewDescription")}
-        className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100/80 rounded-lg dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors cursor-pointer"
-      >
-        <FileText className="h-4 w-4" />
-      </button>
-
-      <div className="absolute right-0 top-full mt-1.5 z-30 hidden group-hover/tooltip:block group-focus-within/tooltip:block w-64 max-w-xs animate-in fade-in zoom-in-95 duration-150">
-        <div className="relative rounded-xl bg-gray-900 p-3 text-xs text-gray-100 shadow-xl border border-gray-800 dark:bg-gray-950 dark:border-gray-700">
-          <div className="absolute -top-1 right-2.5 h-2 w-2 rotate-45 bg-gray-900 border-l border-t border-gray-800 dark:bg-gray-950 dark:border-gray-700" />
-          <p className="relative z-10 leading-relaxed whitespace-normal break-words font-normal text-gray-200">
-            {content}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { DescriptionTooltip } from "@/components/shared/DescriptionTooltip";
 
 export function AssetItemCard({
   asset,
@@ -78,7 +53,10 @@ export function AssetItemCard({
 
           <div className="flex items-center gap-0.5 shrink-0">
             {asset.description && (
-              <DescriptionTooltip content={asset.description} />
+              <DescriptionTooltip
+                content={asset.description}
+                label={t("assetCard.tooltips.viewDescription")}
+              />
             )}
 
             {isConfirmingDelete ? (

@@ -268,3 +268,37 @@ describe("the step's capture state", () => {
     expect(screen.queryByText("Shot 3")).not.toBeInTheDocument();
   });
 });
+
+describe("the shot instruction (prep §2)", () => {
+  it("shows the instruction behind a trigger, not as a paragraph", () => {
+    render(<Harness initial={threePending()} />);
+
+    // The trigger is a real button with the label key as its accessible name.
+    const trigger = screen.getByRole("button", {
+      name: "shotGuide.instructions.trigger",
+    });
+
+    expect(trigger).toBeInTheDocument();
+
+    // And the instruction text is NOT loose in the panel. `threePending` gives shot 0 the
+    // instructions "Instructions 0", which the tooltip renders — so it is in the document
+    // exactly once, inside the trigger's panel, and never as a sibling paragraph.
+    trigger.focus();
+
+    expect(screen.getAllByText("Instructions 0")).toHaveLength(1);
+  });
+
+  it("shows the empty-state text, and no trigger, when the shot has no instructions", () => {
+    const shots = threePending();
+    shots[0] = { ...shots[0], instructions: "" };
+
+    render(<Harness initial={shots} />);
+
+    expect(screen.getByText("shotGuide.instructions.empty")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: "shotGuide.instructions.trigger",
+      }),
+    ).not.toBeInTheDocument();
+  });
+});
