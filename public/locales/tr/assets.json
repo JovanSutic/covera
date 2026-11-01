@@ -155,6 +155,10 @@
       "FUNCTIONAL_ACTION": "İşlevsel / Eylem Halinde"
     },
     "noShots": "Bu daire için çekime gerek yok",
+    "instructions": {
+      "trigger": "View shot instructions",
+      "empty": "No specific instructions for this shot."
+    },
     "header": {
       "currentLocation": "Mevcut Konum",
       "shotProgress": "Odada {{total}} / {{current}} vuruldu",
@@ -182,7 +186,10 @@
       "ariaLabel": "Çekilecek fotoğraflar",
       "pendingItem": "Fotoğraf {{index}}/{{total}}, henüz çekilmedi",
       "capturedItem": "{{index}}/{{total}} fotoğrafı, çekildi — görüntüleyin",
-      "currentItem": "Geçerli adım"
+      "currentItem": "Geçerli adım",
+      "activeItem": "Viewing",
+      "confirmItem": "Confirmation",
+      "confirmTitle": "Review"
     },
     "review": {
       "title": "Tüm fotoğraflar toplandı",

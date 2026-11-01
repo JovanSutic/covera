@@ -152,6 +152,10 @@
       "FUNCTIONAL_ACTION": "Functional / In-Action"
     },
     "noShots": "No shots required for this apartment",
+    "instructions": {
+      "trigger": "View shot instructions",
+      "empty": "No specific instructions for this shot."
+    },
     "header": {
       "currentLocation": "Current Location",
       "shotProgress": "Shot {{current}} of {{total}} in room",
@@ -179,7 +183,10 @@
       "ariaLabel": "Photos to take",
       "pendingItem": "Photo {{index}} of {{total}}, not taken yet",
       "capturedItem": "Photo {{index}} of {{total}}, taken — view it",
-      "currentItem": "Current step"
+      "currentItem": "Current step",
+      "activeItem": "Viewing",
+      "confirmItem": "Confirmation",
+      "confirmTitle": "Review"
     },
     "review": {
       "title": "All photos collected",

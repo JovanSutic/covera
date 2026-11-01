@@ -59,12 +59,6 @@ export function useReservationActions({
 
   const hasInspection = Boolean(inspectionId);
 
-  // Both stay on the hook's public surface because `ReservationHeaderActions.tsx` (on no
-  // route) still destructures them. They are now READ OFF the rule table rather than
-  // re-derived, so there is still exactly one definition of each rule.
-  const isDeletable = rules.delete.enabled;
-  const isPast = window.isPast;
-
   const guestInspectionUrl = inspectionId
     ? buildPath(appPaths.inspection, { id: inspectionId })
     : "";
@@ -142,8 +136,6 @@ export function useReservationActions({
     window,
     rules,
     hasInspection,
-    isDeletable,
-    isPast,
     guestInspectionUrl,
     takeShotsTooltip,
     deleteMutation,

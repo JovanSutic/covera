@@ -155,6 +155,10 @@
       "FUNCTIONAL_ACTION": "Funkcionalno / u akciji"
     },
     "noShots": "Za ovaj stan nisu potrebni snimci",
+    "instructions": {
+      "trigger": "View shot instructions",
+      "empty": "No specific instructions for this shot."
+    },
     "header": {
       "currentLocation": "Trenutna lokacija",
       "shotProgress": "Snimak {{current}} od {{total}} u sobi",
@@ -182,7 +186,10 @@
       "ariaLabel": "Slike za snimanje",
       "pendingItem": "Fotografija {{index}} od {{total}}, još nije snimljena",
       "capturedItem": "Slika {{index}} od {{total}}, snimljeno — pogledajte je",
-      "currentItem": "Trenutni korak"
+      "currentItem": "Trenutni korak",
+      "activeItem": "Viewing",
+      "confirmItem": "Confirmation",
+      "confirmTitle": "Review"
     },
     "review": {
       "title": "Sve fotografije ste sakupili za sve fotografije koje ste snimili <split__.",

@@ -20,9 +20,15 @@ interface ReservationActionsBarProps {
  * all rendered through `ActionButton`, with delete going through `ConfirmButton`.
  *
  * The row WRAPS rather than scrolls. `overflow-x-auto` was doing two bad things:
- * introducing the scrollbar prep §3 reports, and clipping the absolutely-positioned
- * tooltip panels back to the strip's box — exactly the "confined with the wrapper"
- * complaint. Wrapping removes the clip and the scrollbar together.
+ * introducing the scrollbar prep §3 reports, and clipping the tooltip panels back to the strip's
+ * box — exactly the "confined with the wrapper" complaint. Wrapping removes the clip and the
+ * scrollbar together.
+ *
+ * The clip was the half that wrapping fixed. The other half — a panel that fits the page but is
+ * anchored past its edge — is `TooltipPanel`'s (prep §4): it measures against the
+ * `[data-tooltip-host]` box `PageLayout` carries and flips or clamps the panel so it cannot cross
+ * it. Neither half is sufficient alone: wrapping without clamping still overflows on a phone, and
+ * clamping without wrapping still gets clipped.
  *
  * Every enable rule and every tooltip reason comes from
  * `getReservationActionAvailability` (D10) — the same table the table's menu reads.

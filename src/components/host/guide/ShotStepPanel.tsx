@@ -3,6 +3,7 @@ import type { ChangeEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import Typography from "@/components/Typography";
+import { DescriptionTooltip } from "@/components/shared/DescriptionTooltip";
 import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
 import { cn } from "@/lib/utils";
 import { ShotStepActions } from "./ShotStepActions";
@@ -16,6 +17,11 @@ interface ShotStepPanelProps {
   totalCount: number;
   isCaptured: boolean;
   isViewingEarlierStep: boolean;
+  /**
+   * D5/§3: false when no pending step follows — which, since prep §3 made the confirmation
+   * the step after the last photo, is now never true while this panel renders. The flow
+   * passes `cursorIndex < confirmationIndex(shots)` truthfully rather than a literal.
+   */
   hasNextStep: boolean;
   disabled: boolean;
   onCapture: (previewUrl: string, file: File) => void;
@@ -117,19 +123,29 @@ export function ShotStepPanel({
       <div className="space-y-4 rounded-2xl bg-white lg:p-5 dark:bg-gray-900">
         <div>
           <div className="flex items-center justify-between gap-2">
-            <Typography
-              type="h4"
-              className="text-base font-semibold text-gray-900 sm:text-lg dark:text-gray-100"
-            >
-              {shot.title}
-            </Typography>
+            <div className="flex min-w-0 items-center gap-1">
+              <Typography
+                type="h4"
+                className="truncate text-base font-semibold text-gray-900 sm:text-lg dark:text-gray-100"
+              >
+                {shot.title}
+              </Typography>
+
+              {shot.instructions ? (
+                <DescriptionTooltip
+                  content={shot.instructions}
+                  label={t("shotGuide.instructions.trigger")}
+                />
+              ) : (
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {t("shotGuide.instructions.empty")}
+                </span>
+              )}
+            </div>
             <span className="shrink-0 rounded-full border border-gray-200 bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
               {t(`shotGuide.shotTypes.${shot.shotType}`, { defaultValue: shot.shotType })}
             </span>
           </div>
-          <p className="mt-1 whitespace-pre-line text-xs text-gray-600 dark:text-gray-300">
-            {shot.instructions}
-          </p>
         </div>
 
         <div className="space-y-3">

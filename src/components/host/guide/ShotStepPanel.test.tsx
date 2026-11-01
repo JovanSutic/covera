@@ -7,9 +7,9 @@ import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
 import {
   advanceCursor,
   capturedCount,
+  confirmationIndex,
   isCaptured,
   isViewingEarlierStep,
-  nextPendingIndex,
   selectStep,
 } from "@/lib/helpers/guideFlow";
 import { useCapturedShots } from "./useCapturedShots";
@@ -43,7 +43,11 @@ function Harness({ initial }: { initial: CapturedApartmentShot[] }) {
   const [cursorIndex, setCursorIndex] = useState(0);
   const [viewedIndex, setViewedIndex] = useState(0);
 
-  const shot = shots[viewedIndex];
+  // Invariant 9, mirrored from the flow: `cursorIndex === shots.length` is the only index
+  // for which `shots[viewedIndex]` is undefined, so the branch has to come first.
+  const confirmation = confirmationIndex(shots);
+  const isOnConfirmation = viewedIndex === confirmation;
+  const shot = isOnConfirmation ? undefined : shots[viewedIndex];
 
   /** What phase 5's `PhotoStrip` calls when a captured item is tapped. */
   const openStep = (index: number) => {
@@ -60,36 +64,39 @@ function Harness({ initial }: { initial: CapturedApartmentShot[] }) {
         stub-jump-1
       </button>
 
-      <ShotStepPanel
-        shot={shot}
-        shotIndexInRoom={viewedIndex + 1}
-        roomShotCount={shots.length}
-        completedCount={capturedCount(shots)}
-        totalCount={shots.length}
-        isCaptured={isCaptured(shot)}
-        isViewingEarlierStep={isViewingEarlierStep(cursorIndex, viewedIndex)}
-        hasNextStep={nextPendingIndex(shots, cursorIndex) !== null}
-        disabled={false}
-        onCapture={(url, file) => {
-          capture(viewedIndex, url, file);
-        }}
-        onNext={() => {
-          const next = advanceCursor(shots, cursorIndex);
-          setCursorIndex(next);
-          setViewedIndex(next);
-        }}
-        onGoToCurrent={() => {
-          setViewedIndex(cursorIndex);
-        }}
-        renderCamera={(onCapture) => (
-          <button
-            type="button"
-            onClick={() => onCapture("blob:preview", new File([], "a.jpg"))}
-          >
-            stub-shutter
-          </button>
-        )}
-      />
+      {isOnConfirmation ? null : (
+        <ShotStepPanel
+          shot={shot as CapturedApartmentShot}
+          shotIndexInRoom={viewedIndex + 1}
+          roomShotCount={shots.length}
+          completedCount={capturedCount(shots)}
+          totalCount={shots.length}
+          isCaptured={isCaptured(shot)}
+          isViewingEarlierStep={isViewingEarlierStep(cursorIndex, viewedIndex)}
+          hasNextStep={cursorIndex < confirmation}
+          disabled={false}
+          onCapture={(url, file) => {
+            capture(viewedIndex, url, file);
+          }}
+          onNext={() => {
+            const next = advanceCursor(shots, cursorIndex);
+            const target = next === cursorIndex ? cursorIndex + 1 : next;
+            setCursorIndex(target);
+            setViewedIndex(target);
+          }}
+          onGoToCurrent={() => {
+            setViewedIndex(cursorIndex);
+          }}
+          renderCamera={(onCapture) => (
+            <button
+              type="button"
+              onClick={() => onCapture("blob:preview", new File([], "a.jpg"))}
+            >
+              stub-shutter
+            </button>
+          )}
+        />
+      )}
     </div>
   );
 }
@@ -223,7 +230,7 @@ describe("the step's capture state", () => {
     expect(next()).toBeDisabled();
   });
 
-  it("shows no Next, and the take-the-photo hint, on the last pending step", async () => {
+  it("offers Next on the last pending step — prep §3's change (was: no Next, and a hint)", async () => {
     const user = userEvent.setup();
     render(<Harness initial={threePending()} />);
 
@@ -233,7 +240,65 @@ describe("the step's capture state", () => {
     await user.click(next());
 
     expect(screen.getByText("Shot 2")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "shotGuide.actions.next" })).not.toBeInTheDocument();
-    expect(screen.getByText("shotGuide.actions.takePhotoFirst")).toBeInTheDocument();
+    // Next is on screen now, and — because step 2 has no photo yet — still disabled (D5).
+    expect(next()).toBeDisabled();
+    expect(
+      screen.queryByText("shotGuide.actions.takePhotoFirst"),
+    ).not.toBeInTheDocument();
+
+    await user.click(shutter());
+
+    expect(next()).toBeEnabled();
+  });
+
+  it("never lands the cursor past the confirmation", async () => {
+    const user = userEvent.setup();
+    render(<Harness initial={threePending()} />);
+
+    await user.click(shutter());
+    await user.click(next());
+    await user.click(shutter());
+    await user.click(next());
+    await user.click(shutter());
+    await user.click(next());
+
+    // Every photo is captured, so the harness's cursor has stepped onto the confirmation
+    // (index 3). This is the last step the harness can reach — `advanceCursor` never moves
+    // past it, and `cursorIndex + 1` is guarded by `next === cursorIndex`.
+    expect(screen.queryByText("Shot 3")).not.toBeInTheDocument();
+  });
+});
+
+describe("the shot instruction (prep §2)", () => {
+  it("shows the instruction behind a trigger, not as a paragraph", () => {
+    render(<Harness initial={threePending()} />);
+
+    // The trigger is a real button with the label key as its accessible name.
+    const trigger = screen.getByRole("button", {
+      name: "shotGuide.instructions.trigger",
+    });
+
+    expect(trigger).toBeInTheDocument();
+
+    // And the instruction text is NOT loose in the panel. `threePending` gives shot 0 the
+    // instructions "Instructions 0", which the tooltip renders — so it is in the document
+    // exactly once, inside the trigger's panel, and never as a sibling paragraph.
+    trigger.focus();
+
+    expect(screen.getAllByText("Instructions 0")).toHaveLength(1);
+  });
+
+  it("shows the empty-state text, and no trigger, when the shot has no instructions", () => {
+    const shots = threePending();
+    shots[0] = { ...shots[0], instructions: "" };
+
+    render(<Harness initial={shots} />);
+
+    expect(screen.getByText("shotGuide.instructions.empty")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: "shotGuide.instructions.trigger",
+      }),
+    ).not.toBeInTheDocument();
   });
 });
