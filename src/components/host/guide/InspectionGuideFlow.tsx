@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 
 import { InlineCamera } from "@/components/host/InlineCamera";
 import Typography from "@/components/Typography";
+import { useGuideExitGuard } from "@/hooks/useGuideExitGuard";
 import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
+import { canLeaveGuide } from "@/lib/helpers/guideExit";
 import {
   advanceCursor,
   capturedCount,
@@ -17,6 +19,7 @@ import {
   stripItems,
 } from "@/lib/helpers/guideFlow";
 import { GuideReviewScreen } from "./GuideReviewScreen";
+import { LeaveGuideDialog } from "./LeaveGuideDialog";
 import { PhotoStrip } from "./PhotoStrip";
 import { ShotStepPanel } from "./ShotStepPanel";
 import { useCapturedShots } from "./useCapturedShots";
@@ -61,6 +64,11 @@ export function InspectionGuideFlow({
   const [cursorIndex, setCursorIndex] = useState(() => initialCursorIndex(initialShots));
   const [viewedIndex, setViewedIndex] = useState(() => initialCursorIndex(initialShots));
   const [isCameraOpen, setIsCameraOpen] = useState(true);
+
+  // D9/D10: one answer, two exits. The hook blocks an in-app navigation and warns on a tab
+  // close; the dialog below is what the in-app block renders.
+  const canLeave = canLeaveGuide(shots, isSubmitting);
+  const blocker = useGuideExitGuard(canLeave);
 
   if (shots.length === 0) {
     // Spec §Behaviour row 2 / decisions "Empty": the existing noShots panel, no strip.
@@ -148,6 +156,12 @@ export function InspectionGuideFlow({
           }
         />
       )}
+
+      <LeaveGuideDialog
+        isOpen={blocker.state === "blocked"}
+        onConfirm={() => blocker.proceed?.()}
+        onCancel={() => blocker.reset?.()}
+      />
     </div>
   );
 }
