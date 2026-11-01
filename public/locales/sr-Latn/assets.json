@@ -182,7 +182,10 @@
       "ariaLabel": "Slike za snimanje",
       "pendingItem": "Fotografija {{index}} od {{total}}, još nije snimljena",
       "capturedItem": "Slika {{index}} od {{total}}, snimljeno — pogledajte je",
-      "currentItem": "Trenutni korak"
+      "currentItem": "Trenutni korak",
+      "activeItem": "Viewing",
+      "confirmItem": "Confirmation",
+      "confirmTitle": "Review"
     },
     "review": {
       "title": "Sve fotografije ste sakupili za sve fotografije koje ste snimili <split__.",

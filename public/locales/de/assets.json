@@ -182,7 +182,10 @@
       "ariaLabel": "Zu machende Fotos",
       "pendingItem": "Foto {{index}} von {{total}}, noch nicht aufgenommen",
       "capturedItem": "Foto {{index}} von {{total}}, aufgenommen – ansehen",
-      "currentItem": "Aktueller Schritt"
+      "currentItem": "Aktueller Schritt",
+      "activeItem": "Viewing",
+      "confirmItem": "Confirmation",
+      "confirmTitle": "Review"
     },
     "review": {
       "title": "Alle gesammelten Fotos",

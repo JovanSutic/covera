@@ -179,7 +179,10 @@
       "ariaLabel": "Photos to take",
       "pendingItem": "Photo {{index}} of {{total}}, not taken yet",
       "capturedItem": "Photo {{index}} of {{total}}, taken — view it",
-      "currentItem": "Current step"
+      "currentItem": "Current step",
+      "activeItem": "Viewing",
+      "confirmItem": "Confirmation",
+      "confirmTitle": "Review"
     },
     "review": {
       "title": "All photos collected",

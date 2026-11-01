@@ -182,7 +182,10 @@
       "ariaLabel": "Çekilecek fotoğraflar",
       "pendingItem": "Fotoğraf {{index}}/{{total}}, henüz çekilmedi",
       "capturedItem": "{{index}}/{{total}} fotoğrafı, çekildi — görüntüleyin",
-      "currentItem": "Geçerli adım"
+      "currentItem": "Geçerli adım",
+      "activeItem": "Viewing",
+      "confirmItem": "Confirmation",
+      "confirmTitle": "Review"
     },
     "review": {
       "title": "Tüm fotoğraflar toplandı",

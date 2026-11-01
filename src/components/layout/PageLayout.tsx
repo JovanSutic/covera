@@ -16,13 +16,21 @@ type PageLayoutProps = {
   size?: MaxWidthSize;
 };
 
-function PageLayout({ 
-  children, 
-  className, 
+/**
+ * The page wrapper, and prep §4's tooltip boundary.
+ *
+ * `data-tooltip-host` is the attribute `useTooltipPlacement` looks for with `closest()`. It is
+ * on `main` rather than on the inner container so that the boundary is the element every page
+ * has exactly one of, and so a tooltip rendered anywhere inside it — including one inside a
+ * `SectionCard`'s action slot — is clamped to the page rather than to the card.
+ */
+function PageLayout({
+  children,
+  className,
   size = "sm"
 }: PageLayoutProps) {
   return (
-    <main className="w-full">
+    <main className="w-full" data-tooltip-host>
       <div
         className={cn(
           "mx-auto w-full",

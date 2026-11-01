@@ -88,9 +88,11 @@ export function ActionButton({
       </button>
 
       {tooltip && (
-        // Invariant 11: no width gate. The panel is absolutely positioned, so the
-        // surfaces that host it must not clip it — that is the host's job, not this
-        // component's (see `ReservationActionsBar`).
+        // Invariant 11: no width gate. The panel is `fixed` and measured by `TooltipPanel`, which
+        // clamps it to the `[data-tooltip-host]` box (`PageLayout`) or to the viewport when there
+        // is none. What the host still owes is no CLIP: an ancestor with `overflow: hidden` cuts
+        // the panel off, because `position: fixed` escapes a scroll container but not a clip.
+        // That remains the host's job — see `ReservationActionsBar`.
         <InfoTooltip content={tooltip} label={tooltipLabel ?? label} />
       )}
     </span>

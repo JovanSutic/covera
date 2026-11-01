@@ -16,6 +16,11 @@ interface ShotStepPanelProps {
   totalCount: number;
   isCaptured: boolean;
   isViewingEarlierStep: boolean;
+  /**
+   * D5/§3: false when no pending step follows — which, since prep §3 made the confirmation
+   * the step after the last photo, is now never true while this panel renders. The flow
+   * passes `cursorIndex < confirmationIndex(shots)` truthfully rather than a literal.
+   */
   hasNextStep: boolean;
   disabled: boolean;
   onCapture: (previewUrl: string, file: File) => void;

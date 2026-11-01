@@ -4,13 +4,16 @@ import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
 import {
   advanceCursor,
   capturedCount,
+  confirmationIndex,
+  confirmationProgress,
   initialCursorIndex,
+  inspectionGuideSteps,
   isCaptured,
   isFlowComplete,
   isViewingEarlierStep,
   nextPendingIndex,
   selectStep,
-  stripItems,
+  stepCount,
 } from "./guideFlow";
 
 /** Three steps, none captured — the state the guide opens in. */
@@ -59,6 +62,18 @@ describe("capturedCount", () => {
   });
 });
 
+describe("stepCount and confirmationIndex", () => {
+  it("is one more than the photo count — the confirmation (prep §3)", () => {
+    expect(stepCount(threePending())).toBe(4);
+    expect(stepCount([])).toBe(1);
+  });
+
+  it("puts the confirmation at the photo count", () => {
+    expect(confirmationIndex(threePending())).toBe(3);
+    expect(confirmationIndex([])).toBe(0);
+  });
+});
+
 describe("nextPendingIndex", () => {
   it("finds the first pending step strictly after the cursor", () => {
     expect(nextPendingIndex(threePending(), -1)).toBe(0);
@@ -66,7 +81,6 @@ describe("nextPendingIndex", () => {
   });
 
   it("skips the steps already captured", () => {
-    // 1 is captured, so from 0 the next pending step is 2, not 1.
     expect(nextPendingIndex(withCaptured([1]), 0)).toBe(2);
   });
 
@@ -76,7 +90,6 @@ describe("nextPendingIndex", () => {
   });
 
   it("never looks backwards", () => {
-    // 0 is pending but sits behind the cursor: from 1 there is no next pending step.
     expect(nextPendingIndex(withCaptured([2]), 1)).toBeNull();
   });
 });
@@ -87,22 +100,20 @@ describe("initialCursorIndex", () => {
   });
 
   it("opens a resumed guide on the first PENDING step", () => {
-    // D20: steps 0 and 1 are done, so the host lands where the work is.
     expect(initialCursorIndex(withCaptured([0, 1]))).toBe(2);
   });
 
-  it("opens an all-captured guide on 0, so the cursor is never null", () => {
-    expect(initialCursorIndex(withCaptured([0, 1, 2]))).toBe(0);
+  it("opens an all-captured guide on the CONFIRMATION (prep §3)", () => {
+    expect(initialCursorIndex(withCaptured([0, 1, 2]))).toBe(3);
   });
 
-  it("opens an empty guide on 0", () => {
+  it("opens an empty guide on 0 — which is also its confirmation index", () => {
     expect(initialCursorIndex([])).toBe(0);
   });
 });
 
 describe("advanceCursor", () => {
   it("moves to the next pending step after a capture", () => {
-    // Step 0 was just captured; the cursor was on it.
     expect(advanceCursor(withCaptured([0]), 0)).toBe(1);
   });
 
@@ -110,11 +121,9 @@ describe("advanceCursor", () => {
     expect(advanceCursor(withCaptured([0, 1]), 0)).toBe(2);
   });
 
-  it("stays put when nothing pending follows — it does not wrap to a captured step", () => {
+  it("stays put when nothing pending follows — the caller reads that as the confirmation", () => {
     expect(advanceCursor(withCaptured([0, 1, 2]), 2)).toBe(2);
 
-    // A guide with a single step: the cursor sits on it, nothing follows it, and it
-    // must not wrap back to the captured step it is already on.
     const [onlyStep] = withCaptured([0]);
     expect(advanceCursor([onlyStep], 0)).toBe(0);
   });
@@ -136,12 +145,21 @@ describe("selectStep", () => {
   it("returns the cursor for an index with no step at all", () => {
     expect(selectStep(threePending(), 99, 0)).toBe(0);
   });
+
+  it("always returns the confirmation index — it is a step you may stand on", () => {
+    expect(selectStep(threePending(), 3, 3)).toBe(3);
+    expect(selectStep(threePending(), 3, 0)).toBe(3);
+  });
 });
 
 describe("isViewingEarlierStep", () => {
   it("is false at the cursor, true anywhere else", () => {
     expect(isViewingEarlierStep(2, 2)).toBe(false);
     expect(isViewingEarlierStep(2, 0)).toBe(true);
+  });
+
+  it("is true when the cursor is the confirmation and the host is on a photo", () => {
+    expect(isViewingEarlierStep(3, 2)).toBe(true);
   });
 });
 
@@ -157,36 +175,118 @@ describe("isFlowComplete", () => {
   });
 });
 
-describe("stripItems", () => {
-  it("returns every step, blank ones included, in order", () => {
-    const items = stripItems(withCaptured([1]), 1);
+describe("inspectionGuideSteps", () => {
+  it("returns every photo, blank ones included, in order, plus the confirmation", () => {
+    const items = inspectionGuideSteps(withCaptured([1]), 1, 1);
 
-    expect(items.map((item) => item.index)).toEqual([0, 1, 2]);
-    expect(items.map((item) => item.isCaptured)).toEqual([false, true, false]);
+    expect(items.map((item) => item.index)).toEqual([0, 1, 2, 3]);
+    expect(items.map((item) => item.isCaptured)).toEqual([false, true, false, false]);
+    expect(items.map((item) => item.isConfirm)).toEqual([false, false, false, true]);
   });
 
   it("marks exactly one item current, and it is the cursor", () => {
-    const items = stripItems(withCaptured([0]), 1);
+    expect(
+      inspectionGuideSteps(withCaptured([0]), 1, 1)
+        .filter((item) => item.isCurrent)
+        .map((item) => item.index),
+    ).toEqual([1]);
+  });
 
+  it("marks the confirmation current when the cursor is on it", () => {
+    expect(
+      inspectionGuideSteps(withCaptured([0, 1, 2]), 3, 3)
+        .filter((item) => item.isCurrent)
+        .map((item) => item.index),
+    ).toEqual([3]);
+  });
+
+  it("marks the step the host jumped into as active (prep §1)", () => {
+    // Every photo is captured, the cursor is on the confirmation, and the host has tapped
+    // photo 1: photo 1 alone is active.
+    const items = inspectionGuideSteps(withCaptured([0, 1, 2]), 3, 1);
+
+    expect(items.filter((item) => item.isActive).map((item) => item.index)).toEqual([1]);
+  });
+
+  it("does NOT mark every finished photo active — only the one being viewed", () => {
+    // The bug this pins: `isActive: isCaptured(shot) && index !== cursorIndex` lit up
+    // every completed step at once, which is the opposite of a "you are here" ring.
+    const items = inspectionGuideSteps(withCaptured([0, 1, 2]), 3, 1);
+
+    expect(items.map((item) => item.isActive)).toEqual([false, true, false, false]);
+  });
+
+  it("never marks the current item active — current wins", () => {
+    const items = inspectionGuideSteps(withCaptured([0, 1, 2]), 1, 1);
+
+    expect(items.filter((item) => item.isActive)).toEqual([]);
     expect(items.filter((item) => item.isCurrent).map((item) => item.index)).toEqual([1]);
   });
 
+  it("never marks a pending step active, even if it is the viewed index", () => {
+    // `selectStep` refuses to move `viewedIndex` onto a pending step, so this is
+    // unreachable through the flow — pinned here as the helper's own guarantee.
+    const items = inspectionGuideSteps(threePending(), 0, 2);
+
+    expect(items.filter((item) => item.isActive)).toEqual([]);
+  });
+
+  it("marks at most one item active, whatever the cursor and viewed index are", () => {
+    for (const cursor of [0, 1, 2, 3]) {
+      for (const viewed of [0, 1, 2, 3]) {
+        const items = inspectionGuideSteps(withCaptured([0, 1, 2]), cursor, viewed);
+        const active = items.filter((item) => item.isActive);
+
+        expect(
+          active.length,
+          `cursor ${cursor}, viewed ${viewed}`,
+        ).toBeLessThanOrEqual(1);
+        expect(
+          items.filter((item) => item.isCurrent && item.isActive).length,
+          `cursor ${cursor}, viewed ${viewed}`,
+        ).toBe(0);
+      }
+    }
+  });
+
   it("carries the preview URL only for a captured step", () => {
-    const items = stripItems(withCaptured([2]), 0);
+    const items = inspectionGuideSteps(withCaptured([2]), 0, 0);
 
     expect(items[2].imageUrl).toBe("blob:preview-2");
     expect(items[0].imageUrl).toBeNull();
+    expect(items[3].imageUrl).toBeNull();
   });
 
   it("carries the shot's title and room so the item needs no lookup", () => {
-    const items = stripItems(threePending(), 0);
+    const items = inspectionGuideSteps(threePending(), 0, 0);
 
     expect(items[1].title).toBe("Shot 1");
     expect(items[1].roomLocation).toBe("KITCHEN");
     expect(items[1].shotId).toBe("shot-1");
   });
 
-  it("returns nothing for an empty guide", () => {
-    expect(stripItems([], 0)).toEqual([]);
+  it("gives the confirmation a stable id and no photo", () => {
+    const [confirmation] = inspectionGuideSteps(threePending(), 3, 3).slice(-1);
+
+    expect(confirmation.shotId).toBe("confirmation");
+    expect(confirmation.isCaptured).toBe(false);
+    expect(confirmation.title).toBe("");
+  });
+
+  it("returns just the confirmation for an empty guide", () => {
+    const items = inspectionGuideSteps([], 0, 0);
+
+    expect(items).toHaveLength(1);
+    expect(items[0].isConfirm).toBe(true);
+    expect(items[0].index).toBe(0);
+  });
+});
+
+describe("confirmationProgress", () => {
+  it("counts the photos and the shots, never the confirmation step", () => {
+    expect(confirmationProgress(threePending(), 2)).toEqual({
+      completed: 2,
+      total: 3,
+    });
   });
 });
