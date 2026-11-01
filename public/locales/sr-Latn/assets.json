@@ -175,25 +175,25 @@
       "next": "Sledeće →",
       "uploading": "Otpremanje...",
       "finishAndSave": "Završi i sačuvaj sve",
-      "goToCurrent": "Go to current step",
-      "takePhotoFirst": "Take the photo to continue"
+      "goToCurrent": "Idite na trenutni korak",
+      "takePhotoFirst": "Snimite fotografiju da biste nastavili"
     },
     "strip": {
-      "ariaLabel": "Photos to take",
-      "pendingItem": "Photo {{index}} of {{total}}, not taken yet",
-      "capturedItem": "Photo {{index}} of {{total}}, taken — view it",
-      "currentItem": "Current step"
+      "ariaLabel": "Slike za snimanje",
+      "pendingItem": "Fotografija {{index}} od {{total}}, još nije snimljena",
+      "capturedItem": "Slika {{index}} od {{total}}, snimljeno — pogledajte je",
+      "currentItem": "Trenutni korak"
     },
     "review": {
-      "title": "All photos collected",
-      "description": "You have taken all {{total}} photos for this stay.",
-      "checklist": "Check the photo list above before you submit. Once submitted, the proofs are recorded against this reservation and cannot be changed.",
-      "submit": "Submit photos"
+      "title": "Sve fotografije ste sakupili za sve fotografije koje ste snimili <split__.",
+      "description": "Proverite gornju listu fotografija pre nego što pošaljete. Kada se predaju, dokazi se evidentiraju uz ovu rezervu i ne mogu se menjati.",
+      "checklist": "Pošaljite fotografije",
+      "submit": "Želite da napustite vodič?"
     },
     "leave": {
-      "title": "Leave the guide?",
-      "description": "You have photos that have not been submitted yet. If you leave now they will be lost.",
-      "confirm": "Leave",
+      "title": "Imate fotografije koje još uvek nisu poslate. Ako sada odete, oni će biti izgubljeni.",
+      "description": "Napusti",
+      "confirm": "Ostani",
       "cancel": "Stay"
     }
   },

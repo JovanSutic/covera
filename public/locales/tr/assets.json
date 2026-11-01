@@ -175,26 +175,26 @@
       "next": "Sonraki →",
       "uploading": "Yükleniyor...",
       "finishAndSave": "Bitir ve Tümünü Kaydet",
-      "goToCurrent": "Go to current step",
-      "takePhotoFirst": "Take the photo to continue"
+      "goToCurrent": "Geçerli adıma git",
+      "takePhotoFirst": "Devam etmek için fotoğrafı çekin"
     },
     "strip": {
-      "ariaLabel": "Photos to take",
-      "pendingItem": "Photo {{index}} of {{total}}, not taken yet",
-      "capturedItem": "Photo {{index}} of {{total}}, taken — view it",
-      "currentItem": "Current step"
+      "ariaLabel": "Çekilecek fotoğraflar",
+      "pendingItem": "Fotoğraf {{index}}/{{total}}, henüz çekilmedi",
+      "capturedItem": "{{index}}/{{total}} fotoğrafı, çekildi — görüntüleyin",
+      "currentItem": "Geçerli adım"
     },
     "review": {
-      "title": "All photos collected",
-      "description": "You have taken all {{total}} photos for this stay.",
-      "checklist": "Check the photo list above before you submit. Once submitted, the proofs are recorded against this reservation and cannot be changed.",
-      "submit": "Submit photos"
+      "title": "Tüm fotoğraflar toplandı",
+      "description": "Bu konaklama için tüm {{total}} fotoğraflarını çektiniz.",
+      "checklist": "Göndermeden önce yukarıdaki fotoğraf listesini kontrol edin. Kanıtlar gönderildikten sonra bu rezervasyona göre kaydedilir ve değiştirilemez.",
+      "submit": "Fotoğrafları gönderin"
     },
     "leave": {
-      "title": "Leave the guide?",
-      "description": "You have photos that have not been submitted yet. If you leave now they will be lost.",
-      "confirm": "Leave",
-      "cancel": "Stay"
+      "title": "Kılavuzdan ayrılmak istiyor musunuz?",
+      "description": "Henüz gönderilmemiş fotoğraflarınız var. Şimdi gidersen kaybolurlar.",
+      "confirm": "Ayrıl",
+      "cancel": "Kal"
     }
   },
   "shotStudio": {

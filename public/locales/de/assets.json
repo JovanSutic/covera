@@ -175,26 +175,26 @@
       "next": "Weiter →",
       "uploading": "Hochladen...",
       "finishAndSave": "Fertig stellen und alles speichern",
-      "goToCurrent": "Go to current step",
-      "takePhotoFirst": "Take the photo to continue"
+      "goToCurrent": "Gehen Sie zum aktuellen Schritt",
+      "takePhotoFirst": "Machen Sie das Foto, um fortzufahren"
     },
     "strip": {
-      "ariaLabel": "Photos to take",
-      "pendingItem": "Photo {{index}} of {{total}}, not taken yet",
-      "capturedItem": "Photo {{index}} of {{total}}, taken — view it",
-      "currentItem": "Current step"
+      "ariaLabel": "Zu machende Fotos",
+      "pendingItem": "Foto {{index}} von {{total}}, noch nicht aufgenommen",
+      "capturedItem": "Foto {{index}} von {{total}}, aufgenommen – ansehen",
+      "currentItem": "Aktueller Schritt"
     },
     "review": {
-      "title": "All photos collected",
-      "description": "You have taken all {{total}} photos for this stay.",
-      "checklist": "Check the photo list above before you submit. Once submitted, the proofs are recorded against this reservation and cannot be changed.",
-      "submit": "Submit photos"
+      "title": "Alle gesammelten Fotos",
+      "description": "Sie haben alle {{total}} Fotos für diesen Aufenthalt aufgenommen.",
+      "checklist": "Überprüfen Sie die Fotoliste oben, bevor Sie sie einreichen. Nach der Einreichung werden die Nachweise dieser Reservierung zugeordnet und können nicht mehr geändert werden.",
+      "submit": "Fotos einreichen"
     },
     "leave": {
-      "title": "Leave the guide?",
-      "description": "You have photos that have not been submitted yet. If you leave now they will be lost.",
-      "confirm": "Leave",
-      "cancel": "Stay"
+      "title": "Den Leitfaden verlassen?",
+      "description": "Sie haben Fotos, die noch nicht übermittelt wurden. Wenn Sie jetzt gehen, sind sie verloren.",
+      "confirm": "Verlassen",
+      "cancel": "Bleiben"
     }
   },
   "shotStudio": {

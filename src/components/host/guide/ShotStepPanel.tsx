@@ -1,8 +1,10 @@
-import type { ReactNode } from "react";
+import { useRef } from "react";
+import type { ChangeEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import Typography from "@/components/Typography";
 import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
+import { cn } from "@/lib/utils";
 import { ShotStepActions } from "./ShotStepActions";
 
 interface ShotStepPanelProps {
@@ -12,28 +14,31 @@ interface ShotStepPanelProps {
   roomShotCount: number;
   completedCount: number;
   totalCount: number;
-  isCameraOpen: boolean;
   isCaptured: boolean;
   isViewingEarlierStep: boolean;
   hasNextStep: boolean;
   disabled: boolean;
   onCapture: (previewUrl: string, file: File) => void;
-  onCameraCancel: () => void;
-  onOpenCamera: () => void;
   onNext: () => void;
   onGoToCurrent: () => void;
   /**
-   * D24b: the camera is injected. Prep §2's sequence puts the native camera outside the
-   * app, so the seam between "the app's step" and "the device's camera" is real — and it
-   * is what lets the phase-3 test drive the flow without a file input.
+   * D24b/D30: the camera is injected, and it is the *trigger*, not a view. Prep §2 puts the
+   * native camera outside the app, so this control's job is to hand the OS a file input; the
+   * default rendered below is that control, and a test replaces it with a stub. There is no
+   * `onCancel`: a native picker is dismissed by the OS, so there is no in-app state to undo.
    */
-  renderCamera: (onCapture: (url: string, file: File) => void, onCancel: () => void) => ReactNode;
+  renderCamera?: (onCapture: (url: string, file: File) => void) => ReactNode;
 }
 
 /**
  * One step of the flow (prep §2). The structure is the same for every step; only the
  * instruction changes — which is exactly why the step is a component and not a branch
  * inside a page.
+ *
+ * D30: this panel is the flow's ONLY step view. The preview area and the camera control
+ * are always both on screen; the control is the native camera's trigger, exactly as
+ * `InlineCamera`'s `openCameraButton` was, so the host never passes through an intermediate
+ * in-app camera screen.
  */
 export function ShotStepPanel({
   shot,
@@ -41,21 +46,35 @@ export function ShotStepPanel({
   roomShotCount,
   completedCount,
   totalCount,
-  isCameraOpen,
   isCaptured,
   isViewingEarlierStep,
   hasNextStep,
   disabled,
   onCapture,
-  onCameraCancel,
-  onOpenCamera,
   onNext,
   onGoToCurrent,
   renderCamera,
 }: ShotStepPanelProps) {
   const { t } = useTranslation("assets");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const progressPercent = Math.round((completedCount / totalCount) * 100);
+
+  /**
+   * The same mechanism `InlineCamera` used: create the object URL at capture time (D19),
+   * then clear the input so re-choosing the same file fires `change` again — which is what
+   * makes a retake take a second photo rather than silently doing nothing.
+   */
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    onCapture(URL.createObjectURL(file), file);
+
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
 
   return (
     <div className="space-y-2">
@@ -113,44 +132,52 @@ export function ShotStepPanel({
           </p>
         </div>
 
-        {isCameraOpen ? (
-          <fieldset disabled={disabled} className="contents">
-            {renderCamera(onCapture, onCameraCancel)}
-          </fieldset>
-        ) : (
-          <div className="space-y-3">
-            <div className="relative flex aspect-16/12 w-full items-center justify-center overflow-hidden rounded-xl border border-gray-800 bg-gray-950 lg:aspect-16/9">
-              {isCaptured ? (
-                <img
-                  src={shot.capturedImageUrl}
-                  alt={shot.title}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="space-y-2 p-6 text-center">
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-gray-400">
-                    📷
-                  </div>
-                  <p className="text-xs text-gray-400">{t("shotGuide.camera.noPhoto")}</p>
+        <div className="space-y-3">
+          <div className="relative flex aspect-16/12 w-full items-center justify-center overflow-hidden rounded-xl border border-gray-800 bg-gray-950 lg:aspect-16/9">
+            {isCaptured ? (
+              <img
+                src={shot.capturedImageUrl}
+                alt={shot.title}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="space-y-2 p-6 text-center">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-gray-400">
+                  📷
                 </div>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={onOpenCamera}
-              disabled={disabled}
-              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-            >
-              <span>📷</span>
-              <span>
-                {isCaptured
-                  ? t("shotGuide.camera.retakePhoto")
-                  : t("shotGuide.camera.openCamera")}
-              </span>
-            </button>
+                <p className="text-xs text-gray-400">{t("shotGuide.camera.noPhoto")}</p>
+              </div>
+            )}
           </div>
-        )}
+
+          <fieldset disabled={disabled} className="contents">
+            {renderCamera ? (
+              renderCamera(onCapture)
+            ) : (
+              <label
+                className={cn(
+                  "flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white shadow-xs transition-colors hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200",
+                  disabled && "cursor-not-allowed opacity-40",
+                )}
+              >
+                <span>📷</span>
+                <span>
+                  {isCaptured
+                    ? t("shotGuide.camera.retakePhoto")
+                    : t("shotGuide.camera.openCamera")}
+                </span>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </fieldset>
+        </div>
 
         <ShotStepActions
           isCaptured={isCaptured}

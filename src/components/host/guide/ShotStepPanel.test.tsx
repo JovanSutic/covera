@@ -33,20 +33,21 @@ function threePending(): CapturedApartmentShot[] {
  * The phase-5 orchestrator's state, in miniature: the same helper calls in the same
  * order, so this test fails if the flow's rules change even though the orchestrator does
  * not exist yet.
+ *
+ * D30: there is no camera flag. The panel is the flow's only step view and its camera
+ * control is the native camera's trigger, so the injected stub below replaces that control
+ * rather than standing in for a screen the flow switches to.
  */
 function Harness({ initial }: { initial: CapturedApartmentShot[] }) {
   const { shots, capture } = useCapturedShots(initial);
   const [cursorIndex, setCursorIndex] = useState(0);
   const [viewedIndex, setViewedIndex] = useState(0);
-  const [isCameraOpen, setIsCameraOpen] = useState(true);
 
   const shot = shots[viewedIndex];
 
   /** What phase 5's `PhotoStrip` calls when a captured item is tapped. */
   const openStep = (index: number) => {
-    const selected = selectStep(shots, index, cursorIndex);
-    setViewedIndex(selected);
-    setIsCameraOpen(!isCaptured(shots[selected]));
+    setViewedIndex(selectStep(shots, index, cursorIndex));
   };
 
   return (
@@ -65,39 +66,28 @@ function Harness({ initial }: { initial: CapturedApartmentShot[] }) {
         roomShotCount={shots.length}
         completedCount={capturedCount(shots)}
         totalCount={shots.length}
-        isCameraOpen={isCameraOpen}
         isCaptured={isCaptured(shot)}
         isViewingEarlierStep={isViewingEarlierStep(cursorIndex, viewedIndex)}
         hasNextStep={nextPendingIndex(shots, cursorIndex) !== null}
         disabled={false}
         onCapture={(url, file) => {
           capture(viewedIndex, url, file);
-          setIsCameraOpen(false);
         }}
-        onCameraCancel={() => setIsCameraOpen(false)}
-        onOpenCamera={() => setIsCameraOpen(true)}
         onNext={() => {
           const next = advanceCursor(shots, cursorIndex);
           setCursorIndex(next);
           setViewedIndex(next);
-          setIsCameraOpen(!isCaptured(shots[next]));
         }}
         onGoToCurrent={() => {
           setViewedIndex(cursorIndex);
-          setIsCameraOpen(!isCaptured(shots[cursorIndex]));
         }}
-        renderCamera={(onCapture, onCancel) => (
-          <div>
-            <button
-              type="button"
-              onClick={() => onCapture("blob:preview", new File([], "a.jpg"))}
-            >
-              stub-shutter
-            </button>
-            <button type="button" onClick={onCancel}>
-              stub-cancel
-            </button>
-          </div>
+        renderCamera={(onCapture) => (
+          <button
+            type="button"
+            onClick={() => onCapture("blob:preview", new File([], "a.jpg"))}
+          >
+            stub-shutter
+          </button>
         )}
       />
     </div>
@@ -106,9 +96,9 @@ function Harness({ initial }: { initial: CapturedApartmentShot[] }) {
 
 const shutter = () => screen.getByRole("button", { name: "stub-shutter" });
 const next = () => screen.getByRole("button", { name: "shotGuide.actions.next" });
-const retake = () => screen.getByRole("button", { name: /shotGuide.camera.retakePhoto/ });
-// No `openCamera` helper: the two assertions that mention that control are negative, and
-// a `getByRole` helper throws when the element is absent. They query inline instead.
+// No `retake`/`openCamera` helpers: the injected stub REPLACES the panel's camera control,
+// label included, so `shotGuide.camera.*` is never in this test's DOM. The control's own
+// presence is asserted through `shutter()`, and its label is pinned by phase 2/3 markup.
 const goToCurrent = () =>
   screen.getByRole("button", { name: "shotGuide.actions.goToCurrent" });
 const jumpTo = (index: number) =>
@@ -123,7 +113,7 @@ const jumpTo = (index: number) =>
 const progress = () => screen.getByText("shotGuide.header.completedCount");
 
 describe("the step's capture state", () => {
-  it("opens on the camera, with Next disabled until the photo exists", async () => {
+  it("shows the step panel, with Next disabled until the photo exists", async () => {
     const user = userEvent.setup();
     render(<Harness initial={threePending()} />);
 
@@ -135,18 +125,19 @@ describe("the step's capture state", () => {
     expect(next()).toBeEnabled();
   });
 
-  it("closing the camera shows the photo large with the retake control", async () => {
+  it("shows the captured photo large in the panel, with the camera control still on screen", async () => {
     const user = userEvent.setup();
     render(<Harness initial={threePending()} />);
 
     await user.click(shutter());
 
-    expect(screen.queryByRole("button", { name: "stub-shutter" })).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Shot 0" })).toHaveAttribute(
       "src",
       "blob:preview",
     );
-    expect(retake()).toBeInTheDocument();
+    // D30: the control is the native camera's trigger and is always mounted — the capture
+    // does not swap the panel for a different view, which was the defect this phase fixes.
+    expect(shutter()).toBeInTheDocument();
   });
 
   it("does NOT move the cursor on capture — the host stays on the captured step (D2)", async () => {
@@ -159,7 +150,7 @@ describe("the step's capture state", () => {
     expect(progress()).toBeInTheDocument();
   });
 
-  it("advances to the next pending step on Next, and opens its camera", async () => {
+  it("advances to the next pending step on Next", async () => {
     const user = userEvent.setup();
     render(<Harness initial={threePending()} />);
 
@@ -175,11 +166,13 @@ describe("the step's capture state", () => {
     render(<Harness initial={threePending()} />);
 
     await user.click(shutter());
-    await user.click(retake());
+    await user.click(shutter());
 
-    // The camera is back and the counter is still there: a retake is not a capture. That it
-    // still reads 1 of 3 is `capturedCount`'s guarantee, pinned in `guideFlow.test.ts`.
-    expect(shutter()).toBeInTheDocument();
+    // Two captures on the same step: the heading is unchanged and Next is enabled, which
+    // can only be the one step carrying a photo. That the counter still reads 1 of 3 is
+    // `capturedCount`'s guarantee, pinned in `guideFlow.test.ts`.
+    expect(screen.getByText("Shot 0")).toBeInTheDocument();
+    expect(next()).toBeEnabled();
     expect(progress()).toBeInTheDocument();
   });
 
@@ -196,7 +189,6 @@ describe("the step's capture state", () => {
     expect(screen.getByText("Shot 0")).toBeInTheDocument();
     expect(goToCurrent()).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "shotGuide.actions.next" })).not.toBeInTheDocument();
-    expect(retake()).toBeInTheDocument();
   });
 
   it("returns to the cursor on Go to current step, and Next comes back", async () => {
@@ -213,7 +205,7 @@ describe("the step's capture state", () => {
     expect(next()).toBeInTheDocument();
   });
 
-  it("opens a pending step's panel read-only — the camera control, never a retake", async () => {
+  it("opens a pending step read-only — its camera control, and a disabled Next", async () => {
     const user = userEvent.setup();
     render(<Harness initial={threePending()} />);
 
@@ -223,10 +215,12 @@ describe("the step's capture state", () => {
     await user.click(next());
     await user.click(jumpTo(1));
 
-    // 1 is the cursor and is pending: the camera is open, so neither control is on screen.
+    // 1 is the cursor and is pending: the control is there to take the photo, and nothing
+    // offers to move on until it is taken.
+    expect(screen.getByText("Shot 1")).toBeInTheDocument();
     expect(shutter()).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /retakePhoto/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /openCamera/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "shotGuide.actions.goToCurrent" })).not.toBeInTheDocument();
+    expect(next()).toBeDisabled();
   });
 
   it("shows no Next, and the take-the-photo hint, on the last pending step", async () => {

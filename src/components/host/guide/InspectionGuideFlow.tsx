@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { InlineCamera } from "@/components/host/InlineCamera";
 import Typography from "@/components/Typography";
 import { useGuideExitGuard } from "@/hooks/useGuideExitGuard";
 import type { CapturedApartmentShot } from "@/lib/api/submitPhotoProofs";
@@ -28,24 +27,29 @@ interface InspectionGuideFlowProps {
   initialShots: CapturedApartmentShot[];
   isSubmitting?: boolean;
   onSubmit: (shots: CapturedApartmentShot[]) => void;
-  /** D24b: the camera is injected; the default is the real one. */
-  renderCamera?: (
-    onCapture: (url: string, file: File) => void,
-    onCancel: () => void,
-  ) => ReactNode;
+  /**
+   * D24b/D30: the camera is injected as the *control*, not as a view — it hands the OS a
+   * file input. The real one is `ShotStepPanel`'s own default, so this prop exists only for
+   * a test to replace it with a stub.
+   */
+  renderCamera?: (onCapture: (url: string, file: File) => void) => ReactNode;
 }
 
 /**
  * The photo-proof flow (prep §1–3), composed from the pieces beside this file.
  *
- * It is the second-least-knowledgeable component in the feature: it owns the cursor, the
- * viewed index and whether the camera is open, asks `guideFlow.ts` every question, and
- * passes the answers down. No business logic is computed inline (invariant 13) because
- * every rule it would compute is a tested export of that module.
+ * It is the second-least-knowledgeable component in the feature: it owns the cursor and the
+ * viewed index, asks `guideFlow.ts` every question, and passes the answers down. No business
+ * logic is computed inline (invariant 13) because every rule it would compute is a tested
+ * export of that module.
  *
  * Cursor vs viewed index is the whole of prep §1's jump-back behaviour: the cursor is
  * where sequential progress stopped, `viewedIndex` is what the host is looking at. They
  * are equal except while the host is inspecting an earlier photo (D21).
+ *
+ * D30/D14 as amended: there is no in-app camera view. The step panel is the only step
+ * surface and its control is the native camera's trigger, so the strip — which prep §1 wants
+ * "always in the view" — is rendered in every flow state, the review screen included (D15).
  *
  * `isSubmitting` is the page's mutation state. While it is true the page renders a
  * full-screen overlay above this component, so this file only has to keep the controls
@@ -63,7 +67,6 @@ export function InspectionGuideFlow({
   // D20: a fresh guide opens on step 0; a resumed one opens on its first pending step.
   const [cursorIndex, setCursorIndex] = useState(() => initialCursorIndex(initialShots));
   const [viewedIndex, setViewedIndex] = useState(() => initialCursorIndex(initialShots));
-  const [isCameraOpen, setIsCameraOpen] = useState(true);
 
   // D9/D10: one answer, two exits. The hook blocks an in-app navigation and warns on a tab
   // close; the dialog below is what the in-app block renders.
@@ -84,39 +87,31 @@ export function InspectionGuideFlow({
   const flowComplete = isFlowComplete(shots);
   const currentIsCaptured = isCaptured(shot);
 
-  // Prep §1: the strip is on screen in every state except while the camera is open (D14),
-  // and the review screen is only reachable once every step carries a photo (D16).
-  const showStrip = !isCameraOpen;
+  // D16: the review screen is only reachable once every step carries a photo, and only
+  // while the host is not off inspecting an earlier one.
   const showReview = flowComplete && !isViewing;
 
   const openStep = (index: number) => {
-    const selected = selectStep(shots, index, cursorIndex);
-    setViewedIndex(selected);
-    setIsCameraOpen(!isCaptured(shots[selected]));
+    setViewedIndex(selectStep(shots, index, cursorIndex));
   };
 
   const handleCapture = (previewUrl: string, file?: File) => {
     capture(viewedIndex, previewUrl, file);
-    setIsCameraOpen(false);
   };
 
   const handleNext = () => {
     const next = advanceCursor(shots, cursorIndex);
     setCursorIndex(next);
     setViewedIndex(next);
-    setIsCameraOpen(!isCaptured(shots[next]));
   };
 
   const handleGoToCurrent = () => {
     setViewedIndex(cursorIndex);
-    setIsCameraOpen(!isCaptured(shots[cursorIndex]));
   };
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-2">
-      {showStrip && (
-        <PhotoStrip items={stripItems(shots, cursorIndex)} onSelect={openStep} />
-      )}
+      <PhotoStrip items={stripItems(shots, cursorIndex)} onSelect={openStep} />
 
       {showReview ? (
         <GuideReviewScreen
@@ -138,22 +133,14 @@ export function InspectionGuideFlow({
           }
           completedCount={capturedCount(shots)}
           totalCount={shots.length}
-          isCameraOpen={isCameraOpen}
           isCaptured={currentIsCaptured}
           isViewingEarlierStep={isViewing}
           hasNextStep={nextPendingIndex(shots, cursorIndex) !== null}
           disabled={isSubmitting}
           onCapture={handleCapture}
-          onCameraCancel={() => setIsCameraOpen(false)}
-          onOpenCamera={() => setIsCameraOpen(true)}
           onNext={handleNext}
           onGoToCurrent={handleGoToCurrent}
-          renderCamera={
-            renderCamera ??
-            ((onCapture, onCancel) => (
-              <InlineCamera onCapture={onCapture} onCancel={onCancel} />
-            ))
-          }
+          renderCamera={renderCamera}
         />
       )}
 
