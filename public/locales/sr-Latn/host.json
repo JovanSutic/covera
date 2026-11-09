@@ -153,6 +153,67 @@
     }
   },
   "incidentPage": {
+    "title": "Damage claim",
+    "backToReservation": "Back to reservation",
+    "loading": "Loading the claim…",
+    "listError": "Could not check for a claim on this stay. Reload to try again.",
+    "notFound": {
+      "title": "Reservation not found",
+      "subtitle": "This reservation does not exist, or you do not have access to it."
+    },
+    "empty": {
+      "title": "No claim on this stay yet",
+      "body": "Open a claim to record the assets that were damaged or stolen. You can add items, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
+      "create": "Open a claim"
+    },
+    "items": {
+      "title": "Affected assets",
+      "empty": "No assets on this claim yet. Add the damaged or stolen assets below.",
+      "views": "Required photos",
+      "viewsComplete": "All required photos collected",
+      "viewsMissing": "{{count}} required photo(s) still missing",
+      "viewsMissing_one": "{{count}} required photo still missing",
+      "viewsMissing_other": "{{count}} required photos still missing"
+    },
+    "itemType": {
+      "damage": "Damaged",
+      "theft": "Stolen"
+    },
+    "itemStatus": {
+      "linkGenerated": "Waiting for photos",
+      "photosCollected": "Photos collected",
+      "documentsPending": "Documents pending",
+      "complete": "Complete"
+    },
+    "evidence": {
+      "damagePhotoWide": "Wide shot of the damage",
+      "damagePhotoCloseup": "Close-up of the damage",
+      "theftEmptySpacePhoto": "Photo of where the item was",
+      "originalPurchaseReceipt": "Original purchase receipt",
+      "replacementRetailQuote": "Replacement retail quote",
+      "handymanInvoice": "Handyman invoice",
+      "policeReport": "Police report"
+    },
+    "addItem": {
+      "title": "Add an asset to this claim",
+      "asset": "Asset",
+      "type": "What happened",
+      "value": "Estimated value",
+      "valueHint": "e.g. 120.00",
+      "submit": "Add to claim",
+      "submitting": "Adding…",
+      "allClaimed": "Every asset in this apartment is already on the claim.",
+      "validation": {
+        "assetRequired": "Select an asset.",
+        "typeRequired": "Choose whether the asset was damaged or stolen."
+      }
+    },
+    "toasts": {
+      "created": "Claim opened.",
+      "createError": "Could not open the claim.",
+      "itemAdded": "Item added to the claim.",
+      "itemAddError": "Could not add the item to the claim."
+    },
     "status": {
       "draft": "Draft",
       "readyToFile": "Ready to file",
