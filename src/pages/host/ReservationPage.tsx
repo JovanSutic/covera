@@ -7,6 +7,7 @@ import { ReservationHeader } from "@/components/host/ReservationHeader";
 import { ReservationActionsBar } from "@/components/host/ReservationActionsBar";
 import { ReservationTimeSection } from "@/components/host/ReservationTimeSection";
 import { ReservationProofSection } from "@/components/host/ReservationProofSection";
+import { ReservationIncidentSection } from "@/components/host/incident/ReservationIncidentSection";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useReservation } from "@/lib/api/queries/reservation";
@@ -95,6 +96,19 @@ export default function ReservationPage() {
                 reservationId,
               }),
             )
+          }
+        />
+
+        {/* D2: a compact status report that links to the claim page — the guidance
+            copy lives there. `now` is the page's own single clock (D46), and the two
+            ids come from the URL, which is also where the section's list read is
+            keyed from. */}
+        <ReservationIncidentSection
+          apartmentId={id}
+          reservationId={reservationId}
+          now={now}
+          onOpenClaim={() =>
+            navigate(buildPath(appPaths.incidentClaim, { id, reservationId }))
           }
         />
 

@@ -11,10 +11,11 @@ import { createSessionStore } from "@/lib/router/session";
 import type { AccessLayer } from "@/lib/router/access";
 import type { Inspection, ReservationWithInspection } from "@/api/generated/requests/types.gen";
 
-const { useReservation, useReservationPhotos, useApartmentsHost } = vi.hoisted(() => ({
+const { useReservation, useReservationPhotos, useApartmentsHost, useIncidents } = vi.hoisted(() => ({
   useReservation: vi.fn(),
   useReservationPhotos: vi.fn(),
   useApartmentsHost: vi.fn(),
+  useIncidents: vi.fn(),
 }));
 
 // The three reads the page and its children make, mocked at the module boundary so
@@ -36,6 +37,13 @@ vi.mock("@/lib/api/queries/reservationPhotos", async (importOriginal) => ({
 vi.mock("@/lib/api/queries/apartment", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/api/queries/apartment")>()),
   useApartmentsHost,
+}));
+// Phase 5: the page now renders `ReservationIncidentSection`, which reads the
+// apartment's claim list. `importOriginal` is load-bearing for the same reason the
+// three above carry it — `registry.ts` dereferences `incidentsResource` at load.
+vi.mock("@/lib/api/queries/incidents", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/api/queries/incidents")>()),
+  useIncidents,
 }));
 
 const RESERVATION_ID = "11111111-1111-1111-1111-111111111111";
@@ -157,6 +165,12 @@ beforeEach(() => {
 
   useReservationPhotos.mockReturnValue({
     data: [],
+    isLoading: false,
+    isError: false,
+  });
+
+  useIncidents.mockReturnValue({
+    data: { data: [], pagination: { page: 1, limit: 100, totalItems: 0, totalPages: 0 } },
     isLoading: false,
     isError: false,
   });

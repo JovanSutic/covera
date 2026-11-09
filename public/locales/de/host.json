@@ -152,6 +152,16 @@
       "error": "Beim Erstellen der Reservierung ist ein Fehler aufgetreten."
     }
   },
+  "incidentPage": {
+    "status": {
+      "draft": "Draft",
+      "readyToFile": "Ready to file",
+      "submittedToGuest": "Submitted to guest",
+      "escalatedToAircover": "Escalated to AirCover",
+      "resolved": "Resolved",
+      "unfeasible": "Unfeasible"
+    }
+  },
   "reservationActionsMenu": {
     "triggerTitle": "Reservierungsaktionen",
     "takeProofs": "Fotobeweise erstellen",
@@ -222,6 +232,21 @@
         "disputed": "Diese Reservierung ist umstritten. Sehen Sie sich die Fotos noch einmal an, bevor Sie Ihren Aufenthalt buchen.",
         "settled": "Diese Reservierung ist erledigt und es sind keine weiteren Maßnahmen erforderlich."
       }
+    },
+    "incident": {
+      "title": "Damage claim",
+      "loading": "Checking for a claim on this stay…",
+      "error": "Could not check for a claim on this stay. Reload to try again.",
+      "emptyTitle": "No claim on this stay",
+      "emptyBody": "Found damage or something missing after this guest checked out? Open a claim to record the affected assets, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
+      "startClaim": "Start a claim",
+      "openClaim": "Open claim",
+      "itemCount": "{{count}} assets on this claim",
+      "itemCount_one": "{{count}} asset on this claim",
+      "total": "Total",
+      "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
+      "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
+      "aircoverOverdue": "Both Airbnb windows have closed for this claim."
     },
     "other": {
       "title": "Andere",

@@ -134,6 +134,21 @@
         "settled": "This reservation is settled and no further action is needed."
       }
     },
+    "incident": {
+      "title": "Damage claim",
+      "loading": "Checking for a claim on this stay…",
+      "error": "Could not check for a claim on this stay. Reload to try again.",
+      "emptyTitle": "No claim on this stay",
+      "emptyBody": "Found damage or something missing after this guest checked out? Open a claim to record the affected assets, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
+      "startClaim": "Start a claim",
+      "openClaim": "Open claim",
+      "itemCount": "{{count}} assets on this claim",
+      "itemCount_one": "{{count}} asset on this claim",
+      "total": "Total",
+      "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
+      "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
+      "aircoverOverdue": "Both Airbnb windows have closed for this claim."
+    },
     "other": {
       "title": "Other",
       "platformId": "Platform reservation ID",
@@ -275,6 +290,16 @@
     "toast": {
       "success": "Reservation created successfully!",
       "error": "An error occurred creating the reservation."
+    }
+  },
+  "incidentPage": {
+    "status": {
+      "draft": "Draft",
+      "readyToFile": "Ready to file",
+      "submittedToGuest": "Submitted to guest",
+      "escalatedToAircover": "Escalated to AirCover",
+      "resolved": "Resolved",
+      "unfeasible": "Unfeasible"
     }
   }
 }
