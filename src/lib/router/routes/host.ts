@@ -50,10 +50,44 @@ export const hostRoutes: SectionRoute = {
       // returns null is how this registry says "not on this navigation" (registry.ts).
       data: [
         { resource: "reservation", params: (params) => ({ id: String(params.reservationId) }) },
+        // Phase 5's `ReservationIncidentSection` reads the apartment's claim list on
+        // this page. Declared here, in the phase that owns this file, because
+        // `prefetchCoverage.test.ts` requires a page's route chain to declare every
+        // hook the page reads — and a declaration with no consumer costs one request
+        // on a navigation that is about to make it anyway.
+        { resource: "incidents", params: (params) => ({ apartmentId: String(params.id) }) },
+        // The photo reads stay declared-but-null (D10/D12): loaded only when the host
+        // opens the proof control, and a declaration that returns null is how this
+        // registry says "not on this navigation" (registry.ts).
         { resource: "inspection", params: () => null },
         { resource: "reservationPhotos", params: () => null },
       ],
       handle: { crumb: "reservationPage.title" },
+    },
+    {
+      // D3: a THIRD SIBLING, written out in full for the same reason as the node
+      // above — `IndividualApartment.tsx` has no <Outlet />, so a nested route would
+      // render nothing while passing every check.
+      path: "apartments/:id/reservations/:reservationId/incident",
+      params: { id: "uuid", reservationId: "uuid" },
+      page: () => import("@/pages/host/IncidentPage"),
+      // Four declarations, and the reason each is here:
+      //   reservation  — the guest's name and the apartment, from the URL alone
+      //   assets       — the item picker's options, from the URL alone
+      //   incidents    — the apartment's claim list, which is how this page finds
+      //                  ITS claim: there is no incident-by-reservation endpoint
+      //                  (D11), so the match is client-side over this read
+      //   incident     — the claim and its items. `params: () => null` because the
+      //                  id is not in the URL and cannot be known until the list
+      //                  resolves. This is a declaration for the coverage check, not
+      //                  a prefetch, and the page's own `useIncident` owns that read.
+      data: [
+        { resource: "reservation", params: (params) => ({ id: String(params.reservationId) }) },
+        { resource: "assets", params: (params) => ({ apartmentId: String(params.id) }) },
+        { resource: "incidents", params: (params) => ({ apartmentId: String(params.id) }) },
+        { resource: "incident", params: () => null },
+      ],
+      handle: { crumb: "incidentPage.title" },
     },
   ],
 };

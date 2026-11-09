@@ -23,6 +23,30 @@ export const outsideRoutes: readonly RouteNode[] = [
     page: () => import("@/pages/PassUpdatePage"),
     handle: { crumb: "login.passUpdate.welcomeGeneric" },
   },
+  {
+    // D4: the zero-auth field portal, rendered OUTSIDE the app shell — the same
+    // tree as /login and /update-password, and for the same reason: it is reached
+    // before any session exists. Blueprint View B requires "completely isolated
+    // views lacking navigation panels"; in `appRoutes` this page would carry the
+    // Header, its nav links and its language switcher.
+    //
+    // `requires: "public"` rather than a bespoke rule: the 32-hex token in the path
+    // is the only credential, and the API authenticates it (`404 FIELD_TOKEN_INVALID`
+    // for unknown, expired and already-used alike). A malformed token never reaches
+    // the API — `hex32` (D6) rejects it in the loader, so the router's own 404
+    // renders instead of the portal's "link unusable" screen. Those are different
+    // states and the user must be able to tell them apart.
+    path: "field/incident/:token",
+    requires: "public",
+    params: { token: "hex32" },
+    page: () => import("@/pages/FieldIncidentPage"),
+    // D12: the read is anonymous and every parameter it needs is in the URL, so it
+    // starts on the cold load rather than after the chunk. This is the ONLY
+    // declaration the portal needs — the two writes it makes are mutations, and a
+    // prefetch of a write is meaningless (D13).
+    data: [{ resource: "fieldIngest", params: (params) => ({ token: String(params.token) }) }],
+    handle: { crumb: "fieldIncidentPage.title" },
+  },
 ];
 
 // Rendered INSIDE the app shell. The `*` route lives here on purpose: an unknown
