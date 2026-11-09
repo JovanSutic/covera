@@ -1,6 +1,8 @@
 import {
   deleteIncidentsByIdItemsByItemIdEvidenceByEvidenceId,
+  patchIncidentsById,
   postIncidents,
+  postIncidentsByIdConfirmAirbnbFiling,
   postIncidentsByIdItems,
   postIncidentsByIdItemsByItemIdEvidence,
   postIncidentsByIdItemsByItemIdReissueToken,
@@ -178,4 +180,44 @@ export async function uploadIncidentEvidence(
   );
 
   return attachIncidentEvidence(incidentId, itemId, evidence, signal);
+}
+
+/**
+ * The figure the host is asking the resolution centre for. `finalPayoutRequestedCents`
+ * is the only field `UpdateIncident` carries, so a patch here cannot disturb the items
+ * or the status — the backend's own `recomputeIncidentReadiness` owns those.
+ */
+export async function setIncidentPayout(
+  incidentId: string,
+  finalPayoutRequestedCents: number,
+  signal?: AbortSignal,
+) {
+  const config = await withAuth(signal ? { signal } : {});
+  const response = await patchIncidentsById({
+    ...config,
+    path: { id: incidentId },
+    body: { finalPayoutRequestedCents },
+  });
+
+  return response.data;
+}
+
+/**
+ * The filing confirmation. It takes no body, and it is the write that sets
+ * `guestResponseDeadlineAt = NOW() + 24h` — the clock the panel then counts down.
+ *
+ * It answers with `Incident`, NOT `IncidentWithItems` (verified in `types.gen.ts`).
+ * The caller in step 8.3 merges rather than replaces for exactly that reason (D52).
+ */
+export async function confirmAirbnbFiling(
+  incidentId: string,
+  signal?: AbortSignal,
+) {
+  const config = await withAuth(signal ? { signal } : {});
+  const response = await postIncidentsByIdConfirmAirbnbFiling({
+    ...config,
+    path: { id: incidentId },
+  });
+
+  return response.data;
 }

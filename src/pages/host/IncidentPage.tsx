@@ -12,10 +12,13 @@ import { BackLink } from "@/components/shared/BackLink";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { AddIncidentItemForm } from "@/components/host/incident/AddIncidentItemForm";
+import { ClaimFilingPanel } from "@/components/host/incident/ClaimFilingPanel";
 import { IncidentFieldLink } from "@/components/host/incident/IncidentFieldLink";
 import { IncidentItemEvidence } from "@/components/host/incident/IncidentItemEvidence";
 import { IncidentItemList } from "@/components/host/incident/IncidentItemList";
+import { useClaimClock } from "@/hooks/useClaimClock";
 import { createIncident } from "@/lib/api/incidentClaims";
+import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useIncident, incidentQueryKey } from "@/lib/api/queries/incident";
 import { useIncidents, incidentsQueryKey } from "@/lib/api/queries/incidents";
 import { useReservation } from "@/lib/api/queries/reservation";
@@ -63,9 +66,19 @@ export default function IncidentPage() {
   // deliberate limit D50 records.
   const [tokens, setTokens] = useState<Record<string, string>>({});
 
-  // D46: ONE clock per page, read once. Every component below takes it as a prop, so
-  // two controls on this screen cannot disagree about what time it is.
-  const now = Date.now();
+  // D32/D46: ONE clock per page, and it now TICKS. `useClaimClock` owns the only
+  // interval in this feature and the only `Date.now()` on this screen — phase 7's
+  // render-time read was enough for the link state, but the guest countdown has to
+  // move. Every component below still takes `now` as a prop.
+  const now = useClaimClock();
+
+  // Phase 8's message needs the apartment's NAME, and nothing on the reservation or the
+  // incident carries it. The section route already prefetches this list for every host
+  // page, so this is the cheap source and `ReservationPage.tsx` uses it for the same
+  // lookup.
+  const { data: apartments } = useApartmentsHost();
+  const apartmentName =
+    apartments?.find((entry) => entry.id === reservation?.apartmentId)?.name ?? "";
 
   const {
     data: reservation,
@@ -239,6 +252,14 @@ export default function IncidentPage() {
                 />
               </SectionCard>
             )}
+
+            <ClaimFilingPanel
+              incident={claim}
+              apartmentId={id}
+              guestName={reservation.guestName}
+              apartmentName={apartmentName}
+              now={now}
+            />
           </>
         )}
       </div>
