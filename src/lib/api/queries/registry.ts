@@ -6,6 +6,9 @@ import { reservationsResource } from "./reservations";
 import { reservationResource } from "./reservation";
 import { reservationPhotosResource } from "./reservationPhotos";
 import { inspectionResource } from "./inspection";
+import { incidentResource } from "./incident";
+import { incidentsResource } from "./incidents";
+import { fieldIngestResource } from "./fieldIngest";
 import {
   apartmentsAllResource,
   locationsResource,
@@ -29,6 +32,9 @@ export const QUERY_RESOURCES = {
   reservation: reservationResource,
   reservationPhotos: reservationPhotosResource,
   inspection: inspectionResource,
+  incident: incidentResource,
+  incidents: incidentsResource,
+  fieldIngest: fieldIngestResource,
   users: usersResource,
   locations: locationsResource,
 } as const satisfies Record<string, ResourceDefinition>;
