@@ -1734,3 +1734,878 @@ export const PingInspectionResponseSchema = {
         'tracked'
     ]
 } as const;
+
+export const CreateIncidentResponseSchema = {
+    allOf: [
+        {
+            $ref: '#/components/schemas/IncidentWithItems'
+        },
+        {
+            type: 'object',
+            properties: {
+                items: {
+                    type: 'array',
+                    items: {
+                        $ref: '#/components/schemas/IncidentItemWithToken'
+                    }
+                }
+            }
+        }
+    ]
+} as const;
+
+export const IncidentItemWithTokenSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        incidentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            type: 'string',
+            enum: [
+                'damage',
+                'theft'
+            ]
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'link_generated',
+                'photos_collected',
+                'documents_pending',
+                'complete'
+            ]
+        },
+        cleanerToken: {
+            type: 'string',
+            maxLength: 64
+        },
+        tokenExpiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        estimatedPlaceholderValueCents: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        descriptionByCleaner: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        asset: {
+            $ref: '#/components/schemas/Asset'
+        },
+        evidence: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/IncidentEvidence'
+            }
+        }
+    },
+    required: [
+        'id',
+        'incidentId',
+        'assetId',
+        'type',
+        'status',
+        'cleanerToken',
+        'tokenExpiresAt',
+        'estimatedPlaceholderValueCents',
+        'descriptionByCleaner',
+        'createdAt',
+        'updatedAt',
+        'asset',
+        'evidence'
+    ]
+} as const;
+
+export const IncidentEvidenceSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        incidentItemId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        evidenceType: {
+            type: 'string',
+            enum: [
+                'damage_photo_wide',
+                'damage_photo_closeup',
+                'theft_empty_space_photo',
+                'original_purchase_receipt',
+                'replacement_retail_quote',
+                'handyman_invoice',
+                'police_report'
+            ]
+        },
+        storageKey: {
+            type: 'string'
+        },
+        exifCapturedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        exifLatitude: {
+            type: 'string',
+            nullable: true
+        },
+        exifLongitude: {
+            type: 'string',
+            nullable: true
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'active',
+                'soft_deleted'
+            ]
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        kind: {
+            type: 'string',
+            enum: [
+                'photo',
+                'document'
+            ]
+        }
+    },
+    required: [
+        'id',
+        'incidentItemId',
+        'evidenceType',
+        'storageKey',
+        'exifCapturedAt',
+        'exifLatitude',
+        'exifLongitude',
+        'status',
+        'deletedAt',
+        'createdAt',
+        'kind'
+    ]
+} as const;
+
+export const IncidentWithItemsSchema = {
+    allOf: [
+        {
+            $ref: '#/components/schemas/Incident'
+        },
+        {
+            type: 'object',
+            properties: {
+                items: {
+                    type: 'array',
+                    items: {
+                        $ref: '#/components/schemas/IncidentItem'
+                    }
+                }
+            },
+            required: [
+                'items'
+            ]
+        }
+    ]
+} as const;
+
+export const IncidentItemSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        incidentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            type: 'string',
+            enum: [
+                'damage',
+                'theft'
+            ]
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'link_generated',
+                'photos_collected',
+                'documents_pending',
+                'complete'
+            ]
+        },
+        tokenExpiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        estimatedPlaceholderValueCents: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        descriptionByCleaner: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        asset: {
+            $ref: '#/components/schemas/Asset'
+        },
+        evidence: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/IncidentEvidence'
+            }
+        }
+    },
+    required: [
+        'id',
+        'incidentId',
+        'assetId',
+        'type',
+        'status',
+        'tokenExpiresAt',
+        'estimatedPlaceholderValueCents',
+        'descriptionByCleaner',
+        'createdAt',
+        'updatedAt',
+        'asset',
+        'evidence'
+    ]
+} as const;
+
+export const IncidentSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        reservationId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        status: {
+            type: 'string',
+            enum: [
+                'draft',
+                'ready_to_file',
+                'submitted_to_guest',
+                'escalated_to_aircover',
+                'resolved',
+                'unfeasible'
+            ]
+        },
+        isEmergencyMode: {
+            type: 'boolean'
+        },
+        placeholderTotalAmountCents: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        finalPayoutRequestedCents: {
+            type: 'integer',
+            minimum: -2147483648,
+            maximum: 2147483647
+        },
+        resolutionCenterSubmittedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        guestResponseDeadlineAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        aircoverEscalationDeadlineAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'reservationId',
+        'status',
+        'isEmergencyMode',
+        'placeholderTotalAmountCents',
+        'finalPayoutRequestedCents',
+        'resolutionCenterSubmittedAt',
+        'guestResponseDeadlineAt',
+        'aircoverEscalationDeadlineAt',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const;
+
+export const CreateIncidentSchema = {
+    type: 'object',
+    properties: {
+        reservationId: {
+            type: 'string',
+            format: 'uuid',
+            description: 'The reservation the damage or theft happened during.',
+            example: '770e8400-e29b-41d4-a716-446655440000'
+        },
+        items: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/CreateIncidentItem'
+            },
+            default: [],
+            description: 'The affected assets. Optional — items may also be added afterwards with POST /incidents/{id}/items.'
+        }
+    },
+    required: [
+        'reservationId'
+    ]
+} as const;
+
+export const CreateIncidentItemSchema = {
+    type: 'object',
+    properties: {
+        assetId: {
+            type: 'string',
+            format: 'uuid',
+            description: 'The asset that was damaged or stolen.',
+            example: '550e8400-e29b-41d4-a716-446655440000'
+        },
+        type: {
+            type: 'string',
+            enum: [
+                'damage',
+                'theft'
+            ],
+            description: 'Whether this asset was damaged or stolen.',
+            example: 'damage'
+        },
+        estimatedPlaceholderValueCents: {
+            type: 'integer',
+            minimum: 0,
+            description: 'A provisional value in cents, replaced once the claim is valued. Optional.',
+            example: 25000
+        }
+    },
+    required: [
+        'assetId',
+        'type'
+    ]
+} as const;
+
+export const PaginatedIncidentsSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/IncidentWithItems'
+            }
+        },
+        pagination: {
+            type: 'object',
+            properties: {
+                page: {
+                    type: 'number',
+                    example: 1
+                },
+                limit: {
+                    type: 'number',
+                    example: 20
+                },
+                totalItems: {
+                    type: 'number',
+                    example: 42
+                },
+                totalPages: {
+                    type: 'number',
+                    example: 3
+                }
+            },
+            required: [
+                'page',
+                'limit',
+                'totalItems',
+                'totalPages'
+            ]
+        }
+    },
+    required: [
+        'data',
+        'pagination'
+    ]
+} as const;
+
+export const UpdateIncidentSchema = {
+    type: 'object',
+    properties: {
+        finalPayoutRequestedCents: {
+            type: 'integer',
+            minimum: 0,
+            description: 'The amount requested from the resolution centre, in cents.',
+            example: 30000
+        }
+    }
+} as const;
+
+export const DeleteIncidentResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: [
+        'success',
+        'id'
+    ]
+} as const;
+
+export const UpdateIncidentItemSchema = {
+    type: 'object',
+    properties: {
+        type: {
+            type: 'string',
+            enum: [
+                'damage',
+                'theft'
+            ],
+            description: 'Correct a mis-typed item. Only while it has no evidence.',
+            example: 'damage'
+        },
+        estimatedPlaceholderValueCents: {
+            type: 'integer',
+            minimum: 0,
+            description: 'Correct the provisional value, in cents.',
+            example: 25000
+        }
+    }
+} as const;
+
+export const DeleteIncidentItemResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: [
+        'success',
+        'id'
+    ]
+} as const;
+
+export const EvidenceUploadTokensBodySchema = {
+    type: 'object',
+    properties: {
+        files: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    fileType: {
+                        type: 'string',
+                        pattern: '^(image\\/(jpeg|png|webp|jpg)|application\\/pdf)$'
+                    }
+                },
+                required: [
+                    'fileType'
+                ]
+            },
+            minItems: 1,
+            description: 'The files to mint presigned PUT URLs for.'
+        }
+    },
+    required: [
+        'files'
+    ]
+} as const;
+
+export const AttachEvidenceResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean'
+        },
+        attachedCount: {
+            type: 'integer'
+        },
+        item: {
+            $ref: '#/components/schemas/IncidentItem'
+        }
+    },
+    required: [
+        'success',
+        'attachedCount',
+        'item'
+    ]
+} as const;
+
+export const AttachEvidenceBodySchema = {
+    type: 'object',
+    properties: {
+        evidence: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AttachEvidenceItem'
+            },
+            minItems: 1
+        }
+    },
+    required: [
+        'evidence'
+    ]
+} as const;
+
+export const AttachEvidenceItemSchema = {
+    type: 'object',
+    properties: {
+        evidenceType: {
+            type: 'string',
+            enum: [
+                'damage_photo_wide',
+                'damage_photo_closeup',
+                'theft_empty_space_photo',
+                'original_purchase_receipt',
+                'replacement_retail_quote',
+                'handyman_invoice',
+                'police_report'
+            ],
+            description: 'Which of the claim\'s evidence types this is.',
+            example: 'original_purchase_receipt'
+        },
+        storageKey: {
+            type: 'string',
+            minLength: 1
+        },
+        capturedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        latitude: {
+            type: 'number',
+            minimum: -90,
+            maximum: 90
+        },
+        longitude: {
+            type: 'number',
+            minimum: -180,
+            maximum: 180
+        }
+    },
+    required: [
+        'evidenceType',
+        'storageKey'
+    ]
+} as const;
+
+export const DeleteEvidenceResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: [
+        'success',
+        'id'
+    ]
+} as const;
+
+export const FieldIngestSchema = {
+    type: 'object',
+    properties: {
+        incidentType: {
+            type: 'string',
+            enum: [
+                'damage',
+                'theft'
+            ],
+            description: 'What the host says happened to this asset.',
+            example: 'damage'
+        },
+        itemStatus: {
+            type: 'string',
+            enum: [
+                'link_generated',
+                'photos_collected',
+                'documents_pending',
+                'complete'
+            ]
+        },
+        asset: {
+            type: 'object',
+            properties: {
+                id: {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 255
+                },
+                roomLocation: {
+                    type: 'string',
+                    enum: [
+                        'ENTRANCE_HALLWAY',
+                        'STAIRCASE_CORRIDOR',
+                        'LIVING_ROOM',
+                        'DINING_ROOM',
+                        'GAME_ENTERTAINMENT_ROOM',
+                        'HOME_OFFICE_STUDY',
+                        'KITCHEN',
+                        'PANTRY_LAUNDRY_ROOM',
+                        'BEDROOM_PRIMARY',
+                        'BEDROOM_2',
+                        'BEDROOM_3',
+                        'BEDROOM_4',
+                        'BEDROOM_5',
+                        'BATHROOM_FULL_1',
+                        'BATHROOM_FULL_2',
+                        'BATHROOM_FULL_3',
+                        'BATHROOM_HALF_POWDER',
+                        'SAUNA_SPA_ROOM',
+                        'GYM_FITNESS_ROOM',
+                        'BALCONY_TERRACE',
+                        'PATIO_DECK',
+                        'GARDEN_YARD',
+                        'SWIMMING_POOL_AREA',
+                        'STORAGE_ROOM',
+                        'GARAGE_PARKING',
+                        'UTILITY_BOILER_ROOM',
+                        'OTHER'
+                    ]
+                },
+                description: {
+                    type: 'string',
+                    nullable: true
+                }
+            },
+            required: [
+                'id',
+                'name',
+                'roomLocation',
+                'description'
+            ]
+        },
+        apartmentName: {
+            type: 'string'
+        },
+        baselinePhotos: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/FieldBaselinePhoto'
+            }
+        },
+        requiredEvidenceTypes: {
+            type: 'array',
+            items: {
+                type: 'string'
+            }
+        },
+        attachedEvidenceCounts: {
+            type: 'object',
+            additionalProperties: {
+                type: 'integer'
+            }
+        },
+        tokenExpiresAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'incidentType',
+        'itemStatus',
+        'asset',
+        'apartmentName',
+        'baselinePhotos',
+        'requiredEvidenceTypes',
+        'attachedEvidenceCounts',
+        'tokenExpiresAt'
+    ]
+} as const;
+
+export const FieldBaselinePhotoSchema = {
+    type: 'object',
+    properties: {
+        storageKey: {
+            type: 'string'
+        },
+        downloadUrl: {
+            type: 'string'
+        }
+    },
+    required: [
+        'storageKey',
+        'downloadUrl'
+    ]
+} as const;
+
+export const FieldUploadTokensBodySchema = {
+    type: 'object',
+    properties: {
+        photos: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    fileType: {
+                        type: 'string',
+                        pattern: '^image\\/(jpeg|png|webp|jpg)$'
+                    }
+                },
+                required: [
+                    'fileType'
+                ]
+            },
+            minItems: 1
+        }
+    },
+    required: [
+        'photos'
+    ]
+} as const;
+
+export const FieldSubmitResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean'
+        },
+        itemStatus: {
+            type: 'string',
+            enum: [
+                'link_generated',
+                'photos_collected',
+                'documents_pending',
+                'complete'
+            ]
+        },
+        evidenceCount: {
+            type: 'integer'
+        }
+    },
+    required: [
+        'success',
+        'itemStatus',
+        'evidenceCount'
+    ]
+} as const;
+
+export const FieldSubmitBodySchema = {
+    type: 'object',
+    properties: {
+        descriptionByCleaner: {
+            type: 'string',
+            maxLength: 2000
+        },
+        photos: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/FieldSubmitPhoto'
+            },
+            minItems: 1
+        }
+    },
+    required: [
+        'photos'
+    ]
+} as const;
+
+export const FieldSubmitPhotoSchema = {
+    type: 'object',
+    properties: {
+        evidenceType: {
+            type: 'string',
+            enum: [
+                'damage_photo_wide',
+                'damage_photo_closeup',
+                'theft_empty_space_photo'
+            ]
+        },
+        storageKey: {
+            type: 'string',
+            minLength: 1
+        },
+        capturedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        latitude: {
+            type: 'number',
+            minimum: -90,
+            maximum: 90
+        },
+        longitude: {
+            type: 'number',
+            minimum: -180,
+            maximum: 180
+        }
+    },
+    required: [
+        'evidenceType',
+        'storageKey'
+    ]
+} as const;

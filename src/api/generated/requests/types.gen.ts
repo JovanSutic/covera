@@ -339,6 +339,223 @@ export type PingInspectionResponse = {
     tracked: boolean;
 };
 
+export type CreateIncidentResponse = IncidentWithItems & {
+    items?: Array<IncidentItemWithToken>;
+};
+
+export type IncidentItemWithToken = {
+    id: string;
+    incidentId: string;
+    assetId: string;
+    type: 'damage' | 'theft';
+    status: 'link_generated' | 'photos_collected' | 'documents_pending' | 'complete';
+    cleanerToken: string;
+    tokenExpiresAt: string;
+    estimatedPlaceholderValueCents: number;
+    descriptionByCleaner: string | null;
+    createdAt: string;
+    updatedAt: string;
+    asset: Asset;
+    evidence: Array<IncidentEvidence>;
+};
+
+export type IncidentEvidence = {
+    id: string;
+    incidentItemId: string;
+    evidenceType: 'damage_photo_wide' | 'damage_photo_closeup' | 'theft_empty_space_photo' | 'original_purchase_receipt' | 'replacement_retail_quote' | 'handyman_invoice' | 'police_report';
+    storageKey: string;
+    exifCapturedAt: string | null;
+    exifLatitude: string | null;
+    exifLongitude: string | null;
+    status: 'active' | 'soft_deleted';
+    deletedAt: string | null;
+    createdAt: string;
+    kind: 'photo' | 'document';
+};
+
+export type IncidentWithItems = Incident & {
+    items: Array<IncidentItem>;
+};
+
+export type IncidentItem = {
+    id: string;
+    incidentId: string;
+    assetId: string;
+    type: 'damage' | 'theft';
+    status: 'link_generated' | 'photos_collected' | 'documents_pending' | 'complete';
+    tokenExpiresAt: string;
+    estimatedPlaceholderValueCents: number;
+    descriptionByCleaner: string | null;
+    createdAt: string;
+    updatedAt: string;
+    asset: Asset;
+    evidence: Array<IncidentEvidence>;
+};
+
+export type Incident = {
+    id: string;
+    reservationId: string;
+    status: 'draft' | 'ready_to_file' | 'submitted_to_guest' | 'escalated_to_aircover' | 'resolved' | 'unfeasible';
+    isEmergencyMode: boolean;
+    placeholderTotalAmountCents: number;
+    finalPayoutRequestedCents: number;
+    resolutionCenterSubmittedAt: string | null;
+    guestResponseDeadlineAt: string | null;
+    aircoverEscalationDeadlineAt: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type CreateIncident = {
+    /**
+     * The reservation the damage or theft happened during.
+     */
+    reservationId: string;
+    /**
+     * The affected assets. Optional — items may also be added afterwards with POST /incidents/{id}/items.
+     */
+    items?: Array<CreateIncidentItem>;
+};
+
+export type CreateIncidentItem = {
+    /**
+     * The asset that was damaged or stolen.
+     */
+    assetId: string;
+    /**
+     * Whether this asset was damaged or stolen.
+     */
+    type: 'damage' | 'theft';
+    /**
+     * A provisional value in cents, replaced once the claim is valued. Optional.
+     */
+    estimatedPlaceholderValueCents?: number;
+};
+
+export type PaginatedIncidents = {
+    data: Array<IncidentWithItems>;
+    pagination: {
+        page: number;
+        limit: number;
+        totalItems: number;
+        totalPages: number;
+    };
+};
+
+export type UpdateIncident = {
+    /**
+     * The amount requested from the resolution centre, in cents.
+     */
+    finalPayoutRequestedCents?: number;
+};
+
+export type DeleteIncidentResponse = {
+    success: boolean;
+    id: string;
+};
+
+export type UpdateIncidentItem = {
+    /**
+     * Correct a mis-typed item. Only while it has no evidence.
+     */
+    type?: 'damage' | 'theft';
+    /**
+     * Correct the provisional value, in cents.
+     */
+    estimatedPlaceholderValueCents?: number;
+};
+
+export type DeleteIncidentItemResponse = {
+    success: boolean;
+    id: string;
+};
+
+export type EvidenceUploadTokensBody = {
+    /**
+     * The files to mint presigned PUT URLs for.
+     */
+    files: Array<{
+        fileType: string;
+    }>;
+};
+
+export type AttachEvidenceResponse = {
+    success: boolean;
+    attachedCount: number;
+    item: IncidentItem;
+};
+
+export type AttachEvidenceBody = {
+    evidence: Array<AttachEvidenceItem>;
+};
+
+export type AttachEvidenceItem = {
+    /**
+     * Which of the claim's evidence types this is.
+     */
+    evidenceType: 'damage_photo_wide' | 'damage_photo_closeup' | 'theft_empty_space_photo' | 'original_purchase_receipt' | 'replacement_retail_quote' | 'handyman_invoice' | 'police_report';
+    storageKey: string;
+    capturedAt?: string;
+    latitude?: number;
+    longitude?: number;
+};
+
+export type DeleteEvidenceResponse = {
+    success: boolean;
+    id: string;
+};
+
+export type FieldIngest = {
+    /**
+     * What the host says happened to this asset.
+     */
+    incidentType: 'damage' | 'theft';
+    itemStatus: 'link_generated' | 'photos_collected' | 'documents_pending' | 'complete';
+    asset: {
+        id: string;
+        name: string;
+        roomLocation: 'ENTRANCE_HALLWAY' | 'STAIRCASE_CORRIDOR' | 'LIVING_ROOM' | 'DINING_ROOM' | 'GAME_ENTERTAINMENT_ROOM' | 'HOME_OFFICE_STUDY' | 'KITCHEN' | 'PANTRY_LAUNDRY_ROOM' | 'BEDROOM_PRIMARY' | 'BEDROOM_2' | 'BEDROOM_3' | 'BEDROOM_4' | 'BEDROOM_5' | 'BATHROOM_FULL_1' | 'BATHROOM_FULL_2' | 'BATHROOM_FULL_3' | 'BATHROOM_HALF_POWDER' | 'SAUNA_SPA_ROOM' | 'GYM_FITNESS_ROOM' | 'BALCONY_TERRACE' | 'PATIO_DECK' | 'GARDEN_YARD' | 'SWIMMING_POOL_AREA' | 'STORAGE_ROOM' | 'GARAGE_PARKING' | 'UTILITY_BOILER_ROOM' | 'OTHER';
+        description: string | null;
+    };
+    apartmentName: string;
+    baselinePhotos: Array<FieldBaselinePhoto>;
+    requiredEvidenceTypes: Array<string>;
+    attachedEvidenceCounts: {
+        [key: string]: number;
+    };
+    tokenExpiresAt: string;
+};
+
+export type FieldBaselinePhoto = {
+    storageKey: string;
+    downloadUrl: string;
+};
+
+export type FieldUploadTokensBody = {
+    photos: Array<{
+        fileType: string;
+    }>;
+};
+
+export type FieldSubmitResponse = {
+    success: boolean;
+    itemStatus: 'link_generated' | 'photos_collected' | 'documents_pending' | 'complete';
+    evidenceCount: number;
+};
+
+export type FieldSubmitBody = {
+    descriptionByCleaner?: string;
+    photos: Array<FieldSubmitPhoto>;
+};
+
+export type FieldSubmitPhoto = {
+    evidenceType: 'damage_photo_wide' | 'damage_photo_closeup' | 'theft_empty_space_photo';
+    storageKey: string;
+    capturedAt?: string;
+    latitude?: number;
+    longitude?: number;
+};
+
 export type GetUsersData = {
     body?: never;
     path?: never;
@@ -680,7 +897,7 @@ export type PostApartmentsByIdPhotosUploadTokensData = {
 
 export type PostApartmentsByIdPhotosUploadTokensErrors = {
     /**
-     * VALIDATION_ERROR: The request failed validation. MAX_PHOTOS_EXCEEDED: The apartment photo limit would be exceeded.
+     * VALIDATION_ERROR: The request failed validation. MAX_PHOTOS_EXCEEDED: The per-reservation photo limit would be exceeded.
      */
     400: StandardError;
     /**
@@ -735,7 +952,7 @@ export type PostApartmentsByIdPhotosConfirmData = {
 
 export type PostApartmentsByIdPhotosConfirmErrors = {
     /**
-     * VALIDATION_ERROR: The request failed validation. MAX_PHOTOS_EXCEEDED: The apartment photo limit would be exceeded.
+     * VALIDATION_ERROR: The request failed validation. MAX_PHOTOS_EXCEEDED: The per-reservation photo limit would be exceeded.
      */
     400: StandardError;
     /**
@@ -1642,3 +1859,816 @@ export type PostInspectionsByIdPingResponses = {
 };
 
 export type PostInspectionsByIdPingResponse = PostInspectionsByIdPingResponses[keyof PostInspectionsByIdPingResponses];
+
+export type GetIncidentsData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Page number (1-indexed)
+         */
+        page?: number;
+        /**
+         * Number of items per page (max 100)
+         */
+        limit?: number;
+        /**
+         * Only claims in this status.
+         */
+        status?: 'draft' | 'ready_to_file' | 'submitted_to_guest' | 'escalated_to_aircover' | 'resolved' | 'unfeasible';
+        /**
+         * Only claims whose reservation is for this apartment.
+         */
+        apartmentId: string;
+        /**
+         * Only claims flagged as emergency mode.
+         */
+        emergencyOnly?: boolean | null;
+        /**
+         * Field to sort claims by
+         */
+        sortBy?: 'escalation' | 'createdAt' | 'checkOutDatetime';
+        /**
+         * Sort direction
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/incidents';
+};
+
+export type GetIncidentsErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetIncidentsError = GetIncidentsErrors[keyof GetIncidentsErrors];
+
+export type GetIncidentsResponses = {
+    /**
+     * Claims matching the query, most urgent first by default
+     */
+    200: PaginatedIncidents;
+};
+
+export type GetIncidentsResponse = GetIncidentsResponses[keyof GetIncidentsResponses];
+
+export type PostIncidentsData = {
+    body?: CreateIncident;
+    path?: never;
+    query?: never;
+    url: '/incidents';
+};
+
+export type PostIncidentsErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. INCIDENT_WINDOW_EXPIRED: The claim is outside the window in which it can be opened. ASSET_NOT_IN_APARTMENT: The asset does not belong to the apartment the claim is for.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. RESERVATION_NOT_FOUND: Reservation does not exist. ASSET_NOT_FOUND: Asset does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_ALREADY_EXISTS: An incident already exists for this reservation. INCIDENT_ITEM_EXISTS: This asset is already an item on the claim.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostIncidentsError = PostIncidentsErrors[keyof PostIncidentsErrors];
+
+export type PostIncidentsResponses = {
+    /**
+     * Incident created successfully
+     */
+    201: CreateIncidentResponse;
+};
+
+export type PostIncidentsResponse = PostIncidentsResponses[keyof PostIncidentsResponses];
+
+export type DeleteIncidentsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/incidents/{id}';
+};
+
+export type DeleteIncidentsByIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type DeleteIncidentsByIdError = DeleteIncidentsByIdErrors[keyof DeleteIncidentsByIdErrors];
+
+export type DeleteIncidentsByIdResponses = {
+    /**
+     * Claim deleted successfully
+     */
+    200: DeleteIncidentResponse;
+};
+
+export type DeleteIncidentsByIdResponse = DeleteIncidentsByIdResponses[keyof DeleteIncidentsByIdResponses];
+
+export type GetIncidentsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/incidents/{id}';
+};
+
+export type GetIncidentsByIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetIncidentsByIdError = GetIncidentsByIdErrors[keyof GetIncidentsByIdErrors];
+
+export type GetIncidentsByIdResponses = {
+    /**
+     * Incident fetched successfully
+     */
+    200: IncidentWithItems;
+};
+
+export type GetIncidentsByIdResponse = GetIncidentsByIdResponses[keyof GetIncidentsByIdResponses];
+
+export type PatchIncidentsByIdData = {
+    body?: UpdateIncident;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/incidents/{id}';
+};
+
+export type PatchIncidentsByIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PatchIncidentsByIdError = PatchIncidentsByIdErrors[keyof PatchIncidentsByIdErrors];
+
+export type PatchIncidentsByIdResponses = {
+    /**
+     * Claim updated successfully
+     */
+    200: IncidentWithItems;
+};
+
+export type PatchIncidentsByIdResponse = PatchIncidentsByIdResponses[keyof PatchIncidentsByIdResponses];
+
+export type PostIncidentsByIdItemsData = {
+    body?: CreateIncidentItem;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/items';
+};
+
+export type PostIncidentsByIdItemsErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. ASSET_NOT_IN_APARTMENT: The asset does not belong to the apartment the claim is for. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. ASSET_NOT_FOUND: Asset does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed. INCIDENT_ITEM_LOCKED: The item already has evidence and can no longer be re-typed. INCIDENT_ITEM_EXISTS: This asset is already an item on the claim.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostIncidentsByIdItemsError = PostIncidentsByIdItemsErrors[keyof PostIncidentsByIdItemsErrors];
+
+export type PostIncidentsByIdItemsResponses = {
+    /**
+     * Item added to the claim
+     */
+    201: IncidentItemWithToken;
+};
+
+export type PostIncidentsByIdItemsResponse = PostIncidentsByIdItemsResponses[keyof PostIncidentsByIdItemsResponses];
+
+export type DeleteIncidentsByIdItemsByItemIdData = {
+    body?: never;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+        /**
+         * Incident item unique identifier (UUID)
+         */
+        itemId: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/items/{itemId}';
+};
+
+export type DeleteIncidentsByIdItemsByItemIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. ASSET_NOT_IN_APARTMENT: The asset does not belong to the apartment the claim is for. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. ASSET_NOT_FOUND: Asset does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed. INCIDENT_ITEM_LOCKED: The item already has evidence and can no longer be re-typed. INCIDENT_ITEM_EXISTS: This asset is already an item on the claim.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type DeleteIncidentsByIdItemsByItemIdError = DeleteIncidentsByIdItemsByItemIdErrors[keyof DeleteIncidentsByIdItemsByItemIdErrors];
+
+export type DeleteIncidentsByIdItemsByItemIdResponses = {
+    /**
+     * Item removed from the claim
+     */
+    200: DeleteIncidentItemResponse;
+};
+
+export type DeleteIncidentsByIdItemsByItemIdResponse = DeleteIncidentsByIdItemsByItemIdResponses[keyof DeleteIncidentsByIdItemsByItemIdResponses];
+
+export type PatchIncidentsByIdItemsByItemIdData = {
+    body?: UpdateIncidentItem;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+        /**
+         * Incident item unique identifier (UUID)
+         */
+        itemId: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/items/{itemId}';
+};
+
+export type PatchIncidentsByIdItemsByItemIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. ASSET_NOT_IN_APARTMENT: The asset does not belong to the apartment the claim is for. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. ASSET_NOT_FOUND: Asset does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed. INCIDENT_ITEM_LOCKED: The item already has evidence and can no longer be re-typed. INCIDENT_ITEM_EXISTS: This asset is already an item on the claim.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PatchIncidentsByIdItemsByItemIdError = PatchIncidentsByIdItemsByItemIdErrors[keyof PatchIncidentsByIdItemsByItemIdErrors];
+
+export type PatchIncidentsByIdItemsByItemIdResponses = {
+    /**
+     * Item updated successfully
+     */
+    200: IncidentItem;
+};
+
+export type PatchIncidentsByIdItemsByItemIdResponse = PatchIncidentsByIdItemsByItemIdResponses[keyof PatchIncidentsByIdItemsByItemIdResponses];
+
+export type PostIncidentsByIdItemsByItemIdUploadTokensData = {
+    body?: EvidenceUploadTokensBody;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+        /**
+         * Incident item unique identifier (UUID)
+         */
+        itemId: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/items/{itemId}/upload-tokens';
+};
+
+export type PostIncidentsByIdItemsByItemIdUploadTokensErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. EVIDENCE_NOT_FOUND: Evidence does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostIncidentsByIdItemsByItemIdUploadTokensError = PostIncidentsByIdItemsByItemIdUploadTokensErrors[keyof PostIncidentsByIdItemsByItemIdUploadTokensErrors];
+
+export type PostIncidentsByIdItemsByItemIdUploadTokensResponses = {
+    /**
+     * Presigned upload URLs generated successfully
+     */
+    200: {
+        tokens: Array<{
+            uploadUrl: string;
+            key: string;
+        }>;
+    };
+};
+
+export type PostIncidentsByIdItemsByItemIdUploadTokensResponse = PostIncidentsByIdItemsByItemIdUploadTokensResponses[keyof PostIncidentsByIdItemsByItemIdUploadTokensResponses];
+
+export type PostIncidentsByIdItemsByItemIdEvidenceData = {
+    body?: AttachEvidenceBody;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+        /**
+         * Incident item unique identifier (UUID)
+         */
+        itemId: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/items/{itemId}/evidence';
+};
+
+export type PostIncidentsByIdItemsByItemIdEvidenceErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. EVIDENCE_NOT_FOUND: Evidence does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostIncidentsByIdItemsByItemIdEvidenceError = PostIncidentsByIdItemsByItemIdEvidenceErrors[keyof PostIncidentsByIdItemsByItemIdEvidenceErrors];
+
+export type PostIncidentsByIdItemsByItemIdEvidenceResponses = {
+    /**
+     * Evidence attached to the item
+     */
+    201: AttachEvidenceResponse;
+};
+
+export type PostIncidentsByIdItemsByItemIdEvidenceResponse = PostIncidentsByIdItemsByItemIdEvidenceResponses[keyof PostIncidentsByIdItemsByItemIdEvidenceResponses];
+
+export type DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdData = {
+    body?: never;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+        /**
+         * Incident item unique identifier (UUID)
+         */
+        itemId: string;
+        /**
+         * Evidence unique identifier (UUID)
+         */
+        evidenceId: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/items/{itemId}/evidence/{evidenceId}';
+};
+
+export type DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. EVIDENCE_NOT_FOUND: Evidence does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdError = DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdErrors[keyof DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdErrors];
+
+export type DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdResponses = {
+    /**
+     * Evidence withdrawn from the item
+     */
+    200: DeleteEvidenceResponse;
+};
+
+export type DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdResponse = DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdResponses[keyof DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdResponses];
+
+export type PostIncidentsByIdItemsByItemIdReissueTokenData = {
+    body?: never;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+        /**
+         * Incident item unique identifier (UUID)
+         */
+        itemId: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/items/{itemId}/reissue-token';
+};
+
+export type PostIncidentsByIdItemsByItemIdReissueTokenErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_EDITABLE: The claim has been filed and can no longer be changed.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostIncidentsByIdItemsByItemIdReissueTokenError = PostIncidentsByIdItemsByItemIdReissueTokenErrors[keyof PostIncidentsByIdItemsByItemIdReissueTokenErrors];
+
+export type PostIncidentsByIdItemsByItemIdReissueTokenResponses = {
+    /**
+     * A fresh field link for this item
+     */
+    200: IncidentItemWithToken;
+};
+
+export type PostIncidentsByIdItemsByItemIdReissueTokenResponse = PostIncidentsByIdItemsByItemIdReissueTokenResponses[keyof PostIncidentsByIdItemsByItemIdReissueTokenResponses];
+
+export type PostIncidentsByIdConfirmAirbnbFilingData = {
+    body?: never;
+    path: {
+        /**
+         * Incident unique identifier (UUID)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/incidents/{id}/confirm-airbnb-filing';
+};
+
+export type PostIncidentsByIdConfirmAirbnbFilingErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist.
+     */
+    404: StandardError;
+    /**
+     * INCIDENT_NOT_READY: The claim cannot be filed until every item has its photos. INCIDENT_ALREADY_FILED: The claim has already been filed.
+     */
+    409: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostIncidentsByIdConfirmAirbnbFilingError = PostIncidentsByIdConfirmAirbnbFilingErrors[keyof PostIncidentsByIdConfirmAirbnbFilingErrors];
+
+export type PostIncidentsByIdConfirmAirbnbFilingResponses = {
+    /**
+     * Claim filed with the resolution centre; the guest clock has started
+     */
+    200: Incident;
+};
+
+export type PostIncidentsByIdConfirmAirbnbFilingResponse = PostIncidentsByIdConfirmAirbnbFilingResponses[keyof PostIncidentsByIdConfirmAirbnbFilingResponses];
+
+export type GetFieldIngestByTokenData = {
+    body?: never;
+    path: {
+        /**
+         * The tokenized field link identifier.
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/field/ingest/{token}';
+};
+
+export type GetFieldIngestByTokenErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * FIELD_TOKEN_INVALID: The field link is not valid, has expired, or has already been used.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetFieldIngestByTokenError = GetFieldIngestByTokenErrors[keyof GetFieldIngestByTokenErrors];
+
+export type GetFieldIngestByTokenResponses = {
+    /**
+     * Field link resolved; the item is ready for photos
+     */
+    200: FieldIngest;
+};
+
+export type GetFieldIngestByTokenResponse = GetFieldIngestByTokenResponses[keyof GetFieldIngestByTokenResponses];
+
+export type PostFieldIngestByTokenUploadTokensData = {
+    body?: FieldUploadTokensBody;
+    path: {
+        /**
+         * The tokenized field link identifier.
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/field/ingest/{token}/upload-tokens';
+};
+
+export type PostFieldIngestByTokenUploadTokensErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * FIELD_TOKEN_INVALID: The field link is not valid, has expired, or has already been used.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostFieldIngestByTokenUploadTokensError = PostFieldIngestByTokenUploadTokensErrors[keyof PostFieldIngestByTokenUploadTokensErrors];
+
+export type PostFieldIngestByTokenUploadTokensResponses = {
+    /**
+     * Presigned upload URLs generated successfully
+     */
+    200: {
+        tokens: Array<{
+            uploadUrl: string;
+            key: string;
+        }>;
+    };
+};
+
+export type PostFieldIngestByTokenUploadTokensResponse = PostFieldIngestByTokenUploadTokensResponses[keyof PostFieldIngestByTokenUploadTokensResponses];
+
+export type PostFieldIngestByTokenSubmitData = {
+    body?: FieldSubmitBody;
+    path: {
+        /**
+         * The tokenized field link identifier.
+         */
+        token: string;
+    };
+    query?: never;
+    url: '/field/ingest/{token}/submit';
+};
+
+export type PostFieldIngestByTokenSubmitErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item.
+     */
+    400: StandardError;
+    /**
+     * FIELD_TOKEN_INVALID: The field link is not valid, has expired, or has already been used.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostFieldIngestByTokenSubmitError = PostFieldIngestByTokenSubmitErrors[keyof PostFieldIngestByTokenSubmitErrors];
+
+export type PostFieldIngestByTokenSubmitResponses = {
+    /**
+     * Evidence recorded; the link is now spent
+     */
+    200: FieldSubmitResponse;
+};
+
+export type PostFieldIngestByTokenSubmitResponse = PostFieldIngestByTokenSubmitResponses[keyof PostFieldIngestByTokenSubmitResponses];
