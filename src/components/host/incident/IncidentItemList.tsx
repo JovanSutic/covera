@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Package, TriangleAlert } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { StatusChip } from "@/components/shared/StatusChip";
 import { formatCents } from "@/lib/helpers/claimMoney";
@@ -14,6 +15,15 @@ import type { IncidentItem } from "@/api/generated/requests/types.gen";
 
 interface IncidentItemListProps {
   items: readonly IncidentItem[];
+  /**
+   * D51: the per-item slot the claim page fills with the evidence panel and the field
+   * link. Optional, so the list renders exactly as phase 6 left it when the page hands
+   * nothing — which is what keeps phase 6's tests unmodified.
+   *
+   * A slot rather than a second loop in the page: one pass over `items` means the item
+   * row and whatever hangs off it cannot disagree about which item they are describing.
+   */
+  renderItemExtra?: (item: IncidentItem) => ReactNode;
 }
 
 /**
@@ -30,7 +40,7 @@ interface IncidentItemListProps {
  * load-bearing — without it the row shows the raw key string. `ReservationPhotoGallery`
  * carries the same prefix for the same reason.
  */
-export function IncidentItemList({ items }: IncidentItemListProps) {
+export function IncidentItemList({ items, renderItemExtra }: IncidentItemListProps) {
   const { t } = useTranslation("host");
 
   if (items.length === 0) {
@@ -112,6 +122,8 @@ export function IncidentItemList({ items }: IncidentItemListProps) {
                   : t("incidentPage.items.viewsMissing", { count: missing.length })}
               </p>
             </div>
+
+            {renderItemExtra?.(item)}
           </li>
         );
       })}

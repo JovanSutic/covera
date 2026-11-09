@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { FileWarning, Plus } from "lucide-react";
@@ -11,6 +12,8 @@ import { BackLink } from "@/components/shared/BackLink";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { AddIncidentItemForm } from "@/components/host/incident/AddIncidentItemForm";
+import { IncidentFieldLink } from "@/components/host/incident/IncidentFieldLink";
+import { IncidentItemEvidence } from "@/components/host/incident/IncidentItemEvidence";
 import { IncidentItemList } from "@/components/host/incident/IncidentItemList";
 import { createIncident } from "@/lib/api/incidentClaims";
 import { useIncident, incidentQueryKey } from "@/lib/api/queries/incident";
@@ -22,7 +25,10 @@ import {
   isIncidentEditable,
 } from "@/lib/helpers/claimStatus";
 import { appPaths, useRouteParams } from "@/lib/router";
-import type { IncidentWithItems } from "@/api/generated/requests/types.gen";
+import type {
+  IncidentItemWithToken,
+  IncidentWithItems,
+} from "@/api/generated/requests/types.gen";
 
 /**
  * The claim page. The spec's rows 2 and 3 are this page; phase 8 adds the filing panel
@@ -50,6 +56,16 @@ export default function IncidentPage() {
     id: string;
     reservationId: string;
   };
+
+  // D50: `cleanerToken` is returned by the item create and by reissue, and by nothing
+  // else — `GET /incidents/{id}` has no token field. So the tokens this session has
+  // been handed live here, keyed by item, and are gone on reload. That is the
+  // deliberate limit D50 records.
+  const [tokens, setTokens] = useState<Record<string, string>>({});
+
+  // D46: ONE clock per page, read once. Every component below takes it as a prop, so
+  // two controls on this screen cannot disagree about what time it is.
+  const now = Date.now();
 
   const {
     data: reservation,
@@ -181,7 +197,26 @@ export default function IncidentPage() {
                 />
               }
             >
-              <IncidentItemList items={claim.items} />
+              <IncidentItemList
+                items={claim.items}
+                renderItemExtra={(item) => (
+                  <>
+                    <IncidentItemEvidence incidentId={claim.id} item={item} />
+                    <IncidentFieldLink
+                      incidentId={claim.id}
+                      item={item}
+                      token={tokens[item.id] ?? null}
+                      now={now}
+                      onTokenIssued={(token) =>
+                        setTokens((previous) => ({
+                          ...previous,
+                          [item.id]: token,
+                        }))
+                      }
+                    />
+                  </>
+                )}
+              />
             </SectionCard>
 
             {/* The add form is offered only while the claim is editable (phase 1's
@@ -193,6 +228,14 @@ export default function IncidentPage() {
                   apartmentId={id}
                   incidentId={claim.id}
                   claimedAssetIds={claimedAssetIds}
+                  onItemAdded={(created: IncidentItemWithToken) => {
+                    if (!created.cleanerToken) return;
+
+                    setTokens((previous) => ({
+                      ...previous,
+                      [created.id]: created.cleanerToken,
+                    }));
+                  }}
                 />
               </SectionCard>
             )}

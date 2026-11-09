@@ -192,7 +192,31 @@
       "originalPurchaseReceipt": "Original purchase receipt",
       "replacementRetailQuote": "Replacement retail quote",
       "handymanInvoice": "Handyman invoice",
-      "policeReport": "Police report"
+      "policeReport": "Police report",
+      "captureFor": "Add {{view}}",
+      "retakeFor": "Retake {{view}}",
+      "remove": "Remove this photo",
+      "toasts": {
+        "uploaded": "Photo attached.",
+        "uploadError": "Could not attach the photo.",
+        "removed": "Photo removed.",
+        "removeError": "Could not remove the photo."
+      }
+    },
+    "fieldLink": {
+      "label": "The cleaner's link",
+      "live": "Link is live — no account needed",
+      "usedOrExpired": "Link used or expired",
+      "notInThisSession": "Link shown when the item is added",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "reissue": "New link",
+      "toasts": {
+        "copied": "Link copied.",
+        "copyError": "Could not copy the link. Select it and copy manually.",
+        "reissued": "A fresh link was issued.",
+        "reissueError": "Could not issue a new link."
+      }
     },
     "addItem": {
       "title": "Add an asset to this claim",
