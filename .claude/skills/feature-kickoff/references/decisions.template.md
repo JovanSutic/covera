@@ -3,6 +3,11 @@
 Every choice the executor would otherwise make mid-flight. Approve the table in one pass, or edit
 it in place; do not leave a row in `OPEN`.
 
+This file is where the plan's intelligence belongs. It is prose and short rows — **no code** — and it
+is the highest-value artifact per token in the whole process. The phase files stay thin *because*
+this file is complete: with the §"Budgets" cap applied, the executor writes most of the components
+itself, so anything not closed here gets decided by the executor instead of by you.
+
 **Status values:** `APPROVED` · `OPEN` (blocks execution) · `REJECTED` (kept for the record)
 
 ---
@@ -15,6 +20,10 @@ it in place; do not leave a row in `OPEN`.
 | D2 | | | OPEN |
 | D3 | | | OPEN |
 
+**One row per decision. Keep the rationale to one line** — this file is read once as a whole, and a
+`Rationale` column that runs to paragraphs costs more than the decision it defends. Where a rejection
+is non-obvious, it goes in the Rejected alternatives table below, not into the rationale.
+
 ---
 
 ## Checklist — close every one of these before approval
@@ -23,6 +32,10 @@ Delete the rows that genuinely do not apply, but say why in one word (`n/a`).
 
 **Shape**
 - [ ] Route path, and which ecosystem it belongs to (`admin` / `host` / guest-facing)
+- [ ] The route table it is declared in — `src/lib/router/routes/{host,admin,public}.ts`
+- [ ] The capability its `requires` names (`canOpenHost`, `canUseApp`, `canOpenPublicOnly`, …), or
+      `public`
+- [ ] Any new path param, and its type in **both** `params.ts` and `paths.ts` (each guards the other)
 - [ ] Component location: `src/pages/<area>/` for a routable screen, `src/components/` for a
       reusable piece, `src/components/forms/` for a form
 - [ ] Server state vs local state — what goes in react-query, what stays in `useState`
@@ -33,12 +46,12 @@ Delete the rows that genuinely do not apply, but say why in one word (`n/a`).
 - [ ] Does the backend already expose it? If not, this is blocked on a contract change — say so
 - [ ] Does `npm run api:generate` need re-running before execution? (it needs a reachable backend)
 - [ ] Auth: `withAuth()` or `publicApi()` — decided, not defaulted
+- [ ] **If the backend is unreachable, which phases are unverifiable?** List them, so the operator
+      can decide whether to start. See the skill's §"What to do when the backend is not ready"
 
 **Auth and routing**
-- [ ] Guard that runs (`requireRoleGuard("<role>")`, `redirectIfAuthenticated()`, or public)
-- [ ] Every role that may reach the screen, named explicitly
+- [ ] Every capability that may reach the screen, named explicitly
 - [ ] Whether it is deliberately public (and the comment that says so)
-- [ ] Whether the route is lazy-imported in `src/App.tsx`
 
 **States** — one row per state the screen can be in
 - [ ] Loading
@@ -83,11 +96,14 @@ Only where the rejection is non-obvious enough that someone would otherwise re-p
 
 ## Facts verified while writing this (with the command that verified them)
 
-Guesses become wrong decisions executed at scale. Record what you checked.
+Guesses become wrong decisions executed at scale. Record what you checked. Two rules: run the command
+**once** (a fact confirmed twice is a fact confirmed once, at double cost), and **verify a file path
+still exists before citing it** — several facts below were stale in the previous template.
 
 | Fact | Verified by | Result |
 | --- | --- | --- |
-| Route is not already in `src/App.tsx` | `grep -n "<path>" src/App.tsx` | |
+| Route is not already declared | `grep -n "<path>" src/lib/router/routes/*.ts` | |
+| The capability exists | `grep -n "<canX>" src/lib/router/access.ts` | |
 | `QUERY_ACTIONS` has no key for this | `grep -n "<name>" src/lib/api/queryKeys.ts` | |
 | Key is missing from the other locales | `grep -rn "<key>" public/locales/` | |
 | Generated client exports the request fn | `grep -n "<fn>" src/api/generated/requests/*.gen.ts` | |

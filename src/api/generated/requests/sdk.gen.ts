@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteAssetsByIdData, DeleteAssetsByIdErrors, DeleteAssetsByIdResponses, DeleteReservationsByIdData, DeleteReservationsByIdErrors, DeleteReservationsByIdResponses, GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsHostMeData, GetApartmentsHostMeErrors, GetApartmentsHostMeResponses, GetApartmentShotsApartmentByApartmentIdData, GetApartmentShotsApartmentByApartmentIdErrors, GetApartmentShotsApartmentByApartmentIdResponses, GetApartmentsResponses, GetAssetsApartmentByApartmentIdData, GetAssetsApartmentByApartmentIdErrors, GetAssetsApartmentByApartmentIdResponses, GetAssetsTypesData, GetAssetsTypesErrors, GetAssetsTypesResponses, GetInspectionsByIdData, GetInspectionsByIdErrors, GetInspectionsByIdResponses, GetInspectionsReservationByReservationIdData, GetInspectionsReservationByReservationIdErrors, GetInspectionsReservationByReservationIdResponses, GetLocationsData, GetLocationsErrors, GetLocationsResponses, GetReservationsApartmentByApartmentIdData, GetReservationsApartmentByApartmentIdErrors, GetReservationsApartmentByApartmentIdResponses, GetReservationsByIdData, GetReservationsByIdErrors, GetReservationsByIdPhotosData, GetReservationsByIdPhotosErrors, GetReservationsByIdPhotosResponses, GetReservationsByIdResponses, GetUsersByIdData, GetUsersByIdErrors, GetUsersByIdResponses, GetUsersData, GetUsersErrors, GetUsersResponses, PatchReservationsByIdData, PatchReservationsByIdErrors, PatchReservationsByIdResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostAssetsData, PostAssetsErrors, PostAssetsResponses, PostInspectionsByIdFlagsData, PostInspectionsByIdFlagsErrors, PostInspectionsByIdFlagsResponses, PostInspectionsByIdPingData, PostInspectionsByIdPingErrors, PostInspectionsByIdPingResponses, PostInspectionsData, PostInspectionsErrors, PostInspectionsResponses, PostLocationsData, PostLocationsErrors, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersByIdInviteData, PostUsersByIdInviteErrors, PostUsersByIdInviteResponses, PostUsersData, PostUsersErrors, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses, PutApartmentShotsApartmentByApartmentIdData, PutApartmentShotsApartmentByApartmentIdErrors, PutApartmentShotsApartmentByApartmentIdResponses } from './types.gen';
+import type { DeleteAssetsByIdData, DeleteAssetsByIdErrors, DeleteAssetsByIdResponses, DeleteIncidentsByIdData, DeleteIncidentsByIdErrors, DeleteIncidentsByIdItemsByItemIdData, DeleteIncidentsByIdItemsByItemIdErrors, DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdData, DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdErrors, DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdResponses, DeleteIncidentsByIdItemsByItemIdResponses, DeleteIncidentsByIdResponses, DeleteReservationsByIdData, DeleteReservationsByIdErrors, DeleteReservationsByIdResponses, GetApartmentsByIdData, GetApartmentsByIdErrors, GetApartmentsByIdResponses, GetApartmentsData, GetApartmentsErrors, GetApartmentsHostMeData, GetApartmentsHostMeErrors, GetApartmentsHostMeResponses, GetApartmentShotsApartmentByApartmentIdData, GetApartmentShotsApartmentByApartmentIdErrors, GetApartmentShotsApartmentByApartmentIdResponses, GetApartmentsResponses, GetAssetsApartmentByApartmentIdData, GetAssetsApartmentByApartmentIdErrors, GetAssetsApartmentByApartmentIdResponses, GetAssetsTypesData, GetAssetsTypesErrors, GetAssetsTypesResponses, GetFieldIngestByTokenData, GetFieldIngestByTokenErrors, GetFieldIngestByTokenResponses, GetIncidentsByIdData, GetIncidentsByIdErrors, GetIncidentsByIdResponses, GetIncidentsData, GetIncidentsErrors, GetIncidentsResponses, GetInspectionsByIdData, GetInspectionsByIdErrors, GetInspectionsByIdResponses, GetInspectionsReservationByReservationIdData, GetInspectionsReservationByReservationIdErrors, GetInspectionsReservationByReservationIdResponses, GetLocationsData, GetLocationsErrors, GetLocationsResponses, GetReservationsApartmentByApartmentIdData, GetReservationsApartmentByApartmentIdErrors, GetReservationsApartmentByApartmentIdResponses, GetReservationsByIdData, GetReservationsByIdErrors, GetReservationsByIdPhotosData, GetReservationsByIdPhotosErrors, GetReservationsByIdPhotosResponses, GetReservationsByIdResponses, GetUsersByIdData, GetUsersByIdErrors, GetUsersByIdResponses, GetUsersData, GetUsersErrors, GetUsersResponses, PatchIncidentsByIdData, PatchIncidentsByIdErrors, PatchIncidentsByIdItemsByItemIdData, PatchIncidentsByIdItemsByItemIdErrors, PatchIncidentsByIdItemsByItemIdResponses, PatchIncidentsByIdResponses, PatchReservationsByIdData, PatchReservationsByIdErrors, PatchReservationsByIdResponses, PostApartmentsByIdPhotosConfirmData, PostApartmentsByIdPhotosConfirmErrors, PostApartmentsByIdPhotosConfirmResponses, PostApartmentsByIdPhotosUploadTokensData, PostApartmentsByIdPhotosUploadTokensErrors, PostApartmentsByIdPhotosUploadTokensResponses, PostApartmentsData, PostApartmentsErrors, PostApartmentsResponses, PostAssetsData, PostAssetsErrors, PostAssetsResponses, PostFieldIngestByTokenSubmitData, PostFieldIngestByTokenSubmitErrors, PostFieldIngestByTokenSubmitResponses, PostFieldIngestByTokenUploadTokensData, PostFieldIngestByTokenUploadTokensErrors, PostFieldIngestByTokenUploadTokensResponses, PostIncidentsByIdConfirmAirbnbFilingData, PostIncidentsByIdConfirmAirbnbFilingErrors, PostIncidentsByIdConfirmAirbnbFilingResponses, PostIncidentsByIdItemsByItemIdEvidenceData, PostIncidentsByIdItemsByItemIdEvidenceErrors, PostIncidentsByIdItemsByItemIdEvidenceResponses, PostIncidentsByIdItemsByItemIdReissueTokenData, PostIncidentsByIdItemsByItemIdReissueTokenErrors, PostIncidentsByIdItemsByItemIdReissueTokenResponses, PostIncidentsByIdItemsByItemIdUploadTokensData, PostIncidentsByIdItemsByItemIdUploadTokensErrors, PostIncidentsByIdItemsByItemIdUploadTokensResponses, PostIncidentsByIdItemsData, PostIncidentsByIdItemsErrors, PostIncidentsByIdItemsResponses, PostIncidentsData, PostIncidentsErrors, PostIncidentsResponses, PostInspectionsByIdFlagsData, PostInspectionsByIdFlagsErrors, PostInspectionsByIdFlagsResponses, PostInspectionsByIdPingData, PostInspectionsByIdPingErrors, PostInspectionsByIdPingResponses, PostInspectionsData, PostInspectionsErrors, PostInspectionsResponses, PostLocationsData, PostLocationsErrors, PostLocationsResponses, PostReservationsData, PostReservationsErrors, PostReservationsResponses, PostUsersByIdInviteData, PostUsersByIdInviteErrors, PostUsersByIdInviteResponses, PostUsersData, PostUsersErrors, PostUsersResponses, PostUsersUpdatePasswordData, PostUsersUpdatePasswordErrors, PostUsersUpdatePasswordResponses, PutApartmentShotsApartmentByApartmentIdData, PutApartmentShotsApartmentByApartmentIdErrors, PutApartmentShotsApartmentByApartmentIdResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -161,3 +161,91 @@ export const getInspectionsById = <ThrowOnError extends boolean = false>(options
 export const getInspectionsReservationByReservationId = <ThrowOnError extends boolean = false>(options: Options<GetInspectionsReservationByReservationIdData, ThrowOnError>) => (options.client ?? client).get<GetInspectionsReservationByReservationIdResponses, GetInspectionsReservationByReservationIdErrors, ThrowOnError>({ url: '/inspections/reservation/{reservationId}', ...options });
 
 export const postInspectionsByIdPing = <ThrowOnError extends boolean = false>(options: Options<PostInspectionsByIdPingData, ThrowOnError>) => (options.client ?? client).post<PostInspectionsByIdPingResponses, PostInspectionsByIdPingErrors, ThrowOnError>({ url: '/inspections/{id}/ping', ...options });
+
+export const getIncidents = <ThrowOnError extends boolean = false>(options: Options<GetIncidentsData, ThrowOnError>) => (options.client ?? client).get<GetIncidentsResponses, GetIncidentsErrors, ThrowOnError>({ url: '/incidents', ...options });
+
+export const postIncidents = <ThrowOnError extends boolean = false>(options?: Options<PostIncidentsData, ThrowOnError>) => (options?.client ?? client).post<PostIncidentsResponses, PostIncidentsErrors, ThrowOnError>({
+    url: '/incidents',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const deleteIncidentsById = <ThrowOnError extends boolean = false>(options: Options<DeleteIncidentsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteIncidentsByIdResponses, DeleteIncidentsByIdErrors, ThrowOnError>({ url: '/incidents/{id}', ...options });
+
+export const getIncidentsById = <ThrowOnError extends boolean = false>(options: Options<GetIncidentsByIdData, ThrowOnError>) => (options.client ?? client).get<GetIncidentsByIdResponses, GetIncidentsByIdErrors, ThrowOnError>({ url: '/incidents/{id}', ...options });
+
+export const patchIncidentsById = <ThrowOnError extends boolean = false>(options: Options<PatchIncidentsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchIncidentsByIdResponses, PatchIncidentsByIdErrors, ThrowOnError>({
+    url: '/incidents/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const postIncidentsByIdItems = <ThrowOnError extends boolean = false>(options: Options<PostIncidentsByIdItemsData, ThrowOnError>) => (options.client ?? client).post<PostIncidentsByIdItemsResponses, PostIncidentsByIdItemsErrors, ThrowOnError>({
+    url: '/incidents/{id}/items',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const deleteIncidentsByIdItemsByItemId = <ThrowOnError extends boolean = false>(options: Options<DeleteIncidentsByIdItemsByItemIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteIncidentsByIdItemsByItemIdResponses, DeleteIncidentsByIdItemsByItemIdErrors, ThrowOnError>({ url: '/incidents/{id}/items/{itemId}', ...options });
+
+export const patchIncidentsByIdItemsByItemId = <ThrowOnError extends boolean = false>(options: Options<PatchIncidentsByIdItemsByItemIdData, ThrowOnError>) => (options.client ?? client).patch<PatchIncidentsByIdItemsByItemIdResponses, PatchIncidentsByIdItemsByItemIdErrors, ThrowOnError>({
+    url: '/incidents/{id}/items/{itemId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const postIncidentsByIdItemsByItemIdUploadTokens = <ThrowOnError extends boolean = false>(options: Options<PostIncidentsByIdItemsByItemIdUploadTokensData, ThrowOnError>) => (options.client ?? client).post<PostIncidentsByIdItemsByItemIdUploadTokensResponses, PostIncidentsByIdItemsByItemIdUploadTokensErrors, ThrowOnError>({
+    url: '/incidents/{id}/items/{itemId}/upload-tokens',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const postIncidentsByIdItemsByItemIdEvidence = <ThrowOnError extends boolean = false>(options: Options<PostIncidentsByIdItemsByItemIdEvidenceData, ThrowOnError>) => (options.client ?? client).post<PostIncidentsByIdItemsByItemIdEvidenceResponses, PostIncidentsByIdItemsByItemIdEvidenceErrors, ThrowOnError>({
+    url: '/incidents/{id}/items/{itemId}/evidence',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const deleteIncidentsByIdItemsByItemIdEvidenceByEvidenceId = <ThrowOnError extends boolean = false>(options: Options<DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdResponses, DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdErrors, ThrowOnError>({ url: '/incidents/{id}/items/{itemId}/evidence/{evidenceId}', ...options });
+
+export const postIncidentsByIdItemsByItemIdReissueToken = <ThrowOnError extends boolean = false>(options: Options<PostIncidentsByIdItemsByItemIdReissueTokenData, ThrowOnError>) => (options.client ?? client).post<PostIncidentsByIdItemsByItemIdReissueTokenResponses, PostIncidentsByIdItemsByItemIdReissueTokenErrors, ThrowOnError>({ url: '/incidents/{id}/items/{itemId}/reissue-token', ...options });
+
+export const postIncidentsByIdConfirmAirbnbFiling = <ThrowOnError extends boolean = false>(options: Options<PostIncidentsByIdConfirmAirbnbFilingData, ThrowOnError>) => (options.client ?? client).post<PostIncidentsByIdConfirmAirbnbFilingResponses, PostIncidentsByIdConfirmAirbnbFilingErrors, ThrowOnError>({ url: '/incidents/{id}/confirm-airbnb-filing', ...options });
+
+export const getFieldIngestByToken = <ThrowOnError extends boolean = false>(options: Options<GetFieldIngestByTokenData, ThrowOnError>) => (options.client ?? client).get<GetFieldIngestByTokenResponses, GetFieldIngestByTokenErrors, ThrowOnError>({ url: '/field/ingest/{token}', ...options });
+
+export const postFieldIngestByTokenUploadTokens = <ThrowOnError extends boolean = false>(options: Options<PostFieldIngestByTokenUploadTokensData, ThrowOnError>) => (options.client ?? client).post<PostFieldIngestByTokenUploadTokensResponses, PostFieldIngestByTokenUploadTokensErrors, ThrowOnError>({
+    url: '/field/ingest/{token}/upload-tokens',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const postFieldIngestByTokenSubmit = <ThrowOnError extends boolean = false>(options: Options<PostFieldIngestByTokenSubmitData, ThrowOnError>) => (options.client ?? client).post<PostFieldIngestByTokenSubmitResponses, PostFieldIngestByTokenSubmitErrors, ThrowOnError>({
+    url: '/field/ingest/{token}/submit',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

@@ -103,4 +103,26 @@ export const appPaths = definePaths({
     requires: ["canOpenHost"],
     params: { id: "uuid", reservationId: "uuid" },
   },
+  // D3: the claim page, a THIRD SIBLING under `host` — not a child of
+  // `hostReservation`. Same reason the reservation route is not a child of
+  // `apartments/:id`: a child renders into its parent's <Outlet />, and
+  // `IndividualApartment.tsx` has no <Outlet /> (grep -rn "Outlet" src/ finds one
+  // occurrence, in Shell.tsx). Nesting would match the URL, run the loader, and
+  // render nothing — a blank screen that passes every gate check. The URL nests
+  // because the pattern is written out in full.
+  incidentClaim: {
+    pattern: "/host/apartments/:id/reservations/:reservationId/incident",
+    requires: ["canOpenHost"],
+    params: { id: "uuid", reservationId: "uuid" },
+  },
+  // D4/D6: the zero-auth field portal. `public` is the honest rule — the token in
+  // the path IS the credential, and there is no session to check. It lives in
+  // `outsideRoutes` (routes/public.ts), which is the tree rendered without the app
+  // shell, so this entry's built route has no inherited rules and `requires` is
+  // exactly `["public"]` (tree.test.ts asserts that equality).
+  fieldIncident: {
+    pattern: "/field/incident/:token",
+    requires: ["public"],
+    params: { token: "hex32" },
+  },
 } as const);

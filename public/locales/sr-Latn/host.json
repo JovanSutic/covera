@@ -152,6 +152,146 @@
       "error": "Došlo je do greške pri kreiranju rezervacije."
     }
   },
+  "incidentPage": {
+    "title": "Damage claim",
+    "backToReservation": "Back to reservation",
+    "loading": "Loading the claim…",
+    "listError": "Could not check for a claim on this stay. Reload to try again.",
+    "notFound": {
+      "title": "Reservation not found",
+      "subtitle": "This reservation does not exist, or you do not have access to it."
+    },
+    "empty": {
+      "title": "No claim on this stay yet",
+      "body": "Open a claim to record the assets that were damaged or stolen. You can add items, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
+      "create": "Open a claim"
+    },
+    "items": {
+      "title": "Affected assets",
+      "empty": "No assets on this claim yet. Add the damaged or stolen assets below.",
+      "views": "Required photos",
+      "viewsComplete": "All required photos collected",
+      "viewsMissing": "{{count}} required photo(s) still missing",
+      "viewsMissing_one": "{{count}} required photo still missing",
+      "viewsMissing_other": "{{count}} required photos still missing"
+    },
+    "itemType": {
+      "damage": "Damaged",
+      "theft": "Stolen"
+    },
+    "itemStatus": {
+      "linkGenerated": "Waiting for photos",
+      "photosCollected": "Photos collected",
+      "documentsPending": "Documents pending",
+      "complete": "Complete"
+    },
+    "evidence": {
+      "damagePhotoWide": "Wide shot of the damage",
+      "damagePhotoCloseup": "Close-up of the damage",
+      "theftEmptySpacePhoto": "Photo of where the item was",
+      "originalPurchaseReceipt": "Original purchase receipt",
+      "replacementRetailQuote": "Replacement retail quote",
+      "handymanInvoice": "Handyman invoice",
+      "policeReport": "Police report",
+      "captureFor": "Add {{view}}",
+      "retakeFor": "Retake {{view}}",
+      "remove": "Remove this photo",
+      "toasts": {
+        "uploaded": "Photo attached.",
+        "uploadError": "Could not attach the photo.",
+        "removed": "Photo removed.",
+        "removeError": "Could not remove the photo."
+      }
+    },
+    "fieldLink": {
+      "label": "The cleaner's link",
+      "live": "Link is live — no account needed",
+      "usedOrExpired": "Link used or expired",
+      "notInThisSession": "Link shown when the item is added",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "reissue": "New link",
+      "toasts": {
+        "copied": "Link copied.",
+        "copyError": "Could not copy the link. Select it and copy manually.",
+        "reissued": "A fresh link was issued.",
+        "reissueError": "Could not issue a new link."
+      }
+    },
+    "addItem": {
+      "title": "Add an asset to this claim",
+      "asset": "Asset",
+      "type": "What happened",
+      "value": "Estimated value",
+      "valueHint": "e.g. 120.00",
+      "submit": "Add to claim",
+      "submitting": "Adding…",
+      "allClaimed": "Every asset in this apartment is already on the claim.",
+      "validation": {
+        "assetRequired": "Select an asset.",
+        "typeRequired": "Choose whether the asset was damaged or stolen."
+      }
+    },
+    "toasts": {
+      "created": "Claim opened.",
+      "createError": "Could not open the claim.",
+      "itemAdded": "Item added to the claim.",
+      "itemAddError": "Could not add the item to the claim."
+    },
+    "message": {
+      "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
+      "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
+      "totalLine": "Total requested: {{amount}}.",
+      "footer": "Photos of the damage are attached to this request.",
+      "missingEvidence": "{{evidence}}"
+    },
+    "filing": {
+      "figures": {
+        "title": "What you are asking for",
+        "itemsSubtotal": "Items",
+        "provisional": "Provisional total",
+        "final": "Requested",
+        "valueHint": "Amount to request",
+        "save": "Save amount"
+      },
+      "message": {
+        "title": "Request text",
+        "copy": "Copy text"
+      },
+      "openResolutionCenter": "Open Airbnb Resolution Center",
+      "confirm": "File this claim",
+      "confirming": "Filing…",
+      "confirmHint": "This starts the 24-hour window the guest has to respond. File only once the text above has been pasted into the resolution centre.",
+      "notReadyHint": "Every item needs its required photos before this claim can be filed.",
+      "countdown": {
+        "title": "The guest's window",
+        "guest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
+        "guestOverdue": "The guest response window has closed. Escalate to AirCover before the deadline below.",
+        "aircover": "Escalate to AirCover within {{days}} days if the guest does not respond.",
+        "aircoverOverdue": "Both Airbnb windows have closed for this claim."
+      },
+      "emergency": {
+        "title": "Emergency filing speed required",
+        "body": "An incoming check-in occurs in under 4 hours. File this claim now so the new stay is not affected."
+      },
+      "toasts": {
+        "payoutSaved": "Amount saved.",
+        "payoutError": "Could not save the amount.",
+        "copied": "Request text copied.",
+        "copyError": "Could not copy the text. Select it and copy manually.",
+        "filed": "Claim filed. The guest's 24-hour window has started.",
+        "fileError": "Could not file the claim."
+      }
+    },
+    "status": {
+      "draft": "Draft",
+      "readyToFile": "Ready to file",
+      "submittedToGuest": "Submitted to guest",
+      "escalatedToAircover": "Escalated to AirCover",
+      "resolved": "Resolved",
+      "unfeasible": "Unfeasible"
+    }
+  },
   "reservationActionsMenu": {
     "triggerTitle": "Radnje rezervacije",
     "takeProofs": "Snimite dokaze fotografija",
@@ -222,6 +362,25 @@
         "disputed": "Ova rezervacija je sporna. Pregledajte fotografije pre nego što se vaš boravak reši.",
         "settled": "Ova rezervacija je rešena i nisu potrebne nikakve dodatne radnje."
       }
+    },
+    "guestMessage": {
+      "title": "Poruka gosta",
+      "hint": "Kopirajte ovaj tekst i pošaljite ga gostu u porukama vaše platforme za rezervaciju ili e-poštom. Putem veze gost može da završi primopredaju."
+    },
+    "incident": {
+      "title": "Damage claim",
+      "loading": "Checking for a claim on this stay…",
+      "error": "Could not check for a claim on this stay. Reload to try again.",
+      "emptyTitle": "No claim on this stay",
+      "emptyBody": "Found damage or something missing after this guest checked out? Open a claim to record the affected assets, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
+      "startClaim": "Start a claim",
+      "openClaim": "Open claim",
+      "itemCount": "{{count}} assets on this claim",
+      "itemCount_one": "{{count}} asset on this claim",
+      "total": "Total",
+      "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
+      "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
+      "aircoverOverdue": "Both Airbnb windows have closed for this claim."
     },
     "other": {
       "title": "Ostalo",

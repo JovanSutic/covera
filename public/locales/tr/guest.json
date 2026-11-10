@@ -102,5 +102,42 @@
     "flagItem": "Sorun bildir",
     "verifyItemsPlural": "Fotoğrafı odanızla karşılaştırın — bu eşyalar tam gördüğünüz yerde olmalıdır:",
     "verifyItemSingular": "Fotoğrafı odanızla karşılaştırın — bu eşya tam gördüğünüz yerde olmalıdır:"
+  },
+  "fieldIncidentPage": {
+    "title": "Photo evidence"
+  },
+  "fieldIncident": {
+    "loading": "Opening your link…",
+    "unusable": {
+      "title": "This link cannot be used",
+      "body": "It has expired, has already been used, or was copied incompletely. Please ask the host for a new link."
+    },
+    "baseline": {
+      "title": "How it looked last time",
+      "caption": "The previous stay's photo of this item. Use it to line up your shots.",
+      "alt": "How this item looked at an earlier stay",
+      "none": "There is no earlier photo of this item to compare against."
+    },
+    "views": {
+      "title": "Photos to take",
+      "damagePhotoWide": "The damage, from a few steps back",
+      "damagePhotoCloseup": "The damage, up close",
+      "theftEmptySpacePhoto": "The empty space where it used to be",
+      "capture": "Take photo",
+      "retake": "Replace",
+      "captured": "Taken",
+      "alreadyProvided": "Already partly photographed",
+      "remove": "Remove",
+      "missing": "Every photo above is needed before you can send.",
+      "noneRequired": "Nothing needs photographing for this item anymore."
+    },
+    "submit": "Send photos",
+    "submitting": "Sending…",
+    "submitError": "The photos could not be sent. Check your connection and try again.",
+    "done": {
+      "title": "Report successfully syncing",
+      "body": "Safe to lock up and leave. Your photos have been sent to the host.",
+      "evidenceCount": "{{count}} photos sent"
+    }
   }
 }

@@ -2,6 +2,12 @@
 
 Spec: [../<feature>.md](../<feature>.md) · Decisions: [../<feature>.decisions.md](../<feature>.decisions.md)
 
+**Plan budget:** ≤ 150K characters and ≤ 4,000 lines in total · ≤ 400 lines per phase file (hard stop
+1,000) · ≤ 130 lines verbatim code in a logic phase, ≤ 40 specified surface in a surface phase ·
+≤ 250 lines in any one block.
+The plan is done when `node scripts/plan-budget.mjs docs/<feature>/*.md` runs clean and the decisions
+are closed. An over-budget plan is **cut**, never carried into execution.
+
 ## Phases
 
 | Phase | File | Touches | Outcome | Requires |
@@ -22,8 +28,8 @@ it touches imports the `useShots` hook phase 2 creates.*
 1. `src/api/generated/` is not hand-edited; regenerate with `npm run api:generate` instead.
 2. No hardcoded user-facing strings — every key exists in `en`, `de`, `tr`, and `sr-Latn`.
 3. No secret in a `VITE_` env var; everything so prefixed ships to the browser.
-4. Routes live in `src/App.tsx` as lazy imports; authenticated branches sit behind
-   `requireRoleGuard("<role>")`.
+4. Routes live in the route tables (`src/lib/router/routes/{host,admin,public}.ts`) as
+   `page: () => import(...)` entries with a `requires` capability; `src/App.tsx` only mounts the router.
 5. Query keys come from `QUERY_ACTIONS`; no string literals at call sites.
 6. Network calls go through `withAuth()` / `publicApi()`.
 7. Mutations invalidate the keys they changed.
@@ -66,3 +72,4 @@ Report raw output, file and symbol, the options, and a recommendation. Do not pr
 - [ ] Every new i18n key is present in `en`, `de`, `tr`, and `sr-Latn`
 - [ ] No hand-edits under `src/api/generated/`
 - [ ] Docs commit is separate from code commits
+- [ ] No phase file exceeded its budget; no scratch files left in the repo

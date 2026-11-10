@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,11 +11,14 @@ import { createSessionStore } from "@/lib/router/session";
 import type { AccessLayer } from "@/lib/router/access";
 import type { Inspection, ReservationWithInspection } from "@/api/generated/requests/types.gen";
 
-const { useReservation, useReservationPhotos, useApartmentsHost } = vi.hoisted(() => ({
-  useReservation: vi.fn(),
-  useReservationPhotos: vi.fn(),
-  useApartmentsHost: vi.fn(),
-}));
+const { useReservation, useReservationPhotos, useApartmentsHost, useIncidents, writeText } =
+  vi.hoisted(() => ({
+    useReservation: vi.fn(),
+    useReservationPhotos: vi.fn(),
+    useApartmentsHost: vi.fn(),
+    useIncidents: vi.fn(),
+    writeText: vi.fn(),
+  }));
 
 // The three reads the page and its children make, mocked at the module boundary so
 // no request is attempted and no cache is involved.
@@ -36,6 +39,13 @@ vi.mock("@/lib/api/queries/reservationPhotos", async (importOriginal) => ({
 vi.mock("@/lib/api/queries/apartment", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/api/queries/apartment")>()),
   useApartmentsHost,
+}));
+// Phase 5: the page now renders `ReservationIncidentSection`, which reads the
+// apartment's claim list. `importOriginal` is load-bearing for the same reason the
+// three above carry it — `registry.ts` dereferences `incidentsResource` at load.
+vi.mock("@/lib/api/queries/incidents", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/api/queries/incidents")>()),
+  useIncidents,
 }));
 
 const RESERVATION_ID = "11111111-1111-1111-1111-111111111111";
@@ -139,6 +149,11 @@ function Wrapper({ children }: { children: ReactNode }) {
 
 beforeEach(() => {
   // `t()` returns the key (test-setup.ts), so every assertion below is on a key.
+  writeText.mockReset();
+  writeText.mockResolvedValue(undefined);
+  // jsdom implements no clipboard at all, so it is defined rather than spied on.
+  Object.assign(navigator, { clipboard: { writeText } });
+
   useApartmentsHost.mockReturnValue({
     data: [
       {
@@ -157,6 +172,12 @@ beforeEach(() => {
 
   useReservationPhotos.mockReturnValue({
     data: [],
+    isLoading: false,
+    isError: false,
+  });
+
+  useIncidents.mockReturnValue({
+    data: { data: [], pagination: { page: 1, limit: 100, totalItems: 0, totalPages: 0 } },
     isLoading: false,
     isError: false,
   });
@@ -255,6 +276,42 @@ describe("ReservationPage", () => {
     expect(
       screen.getByRole("button", { name: "reservationPage.proof.viewProofs" }),
     ).not.toBeDisabled();
+  });
+
+  it("shows the guest message section when the inspection link exists, and copies it", async () => {
+    useReservation.mockReturnValue({ data: reservation(), isLoading: false, isError: false });
+
+    render(<ReservationPage />, { wrapper: Wrapper });
+
+    expect(screen.getByText("reservationPage.guestMessage.title")).toBeInTheDocument();
+    expect(screen.getByText("reservationPage.guestMessage.hint")).toBeInTheDocument();
+
+    const textarea = screen.getByLabelText("reservationPage.guestMessage.title");
+    expect((textarea as HTMLTextAreaElement).value).toContain(
+      "guestInspectionMessage.messageTemplate",
+    );
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "guestInspectionMessage.copyButton" }),
+    );
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("hides the guest message section when the reservation has no inspection", () => {
+    useReservation.mockReturnValue({
+      data: reservation({ inspection: undefined }),
+      isLoading: false,
+      isError: false,
+    });
+
+    render(<ReservationPage />, { wrapper: Wrapper });
+
+    expect(
+      screen.queryByText("reservationPage.guestMessage.title"),
+    ).not.toBeInTheDocument();
   });
 
   it("renders the page's own not-found branch for an unknown reservation", () => {

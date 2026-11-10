@@ -1,4 +1,4 @@
-export type ParamType = "number" | "uuid" | "numbersList" | "name" | { oneOf: readonly string[] };
+export type ParamType = "number" | "uuid" | "numbersList" | "name" | "hex32" | { oneOf: readonly string[] };
 
 export type ParamsDeclaration = Record<string, ParamType>;
 
@@ -18,6 +18,17 @@ export type PathParam<P extends string> = P extends `${string}:${infer Rest}`
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+/**
+ * D6: a stripped UUID — the field-link token's shape (`cleanerToken`, 32 hex
+ * characters, no dashes). Case-insensitive for the same reason `UUID_PATTERN` is:
+ * the backend compares the token as a string, and a client that uppercased a
+ * pasted URL should get the API's own answer rather than a router 404.
+ *
+ * It exists so a malformed token cannot reach the API. `"name"` (`/^[\w.-]+$/`)
+ * accepts `not-a-token`, and the resulting network failure is indistinguishable
+ * on screen from the designed `FIELD_TOKEN_INVALID` state.
+ */
+const HEX32_PATTERN = /^[0-9a-f]{32}$/i;
 const NAME_PATTERN = /^[\w.-]+$/;
 const NUMBER_PATTERN = /^\d+$/;
 const NUMBERS_LIST_PATTERN = /^\d+(,\d+)*$/;
@@ -33,6 +44,8 @@ export function isValidParam(value: string, type: ParamType): boolean {
     }
     case "uuid":
       return UUID_PATTERN.test(value);
+    case "hex32":
+      return HEX32_PATTERN.test(value);
     case "numbersList":
       return NUMBERS_LIST_PATTERN.test(value);
     case "name":
@@ -52,6 +65,7 @@ export function parseParam(value: string, type: ParamType): string | number | nu
       return value.split(",").map((part) => Number(part));
     case "uuid":
     case "name":
+    case "hex32":
       return value;
   }
 }
