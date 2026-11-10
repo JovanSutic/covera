@@ -1,10 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { ClipboardPlus, Link as LinkIcon, Trash2 } from "lucide-react";
+import { ClipboardPlus, Trash2 } from "lucide-react";
 
 import { ActionButton } from "@/components/shared/ActionButton";
 import { ConfirmButton } from "@/components/shared/ConfirmButton";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
-import { GuestInspectionMessage } from "./GuestInspectionMessage";
 import { useReservationActions } from "@/hooks/useReservationActions";
 import type { UseReservationActionsParams } from "@/hooks/useReservationActions";
 
@@ -45,7 +43,7 @@ export function ReservationActionsBar({
 }: ReservationActionsBarProps) {
   const { t } = useTranslation("host");
 
-  const { rules, guestInspectionUrl, deleteMutation, createInspectionMutation } =
+  const { rules, deleteMutation, createInspectionMutation } =
     useReservationActions({
       reservation,
       apartmentId,
@@ -54,7 +52,6 @@ export function ReservationActionsBar({
     });
 
   const createLabel = t("reservationPage.actions.createInspection");
-  const copyLabel = t("reservationPage.actions.copyGuestMessage");
   const deleteLabel = t("reservationPage.actions.delete");
 
   return (
@@ -84,41 +81,9 @@ export function ReservationActionsBar({
         />
       </ConfirmButton>
 
-      {/* The copy button is ALWAYS rendered (prep §7). A disabled button inside
-          `PopoverTrigger` would still open the popover — the trigger div is the click
-          target — so an unavailable copy action renders the same button outside one. */}
-      {rules.copyMessage.enabled ? (
-        <Popover>
-          <PopoverTrigger>
-            <ActionButton
-              variant="neutral"
-              size="md"
-              className="shrink-0"
-              icon={<LinkIcon className="w-4 h-4 shrink-0" />}
-              label={copyLabel}
-              tooltip={t(rules.copyMessage.tooltipKey ?? "")}
-              tooltipLabel={copyLabel}
-            />
-          </PopoverTrigger>
-          <PopoverContent align="left">
-            <GuestInspectionMessage
-              guestName={reservation.guestName}
-              guestInspectionUrl={guestInspectionUrl}
-            />
-          </PopoverContent>
-        </Popover>
-      ) : (
-        <ActionButton
-          variant="neutral"
-          size="md"
-          className="shrink-0"
-          icon={<LinkIcon className="w-4 h-4 shrink-0" />}
-          label={copyLabel}
-          disabled
-          tooltip={t(rules.copyMessage.tooltipKey ?? "")}
-          tooltipLabel={copyLabel}
-        />
-      )}
+      {/* The copy action moved to the page's `CopyMessageSection`, which shows the
+          message in place instead of behind a popover. This bar keeps the create and
+          delete actions only; the table's kebab menu still owns its own copy popover. */}
 
       {/* D4: styled exactly like the others — safety comes from the confirmation step,
           not from colour. NO tooltip (prep §2). `variant` defaults to `danger` on

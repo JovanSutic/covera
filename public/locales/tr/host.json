@@ -363,6 +363,10 @@
         "settled": "Bu rezervasyon tamamlandı ve başka bir işleme gerek yok."
       }
     },
+    "guestMessage": {
+      "title": "Konuk mesajı",
+      "hint": "Bu metni kopyalayıp rezervasyon platformunuzun mesaj alanında veya e-posta ile konuğa gönderin. Bağlantı sayesinde konuk varış teslimini tamamlayabilir."
+    },
     "incident": {
       "title": "Damage claim",
       "loading": "Checking for a claim on this stay…",

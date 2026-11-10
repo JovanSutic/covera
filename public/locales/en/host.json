@@ -134,6 +134,10 @@
         "settled": "This reservation is settled and no further action is needed."
       }
     },
+    "guestMessage": {
+      "title": "Guest message",
+      "hint": "Copy this text and send it to the guest in your booking platform's message thread or by email. The link lets them complete their arrival handover."
+    },
     "incident": {
       "title": "Damage claim",
       "loading": "Checking for a claim on this stay…",

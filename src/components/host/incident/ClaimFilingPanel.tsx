@@ -2,16 +2,11 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  AlertTriangle,
-  Clock,
-  Copy,
-  ExternalLink,
-  Send,
-} from "lucide-react";
+import { AlertTriangle, Clock, ExternalLink, Send } from "lucide-react";
 import { toast } from "sonner";
 
 import { ActionButton } from "@/components/shared/ActionButton";
+import { CopyMessageSection } from "@/components/shared/CopyMessageSection";
 import { SectionCard } from "@/components/shared/SectionCard";
 import {
   confirmAirbnbFiling,
@@ -183,15 +178,6 @@ export function ClaimFilingPanel({
     },
   });
 
-  const copyMessage = async () => {
-    try {
-      await navigator.clipboard.writeText(message);
-      toast.success(t("incidentPage.filing.toasts.copied"));
-    } catch {
-      toast.error(t("incidentPage.filing.toasts.copyError"));
-    }
-  };
-
   return (
     <div className="space-y-4">
       {/* D18: sticky, saturated red, a pulsing icon — and deliberately NOT flashing.
@@ -273,24 +259,13 @@ export function ClaimFilingPanel({
         </div>
       </SectionCard>
 
-      <SectionCard title={t("incidentPage.filing.message.title")}>
-        <textarea
-          readOnly
-          rows={10}
-          value={message}
-          aria-label={t("incidentPage.filing.message.title")}
-          className="w-full resize-y rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300"
-        />
-
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <ActionButton
-            variant="info"
-            size="md"
-            icon={<Copy className="h-4 w-4 shrink-0" />}
-            label={t("incidentPage.filing.message.copy")}
-            onClick={copyMessage}
-          />
-
+      <CopyMessageSection
+        title={t("incidentPage.filing.message.title")}
+        message={message}
+        copyLabel={t("incidentPage.filing.message.copy")}
+        copySuccess={t("incidentPage.filing.toasts.copied")}
+        copyError={t("incidentPage.filing.toasts.copyError")}
+        action={
           <a
             href={AIRBNB_RESOLUTION_CENTER_URL}
             target="_blank"
@@ -300,8 +275,8 @@ export function ClaimFilingPanel({
             <ExternalLink className="h-4 w-4 shrink-0" />
             {t("incidentPage.filing.openResolutionCenter")}
           </a>
-        </div>
-      </SectionCard>
+        }
+      />
 
       {!isFiled && (
         <SectionCard title={t("incidentPage.filing.confirm")}>

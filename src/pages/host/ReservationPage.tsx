@@ -8,6 +8,7 @@ import { ReservationActionsBar } from "@/components/host/ReservationActionsBar";
 import { ReservationTimeSection } from "@/components/host/ReservationTimeSection";
 import { ReservationProofSection } from "@/components/host/ReservationProofSection";
 import { ReservationIncidentSection } from "@/components/host/incident/ReservationIncidentSection";
+import { CopyMessageSection } from "@/components/shared/CopyMessageSection";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useReservation } from "@/lib/api/queries/reservation";
@@ -98,6 +99,27 @@ export default function ReservationPage() {
             )
           }
         />
+
+        {/* The guest message, shown in place rather than behind a popover. It renders
+            only when the guest inspection link exists — without a link there is nothing
+            to send, so the section is absent rather than empty. The text is the same
+            `guestInspectionMessage.messageTemplate` the table's kebab popover copies. */}
+        {reservation.inspection?.id && (
+          <CopyMessageSection
+            title={t("reservationPage.guestMessage.title")}
+            message={t("guestInspectionMessage.messageTemplate", {
+              guestName: reservation.guestName,
+              guestInspectionUrl: buildPath(appPaths.inspection, {
+                id: reservation.inspection.id,
+              }),
+            })}
+            copyLabel={t("guestInspectionMessage.copyButton")}
+            copySuccess={t("guestInspectionMessage.toastCopySuccess")}
+            copyError={t("guestInspectionMessage.toastCopyError")}
+            hint={t("reservationPage.guestMessage.hint")}
+            rows={6}
+          />
+        )}
 
         {/* D2: a compact status report that links to the claim page — the guidance
             copy lives there. `now` is the page's own single clock (D46), and the two

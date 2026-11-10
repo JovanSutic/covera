@@ -363,6 +363,10 @@
         "settled": "Diese Reservierung ist erledigt und es sind keine weiteren Maßnahmen erforderlich."
       }
     },
+    "guestMessage": {
+      "title": "Gastnachricht",
+      "hint": "Kopieren Sie diesen Text und senden Sie ihn dem Gast im Nachrichtenbereich Ihrer Buchungsplattform oder per E-Mail. Über den Link kann er die Ankunftsübergabe abschließen."
+    },
     "incident": {
       "title": "Damage claim",
       "loading": "Checking for a claim on this stay…",

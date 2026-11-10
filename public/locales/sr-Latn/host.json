@@ -363,6 +363,10 @@
         "settled": "Ova rezervacija je rešena i nisu potrebne nikakve dodatne radnje."
       }
     },
+    "guestMessage": {
+      "title": "Poruka gosta",
+      "hint": "Kopirajte ovaj tekst i pošaljite ga gostu u porukama vaše platforme za rezervaciju ili e-poštom. Putem veze gost može da završi primopredaju."
+    },
     "incident": {
       "title": "Damage claim",
       "loading": "Checking for a claim on this stay…",
