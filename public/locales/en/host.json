@@ -378,6 +378,51 @@
       "itemAdded": "Item added to the claim.",
       "itemAddError": "Could not add the item to the claim."
     },
+    "message": {
+      "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
+      "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
+      "totalLine": "Total requested: {{amount}}.",
+      "footer": "Photos of the damage are attached to this request.",
+      "missingEvidence": "{{evidence}}"
+    },
+    "filing": {
+      "figures": {
+        "title": "What you are asking for",
+        "itemsSubtotal": "Items",
+        "provisional": "Provisional total",
+        "final": "Requested",
+        "valueHint": "Amount to request",
+        "save": "Save amount"
+      },
+      "message": {
+        "title": "Request text",
+        "copy": "Copy text"
+      },
+      "openResolutionCenter": "Open Airbnb Resolution Center",
+      "confirm": "File this claim",
+      "confirming": "Filing…",
+      "confirmHint": "This starts the 24-hour window the guest has to respond. File only once the text above has been pasted into the resolution centre.",
+      "notReadyHint": "Every item needs its required photos before this claim can be filed.",
+      "countdown": {
+        "title": "The guest's window",
+        "guest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
+        "guestOverdue": "The guest response window has closed. Escalate to AirCover before the deadline below.",
+        "aircover": "Escalate to AirCover within {{days}} days if the guest does not respond.",
+        "aircoverOverdue": "Both Airbnb windows have closed for this claim."
+      },
+      "emergency": {
+        "title": "Emergency filing speed required",
+        "body": "An incoming check-in occurs in under 4 hours. File this claim now so the new stay is not affected."
+      },
+      "toasts": {
+        "payoutSaved": "Amount saved.",
+        "payoutError": "Could not save the amount.",
+        "copied": "Request text copied.",
+        "copyError": "Could not copy the text. Select it and copy manually.",
+        "filed": "Claim filed. The guest's 24-hour window has started.",
+        "fileError": "Could not file the claim."
+      }
+    },
     "status": {
       "draft": "Draft",
       "readyToFile": "Ready to file",

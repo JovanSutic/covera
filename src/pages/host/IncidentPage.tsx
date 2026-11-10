@@ -72,6 +72,17 @@ export default function IncidentPage() {
   // move. Every component below still takes `now` as a prop.
   const now = useClaimClock();
 
+  // `reservation` MUST be declared before the `apartmentName` lookup below. The
+  // dependency sits inside an arrow function, so it is a *deferred* read — `tsc`
+  // cannot see the temporal-dead-zone violation and the gate stays green while the
+  // route throws "Cannot access 'reservation' before initialization" at render.
+  // Keep this block above the apartment read. `IncidentPage.test.tsx` guards it.
+  const {
+    data: reservation,
+    isLoading: isReservationLoading,
+    isError: isReservationError,
+  } = useReservation(reservationId);
+
   // Phase 8's message needs the apartment's NAME, and nothing on the reservation or the
   // incident carries it. The section route already prefetches this list for every host
   // page, so this is the cheap source and `ReservationPage.tsx` uses it for the same
@@ -79,12 +90,6 @@ export default function IncidentPage() {
   const { data: apartments } = useApartmentsHost();
   const apartmentName =
     apartments?.find((entry) => entry.id === reservation?.apartmentId)?.name ?? "";
-
-  const {
-    data: reservation,
-    isLoading: isReservationLoading,
-    isError: isReservationError,
-  } = useReservation(reservationId);
 
   // D14: page 1, limit 100, `createdAt desc`. An apartment with more than 100 claims
   // could hide an older one — recorded as a PR deviation.
