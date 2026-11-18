@@ -168,22 +168,23 @@ describe("the reservation page declares the claim list it renders", () => {
   });
 });
 
-describe("the claim page declares four reads", () => {
+describe("the claim page declares five reads", () => {
   const declared = keys(
     deepDataOf(hostRoutes as Declaring, "apartments/:id/reservations/:reservationId/incident"),
     { id: VALID_UUID, reservationId: VALID_UUID },
   );
 
-  it("has four declarations, one of which resolves to null", () => {
+  it("has five declarations, two of which resolve to null", () => {
     const raw = deepDataOf(
       hostRoutes as Declaring,
       "apartments/:id/reservations/:reservationId/incident",
     );
 
-    expect(raw).toHaveLength(4);
-    // Three keys, not four: the incident's own id is not in the URL, so its
+    expect(raw).toHaveLength(5);
+    // Three keys, not five: the incident's own id is not in the URL, so its
     // declaration returns null and starts no request. The page's `useIncident`
-    // owns that read once the list resolves (D11).
+    // owns that read once the list resolves (D11). `reservationPhotos` is
+    // declared-but-null for the same reason (D8), so it starts no request either.
     expect(declared).toHaveLength(3);
   });
 

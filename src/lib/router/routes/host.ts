@@ -86,6 +86,7 @@ export const hostRoutes: SectionRoute = {
         { resource: "assets", params: (params) => ({ apartmentId: String(params.id) }) },
         { resource: "incidents", params: (params) => ({ apartmentId: String(params.id) }) },
         { resource: "incident", params: () => null },
+        { resource: "reservationPhotos", params: () => null },
       ],
       handle: { crumb: "incidentPage.title" },
     },

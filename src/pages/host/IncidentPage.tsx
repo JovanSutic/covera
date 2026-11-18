@@ -22,6 +22,8 @@ import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useIncident, incidentQueryKey } from "@/lib/api/queries/incident";
 import { useIncidents, incidentsQueryKey } from "@/lib/api/queries/incidents";
 import { useReservation } from "@/lib/api/queries/reservation";
+import { useReservationPhotos } from "@/lib/api/queries/reservationPhotos";
+import { assetBeforePhotos } from "@/lib/helpers/assetBeforePhotos";
 import {
   claimStatusCopy,
   findIncidentForReservation,
@@ -82,6 +84,11 @@ export default function IncidentPage() {
     isLoading: isReservationLoading,
     isError: isReservationError,
   } = useReservation(reservationId);
+
+  // D6/D8: the before photos the reservation already holds. The incident route declares
+  // this resource (step 2.3) because `prefetchCoverage.test.ts` compares the hooks a page
+  // reads against its route chain — the declaration is a coverage entry, not a prefetch.
+  const { data: reservationPhotos } = useReservationPhotos(reservationId);
 
   // Phase 8's message needs the apartment's NAME, and nothing on the reservation or the
   // incident carries it. The section route already prefetches this list for every host
@@ -219,7 +226,11 @@ export default function IncidentPage() {
                 items={claim.items}
                 renderItemExtra={(item) => (
                   <>
-                    <IncidentItemEvidence incidentId={claim.id} item={item} />
+                    <IncidentItemEvidence
+                      incidentId={claim.id}
+                      item={item}
+                      beforePhotos={assetBeforePhotos(reservationPhotos, item.assetId)}
+                    />
                     <IncidentFieldLink
                       incidentId={claim.id}
                       item={item}

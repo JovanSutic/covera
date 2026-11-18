@@ -12,6 +12,7 @@ import {
   uploadIncidentEvidence,
 } from "@/lib/api/incidentClaims";
 import { incidentQueryKey } from "@/lib/api/queries/incident";
+import type { BeforePhoto } from "@/lib/helpers/assetBeforePhotos";
 import {
   activeEvidence,
   activePhotoCount,
@@ -27,6 +28,12 @@ const R2_IMAGE_URL = import.meta.env.VITE_R2_IMAGE_URL;
 interface IncidentItemEvidenceProps {
   incidentId: string;
   item: IncidentItem;
+  /**
+   * D7: the asset's before photos for this stay. Rendered above the damage strip, with
+   * no delete control — these are evidence the guest never removed, so the host must not
+   * be able to attach a delete action to them here.
+   */
+  beforePhotos?: readonly BeforePhoto[];
   /**
    * D19's seam, copied from `ShotStepPanel`: jsdom implements no `URL.createObjectURL`,
    * so the tests inject a fake control and drive the real handler instead of stubbing
@@ -55,6 +62,7 @@ interface IncidentItemEvidenceProps {
 export function IncidentItemEvidence({
   incidentId,
   item,
+  beforePhotos = [],
   renderCapture,
 }: IncidentItemEvidenceProps) {
   const { t } = useTranslation("host");
@@ -169,6 +177,38 @@ export function IncidentItemEvidence({
             onChange={handleFileChange}
             className="hidden"
           />
+        </div>
+      )}
+
+      {beforePhotos.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            {t("incidentPage.evidence.before")}
+          </p>
+
+          <ul className="mt-1 flex flex-wrap gap-2">
+            {beforePhotos.map((photo) => {
+              const src = `${R2_IMAGE_URL}/${photo.storageKey}`;
+              const alt = t("incidentPage.evidence.before");
+
+              return (
+                <li key={photo.id}>
+                  <button
+                    type="button"
+                    onClick={() => setZoomed({ src, alt })}
+                    aria-label={t("incidentPage.evidence.zoom")}
+                    className="block cursor-zoom-in"
+                  >
+                    <img
+                      src={src}
+                      alt={alt}
+                      className="h-16 w-16 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                    />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
 

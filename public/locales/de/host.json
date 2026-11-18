@@ -197,6 +197,7 @@
       "retakeFor": "Retake {{view}}",
       "remove": "Remove this photo",
       "zoom": "View this photo",
+      "before": "Before photos",
       "toasts": {
         "uploaded": "Photo attached.",
         "uploadError": "Could not attach the photo.",
