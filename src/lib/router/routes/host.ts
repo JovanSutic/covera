@@ -90,5 +90,12 @@ export const hostRoutes: SectionRoute = {
       ],
       handle: { crumb: "incidentPage.title" },
     },
+    {
+      // D18: a static page. No `data`, so nothing is prefetched and `prefetchCoverage`
+      // has nothing to check against it.
+      path: "damage-claim-guide",
+      page: () => import("@/pages/host/DamageClaimGuidePage"),
+      handle: { crumb: "incidentPage.guide.title" },
+    },
   ],
 };

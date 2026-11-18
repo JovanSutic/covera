@@ -13,6 +13,7 @@ import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { AddIncidentItemForm } from "@/components/host/incident/AddIncidentItemForm";
 import { ClaimFilingPanel } from "@/components/host/incident/ClaimFilingPanel";
+import { ClaimGuideLink } from "@/components/host/incident/ClaimGuideLink";
 import { IncidentFieldLink } from "@/components/host/incident/IncidentFieldLink";
 import { IncidentItemEvidence } from "@/components/host/incident/IncidentItemEvidence";
 import { IncidentItemList } from "@/components/host/incident/IncidentItemList";
@@ -278,6 +279,7 @@ export default function IncidentPage() {
               checkOutDatetime={reservation.checkOutDatetime}
               now={now}
             />
+            <ClaimGuideLink />
           </>
         )}
       </div>

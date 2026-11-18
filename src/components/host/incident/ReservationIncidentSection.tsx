@@ -3,6 +3,7 @@ import { ChevronRight, FileWarning, TriangleAlert } from "lucide-react";
 
 import { ActionButton } from "@/components/shared/ActionButton";
 import { SectionCard } from "@/components/shared/SectionCard";
+import { ClaimGuideLink } from "./ClaimGuideLink";
 import { useIncidents } from "@/lib/api/queries/incidents";
 import { countdownParts, getClaimDeadlineState } from "@/lib/helpers/claimDeadline";
 import { claimTotals, formatCents } from "@/lib/helpers/claimMoney";
@@ -111,6 +112,7 @@ export function ReservationIncidentSection({
         <p className="text-sm text-rose-500 dark:text-rose-400">
           {t("reservationPage.incident.error")}
         </p>
+        <ClaimGuideLink />
       </SectionCard>
     );
   }
@@ -122,6 +124,7 @@ export function ReservationIncidentSection({
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-900 dark:border-gray-100 border-t-transparent" />
           {t("reservationPage.incident.loading")}
         </div>
+        <ClaimGuideLink />
       </SectionCard>
     );
   }
@@ -152,6 +155,7 @@ export function ReservationIncidentSection({
             onClick={onOpenClaim}
           />
         </div>
+        <ClaimGuideLink />
       </SectionCard>
     );
   }
@@ -199,6 +203,7 @@ export function ReservationIncidentSection({
           onClick={onOpenClaim}
         />
       </div>
+      <ClaimGuideLink />
     </SectionCard>
   );
 }

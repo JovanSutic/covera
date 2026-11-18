@@ -220,6 +220,59 @@
         "reissueError": "Could not issue a new link."
       }
     },
+    "guide": {
+      "title": "Damage claim guide",
+      "subtitle": "What to do when an asset is damaged or stolen during a stay.",
+      "link": "How the damage claim procedure works",
+      "intro": "A damage claim has a fixed shape. These steps are in the order they matter: the first hours decide what evidence you still have.",
+      "sections": {
+        "immediate": {
+          "title": "1. Record it as soon as you find it",
+          "body": "Photograph the asset before you move, clean or repair anything. The photos are the claim.",
+          "points": [
+            "Write down what happened and when you found it.",
+            "Do not discard the damaged item until the claim is closed.",
+            "Open the claim on the reservation so the dates are on the record."
+          ]
+        },
+        "photos": {
+          "title": "2. Collect the photos",
+          "body": "Each affected asset needs a wide shot and a close-up, or a photo of where a stolen item used to be.",
+          "points": [
+            "A wide shot shows the asset in its room.",
+            "A close-up shows the damage itself.",
+            "For a theft, photograph the empty space and the surrounding area."
+          ]
+        },
+        "costs": {
+          "title": "3. Document the money",
+          "body": "An amount is only credible with a document behind it: a repair quote, a replacement quote, or a purchase receipt.",
+          "points": [
+            "Enter the amount you are asking for on each affected asset.",
+            "Keep the quote or invoice that supports it.",
+            "The amount cannot be changed once the claim is filed."
+          ]
+        },
+        "deadlines": {
+          "title": "4. Meet the deadlines",
+          "body": "Airbnb's windows are fixed and they do not pause.",
+          "points": [
+            "The guest has 24 hours to respond once the claim is filed.",
+            "Escalate to AirCover if the guest does not respond in that window.",
+            "The AirCover window closes 30 days after the check-out date."
+          ]
+        },
+        "airbnb": {
+          "title": "5. What happens at Airbnb",
+          "body": "You file the claim, paste the prepared request text into the Resolution Center, and attach the photos and documents there.",
+          "points": [
+            "File the claim from the claim page once the stay is over.",
+            "Copy the request text the claim page prepared for you.",
+            "Attach the before and after photos, then wait for the guest's answer."
+          ]
+        }
+      }
+    },
     "addItem": {
       "title": "Add an asset to this claim",
       "asset": "Asset",
