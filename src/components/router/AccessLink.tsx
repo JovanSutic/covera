@@ -1,7 +1,9 @@
 import { Link, NavLink } from "react-router";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAccessStore } from "@/lib/router/AppContext";
+import { withLang } from "@/lib/router/lang";
 import { buildPath } from "@/lib/router/paths";
 import type { PathDefinition } from "@/lib/router/paths";
 import { usePreloadRoute } from "@/hooks/usePreloadRoute";
@@ -31,10 +33,14 @@ export function AccessLink<D extends PathDefinition>({
   navClassName,
 }: AccessLinkProps<D>) {
   const access = useAccessStore();
+  const { i18n } = useTranslation();
 
   const canOpen = access.canOpenPath(to);
   const href = canOpen
-    ? buildPath(to, ...((params === undefined ? [] : [params]) as never))
+    ? withLang(
+        buildPath(to, ...((params === undefined ? [] : [params]) as never)),
+        i18n.language,
+      )
     : null;
 
   const preloadHandlers = usePreloadRoute(href, canOpen);

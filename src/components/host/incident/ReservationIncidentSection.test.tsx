@@ -247,6 +247,20 @@ describe("the guest-response clock", () => {
   });
 });
 
+describe("the language", () => {
+  it("carries the current language into the link it renders", () => {
+    // `test-setup.ts` fixes `i18n.language` at "de", so a guarded link rendered
+    // through `AccessLink` must come out with the parameter appended.
+    renderSection();
+
+    expect(
+      screen
+        .getByRole("link", { name: "incidentPage.guide.link" })
+        .getAttribute("href"),
+    ).toBe("/host/damage-claim-guide?lang=de");
+  });
+});
+
 describe("the claim page control", () => {
   it("calls the page's navigation callback once, from the empty state", async () => {
     const { onOpenClaim } = renderSection();

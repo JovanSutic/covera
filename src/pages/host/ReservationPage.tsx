@@ -14,9 +14,10 @@ import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useReservation } from "@/lib/api/queries/reservation";
 import { getProofWindowState } from "@/lib/helpers/proofWindow";
 import { appPaths, buildPath, useRouteParams } from "@/lib/router";
+import { withLang } from "@/lib/router/lang";
 
 export default function ReservationPage() {
-  const { t } = useTranslation("host");
+  const { t, i18n } = useTranslation("host");
   const navigate = useNavigate();
 
   const { id, reservationId } = useRouteParams(appPaths.hostReservation) as {
@@ -32,7 +33,10 @@ export default function ReservationPage() {
   const { data: apartments } = useApartmentsHost();
   const apartment = apartments?.find((entry) => entry.id === reservation?.apartmentId);
 
-  const apartmentPath = buildPath(appPaths.hostApartment, { id });
+  const apartmentPath = withLang(
+    buildPath(appPaths.hostApartment, { id }),
+    i18n.language,
+  );
 
   if (isLoading) {
     return (
@@ -92,10 +96,13 @@ export default function ReservationPage() {
           window={window}
           onTakeProofs={() =>
             navigate(
-              buildPath(appPaths.inspectionGuide, {
-                apartmentId: id,
-                reservationId,
-              }),
+              withLang(
+                buildPath(appPaths.inspectionGuide, {
+                  apartmentId: id,
+                  reservationId,
+                }),
+                i18n.language,
+              ),
             )
           }
         />
@@ -130,7 +137,12 @@ export default function ReservationPage() {
           reservationId={reservationId}
           now={now}
           onOpenClaim={() =>
-            navigate(buildPath(appPaths.incidentClaim, { id, reservationId }))
+            navigate(
+              withLang(
+                buildPath(appPaths.incidentClaim, { id, reservationId }),
+                i18n.language,
+              ),
+            )
           }
         />
 

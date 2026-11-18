@@ -8,6 +8,7 @@ import { DataTable } from "@/components/DataTable";
 import { AccessLink } from "@/components/router/AccessLink";
 import { useReservations } from "@/lib/api/queries/reservations";
 import { appPaths, buildPath } from "@/lib/router";
+import { withLang } from "@/lib/router/lang";
 import type { ColumnDef, ReservationRow } from "@/types/component.types";
 import { ReservationActionsMenu } from "./ReservationActionsMenu";
 
@@ -38,7 +39,7 @@ const STATUS_BADGE_CLASSES: Record<string, string> = {
  * read, not a second request.
  */
 export function ReservationsTable({ apartmentId }: ReservationsTableProps) {
-  const { t } = useTranslation("host");
+  const { t, i18n } = useTranslation("host");
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -74,13 +75,16 @@ export function ReservationsTable({ apartmentId }: ReservationsTableProps) {
   const openReservation = useCallback(
     (reservation: ReservationRow) => {
       navigate(
-        buildPath(appPaths.hostReservation, {
-          id: apartmentId,
-          reservationId: reservation.id,
-        }),
+        withLang(
+          buildPath(appPaths.hostReservation, {
+            id: apartmentId,
+            reservationId: reservation.id,
+          }),
+          i18n.language,
+        ),
       );
     },
-    [apartmentId, navigate],
+    [apartmentId, i18n.language, navigate],
   );
 
   const columns = useMemo<ColumnDef<ReservationRow>[]>(
