@@ -254,7 +254,11 @@
         "provisional": "Provisional total",
         "final": "Requested",
         "valueHint": "Amount to request",
-        "save": "Save amount"
+        "save": "Save amount",
+        "assetValue": "Amount to request for {{asset}}",
+        "invalid": "Enter an amount greater than 0.",
+        "saved": "Amount saved.",
+        "noItems": "Add an asset to this claim before setting an amount."
       },
       "message": {
         "title": "Request text",

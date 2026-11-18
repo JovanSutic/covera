@@ -88,3 +88,15 @@ export function parseCentsFromInput(value: string): number | null {
 
   return Math.round(Number.isFinite(shifted) ? shifted : parsed * 100);
 }
+
+/**
+ * D11: the per-asset rule from issue 4 — an amount is usable only when it is greater than
+ * zero. `0` is the field's default and it is NOT an answer, so this is a separate name
+ * rather than an inline `> 0` at three call sites: the item rows, and later anything else
+ * that asks the same question.
+ */
+export function parsePositiveCentsFromInput(value: string): number | null {
+  const cents = parseCentsFromInput(value);
+
+  return cents !== null && cents > 0 ? cents : null;
+}

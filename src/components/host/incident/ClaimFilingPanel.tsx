@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Clock, ExternalLink, Send } from "lucide-react";
@@ -8,10 +7,7 @@ import { toast } from "sonner";
 import { ActionButton } from "@/components/shared/ActionButton";
 import { CopyMessageSection } from "@/components/shared/CopyMessageSection";
 import { SectionCard } from "@/components/shared/SectionCard";
-import {
-  confirmAirbnbFiling,
-  setIncidentPayout,
-} from "@/lib/api/incidentClaims";
+import { confirmAirbnbFiling } from "@/lib/api/incidentClaims";
 import { incidentQueryKey } from "@/lib/api/queries/incident";
 import { incidentsQueryKey } from "@/lib/api/queries/incidents";
 import {
@@ -22,13 +18,10 @@ import {
 import type { ClaimUrgency } from "@/lib/helpers/claimDeadline";
 import { buildClaimMessage } from "@/lib/helpers/claimMessage";
 import type { ClaimMessageLabels } from "@/lib/helpers/claimMessage";
-import {
-  claimTotals,
-  formatCents,
-  parseCentsFromInput,
-} from "@/lib/helpers/claimMoney";
-import { canFileClaim } from "@/lib/helpers/claimStatus";
+import { claimTotals, formatCents } from "@/lib/helpers/claimMoney";
+import { canFileClaim, isIncidentEditable } from "@/lib/helpers/claimStatus";
 import { cn } from "@/lib/utils";
+import { IncidentItemValueEditor } from "./IncidentItemValueEditor";
 import type { IncidentWithItems } from "@/api/generated/requests/types.gen";
 
 /**
@@ -116,15 +109,6 @@ export function ClaimFilingPanel({
   const isFiled = deadline.guestDeadlineTime !== null;
   const countdown = countdownParts(deadline.msUntilGuestDeadline);
 
-  // Seeded from the subtotal: the common case is "ask for what the items are worth",
-  // and the host edits it only when they want a different figure. A `useState`
-  // initialiser runs once, so an item added after first paint does not overwrite a
-  // figure the host has already edited — the right trade for a form field.
-  const [amount, setAmount] = useState(() =>
-    totals.requestedCents > 0 ? (totals.requestedCents / 100).toFixed(2) : "",
-  );
-  const parsedAmount = parseCentsFromInput(amount);
-
   const message = buildClaimMessage({
     guestName,
     apartmentName,
@@ -140,19 +124,6 @@ export function ClaimFilingPanel({
       queryKey: incidentsQueryKey({ apartmentId }),
     });
   };
-
-  const payoutMutation = useMutation({
-    mutationFn: (cents: number) => setIncidentPayout(incident.id, cents),
-    onSuccess: () => {
-      invalidate();
-      toast.success(t("incidentPage.filing.toasts.payoutSaved"));
-    },
-    onError: (error: any) => {
-      toast.error(
-        error?.error?.message || t("incidentPage.filing.toasts.payoutError"),
-      );
-    },
-  });
 
   const filingMutation = useMutation({
     mutationFn: () => confirmAirbnbFiling(incident.id),
@@ -224,39 +195,12 @@ export function ClaimFilingPanel({
           </div>
         </dl>
 
-        {/* One controlled input and one button — deliberately not a react-hook-form
-            form. There is no submit event and no field set, and invariant 8's rule is
-            about forms. The "is this a usable amount" question is answered by phase 2's
-            `parseCentsFromInput`, which is the same answer the add-item form gets. */}
-        <div className="mt-4 flex flex-wrap items-end gap-2">
-          <label className="flex-1">
-            <span className="mb-1 block text-xs text-gray-500 dark:text-gray-400">
-              {t("incidentPage.filing.figures.valueHint")}
-            </span>
-            <input
-              inputMode="decimal"
-              value={amount}
-              onChange={(event) => setAmount(event.target.value)}
-              aria-label={t("incidentPage.filing.figures.valueHint")}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
-            />
-          </label>
-
-          <ActionButton
-            variant="neutral"
-            size="md"
-            label={t("incidentPage.filing.figures.save")}
-            loading={payoutMutation.isPending}
-            // `null` is "not a usable amount" (empty, or not a number) — the save is
-            // withheld rather than sending 0 for a figure the host has not stated.
-            disabled={parsedAmount === null}
-            onClick={() => {
-              if (parsedAmount === null) return;
-
-              payoutMutation.mutate(parsedAmount);
-            }}
-          />
-        </div>
+        <IncidentItemValueEditor
+          incidentId={incident.id}
+          apartmentId={apartmentId}
+          items={incident.items}
+          editable={isIncidentEditable(incident)}
+        />
       </SectionCard>
 
       <CopyMessageSection
