@@ -25,6 +25,7 @@ import { useIncidents, incidentsQueryKey } from "@/lib/api/queries/incidents";
 import { useReservation } from "@/lib/api/queries/reservation";
 import { useReservationPhotos } from "@/lib/api/queries/reservationPhotos";
 import { assetBeforePhotos } from "@/lib/helpers/assetBeforePhotos";
+import { canOpenClaimAt } from "@/lib/helpers/claimDeadline";
 import {
   claimStatusCopy,
   findIncidentForReservation,
@@ -163,6 +164,11 @@ export default function IncidentPage() {
   }
 
   const editable = claim !== null && isIncidentEditable(claim);
+  const canOpenClaim = canOpenClaimAt(
+    reservation.checkOutDatetime,
+    reservation.alternativeCheckOutDatetime,
+    now,
+  );
   const claimedAssetIds = claim?.items.map((item) => item.assetId) ?? [];
 
   return (
@@ -206,8 +212,14 @@ export default function IncidentPage() {
                 icon={<Plus className="h-4 w-4 shrink-0" />}
                 label={t("incidentPage.empty.create")}
                 loading={createMutation.isPending}
+                disabled={!canOpenClaim}
                 onClick={() => createMutation.mutate()}
               />
+              {!canOpenClaim && (
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  {t("incidentPage.empty.notYetCheckOut")}
+                </p>
+              )}
             </div>
           </SectionCard>
         )}

@@ -136,6 +136,8 @@ export default function ReservationPage() {
           apartmentId={id}
           reservationId={reservationId}
           now={now}
+          checkOutDatetime={reservation.checkOutDatetime}
+          alternativeCheckOutDatetime={reservation.alternativeCheckOutDatetime}
           onOpenClaim={() =>
             navigate(
               withLang(

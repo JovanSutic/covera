@@ -164,7 +164,8 @@
     "empty": {
       "title": "No claim on this stay yet",
       "body": "Open a claim to record the assets that were damaged or stolen. You can add items, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "create": "Open a claim"
+      "create": "Open a claim",
+      "notYetCheckOut": "This claim opens once the stay has checked out."
     },
     "items": {
       "title": "Affected assets",
@@ -442,7 +443,8 @@
       "total": "Total",
       "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
       "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
-      "aircoverOverdue": "Both Airbnb windows have closed for this claim."
+      "aircoverOverdue": "Both Airbnb windows have closed for this claim.",
+      "notYetCheckOut": "You can open a claim once the stay has checked out."
     },
     "other": {
       "title": "Ostalo",

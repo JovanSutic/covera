@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   GUEST_RESPONSE_WINDOW_MS,
+  canOpenClaimAt,
   claimUrgency,
   countdownParts,
   getClaimDeadlineState,
@@ -141,5 +142,31 @@ describe("claimUrgency", () => {
         NOW,
       ),
     ).toBe("normal");
+  });
+});
+
+describe("canOpenClaimAt", () => {
+  it("refuses before the check-out", () => {
+    expect(canOpenClaimAt("2026-11-08T18:00:00.000Z", null, NOW)).toBe(false);
+  });
+
+  it("allows exactly at the check-out instant", () => {
+    expect(canOpenClaimAt("2026-11-08T12:00:00.000Z", null, NOW)).toBe(true);
+  });
+
+  it("allows after the check-out", () => {
+    expect(canOpenClaimAt("2026-11-08T10:00:00.000Z", null, NOW)).toBe(true);
+  });
+
+  it("prefers a real alternative check-out over the original", () => {
+    // D20: the host moved the stay's end; the backend's `effectiveCheckOut` reads the
+    // same instant, so the gate must too.
+    expect(
+      canOpenClaimAt("2026-11-08T10:00:00.000Z", "2026-11-09T10:00:00.000Z", NOW),
+    ).toBe(false);
+  });
+
+  it("does not gate on a corrupt check-out with no alternative", () => {
+    expect(canOpenClaimAt("garbage", null, NOW)).toBe(true);
   });
 });

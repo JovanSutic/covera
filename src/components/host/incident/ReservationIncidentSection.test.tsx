@@ -85,7 +85,13 @@ function listOf(incidents: IncidentWithItems[]) {
   };
 }
 
-function renderSection() {
+function renderSection(
+  overrides: {
+    now?: number;
+    checkOutDatetime?: string | null;
+    alternativeCheckOutDatetime?: string | null;
+  } = {},
+) {
   const onOpenClaim = vi.fn();
 
   const result = render(
@@ -94,7 +100,13 @@ function renderSection() {
         <ReservationIncidentSection
           apartmentId={APARTMENT_ID}
           reservationId={RESERVATION_ID}
-          now={NOW}
+          now={overrides.now ?? NOW}
+          checkOutDatetime={
+            overrides.checkOutDatetime ?? "2026-11-08T10:00:00.000Z"
+          }
+          alternativeCheckOutDatetime={
+            overrides.alternativeCheckOutDatetime ?? null
+          }
           onOpenClaim={onOpenClaim}
         />
       </MemoryRouter>
@@ -181,6 +193,30 @@ describe("the four states", () => {
       screen.getByRole("button", { name: "reservationPage.incident.openClaim" }),
     ).toBeInTheDocument();
     expect(screen.queryByText("reservationPage.incident.startClaim")).not.toBeInTheDocument();
+  });
+});
+
+describe("the check-out gate", () => {
+  it("disables the create control and says why before the stay ends", () => {
+    renderSection({ checkOutDatetime: "2026-11-08T18:00:00.000Z" });
+
+    expect(
+      screen.getByRole("button", { name: "reservationPage.incident.startClaim" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByText("reservationPage.incident.notYetCheckOut"),
+    ).toBeInTheDocument();
+  });
+
+  it("enables it once the stay has checked out", () => {
+    renderSection();
+
+    expect(
+      screen.getByRole("button", { name: "reservationPage.incident.startClaim" }),
+    ).toBeEnabled();
+    expect(
+      screen.queryByText("reservationPage.incident.notYetCheckOut"),
+    ).not.toBeInTheDocument();
   });
 });
 

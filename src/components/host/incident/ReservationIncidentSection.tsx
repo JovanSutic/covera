@@ -5,7 +5,11 @@ import { ActionButton } from "@/components/shared/ActionButton";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { ClaimGuideLink } from "./ClaimGuideLink";
 import { useIncidents } from "@/lib/api/queries/incidents";
-import { countdownParts, getClaimDeadlineState } from "@/lib/helpers/claimDeadline";
+import {
+  canOpenClaimAt,
+  countdownParts,
+  getClaimDeadlineState,
+} from "@/lib/helpers/claimDeadline";
 import { claimTotals, formatCents } from "@/lib/helpers/claimMoney";
 import { claimStatusCopy, findIncidentForReservation } from "@/lib/helpers/claimStatus";
 import { cn } from "@/lib/utils";
@@ -62,6 +66,9 @@ interface ReservationIncidentSectionProps {
    * in one render is two answers to the same question.
    */
   now: number;
+  /** D20: the effective check-out, so the CTA can wait for the stay to end. */
+  checkOutDatetime: string | null;
+  alternativeCheckOutDatetime: string | null;
   /** The page owns navigation and the path build, exactly as `ReservationProofSection`
    *  owns `onTakeProofs`. */
   onOpenClaim: () => void;
@@ -90,9 +97,17 @@ export function ReservationIncidentSection({
   apartmentId,
   reservationId,
   now,
+  checkOutDatetime,
+  alternativeCheckOutDatetime,
   onOpenClaim,
 }: ReservationIncidentSectionProps) {
   const { t } = useTranslation("host");
+
+  const canOpenClaim = canOpenClaimAt(
+    checkOutDatetime,
+    alternativeCheckOutDatetime,
+    now,
+  );
 
   // Prefetched by the reservation route's `data:` declaration (phase 4), so on a
   // hover or an in-app navigation this is a cache read and starts no request.
@@ -152,8 +167,14 @@ export function ReservationIncidentSection({
             size="md"
             icon={<ChevronRight className="h-4 w-4 shrink-0" />}
             label={t("reservationPage.incident.startClaim")}
+            disabled={!canOpenClaim}
             onClick={onOpenClaim}
           />
+          {!canOpenClaim && (
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              {t("reservationPage.incident.notYetCheckOut")}
+            </p>
+          )}
         </div>
         <ClaimGuideLink />
       </SectionCard>
