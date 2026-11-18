@@ -152,209 +152,6 @@
       "error": "Beim Erstellen der Reservierung ist ein Fehler aufgetreten."
     }
   },
-  "incidentPage": {
-    "title": "Damage claim",
-    "backToReservation": "Back to reservation",
-    "loading": "Loading the claim…",
-    "listError": "Could not check for a claim on this stay. Reload to try again.",
-    "notFound": {
-      "title": "Reservation not found",
-      "subtitle": "This reservation does not exist, or you do not have access to it."
-    },
-    "empty": {
-      "title": "No claim on this stay yet",
-      "body": "Open a claim to record the assets that were damaged or stolen. You can add items, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "create": "Open a claim",
-      "notYetCheckOut": "This claim opens once the stay has checked out."
-    },
-    "items": {
-      "title": "Affected assets",
-      "empty": "No assets on this claim yet. Add the damaged or stolen assets below.",
-      "views": "Required photos",
-      "viewsComplete": "All required photos collected",
-      "viewsMissing": "{{count}} required photo(s) still missing",
-      "viewsMissing_one": "{{count}} required photo still missing",
-      "viewsMissing_other": "{{count}} required photos still missing"
-    },
-    "itemType": {
-      "damage": "Damaged",
-      "theft": "Stolen"
-    },
-    "itemStatus": {
-      "linkGenerated": "Waiting for photos",
-      "photosCollected": "Photos collected",
-      "documentsPending": "Documents pending",
-      "complete": "Complete"
-    },
-    "evidence": {
-      "damagePhotoWide": "Wide shot of the damage",
-      "damagePhotoCloseup": "Close-up of the damage",
-      "theftEmptySpacePhoto": "Photo of where the item was",
-      "originalPurchaseReceipt": "Original purchase receipt",
-      "replacementRetailQuote": "Replacement retail quote",
-      "handymanInvoice": "Handyman invoice",
-      "policeReport": "Police report",
-      "captureFor": "Add {{view}}",
-      "retakeFor": "Retake {{view}}",
-      "remove": "Remove this photo",
-      "zoom": "View this photo",
-      "before": "Before photos",
-      "toasts": {
-        "uploaded": "Photo attached.",
-        "uploadError": "Could not attach the photo.",
-        "removed": "Photo removed.",
-        "removeError": "Could not remove the photo."
-      }
-    },
-    "fieldLink": {
-      "label": "The cleaner's link",
-      "live": "Link is live — no account needed",
-      "usedOrExpired": "Link used or expired",
-      "notInThisSession": "Link shown when the item is added",
-      "copy": "Copy link",
-      "copied": "Copied",
-      "reissue": "New link",
-      "toasts": {
-        "copied": "Link copied.",
-        "copyError": "Could not copy the link. Select it and copy manually.",
-        "reissued": "A fresh link was issued.",
-        "reissueError": "Could not issue a new link."
-      }
-    },
-    "guide": {
-      "title": "Damage claim guide",
-      "subtitle": "What to do when an asset is damaged or stolen during a stay.",
-      "link": "How the damage claim procedure works",
-      "intro": "A damage claim has a fixed shape. These steps are in the order they matter: the first hours decide what evidence you still have.",
-      "sections": {
-        "immediate": {
-          "title": "1. Record it as soon as you find it",
-          "body": "Photograph the asset before you move, clean or repair anything. The photos are the claim.",
-          "points": [
-            "Write down what happened and when you found it.",
-            "Do not discard the damaged item until the claim is closed.",
-            "Open the claim on the reservation so the dates are on the record."
-          ]
-        },
-        "photos": {
-          "title": "2. Collect the photos",
-          "body": "Each affected asset needs a wide shot and a close-up, or a photo of where a stolen item used to be.",
-          "points": [
-            "A wide shot shows the asset in its room.",
-            "A close-up shows the damage itself.",
-            "For a theft, photograph the empty space and the surrounding area."
-          ]
-        },
-        "costs": {
-          "title": "3. Document the money",
-          "body": "An amount is only credible with a document behind it: a repair quote, a replacement quote, or a purchase receipt.",
-          "points": [
-            "Enter the amount you are asking for on each affected asset.",
-            "Keep the quote or invoice that supports it.",
-            "The amount cannot be changed once the claim is filed."
-          ]
-        },
-        "deadlines": {
-          "title": "4. Meet the deadlines",
-          "body": "Airbnb's windows are fixed and they do not pause.",
-          "points": [
-            "The guest has 24 hours to respond once the claim is filed.",
-            "Escalate to AirCover if the guest does not respond in that window.",
-            "The AirCover window closes 30 days after the check-out date."
-          ]
-        },
-        "airbnb": {
-          "title": "5. What happens at Airbnb",
-          "body": "You file the claim, paste the prepared request text into the Resolution Center, and attach the photos and documents there.",
-          "points": [
-            "File the claim from the claim page once the stay is over.",
-            "Copy the request text the claim page prepared for you.",
-            "Attach the before and after photos, then wait for the guest's answer."
-          ]
-        }
-      }
-    },
-    "addItem": {
-      "title": "Add an asset to this claim",
-      "asset": "Asset",
-      "type": "What happened",
-      "value": "Estimated value",
-      "valueHint": "e.g. 120.00",
-      "submit": "Add to claim",
-      "submitting": "Adding…",
-      "allClaimed": "Every asset in this apartment is already on the claim.",
-      "validation": {
-        "assetRequired": "Select an asset.",
-        "typeRequired": "Choose whether the asset was damaged or stolen."
-      }
-    },
-    "toasts": {
-      "created": "Claim opened.",
-      "createError": "Could not open the claim.",
-      "itemAdded": "Item added to the claim.",
-      "itemAddError": "Could not add the item to the claim."
-    },
-    "message": {
-      "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
-      "intro": "You were our guest at {{apartmentName}} from {{dates}}.",
-      "assetsIntro": "These are the assets that were damaged or stolen during your stay:",
-      "ask": "We hope you will accept this amount so we can settle it directly, without going through the longer claim procedure.",
-      "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
-      "totalLine": "Total requested: {{amount}}.",
-      "footer": "Photos of the items before your stay, and of the damage after it, are attached to this request.",
-      "missingEvidence": "{{evidence}}"
-    },
-    "filing": {
-      "figures": {
-        "title": "What you are asking for",
-        "itemsSubtotal": "Items",
-        "provisional": "Provisional total",
-        "final": "Requested",
-        "valueHint": "Amount to request",
-        "save": "Save amount",
-        "assetValue": "Amount to request for {{asset}}",
-        "invalid": "Enter an amount greater than 0.",
-        "saved": "Amount saved.",
-        "noItems": "Add an asset to this claim before setting an amount."
-      },
-      "message": {
-        "title": "Request text",
-        "copy": "Copy text"
-      },
-      "openResolutionCenter": "Open Airbnb Resolution Center",
-      "confirm": "File this claim",
-      "confirming": "Filing…",
-      "confirmHint": "This starts the 24-hour window the guest has to respond. File only once the text above has been pasted into the resolution centre.",
-      "notReadyHint": "Every item needs its required photos before this claim can be filed.",
-      "countdown": {
-        "title": "The guest's window",
-        "guest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
-        "guestOverdue": "The guest response window has closed. Escalate to AirCover before the deadline below.",
-        "aircover": "Escalate to AirCover within {{days}} days if the guest does not respond.",
-        "aircoverOverdue": "Both Airbnb windows have closed for this claim."
-      },
-      "emergency": {
-        "title": "Emergency filing speed required",
-        "body": "An incoming check-in occurs in under 4 hours. File this claim now so the new stay is not affected."
-      },
-      "toasts": {
-        "payoutSaved": "Amount saved.",
-        "payoutError": "Could not save the amount.",
-        "copied": "Request text copied.",
-        "copyError": "Could not copy the text. Select it and copy manually.",
-        "filed": "Claim filed. The guest's 24-hour window has started.",
-        "fileError": "Could not file the claim."
-      }
-    },
-    "status": {
-      "draft": "Draft",
-      "readyToFile": "Ready to file",
-      "submittedToGuest": "Submitted to guest",
-      "escalatedToAircover": "Escalated to AirCover",
-      "resolved": "Resolved",
-      "unfeasible": "Unfeasible"
-    }
-  },
   "reservationActionsMenu": {
     "triggerTitle": "Reservierungsaktionen",
     "takeProofs": "Fotobeweise erstellen",
@@ -430,22 +227,6 @@
       "title": "Gastnachricht",
       "hint": "Kopieren Sie diesen Text und senden Sie ihn dem Gast im Nachrichtenbereich Ihrer Buchungsplattform oder per E-Mail. Über den Link kann er die Ankunftsübergabe abschließen."
     },
-    "incident": {
-      "title": "Damage claim",
-      "loading": "Checking for a claim on this stay…",
-      "error": "Could not check for a claim on this stay. Reload to try again.",
-      "emptyTitle": "No claim on this stay",
-      "emptyBody": "Found damage or something missing after this guest checked out? Open a claim to record the affected assets, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "startClaim": "Start a claim",
-      "openClaim": "Open claim",
-      "itemCount": "{{count}} assets on this claim",
-      "itemCount_one": "{{count}} asset on this claim",
-      "total": "Total",
-      "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
-      "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
-      "aircoverOverdue": "Both Airbnb windows have closed for this claim.",
-      "notYetCheckOut": "You can open a claim once the stay has checked out."
-    },
     "other": {
       "title": "Andere",
       "platformId": "Plattformreservierungs-ID",
@@ -477,6 +258,22 @@
         "noPhotoProof": "Der Link zur Gästekontrolle kann erst erstellt werden, wenn der Fotonachweis dieser Reservierung erfüllt ist.",
         "notCovered": "Der Link zur Gästekontrolle kann erst erstellt werden, wenn die Reservierung gedeckt ist."
       }
+    },
+    "incident": {
+      "title": "Schadensersatzanspruch",
+      "loading": "Es wird geprüft, ob ein Anspruch für diesen Aufenthalt vorliegt …",
+      "error": "Es konnte nicht geprüft werden, ob ein Anspruch für diesen Aufenthalt vorliegt. Neu laden, um es erneut zu versuchen.",
+      "emptyTitle": "Kein Anspruch auf diesen Aufenthalt",
+      "emptyBody": "Haben Sie Schäden gefunden oder fehlt etwas, nachdem dieser Gast ausgecheckt hat? Eröffnen Sie einen Anspruch, um die betroffenen Vermögenswerte zu erfassen, Fotobeweise zu sammeln und den Papierkram für das Resolution Center von Airbnb vorzubereiten.",
+      "startClaim": "Einen Anspruch starten",
+      "openClaim": "Anspruch öffnen",
+      "itemCount": "{{count}} Vermögenswerte für diesen Anspruch",
+      "itemCount_one": "{{count}} Vermögenswerte für diesen Anspruch",
+      "total": "Gesamt",
+      "awaitingGuest": "Warten auf die Antwort des Gastes – {{hours}}h {{minutes}}m übrig.",
+      "guestOverdue": "Das Gastantwortfenster wurde geschlossen. Innerhalb von {{days}} Tagen an AirCover eskalieren.",
+      "aircoverOverdue": "Beide Airbnb-Fenster wurden für diesen Anspruch geschlossen.",
+      "notYetCheckOut": "Sie können einen Anspruch geltend machen, sobald der Aufenthalt ausgecheckt ist."
     }
   },
   "inspectionGuidePage": {
@@ -498,6 +295,209 @@
     "toast": {
       "submitSuccess": "Fotonachweise übermittelt",
       "submitError": "Die Fotonachweise konnten nicht übermittelt werden. Bitte versuchen Sie es erneut."
+    }
+  },
+  "incidentPage": {
+    "title": "Schadensersatzanspruch",
+    "backToReservation": "Zurück zur Reservierung",
+    "loading": "Anspruch wird geladen…",
+    "listError": "Es konnte nicht nach einem Anspruch für diesen Aufenthalt gesucht werden. Neu laden, um es erneut zu versuchen.",
+    "notFound": {
+      "title": "Reservierung nicht gefunden",
+      "subtitle": "Diese Reservierung existiert nicht oder Sie haben keinen Zugriff darauf."
+    },
+    "empty": {
+      "title": "Noch kein Anspruch auf diesen Aufenthalt",
+      "body": "Eröffnen Sie einen Anspruch, um die beschädigten oder gestohlenen Vermögenswerte zu erfassen. Sie können Gegenstände hinzufügen, Fotobeweise sammeln und den Papierkram für das Resolution Center von Airbnb vorbereiten.",
+      "create": "Eröffnen Sie einen Anspruch.",
+      "notYetCheckOut": "Dieser Anspruch wird geöffnet, sobald der Aufenthalt ausgecheckt ist."
+    },
+    "items": {
+      "title": "Betroffene Vermögenswerte",
+      "empty": "Noch keine Vermögenswerte für diesen Anspruch. Fügen Sie unten die beschädigten oder gestohlenen Vermögenswerte hinzu.",
+      "views": "Erforderliche Fotos",
+      "viewsComplete": "Alle erforderlichen Fotos gesammelt",
+      "viewsMissing": "{{count}} erforderliche Fotos fehlen noch",
+      "viewsMissing_one": "{{count}} erforderliche Fotos fehlen noch",
+      "viewsMissing_other": "{{count}} erforderliche Fotos fehlen noch"
+    },
+    "itemType": {
+      "damage": "Beschädigt",
+      "theft": "Gestohlen"
+    },
+    "itemStatus": {
+      "linkGenerated": "Warten auf Fotos",
+      "photosCollected": "Gesammelte Fotos",
+      "documentsPending": "Dokumente ausstehend",
+      "complete": "Vollständig"
+    },
+    "evidence": {
+      "damagePhotoWide": "Weitwinkelaufnahme des Schadens",
+      "damagePhotoCloseup": "Nahaufnahme des Schadens",
+      "theftEmptySpacePhoto": "Foto, wo sich der Artikel befand",
+      "originalPurchaseReceipt": "Originalkaufbeleg",
+      "replacementRetailQuote": "Ersatzangebot für den Einzelhandel",
+      "handymanInvoice": "Handwerkerrechnung",
+      "policeReport": "Polizeibericht",
+      "captureFor": "Hinzufügen {{view}}",
+      "retakeFor": "Erneut aufnehmen {{view}}",
+      "remove": "Dieses Foto entfernen",
+      "zoom": "Dieses Foto anzeigen",
+      "before": "Vor den Fotos",
+      "toasts": {
+        "uploaded": "Foto angehängt.",
+        "uploadError": "Das Foto konnte nicht angehängt werden.",
+        "removed": "Foto entfernt.",
+        "removeError": "Das Foto konnte nicht entfernt werden."
+      }
+    },
+    "fieldLink": {
+      "label": "Der Link des Reinigers",
+      "live": "Link ist aktiv – kein Konto erforderlich",
+      "usedOrExpired": "Link verwendet oder abgelaufen",
+      "notInThisSession": "Link wird angezeigt, wenn das Element hinzugefügt wird",
+      "copy": "Link kopieren",
+      "copied": "Kopiert",
+      "reissue": "Neuer Link",
+      "toasts": {
+        "copied": "Link kopiert.",
+        "copyError": "Der Link konnte nicht kopiert werden. Wählen Sie es aus und kopieren Sie es manuell.",
+        "reissued": "Ein neuer Link wurde veröffentlicht.",
+        "reissueError": "Es konnte kein neuer Link ausgegeben werden."
+      }
+    },
+    "guide": {
+      "title": "Leitfaden für Schadensersatzansprüche",
+      "subtitle": "Was tun, wenn ein Vermögenswert während eines Aufenthalts beschädigt oder gestohlen wird?",
+      "link": "So funktioniert das Schadensersatzverfahren",
+      "intro": "Ein Schadensersatzanspruch hat eine feste Form. Diese Schritte sind in der Reihenfolge aufgeführt, in der sie wichtig sind: Die ersten Stunden entscheiden darüber, welche Beweise Sie noch haben.",
+      "sections": {
+        "immediate": {
+          "title": "1. Nehmen Sie es auf, sobald Sie es finden.",
+          "body": "Fotografieren Sie das Objekt, bevor Sie es bewegen, reinigen oder reparieren. Die Fotos sind der Anspruch.",
+          "points": {
+            "0": "Schreiben Sie auf, was passiert ist und wann Sie es gefunden haben.",
+            "1": "Entsorgen Sie den beschädigten Artikel nicht, bis der Anspruch abgeschlossen ist.",
+            "2": "Öffnen Sie den Anspruch für die Reservierung, damit die Daten in der Akte sind."
+          }
+        },
+        "photos": {
+          "title": "2. Sammeln Sie die Fotos",
+          "body": "Für jedes betroffene Objekt benötigen Sie eine Totalaufnahme und eine Nahaufnahme oder ein Foto von der Stelle, an der sich früher ein gestohlener Gegenstand befand.",
+          "points": {
+            "0": "Eine Totalaufnahme zeigt den Vermögenswert in seinem Raum.",
+            "1": "Eine Nahaufnahme zeigt den Schaden selbst.",
+            "2": "Fotografieren Sie bei einem Diebstahl den leeren Raum und die Umgebung."
+          }
+        },
+        "costs": {
+          "title": "3. Dokumentieren Sie das Geld",
+          "body": "Ein Betrag ist nur dann glaubwürdig, wenn ein Dokument dahinter steht: ein Reparaturangebot, ein Ersatzangebot oder eine Kaufquittung.",
+          "points": {
+            "0": "Geben Sie den Betrag ein, den Sie für jeden betroffenen Vermögenswert verlangen.",
+            "1": "Behalten Sie das Angebot oder die Rechnung, die es unterstützt.",
+            "2": "Der Betrag kann nicht mehr geändert werden, sobald der Anspruch eingereicht wurde."
+          }
+        },
+        "deadlines": {
+          "title": "4. Halten Sie die Fristen ein",
+          "body": "Die Zeitfenster von Airbnb sind festgelegt und es gibt keine Pause.",
+          "points": {
+            "0": "Der Gast hat 24 Stunden Zeit, um zu antworten, sobald der Anspruch eingereicht wurde.",
+            "1": "Eskalieren Sie es an AirCover, wenn der Gast in diesem Fenster nicht antwortet.",
+            "2": "Das AirCover-Fenster schließt 30 Tage nach dem Check-out-Datum."
+          }
+        },
+        "airbnb": {
+          "title": "5. Was passiert bei Airbnb",
+          "body": "Sie reichen den Anspruch ein, fügen den vorbereiteten Antragstext in das Resolution Center ein und hängen dort die Fotos und Dokumente an.",
+          "points": {
+            "0": "Reichen Sie den Anspruch über die Anspruchsseite ein, sobald der Aufenthalt vorüber ist.",
+            "1": "Kopieren Sie den Anfragetext auf die für Sie vorbereitete Anspruchsseite.",
+            "2": "Hängen Sie die Vorher- und Nachher-Fotos an und warten Sie dann auf die Antwort des Gastes."
+          }
+        }
+      }
+    },
+    "addItem": {
+      "title": "Fügen Sie diesem Anspruch einen Vermögenswert hinzu",
+      "asset": "Vermögenswert",
+      "type": "Was ist passiert",
+      "value": "Geschätzter Wert",
+      "valueHint": "z. B. 120,00",
+      "submit": "Zur Forderung hinzufügen",
+      "submitting": "Füge hinzu…",
+      "allClaimed": "Alle Vermögenswerte in dieser Wohnung sind bereits in der Forderung enthalten.",
+      "validation": {
+        "assetRequired": "Wählen Sie ein Asset aus.",
+        "typeRequired": "Wählen Sie aus, ob der Vermögenswert beschädigt oder gestohlen wurde."
+      }
+    },
+    "toasts": {
+      "created": "Anspruch eröffnet.",
+      "createError": "Der Anspruch konnte nicht geöffnet werden.",
+      "itemAdded": "Artikel zum Anspruch hinzugefügt.",
+      "itemAddError": "Der Artikel konnte dem Anspruch nicht hinzugefügt werden."
+    },
+    "message": {
+      "header": "Schadensersatzanspruch für den Aufenthalt bei {{apartmentName}} (Gast: {{guestName}}).",
+      "intro": "Sie waren unser Gast bei {{apartmentName}} von {{dates}}.",
+      "assetsIntro": "Dies sind die Vermögenswerte, die während Ihres Aufenthalts beschädigt oder gestohlen wurden:",
+      "ask": "Wir hoffen, dass Sie diesen Betrag akzeptieren, damit wir ihn direkt begleichen können, ohne das längere Reklamationsverfahren durchlaufen zu müssen.",
+      "itemLine": "{{index}}. {{asset}} – {{room}} – {{type}} – geschätzter Wert {{value}}. Beigefügte Beweise: {{attached}}.",
+      "totalLine": "Insgesamt angefordert: {{amount}}.",
+      "footer": "Dieser Anfrage sind Fotos der Gegenstände vor Ihrem Aufenthalt und der Schäden danach beigefügt.",
+      "missingEvidence": "{{evidence}}"
+    },
+    "filing": {
+      "figures": {
+        "title": "Was Sie verlangen",
+        "itemsSubtotal": "Artikel",
+        "provisional": "Vorläufiger Gesamtbetrag",
+        "final": "Angeforderter",
+        "valueHint": "Zu beantragender Betrag",
+        "save": "Betrag speichern",
+        "assetValue": "Betrag, der für {{asset}} angefordert werden soll",
+        "invalid": "Geben Sie einen Betrag größer als 0 ein.",
+        "saved": "Gespeicherter Betrag.",
+        "noItems": "Fügen Sie diesem Anspruch einen Vermögenswert hinzu, bevor Sie einen Betrag festlegen."
+      },
+      "message": {
+        "title": "Text anfordern",
+        "copy": "Text kopieren"
+      },
+      "openResolutionCenter": "Airbnb Resolution Center öffnen",
+      "confirm": "Diesen Anspruch einreichen",
+      "confirming": "Einreichen…",
+      "confirmHint": "Damit beginnt das 24-Stunden-Fenster, in dem der Gast antworten muss. Datei erst ablegen, wenn der obige Text in das Lösungscenter eingefügt wurde.",
+      "notReadyHint": "Für jeden Artikel sind die erforderlichen Fotos erforderlich, bevor dieser Anspruch eingereicht werden kann.",
+      "countdown": {
+        "title": "Das Fenster des Gastes",
+        "guest": "Warten auf die Antwort des Gastes – {{hours}}h {{minutes}}m übrig.",
+        "guestOverdue": "Das Gastantwortfenster wurde geschlossen. Eskalieren Sie vor Ablauf der unten angegebenen Frist an AirCover.",
+        "aircover": "Eskalieren Sie innerhalb von {{days}} Tagen an AirCover, wenn der Gast nicht antwortet.",
+        "aircoverOverdue": "Beide Airbnb-Fenster wurden für diesen Anspruch geschlossen."
+      },
+      "emergency": {
+        "title": "Schnelle Ablage im Notfall erforderlich",
+        "body": "Ein eingehender Check-in erfolgt in weniger als 4 Stunden. Reichen Sie diesen Anspruch jetzt ein, damit der neue Aufenthalt nicht beeinträchtigt wird."
+      },
+      "toasts": {
+        "payoutSaved": "Gespeicherter Betrag.",
+        "payoutError": "Der Betrag konnte nicht gespeichert werden.",
+        "copied": "Anforderungstext kopiert.",
+        "copyError": "Der Text konnte nicht kopiert werden. Wählen Sie es aus und kopieren Sie es manuell.",
+        "filed": "Anspruch eingereicht. Das 24-Stunden-Fenster des Gastes hat begonnen.",
+        "fileError": "Der Anspruch konnte nicht eingereicht werden."
+      }
+    },
+    "status": {
+      "draft": "Entwurf",
+      "readyToFile": "Bereit zur Datei",
+      "submittedToGuest": "An Gast übermittelt",
+      "escalatedToAircover": "Eskaliert an AirCover",
+      "resolved": "Gelöst",
+      "unfeasible": "Undurchführbar"
     }
   }
 }

@@ -152,209 +152,6 @@
       "error": "Došlo je do greške pri kreiranju rezervacije."
     }
   },
-  "incidentPage": {
-    "title": "Damage claim",
-    "backToReservation": "Back to reservation",
-    "loading": "Loading the claim…",
-    "listError": "Could not check for a claim on this stay. Reload to try again.",
-    "notFound": {
-      "title": "Reservation not found",
-      "subtitle": "This reservation does not exist, or you do not have access to it."
-    },
-    "empty": {
-      "title": "No claim on this stay yet",
-      "body": "Open a claim to record the assets that were damaged or stolen. You can add items, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "create": "Open a claim",
-      "notYetCheckOut": "This claim opens once the stay has checked out."
-    },
-    "items": {
-      "title": "Affected assets",
-      "empty": "No assets on this claim yet. Add the damaged or stolen assets below.",
-      "views": "Required photos",
-      "viewsComplete": "All required photos collected",
-      "viewsMissing": "{{count}} required photo(s) still missing",
-      "viewsMissing_one": "{{count}} required photo still missing",
-      "viewsMissing_other": "{{count}} required photos still missing"
-    },
-    "itemType": {
-      "damage": "Damaged",
-      "theft": "Stolen"
-    },
-    "itemStatus": {
-      "linkGenerated": "Waiting for photos",
-      "photosCollected": "Photos collected",
-      "documentsPending": "Documents pending",
-      "complete": "Complete"
-    },
-    "evidence": {
-      "damagePhotoWide": "Wide shot of the damage",
-      "damagePhotoCloseup": "Close-up of the damage",
-      "theftEmptySpacePhoto": "Photo of where the item was",
-      "originalPurchaseReceipt": "Original purchase receipt",
-      "replacementRetailQuote": "Replacement retail quote",
-      "handymanInvoice": "Handyman invoice",
-      "policeReport": "Police report",
-      "captureFor": "Add {{view}}",
-      "retakeFor": "Retake {{view}}",
-      "remove": "Remove this photo",
-      "zoom": "View this photo",
-      "before": "Before photos",
-      "toasts": {
-        "uploaded": "Photo attached.",
-        "uploadError": "Could not attach the photo.",
-        "removed": "Photo removed.",
-        "removeError": "Could not remove the photo."
-      }
-    },
-    "fieldLink": {
-      "label": "The cleaner's link",
-      "live": "Link is live — no account needed",
-      "usedOrExpired": "Link used or expired",
-      "notInThisSession": "Link shown when the item is added",
-      "copy": "Copy link",
-      "copied": "Copied",
-      "reissue": "New link",
-      "toasts": {
-        "copied": "Link copied.",
-        "copyError": "Could not copy the link. Select it and copy manually.",
-        "reissued": "A fresh link was issued.",
-        "reissueError": "Could not issue a new link."
-      }
-    },
-    "guide": {
-      "title": "Damage claim guide",
-      "subtitle": "What to do when an asset is damaged or stolen during a stay.",
-      "link": "How the damage claim procedure works",
-      "intro": "A damage claim has a fixed shape. These steps are in the order they matter: the first hours decide what evidence you still have.",
-      "sections": {
-        "immediate": {
-          "title": "1. Record it as soon as you find it",
-          "body": "Photograph the asset before you move, clean or repair anything. The photos are the claim.",
-          "points": [
-            "Write down what happened and when you found it.",
-            "Do not discard the damaged item until the claim is closed.",
-            "Open the claim on the reservation so the dates are on the record."
-          ]
-        },
-        "photos": {
-          "title": "2. Collect the photos",
-          "body": "Each affected asset needs a wide shot and a close-up, or a photo of where a stolen item used to be.",
-          "points": [
-            "A wide shot shows the asset in its room.",
-            "A close-up shows the damage itself.",
-            "For a theft, photograph the empty space and the surrounding area."
-          ]
-        },
-        "costs": {
-          "title": "3. Document the money",
-          "body": "An amount is only credible with a document behind it: a repair quote, a replacement quote, or a purchase receipt.",
-          "points": [
-            "Enter the amount you are asking for on each affected asset.",
-            "Keep the quote or invoice that supports it.",
-            "The amount cannot be changed once the claim is filed."
-          ]
-        },
-        "deadlines": {
-          "title": "4. Meet the deadlines",
-          "body": "Airbnb's windows are fixed and they do not pause.",
-          "points": [
-            "The guest has 24 hours to respond once the claim is filed.",
-            "Escalate to AirCover if the guest does not respond in that window.",
-            "The AirCover window closes 30 days after the check-out date."
-          ]
-        },
-        "airbnb": {
-          "title": "5. What happens at Airbnb",
-          "body": "You file the claim, paste the prepared request text into the Resolution Center, and attach the photos and documents there.",
-          "points": [
-            "File the claim from the claim page once the stay is over.",
-            "Copy the request text the claim page prepared for you.",
-            "Attach the before and after photos, then wait for the guest's answer."
-          ]
-        }
-      }
-    },
-    "addItem": {
-      "title": "Add an asset to this claim",
-      "asset": "Asset",
-      "type": "What happened",
-      "value": "Estimated value",
-      "valueHint": "e.g. 120.00",
-      "submit": "Add to claim",
-      "submitting": "Adding…",
-      "allClaimed": "Every asset in this apartment is already on the claim.",
-      "validation": {
-        "assetRequired": "Select an asset.",
-        "typeRequired": "Choose whether the asset was damaged or stolen."
-      }
-    },
-    "toasts": {
-      "created": "Claim opened.",
-      "createError": "Could not open the claim.",
-      "itemAdded": "Item added to the claim.",
-      "itemAddError": "Could not add the item to the claim."
-    },
-    "message": {
-      "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
-      "intro": "You were our guest at {{apartmentName}} from {{dates}}.",
-      "assetsIntro": "These are the assets that were damaged or stolen during your stay:",
-      "ask": "We hope you will accept this amount so we can settle it directly, without going through the longer claim procedure.",
-      "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
-      "totalLine": "Total requested: {{amount}}.",
-      "footer": "Photos of the items before your stay, and of the damage after it, are attached to this request.",
-      "missingEvidence": "{{evidence}}"
-    },
-    "filing": {
-      "figures": {
-        "title": "What you are asking for",
-        "itemsSubtotal": "Items",
-        "provisional": "Provisional total",
-        "final": "Requested",
-        "valueHint": "Amount to request",
-        "save": "Save amount",
-        "assetValue": "Amount to request for {{asset}}",
-        "invalid": "Enter an amount greater than 0.",
-        "saved": "Amount saved.",
-        "noItems": "Add an asset to this claim before setting an amount."
-      },
-      "message": {
-        "title": "Request text",
-        "copy": "Copy text"
-      },
-      "openResolutionCenter": "Open Airbnb Resolution Center",
-      "confirm": "File this claim",
-      "confirming": "Filing…",
-      "confirmHint": "This starts the 24-hour window the guest has to respond. File only once the text above has been pasted into the resolution centre.",
-      "notReadyHint": "Every item needs its required photos before this claim can be filed.",
-      "countdown": {
-        "title": "The guest's window",
-        "guest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
-        "guestOverdue": "The guest response window has closed. Escalate to AirCover before the deadline below.",
-        "aircover": "Escalate to AirCover within {{days}} days if the guest does not respond.",
-        "aircoverOverdue": "Both Airbnb windows have closed for this claim."
-      },
-      "emergency": {
-        "title": "Emergency filing speed required",
-        "body": "An incoming check-in occurs in under 4 hours. File this claim now so the new stay is not affected."
-      },
-      "toasts": {
-        "payoutSaved": "Amount saved.",
-        "payoutError": "Could not save the amount.",
-        "copied": "Request text copied.",
-        "copyError": "Could not copy the text. Select it and copy manually.",
-        "filed": "Claim filed. The guest's 24-hour window has started.",
-        "fileError": "Could not file the claim."
-      }
-    },
-    "status": {
-      "draft": "Draft",
-      "readyToFile": "Ready to file",
-      "submittedToGuest": "Submitted to guest",
-      "escalatedToAircover": "Escalated to AirCover",
-      "resolved": "Resolved",
-      "unfeasible": "Unfeasible"
-    }
-  },
   "reservationActionsMenu": {
     "triggerTitle": "Radnje rezervacije",
     "takeProofs": "Snimite dokaze fotografija",
@@ -430,22 +227,6 @@
       "title": "Poruka gosta",
       "hint": "Kopirajte ovaj tekst i pošaljite ga gostu u porukama vaše platforme za rezervaciju ili e-poštom. Putem veze gost može da završi primopredaju."
     },
-    "incident": {
-      "title": "Damage claim",
-      "loading": "Checking for a claim on this stay…",
-      "error": "Could not check for a claim on this stay. Reload to try again.",
-      "emptyTitle": "No claim on this stay",
-      "emptyBody": "Found damage or something missing after this guest checked out? Open a claim to record the affected assets, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "startClaim": "Start a claim",
-      "openClaim": "Open claim",
-      "itemCount": "{{count}} assets on this claim",
-      "itemCount_one": "{{count}} asset on this claim",
-      "total": "Total",
-      "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
-      "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
-      "aircoverOverdue": "Both Airbnb windows have closed for this claim.",
-      "notYetCheckOut": "You can open a claim once the stay has checked out."
-    },
     "other": {
       "title": "Ostalo",
       "platformId": "ID rezervacije platforme",
@@ -477,6 +258,22 @@
         "noPhotoProof": "Link za inspekciju gosta može se kreirati samo kada se potvrdi foto dokaz ove rezervacije.",
         "notCovered": "Link za inspekciju gostiju može se kreirati samo kada je rezervacija pokrivena."
       }
+    },
+    "incident": {
+      "title": "Zahtjev za štetu",
+      "loading": "Provjera potraživanja za ovaj boravak…",
+      "error": "Nije moguće provjeriti zahtjev za ovaj boravak. Učitajte ponovo da biste pokušali ponovo.",
+      "emptyTitle": "Nema potraživanja za ovaj boravak",
+      "emptyBody": "Pronašli ste štetu ili nešto nedostaje nakon što se ovaj gost odjavio? Otvorite zahtev za evidentiranje imovine na koju se odnosi, prikupite foto dokaze i pripremite papirologiju za Airbnb-ov centar za rešavanje.",
+      "startClaim": "Započni zahtev",
+      "openClaim": "Otvori zahtev",
+      "itemCount": "{{count}} sredstva na ovom zahtevu",
+      "itemCount_one": "{{count}} sredstva na ovom zahtevu",
+      "total": "Ukupno",
+      "awaitingGuest": "Čeka se odgovor gosta — preostalo je {{hours}}h {{minutes}}m.",
+      "guestOverdue": "Prozor odgovora gosta je zatvoren. Pošaljite AirCover-u u roku od {{days}} dana.",
+      "aircoverOverdue": "Oba Airbnb prozora su zatvorena zbog ovog potraživanja.",
+      "notYetCheckOut": "Možete otvoriti zahtev nakon što se boravak odjavi."
     }
   },
   "inspectionGuidePage": {
@@ -498,6 +295,209 @@
     "toast": {
       "submitSuccess": "Dostavljeni dokazi fotografija",
       "submitError": "Nije moguće poslati dokaze fotografija. Pokušajte ponovo."
+    }
+  },
+  "incidentPage": {
+    "title": "Zahtev za naknadu štete",
+    "backToReservation": "Povratak na rezervaciju",
+    "loading": "Učitavanje zahteva…",
+    "listError": "Nisam mogao da proverim da li postoji reklamacija za ovaj boravak. Učitajte ponovo da biste pokušali ponovo.",
+    "notFound": {
+      "title": "Rezervacija nije pronađena",
+      "subtitle": "Ova rezervacija ne postoji ili joj nemate pristup."
+    },
+    "empty": {
+      "title": "Još nema zahteva za ovaj boravak",
+      "body": "Otvorite zahtev za evidentiranje imovine koja je oštećena ili ukradena. Možete dodati stavke, prikupiti dokaze o fotografijama i pripremiti papirologiju za Airbnb-ov centar za rešavanje.",
+      "create": "Otvorite zahtev",
+      "notYetCheckOut": "Ovaj zahtev se otvara kada se boravak odjavi."
+    },
+    "items": {
+      "title": "Zahvaćena sredstva",
+      "empty": "Još uvek nema sredstava za ovo potraživanje. Dodajte oštećenu ili ukradenu imovinu ispod.",
+      "views": "Obavezne fotografije",
+      "viewsComplete": "Sve potrebne fotografije su prikupljene",
+      "viewsMissing": "{{count}} potrebne fotografije još uvek nedostaju",
+      "viewsMissing_one": "{{count}} potrebna slika još uvek nedostaje",
+      "viewsMissing_other": "{{count}} potrebne fotografije i dalje nedostaju"
+    },
+    "itemType": {
+      "damage": "Oštećeno",
+      "theft": "Ukradeno"
+    },
+    "itemStatus": {
+      "linkGenerated": "Čeka se fotografije",
+      "photosCollected": "Prikupljene fotografije",
+      "documentsPending": "Dokumenti na čekanju",
+      "complete": "Kompletan"
+    },
+    "evidence": {
+      "damagePhotoWide": "Široki snimak oštećenja",
+      "damagePhotoCloseup": "Krupni plan oštećenja",
+      "theftEmptySpacePhoto": "Fotografija mesta gde je ponovljena <kupovina/> maloprodajna ponuda",
+      "originalPurchaseReceipt": "Račun majstora",
+      "replacementRetailQuote": "Policijski izveštaj",
+      "handymanInvoice": "Dodaj __VAR_0__",
+      "policeReport": "Police report",
+      "captureFor": "Add {{view}}",
+      "retakeFor": "Ponovo snimi {{view}}",
+      "remove": "Ukloni ovu fotografiju",
+      "zoom": "Pogledaj ovu fotografiju",
+      "before": "Pre fotografija",
+      "toasts": {
+        "uploaded": "Slika je priložena.",
+        "uploadError": "Nije moguće priložiti sliku.",
+        "removed": "Slika je uklonjena.",
+        "removeError": "Nije moguće ukloniti sliku."
+      }
+    },
+    "fieldLink": {
+      "label": "Link za čistač",
+      "live": "Link je aktivan — nije potreban nalog",
+      "usedOrExpired": "Link je iskorišćen ili istekao",
+      "notInThisSession": "Veza se prikazuje kada se stavka doda",
+      "copy": "Kopiraj vezu",
+      "copied": "Kopirano",
+      "reissue": "Nova veza",
+      "toasts": {
+        "copied": "Link je kopiran.",
+        "copyError": "Nije moguće kopirati vezu. Izaberite ga i kopirajte ručno.",
+        "reissued": "Objavljena je nova veza.",
+        "reissueError": "Nije moguće izdati novu vezu."
+      }
+    },
+    "guide": {
+      "title": "Vodič za odštetu",
+      "subtitle": "Šta učiniti kada je sredstvo oštećeno ili ukradeno tokom boravka.",
+      "link": "Kako funkcioniše postupak zahteva za odštetu",
+      "intro": "Zahtev za odštetu ima fiksni oblik. Ovi koraci su onim redosledom u kom su važni: prvi sati odlučuju koje dokaze još imate.",
+      "sections": {
+        "immediate": {
+          "title": "1. Snimite ga čim ga pronađete",
+          "body": "Fotografišite materijal pre nego što bilo šta premestite, očistite ili popravite. Fotografije su tvrdnja.",
+          "points": {
+            "0": "Zapišite šta se dogodilo i kada ste to pronašli.",
+            "1": "Ne odbacujte oštećenu stavku dok se zahtev ne zatvori.",
+            "2": "Otvorite zahtev na rezervaciji tako da datumi budu zabeleženi."
+          }
+        },
+        "photos": {
+          "title": "2. Prikupite fotografije",
+          "body": "Svakom predmetu koji je pogođen potreban je široki snimak i krupni plan, ili fotografija mesta na kojoj se nekada nalazila ukradena stvar.",
+          "points": {
+            "0": "Široki snimak prikazuje sredstvo u svojoj sobi.",
+            "1": "Krupni plan prikazuje samu štetu.",
+            "2": "Za krađu fotografišite prazan prostor i okolinu."
+          }
+        },
+        "costs": {
+          "title": "3. Dokumentujte novac",
+          "body": "Iznos je verodostojan samo ako iza njega stoji dokument: ponuda za popravku, zamena ili račun za kupovinu.",
+          "points": {
+            "0": "Unesite iznos koji tražite za svako sredstvo na koje utiče.",
+            "1": "Zadržite ponudu ili fakturu koja to podržava.",
+            "2": "Iznos se ne može promeniti nakon podnošenja zahteva."
+          }
+        },
+        "deadlines": {
+          "title": "4. Ispoštujte rokove",
+          "body": "Airbnb-ovi prozori su popravljeni i ne pauziraju.",
+          "points": {
+            "0": "Gost ima 24 sata da odgovori nakon podnošenja tužbe.",
+            "1": "Eskalirajte na AirCover ako gost ne odgovori u tom prozoru.",
+            "2": "AirCover prozor se zatvara 30 dana nakon datuma odjave."
+          }
+        },
+        "airbnb": {
+          "title": "5. Šta se dešava na Airbnb-u",
+          "body": "Podnesete zahtev, nalepite pripremljeni tekst zahteva u Rezolucioni centar i tamo priložite fotografije i dokumente.",
+          "points": {
+            "0": "Podnesite zahtev sa stranice sa zahtevima kada se boravak završi.",
+            "1": "Kopirajte tekst zahteva koju je stranica za polaganje prava pripremila za vas.",
+            "2": "Priložite fotografije pre i posle, a zatim sačekajte odgovor gosta."
+          }
+        }
+      }
+    },
+    "addItem": {
+      "title": "Dodajte sredstvo ovom zahtevu",
+      "asset": "Imovina",
+      "type": "Šta se dogodilo",
+      "value": "Procenjena vrednost",
+      "valueHint": "npr. 120,00",
+      "submit": "Dodati na zahtev",
+      "submitting": "Dodavanje…",
+      "allClaimed": "Sva imovina u ovom stanu je već na zahtevu.",
+      "validation": {
+        "assetRequired": "Izaberite sredstvo.",
+        "typeRequired": "Odaberite da li je sredstvo oštećeno ili ukradeno."
+      }
+    },
+    "toasts": {
+      "created": "Zahtev je otvoren.",
+      "createError": "Nije moguće otvoriti zahtev.",
+      "itemAdded": "Stavka je dodata zahtevu.",
+      "itemAddError": "Nije moguće dodati stavku u zahtev za polaganje prava."
+    },
+    "message": {
+      "header": "Zahtev za naknadu štete za boravak u {{apartmentName}} (gost: {{guestName}}).",
+      "intro": "Bili ste naš gost u {{apartmentName}} od {{dates}}.",
+      "assetsIntro": "Ovo su sredstva koja su oštećena ili ukradena tokom vašeg boravka:",
+      "ask": "Nadamo se da ćete prihvatiti ovaj iznos kako bismo mogli da ga izmirimo direktno, bez prolaska kroz duži postupak potraživanja.",
+      "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — procenjena vrednost {{value}}. Priloženi dokazi: {{attached}}.",
+      "totalLine": "Ukupno zahtevano: {{amount}}.",
+      "footer": "Fotografije stvari pre vašeg boravka, kao i oštećenja nakon njega, priložene su ovom zahtevu.",
+      "missingEvidence": "{{evidence}}"
+    },
+    "filing": {
+      "figures": {
+        "title": "Šta tražite",
+        "itemsSubtotal": "Stavke",
+        "provisional": "Privremeni ukupan",
+        "final": "Zahtevani",
+        "valueHint": "Iznos za zahtev",
+        "save": "Sačuvaj iznos",
+        "assetValue": "Iznos za zahtev za {{asset}}",
+        "invalid": "Unesite iznos veći od 0.",
+        "saved": "Ušteđen iznos.",
+        "noItems": "Dodajte sredstvo ovom zahtevu pre nego što podesite iznos."
+      },
+      "message": {
+        "title": "Tekst zahteva",
+        "copy": "Kopiraj tekst"
+      },
+      "openResolutionCenter": "Otvori Airbnb centar za rešavanje",
+      "confirm": "Podnesite ovu žalbu",
+      "confirming": "Podnošenje…",
+      "confirmHint": "Ovo počinje 24-časovni period na koji gost mora da odgovori. Dajte fajl samo kada je gornji tekst nalepljen u centar za rešavanje.",
+      "notReadyHint": "Za svaku stavku su potrebne potrebne fotografije pre nego što se ovaj zahtev može podneti.",
+      "countdown": {
+        "title": "Prozor gosta",
+        "guest": "Čeka se odgovor gosta — preostalo je {{hours}}h {{minutes}}m.",
+        "guestOverdue": "Prozor odgovora gosta je zatvoren. Pošaljite AirCover-u pre isteka roka.",
+        "aircover": "Pošaljite AirCover-u u roku od {{days}} dana ako gost ne odgovori.",
+        "aircoverOverdue": "Oba Airbnb prozora su zatvorena zbog ovog potraživanja."
+      },
+      "emergency": {
+        "title": "Potrebna je brzina arhiviranja u hitnim slučajevima",
+        "body": "Dolazna prijava se dešava za manje od 4 sata. Podnesite ovaj zahtev sada tako da to ne utiče na novi boravak."
+      },
+      "toasts": {
+        "payoutSaved": "Ušteđen iznos.",
+        "payoutError": "Nije moguće sačuvati iznos.",
+        "copied": "Tekst zahteva je kopiran.",
+        "copyError": "Nije moguće kopirati tekst. Izaberite ga i kopirajte ručno.",
+        "filed": "Zahtev podnet. Počeo je 24-časovni okvir za goste.",
+        "fileError": "Nije moguće podneti zahtev."
+      }
+    },
+    "status": {
+      "draft": "Nacrt",
+      "readyToFile": "Spreman za fajl",
+      "submittedToGuest": "Poslato gostu",
+      "escalatedToAircover": "Prebačeno na AirCover",
+      "resolved": "Rešeno",
+      "unfeasible": "Neizvodljivo"
     }
   }
 }
