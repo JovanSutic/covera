@@ -86,8 +86,16 @@ export const hostRoutes: SectionRoute = {
         { resource: "assets", params: (params) => ({ apartmentId: String(params.id) }) },
         { resource: "incidents", params: (params) => ({ apartmentId: String(params.id) }) },
         { resource: "incident", params: () => null },
+        { resource: "reservationPhotos", params: () => null },
       ],
       handle: { crumb: "incidentPage.title" },
+    },
+    {
+      // D18: a static page. No `data`, so nothing is prefetched and `prefetchCoverage`
+      // has nothing to check against it.
+      path: "damage-claim-guide",
+      page: () => import("@/pages/host/DamageClaimGuidePage"),
+      handle: { crumb: "incidentPage.guide.title" },
     },
   ],
 };

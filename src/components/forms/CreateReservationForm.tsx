@@ -13,6 +13,7 @@ import { withAuth } from "@/lib/api/api";
 import { postReservations } from "@/api/generated/requests/services.gen";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { appPaths, buildPath } from "@/lib/router";
+import { withLang } from "@/lib/router/lang";
 
 // Formats current local date-time into 'YYYY-MM-THH:mm' required by datetime-local min attribute
 const getMinDatetimeLocal = () => {
@@ -116,7 +117,7 @@ export default function CreateReservationForm({
   isOpen,
   apartmentId,
 }: CreateReservationFormProps) {
-  const { t } = useTranslation("host");
+  const { t, i18n } = useTranslation("host");
   const [showAlternativeDates, setShowAlternativeDates] = useState(false);
   const [minDatetime, setMinDatetime] = useState(getMinDatetimeLocal());
 
@@ -193,10 +194,13 @@ export default function CreateReservationForm({
       // before we leave; otherwise it stays open behind the page we navigate to.
       if (created?.id) {
         navigate(
-          buildPath(appPaths.hostReservation, {
-            id: apartmentId,
-            reservationId: created.id,
-          }),
+          withLang(
+            buildPath(appPaths.hostReservation, {
+              id: apartmentId,
+              reservationId: created.id,
+            }),
+            i18n.language,
+          ),
         );
       }
     },

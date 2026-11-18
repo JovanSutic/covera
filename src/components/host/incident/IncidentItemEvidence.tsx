@@ -6,11 +6,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Camera, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { ImageZoomOverlay } from "@/components/shared/ImageZoomOverlay";
 import {
   removeIncidentEvidence,
   uploadIncidentEvidence,
 } from "@/lib/api/incidentClaims";
 import { incidentQueryKey } from "@/lib/api/queries/incident";
+import type { BeforePhoto } from "@/lib/helpers/assetBeforePhotos";
 import {
   activeEvidence,
   activePhotoCount,
@@ -26,6 +28,12 @@ const R2_IMAGE_URL = import.meta.env.VITE_R2_IMAGE_URL;
 interface IncidentItemEvidenceProps {
   incidentId: string;
   item: IncidentItem;
+  /**
+   * D7: the asset's before photos for this stay. Rendered above the damage strip, with
+   * no delete control — these are evidence the guest never removed, so the host must not
+   * be able to attach a delete action to them here.
+   */
+  beforePhotos?: readonly BeforePhoto[];
   /**
    * D19's seam, copied from `ShotStepPanel`: jsdom implements no `URL.createObjectURL`,
    * so the tests inject a fake control and drive the real handler instead of stubbing
@@ -54,6 +62,7 @@ interface IncidentItemEvidenceProps {
 export function IncidentItemEvidence({
   incidentId,
   item,
+  beforePhotos = [],
   renderCapture,
 }: IncidentItemEvidenceProps) {
   const { t } = useTranslation("host");
@@ -63,6 +72,10 @@ export function IncidentItemEvidence({
   // Which required view the native picker is currently collecting. A ref would lose
   // the render the label change needs, so it is state.
   const [pendingType, setPendingType] = useState<EvidenceType | null>(null);
+  // The photo shown fullscreen, if any. `null` is closed — the same shape as
+  // `ExpandableImage`'s boolean, held as the photo so the overlay cannot drift from the
+  // thumbnail that opened it.
+  const [zoomed, setZoomed] = useState<{ src: string; alt: string } | null>(null);
 
   const invalidate = () => {
     queryClient.invalidateQueries({
@@ -167,28 +180,80 @@ export function IncidentItemEvidence({
         </div>
       )}
 
+      {beforePhotos.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            {t("incidentPage.evidence.before")}
+          </p>
+
+          <ul className="mt-1 flex flex-wrap gap-2">
+            {beforePhotos.map((photo) => {
+              const src = `${R2_IMAGE_URL}/${photo.storageKey}`;
+              const alt = t("incidentPage.evidence.before");
+
+              return (
+                <li key={photo.id}>
+                  <button
+                    type="button"
+                    onClick={() => setZoomed({ src, alt })}
+                    aria-label={t("incidentPage.evidence.zoom")}
+                    className="block cursor-zoom-in"
+                  >
+                    <img
+                      src={src}
+                      alt={alt}
+                      className="h-16 w-16 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                    />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {photos.length > 0 && (
         <ul className="mt-3 flex flex-wrap gap-2">
-          {photos.map((photo) => (
-            <li key={photo.id} className="relative">
-              <img
-                src={`${R2_IMAGE_URL}/${photo.storageKey}`}
-                alt={t(evidenceLabelKey(photo.evidenceType))}
-                className="h-16 w-16 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
-              />
+          {photos.map((photo) => {
+            const src = `${R2_IMAGE_URL}/${photo.storageKey}`;
+            const alt = t(evidenceLabelKey(photo.evidenceType));
 
-              <button
-                type="button"
-                disabled={isBusy}
-                onClick={() => deleteMutation.mutate(photo.id)}
-                aria-label={t("incidentPage.evidence.remove")}
-                className="absolute -right-1.5 -top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors hover:text-rose-600 disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-              >
-                <Trash2 className="h-3 w-3" />
-              </button>
-            </li>
-          ))}
+            return (
+              <li key={photo.id} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setZoomed({ src, alt })}
+                  aria-label={t("incidentPage.evidence.zoom")}
+                  className="block cursor-zoom-in"
+                >
+                  <img
+                    src={src}
+                    alt={alt}
+                    className="h-16 w-16 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isBusy}
+                  onClick={() => deleteMutation.mutate(photo.id)}
+                  aria-label={t("incidentPage.evidence.remove")}
+                  className="absolute -right-1.5 -top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors hover:text-rose-600 disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </li>
+            );
+          })}
         </ul>
+      )}
+
+      {zoomed && (
+        <ImageZoomOverlay
+          src={zoomed.src}
+          alt={zoomed.alt}
+          onClose={() => setZoomed(null)}
+        />
       )}
     </div>
   );

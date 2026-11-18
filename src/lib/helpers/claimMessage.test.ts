@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { buildClaimMessage } from "./claimMessage";
+import { buildClaimMessage, formatStayRange } from "./claimMessage";
 import type { ClaimMessageLabels } from "./claimMessage";
 import type { IncidentItem } from "@/api/generated/requests/types.gen";
 
@@ -23,6 +23,9 @@ function stubT() {
 
 const LABELS: ClaimMessageLabels = {
   header: "Claim {{ guestName }} {{ apartmentName }}",
+  intro: "{{ apartmentName }} {{ dates }}",
+  assetsIntro: "assets-intro",
+  ask: "ask",
   itemLine: "{{ index }}. {{ asset }} ({{ room }}) — {{ type }} — {{ value }} — {{ attached }}",
   totalLine: "Total {{ amount }}",
   footer: "footer",
@@ -63,6 +66,7 @@ describe("buildClaimMessage", () => {
       apartmentName: "Villa Aurora",
       items: [],
       requestedCents: 0,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t: stubT(),
       labels: LABELS,
     });
@@ -80,6 +84,7 @@ describe("buildClaimMessage", () => {
         item({ asset: { name: "Sofa" } as IncidentItem["asset"] }),
       ],
       requestedCents: 10000,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t: stubT(),
       labels: LABELS,
     });
@@ -94,6 +99,7 @@ describe("buildClaimMessage", () => {
       apartmentName: "Villa",
       items: [item({ estimatedPlaceholderValueCents: 12345 })],
       requestedCents: 99999,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t: stubT(),
       labels: LABELS,
     });
@@ -127,6 +133,7 @@ describe("buildClaimMessage", () => {
         }),
       ],
       requestedCents: 5000,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t: stubT(),
       labels: LABELS,
     });
@@ -159,6 +166,7 @@ describe("buildClaimMessage", () => {
         }),
       ],
       requestedCents: 0,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t: stubT(),
       labels: LABELS,
     });
@@ -179,6 +187,7 @@ describe("buildClaimMessage", () => {
       apartmentName: "Villa",
       items: [item({ type: "theft" })],
       requestedCents: 0,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t,
       labels: LABELS,
     });
@@ -199,6 +208,7 @@ describe("buildClaimMessage", () => {
       apartmentName: "Villa",
       items,
       requestedCents: 25000,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t: stubT(),
       labels: LABELS,
     });
@@ -214,6 +224,7 @@ describe("buildClaimMessage", () => {
       apartmentName: "Villa",
       items: [],
       requestedCents: 0,
+      checkInDatetime: "2026-11-01T15:00:00.000Z", checkOutDatetime: "2026-11-08T10:00:00.000Z", locale: "en",
       t: stubT(),
       labels: LABELS,
     });
@@ -221,5 +232,74 @@ describe("buildClaimMessage", () => {
     expect(typeof message).toBe("string");
     expect(message.trim().length).toBeGreaterThan(0);
     expect(message).not.toContain("undefined");
+  });
+
+  it("names the stay's dates", () => {
+    const message = buildClaimMessage({
+      guestName: "Ada",
+      apartmentName: "Villa",
+      items: [],
+      requestedCents: 0,
+      checkInDatetime: "2026-11-01T15:00:00.000Z",
+      checkOutDatetime: "2026-11-08T10:00:00.000Z",
+      locale: "en",
+      t: stubT(),
+      labels: LABELS,
+    });
+
+    expect(message).toContain(
+      formatStayRange(
+        "2026-11-01T15:00:00.000Z",
+        "2026-11-08T10:00:00.000Z",
+        "en",
+      ),
+    );
+  });
+
+  it("closes with the ask and the before/after photo note", () => {
+    const message = buildClaimMessage({
+      guestName: "Ada",
+      apartmentName: "Villa",
+      items: [
+        item({ asset: { name: "TV" } as IncidentItem["asset"] }),
+        item({ asset: { name: "Sofa" } as IncidentItem["asset"] }),
+      ],
+      requestedCents: 10000,
+      checkInDatetime: "2026-11-01T15:00:00.000Z",
+      checkOutDatetime: "2026-11-08T10:00:00.000Z",
+      locale: "en",
+      t: stubT(),
+      labels: LABELS,
+    });
+
+    const lines = message.split("\n").filter((line) => line.trim().length > 0);
+
+    expect(lines[lines.length - 1]).toBe(LABELS.footer);
+    expect(lines[lines.length - 2]).toBe(LABELS.ask);
+
+    const firstItem = lines.findIndex((line) => line.startsWith("1. "));
+    const lastItem = lines.findIndex((line) => line.startsWith("2. "));
+    const total = lines.findIndex((line) => line.startsWith("Total "));
+
+    expect(lines.indexOf(LABELS.assetsIntro)).toBeLessThan(firstItem);
+    expect(total).toBeGreaterThan(lastItem);
+  });
+});
+
+describe("formatStayRange", () => {
+  it("renders both dates with the locale's own formatting", () => {
+    const range = formatStayRange(
+      "2026-11-01T15:00:00.000Z",
+      "2026-11-08T10:00:00.000Z",
+      "en",
+    );
+
+    expect(range).toContain("Nov 1, 2026");
+    expect(range).toContain("Nov 8, 2026");
+    expect(range).toContain("–");
+  });
+
+  it("returns an empty string when either instant is unparseable", () => {
+    expect(formatStayRange("garbage", "2026-11-08T10:00:00.000Z", "en")).toBe("");
   });
 });

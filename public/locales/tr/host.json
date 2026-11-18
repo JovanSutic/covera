@@ -152,146 +152,6 @@
       "error": "Rezervasyon oluşturulurken bir hata oluştu."
     }
   },
-  "incidentPage": {
-    "title": "Damage claim",
-    "backToReservation": "Back to reservation",
-    "loading": "Loading the claim…",
-    "listError": "Could not check for a claim on this stay. Reload to try again.",
-    "notFound": {
-      "title": "Reservation not found",
-      "subtitle": "This reservation does not exist, or you do not have access to it."
-    },
-    "empty": {
-      "title": "No claim on this stay yet",
-      "body": "Open a claim to record the assets that were damaged or stolen. You can add items, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "create": "Open a claim"
-    },
-    "items": {
-      "title": "Affected assets",
-      "empty": "No assets on this claim yet. Add the damaged or stolen assets below.",
-      "views": "Required photos",
-      "viewsComplete": "All required photos collected",
-      "viewsMissing": "{{count}} required photo(s) still missing",
-      "viewsMissing_one": "{{count}} required photo still missing",
-      "viewsMissing_other": "{{count}} required photos still missing"
-    },
-    "itemType": {
-      "damage": "Damaged",
-      "theft": "Stolen"
-    },
-    "itemStatus": {
-      "linkGenerated": "Waiting for photos",
-      "photosCollected": "Photos collected",
-      "documentsPending": "Documents pending",
-      "complete": "Complete"
-    },
-    "evidence": {
-      "damagePhotoWide": "Wide shot of the damage",
-      "damagePhotoCloseup": "Close-up of the damage",
-      "theftEmptySpacePhoto": "Photo of where the item was",
-      "originalPurchaseReceipt": "Original purchase receipt",
-      "replacementRetailQuote": "Replacement retail quote",
-      "handymanInvoice": "Handyman invoice",
-      "policeReport": "Police report",
-      "captureFor": "Add {{view}}",
-      "retakeFor": "Retake {{view}}",
-      "remove": "Remove this photo",
-      "toasts": {
-        "uploaded": "Photo attached.",
-        "uploadError": "Could not attach the photo.",
-        "removed": "Photo removed.",
-        "removeError": "Could not remove the photo."
-      }
-    },
-    "fieldLink": {
-      "label": "The cleaner's link",
-      "live": "Link is live — no account needed",
-      "usedOrExpired": "Link used or expired",
-      "notInThisSession": "Link shown when the item is added",
-      "copy": "Copy link",
-      "copied": "Copied",
-      "reissue": "New link",
-      "toasts": {
-        "copied": "Link copied.",
-        "copyError": "Could not copy the link. Select it and copy manually.",
-        "reissued": "A fresh link was issued.",
-        "reissueError": "Could not issue a new link."
-      }
-    },
-    "addItem": {
-      "title": "Add an asset to this claim",
-      "asset": "Asset",
-      "type": "What happened",
-      "value": "Estimated value",
-      "valueHint": "e.g. 120.00",
-      "submit": "Add to claim",
-      "submitting": "Adding…",
-      "allClaimed": "Every asset in this apartment is already on the claim.",
-      "validation": {
-        "assetRequired": "Select an asset.",
-        "typeRequired": "Choose whether the asset was damaged or stolen."
-      }
-    },
-    "toasts": {
-      "created": "Claim opened.",
-      "createError": "Could not open the claim.",
-      "itemAdded": "Item added to the claim.",
-      "itemAddError": "Could not add the item to the claim."
-    },
-    "message": {
-      "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
-      "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
-      "totalLine": "Total requested: {{amount}}.",
-      "footer": "Photos of the damage are attached to this request.",
-      "missingEvidence": "{{evidence}}"
-    },
-    "filing": {
-      "figures": {
-        "title": "What you are asking for",
-        "itemsSubtotal": "Items",
-        "provisional": "Provisional total",
-        "final": "Requested",
-        "valueHint": "Amount to request",
-        "save": "Save amount"
-      },
-      "message": {
-        "title": "Request text",
-        "copy": "Copy text"
-      },
-      "openResolutionCenter": "Open Airbnb Resolution Center",
-      "confirm": "File this claim",
-      "confirming": "Filing…",
-      "confirmHint": "This starts the 24-hour window the guest has to respond. File only once the text above has been pasted into the resolution centre.",
-      "notReadyHint": "Every item needs its required photos before this claim can be filed.",
-      "countdown": {
-        "title": "The guest's window",
-        "guest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
-        "guestOverdue": "The guest response window has closed. Escalate to AirCover before the deadline below.",
-        "aircover": "Escalate to AirCover within {{days}} days if the guest does not respond.",
-        "aircoverOverdue": "Both Airbnb windows have closed for this claim."
-      },
-      "emergency": {
-        "title": "Emergency filing speed required",
-        "body": "An incoming check-in occurs in under 4 hours. File this claim now so the new stay is not affected."
-      },
-      "toasts": {
-        "payoutSaved": "Amount saved.",
-        "payoutError": "Could not save the amount.",
-        "copied": "Request text copied.",
-        "copyError": "Could not copy the text. Select it and copy manually.",
-        "filed": "Claim filed. The guest's 24-hour window has started.",
-        "fileError": "Could not file the claim."
-      }
-    },
-    "status": {
-      "draft": "Draft",
-      "readyToFile": "Ready to file",
-      "submittedToGuest": "Submitted to guest",
-      "escalatedToAircover": "Escalated to AirCover",
-      "resolved": "Resolved",
-      "unfeasible": "Unfeasible"
-    }
-  },
   "reservationActionsMenu": {
     "triggerTitle": "Rezervasyon işlemleri",
     "takeProofs": "Fotoğraf provaları alın",
@@ -367,21 +227,6 @@
       "title": "Konuk mesajı",
       "hint": "Bu metni kopyalayıp rezervasyon platformunuzun mesaj alanında veya e-posta ile konuğa gönderin. Bağlantı sayesinde konuk varış teslimini tamamlayabilir."
     },
-    "incident": {
-      "title": "Damage claim",
-      "loading": "Checking for a claim on this stay…",
-      "error": "Could not check for a claim on this stay. Reload to try again.",
-      "emptyTitle": "No claim on this stay",
-      "emptyBody": "Found damage or something missing after this guest checked out? Open a claim to record the affected assets, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "startClaim": "Start a claim",
-      "openClaim": "Open claim",
-      "itemCount": "{{count}} assets on this claim",
-      "itemCount_one": "{{count}} asset on this claim",
-      "total": "Total",
-      "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
-      "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
-      "aircoverOverdue": "Both Airbnb windows have closed for this claim."
-    },
     "other": {
       "title": "Diğer",
       "platformId": "Platform rezervasyon kimliği",
@@ -413,6 +258,22 @@
         "noPhotoProof": "Konuk inceleme bağlantısı yalnızca bu rezervasyonun fotoğraflı kanıtı karşılandıktan sonra oluşturulabilir.",
         "notCovered": "Misafir inceleme bağlantısı yalnızca rezervasyon tamamlandıktan sonra oluşturulabilir."
       }
+    },
+    "incident": {
+      "title": "Hasar talebi",
+      "loading": "Bu konaklamaya ilişkin hak talebi kontrol ediliyor…",
+      "error": "Bu konaklamaya ilişkin hak talebi kontrol edilemedi. Tekrar denemek için yeniden yükleyin.",
+      "emptyTitle": "Bu konaklamayla ilgili hak talebinde bulunulmadı",
+      "emptyBody": "Bu misafir çıkış yaptıktan sonra hasar veya eksik bir şey mi buldunuz? Etkilenen varlıkları kaydetmek, fotoğraflı kanıt toplamak ve Airbnb Çözüm Merkezi için evrakları hazırlamak için bir talep açın.",
+      "startClaim": "Bir hak talebinde bulunun",
+      "openClaim": "Açık hak talebinde bulunun",
+      "itemCount": "{{count}} bu hak talebindeki varlıklar",
+      "itemCount_one": "{{count}} bu hak talebindeki varlıklar",
+      "total": "Toplam",
+      "awaitingGuest": "Misafirin yanıtı bekleniyor — {{hours}}h {{minutes}}m kaldı.",
+      "guestOverdue": "Misafir yanıt penceresi kapandı. {{days}} gün içinde AirCover'a iletin.",
+      "aircoverOverdue": "Bu iddia nedeniyle her iki Airbnb penceresi de kapatıldı.",
+      "notYetCheckOut": "Konaklamanın çıkışını yaptıktan sonra talep açabilirsiniz."
     }
   },
   "inspectionGuidePage": {
@@ -434,6 +295,209 @@
     "toast": {
       "submitSuccess": "Fotoğraflı provalar gönderildi",
       "submitError": "Fotoğraflı provalar gönderilemedi. Lütfen tekrar deneyin."
+    }
+  },
+  "incidentPage": {
+    "title": "Hasar talebi",
+    "backToReservation": "Rezervasyona geri dön",
+    "loading": "Talep yükleniyor…",
+    "listError": "Bu konaklamaya ilişkin hak talebi kontrol edilemedi. Tekrar denemek için yeniden yükleyin.",
+    "notFound": {
+      "title": "Rezervasyon bulunamadı",
+      "subtitle": "Bu rezervasyon mevcut değil veya ona erişiminiz yok."
+    },
+    "empty": {
+      "title": "Bu konaklamayla ilgili henüz hak talebinde bulunulmadı",
+      "body": "Hasar gören veya çalınan varlıkları kaydetmek için hak talebinde bulunun. Airbnb Çözüm Merkezi için öğeler ekleyebilir, fotoğraflı kanıt toplayabilir ve evrakları hazırlayabilirsiniz.",
+      "create": "Talep açın",
+      "notYetCheckOut": "Bu talep, konaklama çıkış yapıldıktan sonra açılır."
+    },
+    "items": {
+      "title": "Etkilenen varlıklar",
+      "empty": "Bu hak talebinde henüz öğe yok. Hasar görmüş veya çalınmış varlıkları aşağıya ekleyin.",
+      "views": "Gerekli fotoğraflar",
+      "viewsComplete": "Gerekli tüm fotoğraflar toplandı",
+      "viewsMissing": "{{count}} gerekli fotoğraf(lar) hâlâ eksik",
+      "viewsMissing_one": "{{count}} gerekli fotoğraf hâlâ eksik",
+      "viewsMissing_other": "{{count}} gerekli fotoğraflar hâlâ eksik"
+    },
+    "itemType": {
+      "damage": "Hasarlı",
+      "theft": "Çalıntı"
+    },
+    "itemStatus": {
+      "linkGenerated": "Fotoğraf bekleniyor",
+      "photosCollected": "Fotoğraflar toplandı",
+      "documentsPending": "Bekleyen belgeler",
+      "complete": "Tamamlandı"
+    },
+    "evidence": {
+      "damagePhotoWide": "Hasarın geniş görüntüsü",
+      "damagePhotoCloseup": "Hasarın yakından görünümü",
+      "theftEmptySpacePhoto": "Ürünün bulunduğu yerin fotoğrafı",
+      "originalPurchaseReceipt": "Orijinal satın alma makbuzu",
+      "replacementRetailQuote": "Yedek perakende fiyat teklifi",
+      "handymanInvoice": "Tamirci faturası",
+      "policeReport": "Polis raporu",
+      "captureFor": "Ekle {{view}}",
+      "retakeFor": "Tekrar çek {{view}}",
+      "remove": "Bu fotoğrafı kaldır",
+      "zoom": "Bu fotoğrafı görüntüle",
+      "before": "Fotoğraflardan önce",
+      "toasts": {
+        "uploaded": "Fotoğraf eklendi.",
+        "uploadError": "Fotoğraf eklenemedi.",
+        "removed": "Fotoğraf kaldırıldı.",
+        "removeError": "Fotoğraf kaldırılamadı."
+      }
+    },
+    "fieldLink": {
+      "label": "Temizleyicinin bağlantısı",
+      "live": "Bağlantı yayında — hesaba gerek yok",
+      "usedOrExpired": "Bağlantı kullanılmış veya süresi dolmuş",
+      "notInThisSession": "Öğe eklendiğinde bağlantı gösterilir",
+      "copy": "Bağlantıyı kopyala",
+      "copied": "Kopyalandı",
+      "reissue": "Yeni bağlantı",
+      "toasts": {
+        "copied": "Bağlantı kopyalandı.",
+        "copyError": "Bağlantı kopyalanamadı. Onu seçin ve manuel olarak kopyalayın.",
+        "reissued": "Yeni bir bağlantı yayınlandı.",
+        "reissueError": "Yeni bir bağlantı sağlanamadı."
+      }
+    },
+    "guide": {
+      "title": "Hasar talebi kılavuzu",
+      "subtitle": "Konaklama sırasında bir varlık hasar görürse veya çalınırsa ne yapılmalı?",
+      "link": "Hasar talebi prosedürünün işleyişi",
+      "intro": "Hasar talebinin sabit bir şekli vardır. Bu adımlar önem sırasına göredir: İlk saatler, hâlâ hangi kanıta sahip olduğunuza karar verir.",
+      "sections": {
+        "immediate": {
+          "title": "1. Bulduğunuz anda kaydedin",
+          "body": "Herhangi bir şeyi taşımadan, temizlemeden veya onarmadan önce varlığın fotoğrafını çekin. Fotoğraflar iddiadır.",
+          "points": {
+            "0": "Ne olduğunu ve onu ne zaman bulduğunuzu yazın.",
+            "1": "Talep kapatılana kadar hasarlı ürünü atmayın.",
+            "2": "Tarihlerin kayıtta olması için rezervasyondaki talebi açın."
+          }
+        },
+        "photos": {
+          "title": "2. Fotoğrafları toplayın",
+          "body": "Etkilenen her varlığın geniş bir çekime ve yakın çekime veya çalınan öğenin eskiden bulunduğu yerin fotoğrafına ihtiyacı vardır.",
+          "points": {
+            "0": "Geniş çekimde varlığın odasındaki görünümü görülüyor.",
+            "1": "Yakın çekim hasarın kendisini gösteriyor.",
+            "2": "Hırsızlık durumunda boş alanı ve çevreyi fotoğraflayın."
+          }
+        },
+        "costs": {
+          "title": "3. Parayı belgeleyin",
+          "body": "Bir tutar yalnızca arkasında bir belge varsa güvenilirdir: onarım teklifi, değiştirme teklifi veya satın alma makbuzu.",
+          "points": {
+            "0": "Etkilenen her varlık için istediğiniz tutarı girin.",
+            "1": "Bunu destekleyen fiyat teklifini veya faturayı saklayın.",
+            "2": "Talepte bulunulduktan sonra tutar değiştirilemez."
+          }
+        },
+        "deadlines": {
+          "title": "4. Son teslim tarihlerine uyun",
+          "body": "Airbnb'nin pencereleri sabittir ve duraklamaz.",
+          "points": {
+            "0": "Hak talebinde bulunulduktan sonra misafirin yanıt vermesi için 24 saati vardır.",
+            "1": "Konuk bu pencerede yanıt vermezse AirCover'a iletin.",
+            "2": "AirCover penceresi çıkış tarihinden 30 gün sonra kapanır."
+          }
+        },
+        "airbnb": {
+          "title": "5. Airbnb'de neler oluyor",
+          "body": "Talepte bulunuyorsunuz, hazırlanan talep metnini Çözüm Merkezi'ne yapıştırıyorsunuz, fotoğraf ve belgeleri oraya ekliyorsunuz.",
+          "points": {
+            "0": "Konaklamanız bittikten sonra talep sayfasından talepte bulunun.",
+            "1": "Sizin için hazırlanan talep sayfasının talep metnini kopyalayın.",
+            "2": "Öncesi ve sonrası fotoğraflarını ekleyin, ardından konuğun cevabını bekleyin."
+          }
+        }
+      }
+    },
+    "addItem": {
+      "title": "Bu hak talebine bir varlık ekleyin",
+      "asset": "Varlık",
+      "type": "Ne oldu",
+      "value": "Tahmini değer",
+      "valueHint": "ör. 120.00",
+      "submit": "Hak talebine ekle",
+      "submitting": "Ekleniyor…",
+      "allClaimed": "Bu dairedeki her varlık zaten hak talebinde bulunuyor.",
+      "validation": {
+        "assetRequired": "Bir varlık seçin.",
+        "typeRequired": "Varlığın hasar görüp görmediğini veya çalındığını seçin."
+      }
+    },
+    "toasts": {
+      "created": "Talep açıldı.",
+      "createError": "Talep açılamadı.",
+      "itemAdded": "Talebe eklenen öğe.",
+      "itemAddError": "Öğe hak talebine eklenemedi."
+    },
+    "message": {
+      "header": "{{apartmentName}} (misafir: {{guestName}}) adresindeki konaklama için hasar talebi.",
+      "intro": "{{apartmentName}} tarihinde {{dates}} tarihinden itibaren konuğumuzdunuz.",
+      "assetsIntro": "Bunlar konaklamanız sırasında hasar gören veya çalınan varlıklardır:",
+      "ask": "Daha uzun talep prosedürüne gerek kalmadan doğrudan ödeyebilmemiz için bu tutarı kabul edeceğinizi umuyoruz.",
+      "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — tahmini değer {{value}}. Kanıt eklendi: {{attached}}.",
+      "totalLine": "Talep edilen toplam: {{amount}}.",
+      "footer": "Konaklamanızdan önceki eşyaların ve konaklama sonrasındaki hasarın fotoğrafları bu talebe eklenmiştir.",
+      "missingEvidence": "{{evidence}}"
+    },
+    "filing": {
+      "figures": {
+        "title": "İstediğiniz şey",
+        "itemsSubtotal": "Öğeler",
+        "provisional": "Geçici toplam",
+        "final": "Talep edilen",
+        "valueHint": "Talep edilecek tutar",
+        "save": "Kaydetme tutarı",
+        "assetValue": "Talep edilecek tutar {{asset}}",
+        "invalid": "0'dan büyük bir tutar girin.",
+        "saved": "Kaydedilen tutar.",
+        "noItems": "Bir tutar belirlemeden önce bu hak talebine bir varlık ekleyin."
+      },
+      "message": {
+        "title": "İstek metni",
+        "copy": "Metni kopyala"
+      },
+      "openResolutionCenter": "Airbnb Çözüm Merkezini Aç",
+      "confirm": "Bu talebi dosyalayın",
+      "confirming": "Dosyalama…",
+      "confirmHint": "Bu, misafirin yanıt vermesi gereken 24 saatlik pencereyi başlatır. Yalnızca yukarıdaki metin çözüm merkezine yapıştırıldıktan sonra dosyalayın.",
+      "notReadyHint": "Bu hak talebinde bulunulmadan önce her öğenin gerekli fotoğraflarına ihtiyacı vardır.",
+      "countdown": {
+        "title": "Misafirin penceresi",
+        "guest": "Misafirin yanıtı bekleniyor — {{hours}}h {{minutes}}m kaldı.",
+        "guestOverdue": "Misafir yanıt penceresi kapandı. Aşağıdaki son tarihten önce AirCover'a iletin.",
+        "aircover": "Konuk yanıt vermezse durumu {{days}} gün içinde AirCover'a iletin.",
+        "aircoverOverdue": "Bu iddia nedeniyle her iki Airbnb penceresi de kapatıldı."
+      },
+      "emergency": {
+        "title": "Acil durum dosyalama hızı gereklidir",
+        "body": "Gelen giriş 4 saatten kısa sürede gerçekleşir. Yeni konaklamanın etkilenmemesi için bu hak talebini şimdi bildirin."
+      },
+      "toasts": {
+        "payoutSaved": "Kaydedilen tutar.",
+        "payoutError": "Tutar kaydedilemedi.",
+        "copied": "İstek metni kopyalandı.",
+        "copyError": "Metin kopyalanamadı. Onu seçin ve manuel olarak kopyalayın.",
+        "filed": "Talepte bulunuldu. Konuğun 24 saatlik penceresi başladı.",
+        "fileError": "Talepte bulunulamadı."
+      }
+    },
+    "status": {
+      "draft": "Taslak",
+      "readyToFile": "Dosyaya hazır",
+      "submittedToGuest": "Konuğa gönderildi",
+      "escalatedToAircover": "AirCover'a iletildi",
+      "resolved": "Çözüldü",
+      "unfeasible": "Mümkün değil"
     }
   }
 }

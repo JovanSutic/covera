@@ -18,6 +18,7 @@ import {
   type CapturedApartmentShot,
 } from "@/lib/api/submitPhotoProofs";
 import { appPaths, buildPath, useRouteParams } from "@/lib/router";
+import { withLang } from "@/lib/router/lang";
 
 /**
  * D2/D8: the capture flow as a page rather than a dialog.
@@ -29,7 +30,7 @@ import { appPaths, buildPath, useRouteParams } from "@/lib/router";
  * waiting on the reservation to resolve.
  */
 export default function InspectionGuidePage() {
-  const { t } = useTranslation("host");
+  const { t, i18n } = useTranslation("host");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -47,10 +48,13 @@ export default function InspectionGuidePage() {
 
   const preparedShots = useMemo(() => addClientId(shots), [shots]);
 
-  const reservationPath = buildPath(appPaths.hostReservation, {
-    id: apartmentId,
-    reservationId,
-  });
+  const reservationPath = withLang(
+    buildPath(appPaths.hostReservation, {
+      id: apartmentId,
+      reservationId,
+    }),
+    i18n.language,
+  );
 
   const submitMutation = useMutation({
     mutationFn: (completedShots: CapturedApartmentShot[]) =>

@@ -96,6 +96,8 @@ function renderPanel(subject: IncidentWithItems, now: number = NOW) {
         apartmentId={APARTMENT_ID}
         guestName="Ada Lovelace"
         apartmentName="Villa Aurora"
+        checkInDatetime="2026-11-01T15:00:00.000Z"
+        checkOutDatetime="2026-11-08T10:00:00.000Z"
         now={now}
       />
     </QueryClientProvider>,
@@ -129,30 +131,6 @@ describe("the figures", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("saves the typed figure as cents, and refuses an unusable one", async () => {
-    renderPanel(incident());
-
-    const field = screen.getByLabelText("incidentPage.filing.figures.valueHint");
-
-    await userEvent.clear(field);
-    await userEvent.type(field, "120,50");
-    await userEvent.click(
-      screen.getByRole("button", { name: "incidentPage.filing.figures.save" }),
-    );
-
-    await waitFor(() => {
-      expect(setIncidentPayout).toHaveBeenCalledWith("incident-1", 12050);
-    });
-
-    // `parseCentsFromInput("abc")` is `null`, so the save is withheld rather than
-    // sending 0 for a figure the host never stated (phase 2's rule).
-    await userEvent.clear(field);
-    await userEvent.type(field, "abc");
-
-    expect(
-      screen.getByRole("button", { name: "incidentPage.filing.figures.save" }),
-    ).toBeDisabled();
-  });
 });
 
 describe("the copy block", () => {

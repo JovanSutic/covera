@@ -93,3 +93,30 @@ export function claimUrgency(incident: Incident, now: number): ClaimUrgency {
     ? "soon"
     : "normal";
 }
+
+/**
+ * D20/D21: may a claim be opened at `now`?
+ *
+ * The backend enforces the UPPER bounds — 14 days after the effective check-out, and not
+ * after the next guest's check-in — but it has no lower bound, so a claim can be opened
+ * mid-stay today. Issue 10 asks for the missing half.
+ *
+ * The alternative check-out wins when it parses: it is the date the host edited the stay
+ * to, and the backend's own `effectiveCheckOut` prefers it
+ * (`incidents.service.ts`), so this rule and the server's 14-day window must read the
+ * same instant.
+ *
+ * An unparseable check-out reads as "no gate" rather than "never" — a corrupt date must
+ * not lock the host out of a claim they are entitled to file.
+ */
+export function canOpenClaimAt(
+  checkOutDatetime: string | null,
+  alternativeCheckOutDatetime: string | null,
+  now: number,
+): boolean {
+  const checkOut = toEpoch(alternativeCheckOutDatetime) ?? toEpoch(checkOutDatetime);
+
+  if (checkOut === null) return true;
+
+  return now >= checkOut;
+}

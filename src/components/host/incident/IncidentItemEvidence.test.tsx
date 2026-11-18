@@ -92,6 +92,7 @@ function photo(
 function renderPanel(
   subject: IncidentItem,
   renderCapture?: Parameters<typeof IncidentItemEvidence>[0]["renderCapture"],
+  beforePhotos?: Parameters<typeof IncidentItemEvidence>[0]["beforePhotos"],
 ) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
@@ -103,6 +104,7 @@ function renderPanel(
         incidentId={INCIDENT_ID}
         item={subject}
         {...(renderCapture === undefined ? {} : { renderCapture })}
+        {...(beforePhotos === undefined ? {} : { beforePhotos })}
       />
     </QueryClientProvider>,
   );
@@ -263,5 +265,107 @@ describe("the capture seam", () => {
     // No camera in jsdom, but the trigger must exist in the real DOM — that is the
     // whole point of reusing `ShotStepPanel`'s `capture="environment"` pattern.
     expect(document.querySelector('input[type="file"]')).toBeInTheDocument();
+  });
+});
+
+describe("the before photos", () => {
+  const BEFORE = [{ id: "before-1", storageKey: "before-key-1" }];
+
+  it("renders them above the damage strip", () => {
+    renderPanel(
+      item({ evidence: [photo("damage_photo_wide")] }),
+      undefined,
+      BEFORE,
+    );
+
+    expect(screen.getAllByRole("img")).toHaveLength(2);
+
+    const heading = screen.getByText("incidentPage.evidence.before");
+    const damageImage = screen.getByRole("img", {
+      name: "incidentPage.evidence.damagePhotoWide",
+    });
+
+    expect(
+      heading.compareDocumentPosition(damageImage) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("renders no strip when there are none", () => {
+    renderPanel(item({ evidence: [photo("damage_photo_wide")] }));
+
+    expect(screen.queryByText("incidentPage.evidence.before")).toBeNull();
+  });
+
+  it("has no delete control on a before photo", () => {
+    renderPanel(item(), undefined, BEFORE);
+
+    expect(
+      screen.queryByRole("button", { name: "incidentPage.evidence.remove" }),
+    ).toBeNull();
+    expect(screen.getByRole("img")).toBeInTheDocument();
+  });
+
+  it("zooms a before photo too", async () => {
+    renderPanel(item(), undefined, BEFORE);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "incidentPage.evidence.zoom" }),
+    );
+
+    expect(
+      screen.getByRole("button", { name: "common.closeZoom" }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe("zooming a photo", () => {
+  it("opens the overlay with the clicked photo", async () => {
+    renderPanel(item({ evidence: [photo("damage_photo_wide")] }));
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "incidentPage.evidence.zoom" }),
+    );
+
+    expect(screen.getAllByRole("img")).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: "common.closeZoom" }),
+    ).toBeInTheDocument();
+  });
+
+  it("closes the overlay through its close control", async () => {
+    renderPanel(item({ evidence: [photo("damage_photo_wide")] }));
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "incidentPage.evidence.zoom" }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: "common.closeZoom" }),
+    );
+
+    expect(screen.getAllByRole("img")).toHaveLength(1);
+    expect(
+      screen.queryByRole("button", { name: "common.closeZoom" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not open the overlay from the delete control", async () => {
+    renderPanel(item({ evidence: [photo("damage_photo_wide")] }));
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "incidentPage.evidence.remove" }),
+    );
+
+    expect(
+      screen.queryByRole("button", { name: "common.closeZoom" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders no overlay until a thumbnail is asked for", () => {
+    renderPanel(item());
+
+    expect(
+      screen.queryByRole("button", { name: "common.closeZoom" }),
+    ).not.toBeInTheDocument();
   });
 });

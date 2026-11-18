@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 
 import { ReservationIncidentSection } from "./ReservationIncidentSection";
+import { AccessProvider } from "@/lib/router/AppContext";
 import { formatCents } from "@/lib/helpers/claimMoney";
+import type { AccessLayer } from "@/lib/router/access";
 import type { IncidentItem, IncidentWithItems } from "@/api/generated/requests/types.gen";
 
 const { useIncidents } = vi.hoisted(() => ({ useIncidents: vi.fn() }));
@@ -18,6 +21,22 @@ const APARTMENT_ID = "22222222-2222-2222-2222-222222222222";
 const RESERVATION_ID = "11111111-1111-1111-1111-111111111111";
 const OTHER_RESERVATION_ID = "99999999-9999-9999-9999-999999999999";
 const NOW = Date.parse("2026-11-08T12:00:00.000Z");
+
+/**
+ * A hand-built `AccessLayer` rather than `createAccess()`: `AccessLink` reads
+ * `canOpenPath` synchronously during render, and `router.behaviour.test.ts` owns the
+ * real coverage. This keeps the test on the page.
+ */
+function allowAllAccess(): AccessLayer {
+  return {
+    isAllowed: () => true,
+    canOpenPath: () => true,
+    getResults: () => ({ public: true, isAnonymous: false, canUseApp: true, canOpenAdmin: false, canOpenHost: true }),
+    getSources: () => ({ isAuthenticated: true, role: "host", isAdmin: false, isHost: true, userId: "u1" }),
+    subscribe: () => () => {},
+    syncFromState: () => false,
+  };
+}
 
 function item(overrides: Partial<IncidentItem> = {}): IncidentItem {
   return {
@@ -66,16 +85,32 @@ function listOf(incidents: IncidentWithItems[]) {
   };
 }
 
-function renderSection() {
+function renderSection(
+  overrides: {
+    now?: number;
+    checkOutDatetime?: string | null;
+    alternativeCheckOutDatetime?: string | null;
+  } = {},
+) {
   const onOpenClaim = vi.fn();
 
   const result = render(
-    <ReservationIncidentSection
-      apartmentId={APARTMENT_ID}
-      reservationId={RESERVATION_ID}
-      now={NOW}
-      onOpenClaim={onOpenClaim}
-    />,
+    <AccessProvider access={allowAllAccess()}>
+      <MemoryRouter>
+        <ReservationIncidentSection
+          apartmentId={APARTMENT_ID}
+          reservationId={RESERVATION_ID}
+          now={overrides.now ?? NOW}
+          checkOutDatetime={
+            overrides.checkOutDatetime ?? "2026-11-08T10:00:00.000Z"
+          }
+          alternativeCheckOutDatetime={
+            overrides.alternativeCheckOutDatetime ?? null
+          }
+          onOpenClaim={onOpenClaim}
+        />
+      </MemoryRouter>
+    </AccessProvider>,
   );
 
   return { ...result, onOpenClaim };
@@ -161,6 +196,30 @@ describe("the four states", () => {
   });
 });
 
+describe("the check-out gate", () => {
+  it("disables the create control and says why before the stay ends", () => {
+    renderSection({ checkOutDatetime: "2026-11-08T18:00:00.000Z" });
+
+    expect(
+      screen.getByRole("button", { name: "reservationPage.incident.startClaim" }),
+    ).toBeDisabled();
+    expect(
+      screen.getByText("reservationPage.incident.notYetCheckOut"),
+    ).toBeInTheDocument();
+  });
+
+  it("enables it once the stay has checked out", () => {
+    renderSection();
+
+    expect(
+      screen.getByRole("button", { name: "reservationPage.incident.startClaim" }),
+    ).toBeEnabled();
+    expect(
+      screen.queryByText("reservationPage.incident.notYetCheckOut"),
+    ).not.toBeInTheDocument();
+  });
+});
+
 describe("the guest-response clock", () => {
   it("is absent while the claim is unfiled", () => {
     renderSection();
@@ -221,6 +280,20 @@ describe("the guest-response clock", () => {
 
     expect(screen.getByText("reservationPage.incident.aircoverOverdue")).toBeInTheDocument();
     expect(screen.queryByText("reservationPage.incident.guestOverdue")).not.toBeInTheDocument();
+  });
+});
+
+describe("the language", () => {
+  it("carries the current language into the link it renders", () => {
+    // `test-setup.ts` fixes `i18n.language` at "de", so a guarded link rendered
+    // through `AccessLink` must come out with the parameter appended.
+    renderSection();
+
+    expect(
+      screen
+        .getByRole("link", { name: "incidentPage.guide.link" })
+        .getAttribute("href"),
+    ).toBe("/host/damage-claim-guide?lang=de");
   });
 });
 

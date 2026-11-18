@@ -5,6 +5,7 @@ import {
   claimTotals,
   formatCents,
   parseCentsFromInput,
+  parsePositiveCentsFromInput,
 } from "./claimMoney";
 
 describe("formatCents", () => {
@@ -110,5 +111,31 @@ describe("parseCentsFromInput", () => {
   it("returns null for anything that is not a positive amount", () => {
     expect(parseCentsFromInput("abc")).toBeNull();
     expect(parseCentsFromInput("-5")).toBeNull();
+  });
+});
+
+describe("parsePositiveCentsFromInput", () => {
+  it("parses a dot decimal", () => {
+    expect(parsePositiveCentsFromInput("12.34")).toBe(1234);
+  });
+
+  it("parses a comma decimal", () => {
+    expect(parsePositiveCentsFromInput("12,34")).toBe(1234);
+  });
+
+  it("refuses zero — the default is not an answer", () => {
+    expect(parsePositiveCentsFromInput("0")).toBeNull();
+  });
+
+  it("refuses zero written as a decimal", () => {
+    expect(parsePositiveCentsFromInput("0.00")).toBeNull();
+  });
+
+  it("refuses empty input", () => {
+    expect(parsePositiveCentsFromInput("")).toBeNull();
+  });
+
+  it("refuses input that is not a number", () => {
+    expect(parsePositiveCentsFromInput("abc")).toBeNull();
   });
 });

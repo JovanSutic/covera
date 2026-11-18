@@ -1,6 +1,7 @@
 import {
   deleteIncidentsByIdItemsByItemIdEvidenceByEvidenceId,
   patchIncidentsById,
+  patchIncidentsByIdItemsByItemId,
   postIncidents,
   postIncidentsByIdConfirmAirbnbFiling,
   postIncidentsByIdItems,
@@ -197,6 +198,29 @@ export async function setIncidentPayout(
     ...config,
     path: { id: incidentId },
     body: { finalPayoutRequestedCents },
+  });
+
+  return response.data;
+}
+
+/**
+ * D9: the per-asset figure. `PATCH /incidents/{id}/items/{itemId}` carries
+ * `estimatedPlaceholderValueCents`, and the route is gated by `isClaimEditable` on the
+ * server — which is the "until the claim was sent" rule issue 4 asks for, enforced where
+ * it cannot be bypassed. `UpdateIncidentItem` carries `type` too; it is omitted so a
+ * write cannot silently change what happened to the asset.
+ */
+export async function setIncidentItemValue(
+  incidentId: string,
+  itemId: string,
+  estimatedPlaceholderValueCents: number,
+  signal?: AbortSignal,
+) {
+  const config = await withAuth(signal ? { signal } : {});
+  const response = await patchIncidentsByIdItemsByItemId({
+    ...config,
+    path: { id: incidentId, itemId },
+    body: { estimatedPlaceholderValueCents },
   });
 
   return response.data;

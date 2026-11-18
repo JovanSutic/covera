@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Eye, X } from "lucide-react";
+import { Eye } from "lucide-react";
+import { ImageZoomOverlay } from "./ImageZoomOverlay";
 import { useTranslation } from "react-i18next";
 
 interface ExpandableImageProps {
@@ -72,24 +73,11 @@ export function ExpandableImage({
 
       {/* Fullscreen Zoom Modal */}
       {isZoomed && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-xs animate-in fade-in duration-200"
-          onClick={() => setIsZoomed(false)}
-        >
-          <button
-            type="button"
-            aria-label={t("common.closeZoom")}
-            className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors cursor-pointer"
-            onClick={() => setIsZoomed(false)}
-          >
-            <X className="h-6 w-6" />
-          </button>
-          <img
-            src={src}
-            alt={alt}
-            className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
-          />
-        </div>
+        <ImageZoomOverlay
+          src={src}
+          alt={alt}
+          onClose={() => setIsZoomed(false)}
+        />
       )}
     </>
   );

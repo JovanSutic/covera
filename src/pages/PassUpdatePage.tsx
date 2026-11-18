@@ -9,9 +9,10 @@ import { supabase } from "@/lib/supabase";
 import { useSupabaseTask } from "@/hooks/supabase";
 import { getAuthUserFromJwt } from "@/lib/auth";
 import { buildPath, appPaths } from "@/lib/router";
+import { withLang } from "@/lib/router/lang";
 
 export default function PassUpdatePage() {
-  const { t } = useTranslation("general");
+  const { t, i18n } = useTranslation("general");
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
@@ -122,7 +123,9 @@ export default function PassUpdatePage() {
               {errorMsg}
             </div>
             <Button
-              onClick={() => navigate(buildPath(appPaths.login))}
+              onClick={() =>
+                navigate(withLang(buildPath(appPaths.login), i18n.language))
+              }
               className="w-full py-3"
             >
               {t("login.passUpdate.goToLogin")}

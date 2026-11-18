@@ -151,7 +151,8 @@
       "total": "Total",
       "awaitingGuest": "Waiting for the guest's response — {{hours}}h {{minutes}}m left.",
       "guestOverdue": "The guest response window has closed. Escalate to AirCover within {{days}} days.",
-      "aircoverOverdue": "Both Airbnb windows have closed for this claim."
+      "aircoverOverdue": "Both Airbnb windows have closed for this claim.",
+      "notYetCheckOut": "You can open a claim once the stay has checked out."
     },
     "other": {
       "title": "Other",
@@ -308,7 +309,8 @@
     "empty": {
       "title": "No claim on this stay yet",
       "body": "Open a claim to record the assets that were damaged or stolen. You can add items, collect photo evidence, and prepare the paperwork for Airbnb's Resolution Center.",
-      "create": "Open a claim"
+      "create": "Open a claim",
+      "notYetCheckOut": "This claim opens once the stay has checked out."
     },
     "items": {
       "title": "Affected assets",
@@ -340,6 +342,8 @@
       "captureFor": "Add {{view}}",
       "retakeFor": "Retake {{view}}",
       "remove": "Remove this photo",
+      "zoom": "View this photo",
+      "before": "Before photos",
       "toasts": {
         "uploaded": "Photo attached.",
         "uploadError": "Could not attach the photo.",
@@ -360,6 +364,59 @@
         "copyError": "Could not copy the link. Select it and copy manually.",
         "reissued": "A fresh link was issued.",
         "reissueError": "Could not issue a new link."
+      }
+    },
+    "guide": {
+      "title": "Damage claim guide",
+      "subtitle": "What to do when an asset is damaged or stolen during a stay.",
+      "link": "How the damage claim procedure works",
+      "intro": "A damage claim has a fixed shape. These steps are in the order they matter: the first hours decide what evidence you still have.",
+      "sections": {
+        "immediate": {
+          "title": "1. Record it as soon as you find it",
+          "body": "Photograph the asset before you move, clean or repair anything. The photos are the claim.",
+          "points": [
+            "Write down what happened and when you found it.",
+            "Do not discard the damaged item until the claim is closed.",
+            "Open the claim on the reservation so the dates are on the record."
+          ]
+        },
+        "photos": {
+          "title": "2. Collect the photos",
+          "body": "Each affected asset needs a wide shot and a close-up, or a photo of where a stolen item used to be.",
+          "points": [
+            "A wide shot shows the asset in its room.",
+            "A close-up shows the damage itself.",
+            "For a theft, photograph the empty space and the surrounding area."
+          ]
+        },
+        "costs": {
+          "title": "3. Document the money",
+          "body": "An amount is only credible with a document behind it: a repair quote, a replacement quote, or a purchase receipt.",
+          "points": [
+            "Enter the amount you are asking for on each affected asset.",
+            "Keep the quote or invoice that supports it.",
+            "The amount cannot be changed once the claim is filed."
+          ]
+        },
+        "deadlines": {
+          "title": "4. Meet the deadlines",
+          "body": "Airbnb's windows are fixed and they do not pause.",
+          "points": [
+            "The guest has 24 hours to respond once the claim is filed.",
+            "Escalate to AirCover if the guest does not respond in that window.",
+            "The AirCover window closes 30 days after the check-out date."
+          ]
+        },
+        "airbnb": {
+          "title": "5. What happens at Airbnb",
+          "body": "You file the claim, paste the prepared request text into the Resolution Center, and attach the photos and documents there.",
+          "points": [
+            "File the claim from the claim page once the stay is over.",
+            "Copy the request text the claim page prepared for you.",
+            "Attach the before and after photos, then wait for the guest's answer."
+          ]
+        }
       }
     },
     "addItem": {
@@ -384,9 +441,12 @@
     },
     "message": {
       "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
+      "intro": "You were our guest at {{apartmentName}} from {{dates}}.",
+      "assetsIntro": "These are the assets that were damaged or stolen during your stay:",
+      "ask": "We hope you will accept this amount so we can settle it directly, without going through the longer claim procedure.",
       "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
       "totalLine": "Total requested: {{amount}}.",
-      "footer": "Photos of the damage are attached to this request.",
+      "footer": "Photos of the items before your stay, and of the damage after it, are attached to this request.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {
@@ -396,7 +456,11 @@
         "provisional": "Provisional total",
         "final": "Requested",
         "valueHint": "Amount to request",
-        "save": "Save amount"
+        "save": "Save amount",
+        "assetValue": "Amount to request for {{asset}}",
+        "invalid": "Enter an amount greater than 0.",
+        "saved": "Amount saved.",
+        "noItems": "Add an asset to this claim before setting an amount."
       },
       "message": {
         "title": "Request text",

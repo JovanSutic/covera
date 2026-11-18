@@ -13,6 +13,7 @@ import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { AddIncidentItemForm } from "@/components/host/incident/AddIncidentItemForm";
 import { ClaimFilingPanel } from "@/components/host/incident/ClaimFilingPanel";
+import { ClaimGuideLink } from "@/components/host/incident/ClaimGuideLink";
 import { IncidentFieldLink } from "@/components/host/incident/IncidentFieldLink";
 import { IncidentItemEvidence } from "@/components/host/incident/IncidentItemEvidence";
 import { IncidentItemList } from "@/components/host/incident/IncidentItemList";
@@ -22,6 +23,9 @@ import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useIncident, incidentQueryKey } from "@/lib/api/queries/incident";
 import { useIncidents, incidentsQueryKey } from "@/lib/api/queries/incidents";
 import { useReservation } from "@/lib/api/queries/reservation";
+import { useReservationPhotos } from "@/lib/api/queries/reservationPhotos";
+import { assetBeforePhotos } from "@/lib/helpers/assetBeforePhotos";
+import { canOpenClaimAt } from "@/lib/helpers/claimDeadline";
 import {
   claimStatusCopy,
   findIncidentForReservation,
@@ -82,6 +86,11 @@ export default function IncidentPage() {
     isLoading: isReservationLoading,
     isError: isReservationError,
   } = useReservation(reservationId);
+
+  // D6/D8: the before photos the reservation already holds. The incident route declares
+  // this resource (step 2.3) because `prefetchCoverage.test.ts` compares the hooks a page
+  // reads against its route chain — the declaration is a coverage entry, not a prefetch.
+  const { data: reservationPhotos } = useReservationPhotos(reservationId);
 
   // Phase 8's message needs the apartment's NAME, and nothing on the reservation or the
   // incident carries it. The section route already prefetches this list for every host
@@ -155,6 +164,11 @@ export default function IncidentPage() {
   }
 
   const editable = claim !== null && isIncidentEditable(claim);
+  const canOpenClaim = canOpenClaimAt(
+    reservation.checkOutDatetime,
+    reservation.alternativeCheckOutDatetime,
+    now,
+  );
   const claimedAssetIds = claim?.items.map((item) => item.assetId) ?? [];
 
   return (
@@ -198,8 +212,14 @@ export default function IncidentPage() {
                 icon={<Plus className="h-4 w-4 shrink-0" />}
                 label={t("incidentPage.empty.create")}
                 loading={createMutation.isPending}
+                disabled={!canOpenClaim}
                 onClick={() => createMutation.mutate()}
               />
+              {!canOpenClaim && (
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  {t("incidentPage.empty.notYetCheckOut")}
+                </p>
+              )}
             </div>
           </SectionCard>
         )}
@@ -219,7 +239,11 @@ export default function IncidentPage() {
                 items={claim.items}
                 renderItemExtra={(item) => (
                   <>
-                    <IncidentItemEvidence incidentId={claim.id} item={item} />
+                    <IncidentItemEvidence
+                      incidentId={claim.id}
+                      item={item}
+                      beforePhotos={assetBeforePhotos(reservationPhotos, item.assetId)}
+                    />
                     <IncidentFieldLink
                       incidentId={claim.id}
                       item={item}
@@ -263,8 +287,11 @@ export default function IncidentPage() {
               apartmentId={id}
               guestName={reservation.guestName}
               apartmentName={apartmentName}
+              checkInDatetime={reservation.checkInDatetime}
+              checkOutDatetime={reservation.checkOutDatetime}
               now={now}
             />
+            <ClaimGuideLink />
           </>
         )}
       </div>

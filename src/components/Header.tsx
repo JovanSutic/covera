@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
 import { useSession, useSessionStore } from "@/lib/router/AppContext";
 import { buildPath, appPaths } from "@/lib/router";
+import { SUPPORTED_LANGS, withLang } from "@/lib/router/lang";
 import { cn } from "@/lib/utils";
 import CustomSelect from "./formItems/Select";
 
@@ -15,8 +16,6 @@ const LANGUAGES = [
   { code: "tr", label: "TR" },
   { code: "sr-Latn", label: "SR" },
 ];
-
-const SUPPORTED_LANG_CODES = LANGUAGES.map((l) => l.code);
 
 export default function Header() {
   const navigate = useNavigate();
@@ -28,10 +27,18 @@ export default function Header() {
   const isLoading = status === "loading";
   const { i18n } = useTranslation("general");
 
-  // Read language from query param or fallback to "en"
   const urlLang = searchParams.get("lang");
+  // D25: the parameter wins, and `i18n.language` is the fallback — not "en". The previous
+  // fallback meant a reload without `?lang` silently dropped the host back to English,
+  // which is the second half of issue 7. `SUPPORTED_LANGS` is the same list `withLang`
+  // uses, so the Header and the links cannot disagree about what is a language.
+  const fallbackLang = SUPPORTED_LANGS.includes(i18n.language as (typeof SUPPORTED_LANGS)[number])
+    ? i18n.language
+    : "en";
   const currentLang =
-    urlLang && SUPPORTED_LANG_CODES.includes(urlLang) ? urlLang : "en";
+    urlLang && SUPPORTED_LANGS.includes(urlLang as (typeof SUPPORTED_LANGS)[number])
+      ? urlLang
+      : fallbackLang;
 
   // Sync i18n instance whenever URL language changes
   useEffect(() => {
@@ -61,7 +68,7 @@ export default function Header() {
     // so navigating first would let the stale session deny the now-anonymous
     // visitor and bounce them back to their dashboard — logout would look broken.
     await sessionRefresh();
-    navigate(buildPath(appPaths.login));
+    navigate(withLang(buildPath(appPaths.login), i18n.language));
   };
 
   return (
@@ -101,7 +108,7 @@ function ProfileDropdown({
   onLanguageChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onLogout: () => void;
 }) {
-  const { t } = useTranslation("general");
+  const { t, i18n } = useTranslation("general");
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -219,7 +226,7 @@ function ProfileDropdown({
           <button
             onClick={() => {
               setIsOpen(false);
-              navigate(buildPath(appPaths.login));
+              navigate(withLang(buildPath(appPaths.login), i18n.language));
             }}
             className="flex w-full cursor-pointer items-center rounded-lg px-3 py-2 text-left text-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/40 transition-colors focus:outline-none"
             role="menuitem"

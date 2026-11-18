@@ -115,6 +115,14 @@ export const appPaths = definePaths({
     requires: ["canOpenHost"],
     params: { id: "uuid", reservationId: "uuid" },
   },
+  // D4: the procedure reference. A SIBLING of the reservation route for the same reason
+  // as `incidentClaim` — `IndividualApartment.tsx` has no <Outlet />, so a nested route
+  // would render nothing while passing every check. Static page: no query, no params.
+  damageClaimGuide: {
+    pattern: "/host/damage-claim-guide",
+    requires: ["canOpenHost"],
+    params: {},
+  },
   // D4/D6: the zero-auth field portal. `public` is the honest rule — the token in
   // the path IS the credential, and there is no session to check. It lives in
   // `outsideRoutes` (routes/public.ts), which is the tree rendered without the app

@@ -4,9 +4,10 @@ import PageLayout from "@/components/layout/PageLayout";
 import Header from "@/components/Header";
 import PageTitle from "@/components/PageTitle";
 import { buildPath, appPaths } from "@/lib/router";
+import { withLang } from "@/lib/router/lang";
 
 export function ErrorPage() {
-  const { t } = useTranslation("general");
+  const { t, i18n } = useTranslation("general");
   const error = useRouteError();
 
   let title = t("errorPage.unexpectedTitle");
@@ -34,7 +35,7 @@ export function ErrorPage() {
         <PageTitle title={title} subtitle={subtitle} />
         <div className="mt-6">
           <Link
-            to={buildPath(appPaths.root)}
+            to={withLang(buildPath(appPaths.root), i18n.language)}
             className="inline-flex items-center justify-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200"
           >
             {t("errorPage.backToHome")}
