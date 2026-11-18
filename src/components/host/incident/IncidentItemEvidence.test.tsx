@@ -265,3 +265,54 @@ describe("the capture seam", () => {
     expect(document.querySelector('input[type="file"]')).toBeInTheDocument();
   });
 });
+
+describe("zooming a photo", () => {
+  it("opens the overlay with the clicked photo", async () => {
+    renderPanel(item({ evidence: [photo("damage_photo_wide")] }));
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "incidentPage.evidence.zoom" }),
+    );
+
+    expect(screen.getAllByRole("img")).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: "common.closeZoom" }),
+    ).toBeInTheDocument();
+  });
+
+  it("closes the overlay through its close control", async () => {
+    renderPanel(item({ evidence: [photo("damage_photo_wide")] }));
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "incidentPage.evidence.zoom" }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: "common.closeZoom" }),
+    );
+
+    expect(screen.getAllByRole("img")).toHaveLength(1);
+    expect(
+      screen.queryByRole("button", { name: "common.closeZoom" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not open the overlay from the delete control", async () => {
+    renderPanel(item({ evidence: [photo("damage_photo_wide")] }));
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "incidentPage.evidence.remove" }),
+    );
+
+    expect(
+      screen.queryByRole("button", { name: "common.closeZoom" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders no overlay until a thumbnail is asked for", () => {
+    renderPanel(item());
+
+    expect(
+      screen.queryByRole("button", { name: "common.closeZoom" }),
+    ).not.toBeInTheDocument();
+  });
+});

@@ -340,6 +340,7 @@
       "captureFor": "Add {{view}}",
       "retakeFor": "Retake {{view}}",
       "remove": "Remove this photo",
+      "zoom": "View this photo",
       "toasts": {
         "uploaded": "Photo attached.",
         "uploadError": "Could not attach the photo.",
