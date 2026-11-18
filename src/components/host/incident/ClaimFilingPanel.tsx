@@ -43,6 +43,9 @@ const AIRBNB_RESOLUTION_CENTER_URL = "https://www.airbnb.com/resolutions";
  */
 const MESSAGE_LABELS: ClaimMessageLabels = {
   header: "incidentPage.message.header",
+  intro: "incidentPage.message.intro",
+  assetsIntro: "incidentPage.message.assetsIntro",
+  ask: "incidentPage.message.ask",
   itemLine: "incidentPage.message.itemLine",
   totalLine: "incidentPage.message.totalLine",
   footer: "incidentPage.message.footer",
@@ -75,6 +78,9 @@ interface ClaimFilingPanelProps {
   apartmentId: string;
   guestName: string;
   apartmentName: string;
+  /** D17: the stay the claim is about, for the message's dates. */
+  checkInDatetime: string;
+  checkOutDatetime: string;
   /** The page's clock, from `useClaimClock` (D32/D46). Never read here. */
   now: number;
 }
@@ -98,9 +104,11 @@ export function ClaimFilingPanel({
   apartmentId,
   guestName,
   apartmentName,
+  checkInDatetime,
+  checkOutDatetime,
   now,
 }: ClaimFilingPanelProps) {
-  const { t } = useTranslation("host");
+  const { t, i18n } = useTranslation("host");
   const queryClient = useQueryClient();
 
   const totals = claimTotals(incident, incident.items);
@@ -114,6 +122,9 @@ export function ClaimFilingPanel({
     apartmentName,
     items: incident.items,
     requestedCents: totals.requestedCents,
+    checkInDatetime,
+    checkOutDatetime,
+    locale: i18n.language,
     t,
     labels: MESSAGE_LABELS,
   });

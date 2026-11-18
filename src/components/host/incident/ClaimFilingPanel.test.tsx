@@ -96,6 +96,8 @@ function renderPanel(subject: IncidentWithItems, now: number = NOW) {
         apartmentId={APARTMENT_ID}
         guestName="Ada Lovelace"
         apartmentName="Villa Aurora"
+        checkInDatetime="2026-11-01T15:00:00.000Z"
+        checkOutDatetime="2026-11-08T10:00:00.000Z"
         now={now}
       />
     </QueryClientProvider>,

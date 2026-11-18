@@ -22,6 +22,12 @@ import { requiredPhotoTypes } from "./incidentEvidence";
 export interface ClaimMessageLabels {
   /** `incidentPage.message.header`, with `{{ apartmentName }}`. */
   header: string;
+  /** `incidentPage.message.intro`, with `{{ apartmentName }}` and `{{ dates }}`. */
+  intro: string;
+  /** `incidentPage.message.assetsIntro`. */
+  assetsIntro: string;
+  /** `incidentPage.message.ask`. */
+  ask: string;
   /** `incidentPage.message.itemLine`, with `{{ index }}`, `{{ asset }}`, `{{ room }}`, `{{ type }}`, `{{ value }}`. */
   itemLine: string;
   /** `incidentPage.message.totalLine`, with `{{ amount }}`. */
@@ -39,6 +45,12 @@ export interface BuildClaimMessageParams {
   apartmentName: string;
   items: readonly IncidentItem[];
   requestedCents: number;
+  /** `Reservation.checkInDatetime`. */
+  checkInDatetime: string;
+  /** `Reservation.checkOutDatetime`. */
+  checkOutDatetime: string;
+  /** The active `i18n.language`, for `formatStayRange`. */
+  locale: string;
   /** The caller's `t`, bound to the `host` namespace. */
   t: (key: string, options?: Record<string, unknown>) => string;
   labels: ClaimMessageLabels;
@@ -80,18 +92,54 @@ function attachedClause(
   return t(labels.missingEvidence, { evidence: missing });
 }
 
+/**
+ * D15: the stay as one string. `locale` is a parameter rather than a module read so the
+ * helper is testable and the message follows the UI language the host is reading — the
+ * dates in the pasted text are the host's dates, not Airbnb's.
+ *
+ * An unparseable instant returns `""` rather than "Invalid Date", the same rule
+ * `toEpoch` applies in `claimDeadline.ts`.
+ */
+export function formatStayRange(
+  checkIn: string,
+  checkOut: string,
+  locale: string,
+): string {
+  const formatter = new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  const start = new Date(checkIn);
+  const end = new Date(checkOut);
+
+  if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime())) {
+    return "";
+  }
+
+  return `${formatter.format(start)} – ${formatter.format(end)}`;
+}
+
 export function buildClaimMessage({
   guestName,
   apartmentName,
   items,
   requestedCents,
+  checkInDatetime,
+  checkOutDatetime,
+  locale,
   t,
   labels,
 }: BuildClaimMessageParams): string {
-  const lines: string[] = [
-    t(labels.header, { guestName, apartmentName }),
-    "",
-  ];
+  const dates = formatStayRange(checkInDatetime, checkOutDatetime, locale);
+
+  const lines: string[] = [t(labels.header, { guestName, apartmentName }), ""];
+
+  lines.push(t(labels.intro, { apartmentName, dates }));
+  lines.push("");
+  lines.push(t(labels.assetsIntro));
+  lines.push("");
 
   items.forEach((item, index) => {
     lines.push(
@@ -114,6 +162,8 @@ export function buildClaimMessage({
 
   lines.push("");
   lines.push(t(labels.totalLine, { amount: formatCents(requestedCents) }));
+  lines.push("");
+  lines.push(t(labels.ask));
   lines.push("");
   lines.push(t(labels.footer));
 

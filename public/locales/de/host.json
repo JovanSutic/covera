@@ -242,9 +242,12 @@
     },
     "message": {
       "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
+      "intro": "You were our guest at {{apartmentName}} from {{dates}}.",
+      "assetsIntro": "These are the assets that were damaged or stolen during your stay:",
+      "ask": "We hope you will accept this amount so we can settle it directly, without going through the longer claim procedure.",
       "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
       "totalLine": "Total requested: {{amount}}.",
-      "footer": "Photos of the damage are attached to this request.",
+      "footer": "Photos of the items before your stay, and of the damage after it, are attached to this request.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {

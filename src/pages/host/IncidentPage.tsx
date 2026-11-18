@@ -274,6 +274,8 @@ export default function IncidentPage() {
               apartmentId={id}
               guestName={reservation.guestName}
               apartmentName={apartmentName}
+              checkInDatetime={reservation.checkInDatetime}
+              checkOutDatetime={reservation.checkOutDatetime}
               now={now}
             />
           </>
