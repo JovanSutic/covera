@@ -1818,6 +1818,9 @@ export const IncidentItemWithTokenSchema = {
             items: {
                 $ref: '#/components/schemas/IncidentEvidence'
             }
+        },
+        photoAllowance: {
+            $ref: '#/components/schemas/PhotoAllowance'
         }
     },
     required: [
@@ -1833,7 +1836,8 @@ export const IncidentItemWithTokenSchema = {
         'createdAt',
         'updatedAt',
         'asset',
-        'evidence'
+        'evidence',
+        'photoAllowance'
     ]
 } as const;
 
@@ -1912,6 +1916,38 @@ export const IncidentEvidenceSchema = {
         'deletedAt',
         'createdAt',
         'kind'
+    ]
+} as const;
+
+export const PhotoAllowanceSchema = {
+    type: 'object',
+    properties: {
+        max: {
+            type: 'integer',
+            description: 'The most photos this item may hold.',
+            example: 4
+        },
+        required: {
+            type: 'integer',
+            description: 'How many shots this item\'s incident type asks for.',
+            example: 2
+        },
+        attached: {
+            type: 'integer',
+            description: 'How many photos the item currently holds.',
+            example: 1
+        },
+        remaining: {
+            type: 'integer',
+            description: 'How many more photos may be attached.',
+            example: 3
+        }
+    },
+    required: [
+        'max',
+        'required',
+        'attached',
+        'remaining'
     ]
 } as const;
 
@@ -1997,6 +2033,9 @@ export const IncidentItemSchema = {
             items: {
                 $ref: '#/components/schemas/IncidentEvidence'
             }
+        },
+        photoAllowance: {
+            $ref: '#/components/schemas/PhotoAllowance'
         }
     },
     required: [
@@ -2011,7 +2050,8 @@ export const IncidentItemSchema = {
         'createdAt',
         'updatedAt',
         'asset',
-        'evidence'
+        'evidence',
+        'photoAllowance'
     ]
 } as const;
 
@@ -2470,6 +2510,9 @@ export const FieldIngestSchema = {
                 type: 'integer'
             }
         },
+        photoAllowance: {
+            $ref: '#/components/schemas/PhotoAllowance'
+        },
         tokenExpiresAt: {
             type: 'string',
             format: 'date-time'
@@ -2483,6 +2526,7 @@ export const FieldIngestSchema = {
         'baselinePhotos',
         'requiredEvidenceTypes',
         'attachedEvidenceCounts',
+        'photoAllowance',
         'tokenExpiresAt'
     ]
 } as const;
@@ -2607,5 +2651,132 @@ export const FieldSubmitPhotoSchema = {
     required: [
         'evidenceType',
         'storageKey'
+    ]
+} as const;
+
+export const CreateSpecialAccessResponseSchema = {
+    type: 'object',
+    properties: {
+        access: {
+            $ref: '#/components/schemas/SpecialAccess'
+        }
+    },
+    required: [
+        'access'
+    ]
+} as const;
+
+export const SpecialAccessSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        accessId: {
+            type: 'string'
+        },
+        scope: {
+            $ref: '#/components/schemas/AccessScope'
+        },
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        reservationId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        incidentItemId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        expiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        revokedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        usedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'accessId',
+        'scope',
+        'apartmentId',
+        'reservationId',
+        'incidentItemId',
+        'expiresAt',
+        'revokedAt',
+        'usedAt',
+        'createdAt'
+    ]
+} as const;
+
+export const AccessScopeSchema = {
+    type: 'string',
+    enum: [
+        'inspection_proof',
+        'damage_evidence'
+    ],
+    description: 'The named resource group this link opens.',
+    example: 'inspection_proof'
+} as const;
+
+export const CreateSpecialAccessSchema = {
+    type: 'object',
+    properties: {
+        scope: {
+            $ref: '#/components/schemas/AccessScope'
+        },
+        reservationId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        incidentItemId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        expiresInHours: {
+            type: 'integer',
+            minimum: 1,
+            maximum: 72,
+            default: 12
+        }
+    },
+    required: [
+        'scope'
+    ]
+} as const;
+
+export const RevokeSpecialAccessResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            enum: [
+                true
+            ]
+        },
+        accessId: {
+            type: 'string'
+        }
+    },
+    required: [
+        'success',
+        'accessId'
     ]
 } as const;
