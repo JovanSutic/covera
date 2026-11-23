@@ -442,12 +442,12 @@
     },
     "message": {
       "header": "{{apartmentName}} (misafir: {{guestName}}) adresindeki konaklama için hasar talebi.",
-      "intro": "{{apartmentName}} tarihinde {{dates}} tarihinden itibaren konuğumuzdunuz.",
-      "assetsIntro": "Bunlar konaklamanız sırasında hasar gören veya çalınan varlıklardır:",
-      "ask": "Daha uzun talep prosedürüne gerek kalmadan doğrudan ödeyebilmemiz için bu tutarı kabul edeceğinizi umuyoruz.",
+      "intro": "{{dates}} tarihleri arasında {{apartmentName}} konaklamanız için teşekkür ederiz — umarız keyifli vakit geçirmişsinizdir.",
+      "assetsIntro": "Konaklamanızın ardından hasar görmüş veya eksik birkaç eşya fark ettik. Tam olarak ne bulduğumuzu görebilmeniz için aşağıda listeledik:",
+      "ask": "Bunu resmi bir talep açmaktan, ki herkes için daha uzun sürer, doğrudan sizinle çözmeyi çok daha fazla tercih ederiz. Aşağıdaki tutarı karşılayabilirseniz bunu bugün kapatabiliriz — ve eğer burada bir şey size yanlış görünüyorsa lütfen yanıtlayıp bize söyleyin, birlikte çözelim.",
       "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — tahmini değer {{value}}. Kanıt eklendi: {{attached}}.",
       "totalLine": "Talep edilen toplam: {{amount}}.",
-      "footer": "Konaklamanızdan önceki eşyaların ve konaklama sonrasındaki hasarın fotoğrafları bu talebe eklenmiştir.",
+      "footer": "Şeffaflık için bu eşyaların konaklamanızdan önceki fotoğraflarını ve sonrasında onları nasıl bulduğumuzun fotoğraflarını ekledik. Bunu hızlıca çözmemize yardımcı olduğunuz için teşekkür ederiz.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {

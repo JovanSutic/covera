@@ -442,12 +442,12 @@
     },
     "message": {
       "header": "Zahtev za naknadu štete za boravak u {{apartmentName}} (gost: {{guestName}}).",
-      "intro": "Bili ste naš gost u {{apartmentName}} od {{dates}}.",
-      "assetsIntro": "Ovo su sredstva koja su oštećena ili ukradena tokom vašeg boravka:",
-      "ask": "Nadamo se da ćete prihvatiti ovaj iznos kako bismo mogli da ga izmirimo direktno, bez prolaska kroz duži postupak potraživanja.",
+      "intro": "Hvala vam na boravku u {{apartmentName}} od {{dates}} — nadamo se da ste uživali.",
+      "assetsIntro": "Nakon vašeg boravka primetili smo nekoliko predmeta koji su oštećeni ili nedostaju. Naveli smo ih ispod kako biste tačno videli šta smo pronašli:",
+      "ask": "Mnogo bismo radije ovo rešili direktno sa vama nego da otvaramo formalni zahtev, koji svima oduzima više vremena. Ako možete da pokrijete iznos ispod, možemo ovo da zatvorimo danas — a ako vam nešto ovde izgleda pogrešno, samo odgovorite i recite nam, pa ćemo to rešiti zajedno.",
       "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — procenjena vrednost {{value}}. Priloženi dokazi: {{attached}}.",
       "totalLine": "Ukupno zahtevano: {{amount}}.",
-      "footer": "Fotografije stvari pre vašeg boravka, kao i oštećenja nakon njega, priložene su ovom zahtevu.",
+      "footer": "Radi transparentnosti priložili smo fotografije ovih predmeta pre vašeg boravka, zajedno sa fotografijama kako smo ih zatekli posle. Hvala što nam pomažete da ovo brzo rešimo.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {

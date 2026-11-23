@@ -8,6 +8,7 @@ import {
 } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
+import { absoluteUrl } from "@/lib/helpers/absoluteUrl";
 import { getProofWindowState } from "@/lib/helpers/proofWindow";
 import type { ProofWindowSubject } from "@/lib/helpers/proofWindow";
 import { getReservationActionAvailability } from "@/lib/helpers/reservationActions";
@@ -46,7 +47,7 @@ export function useReservationActions({
   // D9: the window answer comes from the helper, never from arithmetic here.
   // `Date.now()` is captured at render, matching the inline version this replaced.
   const now = Date.now();
-  const window = getProofWindowState(reservation, now);
+  const proofWindow = getProofWindowState(reservation, now);
 
   // D10: the disable rules and the tooltip reason are the shared helper's, so the page's
   // bar and the table's menu cannot drift. `now` is the same render-time value the window
@@ -59,8 +60,15 @@ export function useReservationActions({
 
   const hasInspection = Boolean(inspectionId);
 
+  // Prep 4a: this URL is PASTED into an email or chat, not clicked in the app, so it must
+  // be absolute — a relative path resolves against the reader's origin, or against
+  // nothing. `window.location.origin` is read here, at the one place the value is made,
+  // and the helper stays pure.
   const guestInspectionUrl = inspectionId
-    ? buildPath(appPaths.inspection, { id: inspectionId })
+    ? absoluteUrl(
+        buildPath(appPaths.inspection, { id: inspectionId }),
+        window.location.origin,
+      )
     : "";
 
   const invalidateReservations = () => {
@@ -115,15 +123,15 @@ export function useReservationActions({
 
   /** The camera button's tooltip, derived from the helper's state — never recomputed. */
   const takeShotsTooltip = (): string => {
-    switch (window.state) {
+    switch (proofWindow.state) {
       case "ALREADY_SUBMITTED":
         return t("reservationActionsCell.tooltip.hasSubmittedProofs");
       case "EXPIRED":
         return t("reservationActionsCell.tooltip.isTooLate");
       case "TOO_EARLY":
         return t("reservationActionsCell.tooltip.isTooEarly", {
-          windowHours: window.windowHours,
-          hoursUntilWindow: window.hoursUntilWindow,
+          windowHours: proofWindow.windowHours,
+          hoursUntilWindow: proofWindow.hoursUntilWindow,
         });
       case "NOT_STARTED":
         return t("reservationActionsCell.tooltip.notStarted");
@@ -133,7 +141,7 @@ export function useReservationActions({
   };
 
   return {
-    window,
+    window: proofWindow,
     rules,
     hasInspection,
     guestInspectionUrl,

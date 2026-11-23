@@ -442,12 +442,12 @@
     },
     "message": {
       "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
-      "intro": "You were our guest at {{apartmentName}} from {{dates}}.",
-      "assetsIntro": "These are the assets that were damaged or stolen during your stay:",
-      "ask": "We hope you will accept this amount so we can settle it directly, without going through the longer claim procedure.",
+      "intro": "Thank you for staying at {{apartmentName}} from {{dates}} — we hope you enjoyed your time there.",
+      "assetsIntro": "After your stay we noticed a few items that were damaged or missing. We have listed them below so you can see exactly what we found:",
+      "ask": "We would much rather settle this with you directly than open a formal claim, which takes longer for everyone. If you can cover the amount below, we can close this today — and if anything here looks wrong to you, please just reply and tell us, and we will sort it out together.",
       "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
       "totalLine": "Total requested: {{amount}}.",
-      "footer": "Photos of the items before your stay, and of the damage after it, are attached to this request.",
+      "footer": "For transparency we have attached the photos of these items from before your stay, along with photos of how we found them afterwards. Thank you for helping us resolve this quickly.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {

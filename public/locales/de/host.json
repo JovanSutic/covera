@@ -442,12 +442,12 @@
     },
     "message": {
       "header": "Schadensersatzanspruch für den Aufenthalt bei {{apartmentName}} (Gast: {{guestName}}).",
-      "intro": "Sie waren unser Gast bei {{apartmentName}} von {{dates}}.",
-      "assetsIntro": "Dies sind die Vermögenswerte, die während Ihres Aufenthalts beschädigt oder gestohlen wurden:",
-      "ask": "Wir hoffen, dass Sie diesen Betrag akzeptieren, damit wir ihn direkt begleichen können, ohne das längere Reklamationsverfahren durchlaufen zu müssen.",
+      "intro": "Vielen Dank für Ihren Aufenthalt in {{apartmentName}} vom {{dates}} — wir hoffen, Sie haben die Zeit genossen.",
+      "assetsIntro": "Nach Ihrem Aufenthalt haben wir einige Gegenstände bemerkt, die beschädigt wurden oder fehlen. Wir haben sie unten aufgelistet, damit Sie genau sehen, was wir vorgefunden haben:",
+      "ask": "Wir würden das viel lieber direkt mit Ihnen klären, als eine formelle Forderung zu eröffnen, die für alle länger dauert. Wenn Sie den untenstehenden Betrag übernehmen können, können wir das heute abschließen — und falls Ihnen etwas daran falsch erscheint, antworten Sie uns bitte einfach, dann lösen wir es gemeinsam.",
       "itemLine": "{{index}}. {{asset}} – {{room}} – {{type}} – geschätzter Wert {{value}}. Beigefügte Beweise: {{attached}}.",
       "totalLine": "Insgesamt angefordert: {{amount}}.",
-      "footer": "Dieser Anfrage sind Fotos der Gegenstände vor Ihrem Aufenthalt und der Schäden danach beigefügt.",
+      "footer": "Zur Transparenz haben wir die Fotos dieser Gegenstände von vor Ihrem Aufenthalt beigefügt, zusammen mit Fotos, wie wir sie danach vorgefunden haben. Vielen Dank, dass Sie uns helfen, das schnell zu klären.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {

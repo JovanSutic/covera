@@ -12,6 +12,7 @@ import { CopyMessageSection } from "@/components/shared/CopyMessageSection";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useReservation } from "@/lib/api/queries/reservation";
+import { absoluteUrl } from "@/lib/helpers/absoluteUrl";
 import { getProofWindowState } from "@/lib/helpers/proofWindow";
 import { appPaths, buildPath, useRouteParams } from "@/lib/router";
 import { withLang } from "@/lib/router/lang";
@@ -67,7 +68,7 @@ export default function ReservationPage() {
   // render, exactly as the inline table cell did, and both consumers read this
   // same value — the time section's editability and the proof section's action.
   const now = Date.now();
-  const window = getProofWindowState(reservation, now);
+  const proofWindow = getProofWindowState(reservation, now);
 
   return (
     <PageLayout size="lg">
@@ -93,7 +94,7 @@ export default function ReservationPage() {
 
         <ReservationProofSection
           reservation={reservation}
-          window={window}
+          window={proofWindow}
           onTakeProofs={() =>
             navigate(
               withLang(
@@ -116,9 +117,14 @@ export default function ReservationPage() {
             title={t("reservationPage.guestMessage.title")}
             message={t("guestInspectionMessage.messageTemplate", {
               guestName: reservation.guestName,
-              guestInspectionUrl: buildPath(appPaths.inspection, {
-                id: reservation.inspection.id,
-              }),
+              // Prep 4a: absolute, because the host pastes this into a message. The same
+              // helper the table's popover uses, so the two cannot disagree.
+              guestInspectionUrl: absoluteUrl(
+                buildPath(appPaths.inspection, {
+                  id: reservation.inspection.id,
+                }),
+                window.location.origin,
+              ),
             })}
             copyLabel={t("guestInspectionMessage.copyButton")}
             copySuccess={t("guestInspectionMessage.toastCopySuccess")}
@@ -157,7 +163,7 @@ export default function ReservationPage() {
           alternativeCheckOutDatetime={reservation.alternativeCheckOutDatetime}
           // Editing is refused once the effective check-in has passed — the
           // helper's own value, not a second derivation.
-          canEdit={window.checkInTime !== null && window.checkInTime > now}
+          canEdit={proofWindow.checkInTime !== null && proofWindow.checkInTime > now}
         />
 
         <SectionCard title={t("reservationPage.other.title")}>
@@ -187,7 +193,7 @@ export default function ReservationPage() {
               </dt>
               <dd className="text-sm text-gray-900 dark:text-gray-100 mt-1">
                 {t("reservationPage.other.proofWindowValue", {
-                  hours: window.windowHours,
+                  hours: proofWindow.windowHours,
                 })}
               </dd>
             </div>
