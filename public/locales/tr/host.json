@@ -371,51 +371,52 @@
       "subtitle": "Konaklama sırasında bir varlık hasar görürse veya çalınırsa ne yapılmalı?",
       "link": "Hasar talebi prosedürünün işleyişi",
       "intro": "Hasar talebinin sabit bir şekli vardır. Bu adımlar önem sırasına göredir: İlk saatler, hâlâ hangi kanıta sahip olduğunuza karar verir.",
+      "backToDashboard": "Kontrol panosuna dön",
       "sections": {
         "immediate": {
           "title": "1. Bulduğunuz anda kaydedin",
           "body": "Herhangi bir şeyi taşımadan, temizlemeden veya onarmadan önce varlığın fotoğrafını çekin. Fotoğraflar iddiadır.",
-          "points": {
-            "0": "Ne olduğunu ve onu ne zaman bulduğunuzu yazın.",
-            "1": "Talep kapatılana kadar hasarlı ürünü atmayın.",
-            "2": "Tarihlerin kayıtta olması için rezervasyondaki talebi açın."
-          }
+          "points": [
+            "Ne olduğunu ve onu ne zaman bulduğunuzu yazın.",
+            "Talep kapatılana kadar hasarlı ürünü atmayın.",
+            "Tarihlerin kayıtta olması için rezervasyondaki talebi açın."
+          ]
         },
         "photos": {
           "title": "2. Fotoğrafları toplayın",
           "body": "Etkilenen her varlığın geniş bir çekime ve yakın çekime veya çalınan öğenin eskiden bulunduğu yerin fotoğrafına ihtiyacı vardır.",
-          "points": {
-            "0": "Geniş çekimde varlığın odasındaki görünümü görülüyor.",
-            "1": "Yakın çekim hasarın kendisini gösteriyor.",
-            "2": "Hırsızlık durumunda boş alanı ve çevreyi fotoğraflayın."
-          }
+          "points": [
+            "Geniş çekimde varlığın odasındaki görünümü görülüyor.",
+            "Yakın çekim hasarın kendisini gösteriyor.",
+            "Hırsızlık durumunda boş alanı ve çevreyi fotoğraflayın."
+          ]
         },
         "costs": {
           "title": "3. Parayı belgeleyin",
           "body": "Bir tutar yalnızca arkasında bir belge varsa güvenilirdir: onarım teklifi, değiştirme teklifi veya satın alma makbuzu.",
-          "points": {
-            "0": "Etkilenen her varlık için istediğiniz tutarı girin.",
-            "1": "Bunu destekleyen fiyat teklifini veya faturayı saklayın.",
-            "2": "Talepte bulunulduktan sonra tutar değiştirilemez."
-          }
+          "points": [
+            "Etkilenen her varlık için istediğiniz tutarı girin.",
+            "Bunu destekleyen fiyat teklifini veya faturayı saklayın.",
+            "Talepte bulunulduktan sonra tutar değiştirilemez."
+          ]
         },
         "deadlines": {
           "title": "4. Son teslim tarihlerine uyun",
           "body": "Airbnb'nin pencereleri sabittir ve duraklamaz.",
-          "points": {
-            "0": "Hak talebinde bulunulduktan sonra misafirin yanıt vermesi için 24 saati vardır.",
-            "1": "Konuk bu pencerede yanıt vermezse AirCover'a iletin.",
-            "2": "AirCover penceresi çıkış tarihinden 30 gün sonra kapanır."
-          }
+          "points": [
+            "Hak talebinde bulunulduktan sonra misafirin yanıt vermesi için 24 saati vardır.",
+            "Konuk bu pencerede yanıt vermezse AirCover'a iletin.",
+            "AirCover penceresi çıkış tarihinden 30 gün sonra kapanır."
+          ]
         },
         "airbnb": {
           "title": "5. Airbnb'de neler oluyor",
           "body": "Talepte bulunuyorsunuz, hazırlanan talep metnini Çözüm Merkezi'ne yapıştırıyorsunuz, fotoğraf ve belgeleri oraya ekliyorsunuz.",
-          "points": {
-            "0": "Konaklamanız bittikten sonra talep sayfasından talepte bulunun.",
-            "1": "Sizin için hazırlanan talep sayfasının talep metnini kopyalayın.",
-            "2": "Öncesi ve sonrası fotoğraflarını ekleyin, ardından konuğun cevabını bekleyin."
-          }
+          "points": [
+            "Konaklamanız bittikten sonra talep sayfasından talepte bulunun.",
+            "Sizin için hazırlanan talep sayfasının talep metnini kopyalayın.",
+            "Öncesi ve sonrası fotoğraflarını ekleyin, ardından konuğun cevabını bekleyin."
+          ]
         }
       }
     },

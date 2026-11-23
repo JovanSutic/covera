@@ -371,51 +371,52 @@
       "subtitle": "Šta učiniti kada je sredstvo oštećeno ili ukradeno tokom boravka.",
       "link": "Kako funkcioniše postupak zahteva za odštetu",
       "intro": "Zahtev za odštetu ima fiksni oblik. Ovi koraci su onim redosledom u kom su važni: prvi sati odlučuju koje dokaze još imate.",
+      "backToDashboard": "Nazad na kontrolnu tablu",
       "sections": {
         "immediate": {
           "title": "1. Snimite ga čim ga pronađete",
           "body": "Fotografišite materijal pre nego što bilo šta premestite, očistite ili popravite. Fotografije su tvrdnja.",
-          "points": {
-            "0": "Zapišite šta se dogodilo i kada ste to pronašli.",
-            "1": "Ne odbacujte oštećenu stavku dok se zahtev ne zatvori.",
-            "2": "Otvorite zahtev na rezervaciji tako da datumi budu zabeleženi."
-          }
+          "points": [
+            "Zapišite šta se dogodilo i kada ste to pronašli.",
+            "Ne odbacujte oštećenu stavku dok se zahtev ne zatvori.",
+            "Otvorite zahtev na rezervaciji tako da datumi budu zabeleženi."
+          ]
         },
         "photos": {
           "title": "2. Prikupite fotografije",
           "body": "Svakom predmetu koji je pogođen potreban je široki snimak i krupni plan, ili fotografija mesta na kojoj se nekada nalazila ukradena stvar.",
-          "points": {
-            "0": "Široki snimak prikazuje sredstvo u svojoj sobi.",
-            "1": "Krupni plan prikazuje samu štetu.",
-            "2": "Za krađu fotografišite prazan prostor i okolinu."
-          }
+          "points": [
+            "Široki snimak prikazuje sredstvo u svojoj sobi.",
+            "Krupni plan prikazuje samu štetu.",
+            "Za krađu fotografišite prazan prostor i okolinu."
+          ]
         },
         "costs": {
           "title": "3. Dokumentujte novac",
           "body": "Iznos je verodostojan samo ako iza njega stoji dokument: ponuda za popravku, zamena ili račun za kupovinu.",
-          "points": {
-            "0": "Unesite iznos koji tražite za svako sredstvo na koje utiče.",
-            "1": "Zadržite ponudu ili fakturu koja to podržava.",
-            "2": "Iznos se ne može promeniti nakon podnošenja zahteva."
-          }
+          "points": [
+            "Unesite iznos koji tražite za svako sredstvo na koje utiče.",
+            "Zadržite ponudu ili fakturu koja to podržava.",
+            "Iznos se ne može promeniti nakon podnošenja zahteva."
+          ]
         },
         "deadlines": {
           "title": "4. Ispoštujte rokove",
           "body": "Airbnb-ovi prozori su popravljeni i ne pauziraju.",
-          "points": {
-            "0": "Gost ima 24 sata da odgovori nakon podnošenja tužbe.",
-            "1": "Eskalirajte na AirCover ako gost ne odgovori u tom prozoru.",
-            "2": "AirCover prozor se zatvara 30 dana nakon datuma odjave."
-          }
+          "points": [
+            "Gost ima 24 sata da odgovori nakon podnošenja tužbe.",
+            "Eskalirajte na AirCover ako gost ne odgovori u tom prozoru.",
+            "AirCover prozor se zatvara 30 dana nakon datuma odjave."
+          ]
         },
         "airbnb": {
           "title": "5. Šta se dešava na Airbnb-u",
           "body": "Podnesete zahtev, nalepite pripremljeni tekst zahteva u Rezolucioni centar i tamo priložite fotografije i dokumente.",
-          "points": {
-            "0": "Podnesite zahtev sa stranice sa zahtevima kada se boravak završi.",
-            "1": "Kopirajte tekst zahteva koju je stranica za polaganje prava pripremila za vas.",
-            "2": "Priložite fotografije pre i posle, a zatim sačekajte odgovor gosta."
-          }
+          "points": [
+            "Podnesite zahtev sa stranice sa zahtevima kada se boravak završi.",
+            "Kopirajte tekst zahteva koju je stranica za polaganje prava pripremila za vas.",
+            "Priložite fotografije pre i posle, a zatim sačekajte odgovor gosta."
+          ]
         }
       }
     },

@@ -371,6 +371,7 @@
       "subtitle": "What to do when an asset is damaged or stolen during a stay.",
       "link": "How the damage claim procedure works",
       "intro": "A damage claim has a fixed shape. These steps are in the order they matter: the first hours decide what evidence you still have.",
+      "backToDashboard": "Back to dashboard",
       "sections": {
         "immediate": {
           "title": "1. Record it as soon as you find it",
