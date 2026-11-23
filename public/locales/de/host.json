@@ -294,6 +294,9 @@
     }
   },
   "inspectionGuidePage": {
+    "guest": {
+      "readOnly": "Sie können hier die Fotos für diesen Aufenthalt ansehen. Der Gastgeber übernimmt die endgültige Übermittlung — Sie müssen nichts weiter tun."
+    },
     "title": "Inspektionsleitfaden",
     "subtitle": "Fotonachweise für {{guestName}}",
     "loading": "Leitfaden wird geladen…",

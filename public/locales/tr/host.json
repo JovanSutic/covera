@@ -294,6 +294,9 @@
     }
   },
   "inspectionGuidePage": {
+    "guest": {
+      "readOnly": "Bu konaklamanın fotoğraflarını burada görüntüleyebilirsiniz. Son gönderimi ev sahibi tamamlar — başka bir şey yapmanıza gerek yok."
+    },
     "title": "İnceleme kılavuzu",
     "subtitle": "{{guestName}} için fotoğraflı provalar",
     "loading": "Kılavuz yükleniyor…",

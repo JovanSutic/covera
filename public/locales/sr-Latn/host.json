@@ -294,6 +294,9 @@
     }
   },
   "inspectionGuidePage": {
+    "guest": {
+      "readOnly": "Ovde možete da vidite fotografije za ovaj boravak. Domaćin završava konačno podnošenje — ne morate ništa drugo da radite."
+    },
     "title": "Vodič za inspekciju",
     "subtitle": "Probe fotografija za {{guestName}}",
     "loading": "Učitavanje vodiča…",

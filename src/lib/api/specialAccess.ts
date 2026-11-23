@@ -1,12 +1,15 @@
 import {
   deleteSpecialAccessByAccessId,
+  getApartmentShotsApartmentByApartmentId,
+  getReservationsById,
+  getReservationsByIdPhotos,
   postSpecialAccess,
 } from "@/api/generated/requests/sdk.gen";
 import type {
   CreateSpecialAccess,
   SpecialAccess,
 } from "@/api/generated/requests/types.gen";
-import { withAuth } from "@/lib/api/api";
+import { publicApi, withAuth } from "@/lib/api/api";
 
 /**
  * Access links (prep 5 / the Feature section).
@@ -73,6 +76,62 @@ export async function revokeSpecialAccess(
   const response = await deleteSpecialAccessByAccessId({
     ...config,
     path: { accessId },
+  });
+
+  return response.data;
+}
+
+/**
+ * D36/D37: the guest's reads. Each takes the `accessId` and sends it as the query parameter
+ * the backend reads (verified 2026-11-23).
+ *
+ * These use `publicApi()` and NEVER `withAuth()`. `withAuth()` reads the Supabase session and
+ * sends `Authorization: Bearer undefined` for a caller with no account, which turns a working
+ * anonymous read into a 401 — the exact failure `fieldIncident.ts` and `queries/inspection.ts`
+ * document for the other anonymous surfaces (invariant 8).
+ *
+ * The generated endpoint types pin `query?: never`, so the accessId needs the `as never` cast.
+ * A `url:` override does NOT compile (TS2353) — verified by trial-compiling both.
+ */
+const accessQuery = (accessId: string) => ({ accessId }) as never;
+
+export async function fetchReservationWithAccess(
+  reservationId: string,
+  accessId: string,
+  signal?: AbortSignal,
+) {
+  const response = await getReservationsById({
+    ...publicApi(signal ? { signal } : {}),
+    path: { id: reservationId },
+    query: accessQuery(accessId),
+  });
+
+  return response.data;
+}
+
+export async function fetchShotsWithAccess(
+  apartmentId: string,
+  accessId: string,
+  signal?: AbortSignal,
+) {
+  const response = await getApartmentShotsApartmentByApartmentId({
+    ...publicApi(signal ? { signal } : {}),
+    path: { apartmentId },
+    query: accessQuery(accessId),
+  });
+
+  return response.data;
+}
+
+export async function fetchReservationPhotosWithAccess(
+  reservationId: string,
+  accessId: string,
+  signal?: AbortSignal,
+) {
+  const response = await getReservationsByIdPhotos({
+    ...publicApi(signal ? { signal } : {}),
+    path: { id: reservationId },
+    query: accessQuery(accessId),
   });
 
   return response.data;

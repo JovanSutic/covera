@@ -184,6 +184,9 @@
     }
   },
   "inspectionGuidePage": {
+    "guest": {
+      "readOnly": "You can view the photos for this stay here. The host completes the final submission — you do not need to do anything else."
+    },
     "title": "Inspection guide",
     "subtitle": "Photo proofs for {{guestName}}",
     "loading": "Loading the guide…",
