@@ -317,6 +317,7 @@
   "incidentPage": {
     "title": "Schadensersatzanspruch",
     "backToReservation": "Zurück zur Reservierung",
+    "managePhotos": "Anspruchsfotos verwalten",
     "loading": "Anspruch wird geladen…",
     "listError": "Es konnte nicht nach einem Anspruch für diesen Aufenthalt gesucht werden. Neu laden, um es erneut zu versuchen.",
     "notFound": {

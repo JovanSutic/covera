@@ -317,6 +317,7 @@
   "incidentPage": {
     "title": "Hasar talebi",
     "backToReservation": "Rezervasyona geri dön",
+    "managePhotos": "Talep fotoğraflarını yönet",
     "loading": "Talep yükleniyor…",
     "listError": "Bu konaklamaya ilişkin hak talebi kontrol edilemedi. Tekrar denemek için yeniden yükleyin.",
     "notFound": {

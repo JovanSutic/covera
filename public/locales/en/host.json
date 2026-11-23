@@ -317,6 +317,7 @@
   "incidentPage": {
     "title": "Damage claim",
     "backToReservation": "Back to reservation",
+    "managePhotos": "Manage claim photos",
     "loading": "Loading the claim…",
     "listError": "Could not check for a claim on this stay. Reload to try again.",
     "notFound": {

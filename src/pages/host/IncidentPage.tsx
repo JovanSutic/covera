@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { FileWarning, Plus } from "lucide-react";
+import { Camera, FileWarning, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 import PageLayout from "@/components/layout/PageLayout";
 import PageTitle from "@/components/PageTitle";
@@ -31,7 +32,8 @@ import {
   findIncidentForReservation,
   isIncidentEditable,
 } from "@/lib/helpers/claimStatus";
-import { appPaths, useRouteParams } from "@/lib/router";
+import { appPaths, buildPath, useRouteParams } from "@/lib/router";
+import { withLang } from "@/lib/router/lang";
 import type {
   IncidentItemWithToken,
   IncidentWithItems,
@@ -56,8 +58,9 @@ import type {
  * still worth reading — it is the key the item writes invalidate (invariant 7).
  */
 export default function IncidentPage() {
-  const { t } = useTranslation("host");
+  const { t, i18n } = useTranslation("host");
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { id, reservationId } = useRouteParams(appPaths.incidentClaim) as {
     id: string;
@@ -243,6 +246,7 @@ export default function IncidentPage() {
                       incidentId={claim.id}
                       item={item}
                       beforePhotos={assetBeforePhotos(reservationPhotos, item.assetId)}
+                      readOnly
                     />
                     <IncidentFieldLink
                       incidentId={claim.id}
@@ -259,6 +263,25 @@ export default function IncidentPage() {
                   </>
                 )}
               />
+
+              <div className="mt-4">
+                <ActionButton
+                  variant="neutral"
+                  size="md"
+                  icon={<Camera className="h-4 w-4 shrink-0" />}
+                  label={t("incidentPage.managePhotos")}
+                  onClick={() =>
+                    navigate(
+                      withLang(
+                        buildPath(appPaths.incidentProofs, {
+                          incidentId: claim.id,
+                        }),
+                        i18n.language,
+                      ),
+                    )
+                  }
+                />
+              </div>
             </SectionCard>
 
             {/* The add form is offered only while the claim is editable (phase 1's

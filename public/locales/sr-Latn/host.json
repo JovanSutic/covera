@@ -317,6 +317,7 @@
   "incidentPage": {
     "title": "Zahtev za naknadu štete",
     "backToReservation": "Povratak na rezervaciju",
+    "managePhotos": "Upravljaj fotografijama zahteva",
     "loading": "Učitavanje zahteva…",
     "listError": "Nisam mogao da proverim da li postoji reklamacija za ovaj boravak. Učitajte ponovo da biste pokušali ponovo.",
     "notFound": {
