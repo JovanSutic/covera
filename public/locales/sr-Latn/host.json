@@ -517,5 +517,27 @@
       "resolved": "Rešeno",
       "unfeasible": "Neizvodljivo"
     }
+  },
+  "incidentProofsPage": {
+    "title": "Fotografije zahteva",
+    "subtitle": "Upravljajte fotografijama za svaki predmet u ovom zahtevu.",
+    "loading": "Učitavanje zahteva…",
+    "notFound": {
+      "title": "Zahtev nije pronađen",
+      "subtitle": "Ovaj zahtev ne postoji ili ne možete da ga otvorite."
+    },
+    "empty": "Ovaj zahtev još nema predmete. Dodajte ih prvo na stranici zahteva.",
+    "backToClaim": "Nazad na zahtev",
+    "before": {
+      "title": "Fotografije pre",
+      "none": "Za ovaj predmet nisu snimljene fotografije pre."
+    },
+    "slots": {
+      "title": "Fotografije za ovaj predmet"
+    },
+    "guestUnavailable": {
+      "title": "Još nije dostupno",
+      "body": "Otpremanje fotografija preko linka za pristup još nije otvoreno. Zamolite domaćina da završi ovaj korak ili zatražite novi link."
+    }
   }
 }

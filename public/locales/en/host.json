@@ -517,5 +517,27 @@
       "resolved": "Resolved",
       "unfeasible": "Unfeasible"
     }
+  },
+  "incidentProofsPage": {
+    "title": "Claim photos",
+    "subtitle": "Manage the photos for each asset in this claim.",
+    "loading": "Loading the claim…",
+    "notFound": {
+      "title": "Claim not found",
+      "subtitle": "This claim does not exist or you cannot open it."
+    },
+    "empty": "This claim has no assets yet. Add them on the claim page first.",
+    "backToClaim": "Back to the claim",
+    "before": {
+      "title": "Before photos",
+      "none": "No before photos were captured for this asset."
+    },
+    "slots": {
+      "title": "Photos for this asset"
+    },
+    "guestUnavailable": {
+      "title": "Not available yet",
+      "body": "Photo uploads through an access link are not open yet. Please ask the host to complete this step, or contact them for a new link."
+    }
   }
 }

@@ -517,5 +517,27 @@
       "resolved": "Çözüldü",
       "unfeasible": "Mümkün değil"
     }
+  },
+  "incidentProofsPage": {
+    "title": "Talep fotoğrafları",
+    "subtitle": "Bu talepteki her eşyanın fotoğraflarını yönetin.",
+    "loading": "Talep yükleniyor…",
+    "notFound": {
+      "title": "Talep bulunamadı",
+      "subtitle": "Bu talep mevcut değil veya açamıyorsunuz."
+    },
+    "empty": "Bu talepte henüz eşya yok. Önce talep sayfasından ekleyin.",
+    "backToClaim": "Talebe dön",
+    "before": {
+      "title": "Önceki fotoğraflar",
+      "none": "Bu eşya için önceki fotoğraf çekilmedi."
+    },
+    "slots": {
+      "title": "Bu eşyanın fotoğrafları"
+    },
+    "guestUnavailable": {
+      "title": "Henüz kullanılamıyor",
+      "body": "Erişim bağlantısı üzerinden fotoğraf yükleme henüz açık değil. Lütfen ev sahibinden bu adımı tamamlamasını veya yeni bir bağlantı istemesini rica edin."
+    }
   }
 }

@@ -89,6 +89,28 @@ export const appRoutes: readonly RouteNode[] = [
     handle: { crumb: "inspectionGuidePage.title" },
   },
   {
+    // D25 (feature/54): the claim's proof page. `public` because a guest access link must
+    // be able to open it — the same reason `inspectionGuide` above is top-level. The page
+    // enforces "host session OR accessId" itself (D26); a rule name cannot express a query
+    // parameter.
+    //
+    // All four reads are declared even though the page gates them behind a claim existing:
+    // `prefetchCoverage.test.ts` requires a page's route chain to declare every hook the
+    // page reads. Three resolve to null (their ids come from the claim, not the URL), which
+    // is how this registry says "declared for coverage, not prefetched".
+    path: "incident/:incidentId/proofs",
+    requires: "public",
+    params: { incidentId: "uuid" },
+    page: () => import("@/pages/host/IncidentProofsPage"),
+    data: [
+      { resource: "incident", params: (params) => ({ id: String(params.incidentId) }) },
+      { resource: "reservation", params: () => null },
+      { resource: "assets", params: () => null },
+      { resource: "reservationPhotos", params: () => null },
+    ],
+    handle: { crumb: "incidentProofsPage.title" },
+  },
+  {
     path: "*",
     requires: "public",
     page: () => import("@/components/router/NotFoundPage"),

@@ -517,5 +517,27 @@
       "resolved": "Gelöst",
       "unfeasible": "Undurchführbar"
     }
+  },
+  "incidentProofsPage": {
+    "title": "Fotos zum Anspruch",
+    "subtitle": "Verwalten Sie die Fotos für jeden Gegenstand in diesem Anspruch.",
+    "loading": "Anspruch wird geladen…",
+    "notFound": {
+      "title": "Anspruch nicht gefunden",
+      "subtitle": "Dieser Anspruch existiert nicht oder Sie können ihn nicht öffnen."
+    },
+    "empty": "Dieser Anspruch hat noch keine Gegenstände. Fügen Sie sie zuerst auf der Anspruchsseite hinzu.",
+    "backToClaim": "Zurück zum Anspruch",
+    "before": {
+      "title": "Fotos vorher",
+      "none": "Für diesen Gegenstand wurden keine Vorher-Fotos aufgenommen."
+    },
+    "slots": {
+      "title": "Fotos für diesen Gegenstand"
+    },
+    "guestUnavailable": {
+      "title": "Noch nicht verfügbar",
+      "body": "Foto-Uploads über einen Zugriffslink sind noch nicht freigeschaltet. Bitten Sie den Gastgeber, diesen Schritt abzuschließen, oder fordern Sie einen neuen Link an."
+    }
   }
 }
