@@ -138,6 +138,23 @@
       "title": "Guest message",
       "hint": "Copy this text and send it to the guest in your booking platform's message thread or by email. The link lets them complete their arrival handover."
     },
+    "links": {
+      "title": "Access links",
+      "intro": "Create a temporary link for someone without an account — a photographer or a cleaner — so they can open the inspection guide for this reservation.",
+      "create": "Create inspection link",
+      "creating": "Creating…",
+      "created": "Access link created",
+      "label": "Access link",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyError": "Failed to copy the link",
+      "createError": "Could not create the link",
+      "revoke": "Revoke",
+      "revoking": "Revoking…",
+      "revoked": "Access link revoked",
+      "revokeError": "Could not revoke the link",
+      "expiresHint": "This link expires automatically. Send it only to the person who needs it."
+    },
     "incident": {
       "title": "Damage claim",
       "loading": "Checking for a claim on this stay…",

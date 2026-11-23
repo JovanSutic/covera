@@ -227,6 +227,23 @@
       "title": "Poruka gosta",
       "hint": "Kopirajte ovaj tekst i pošaljite ga gostu u porukama vaše platforme za rezervaciju ili e-poštom. Putem veze gost može da završi primopredaju."
     },
+    "links": {
+      "title": "Linkovi za pristup",
+      "intro": "Napravite privremeni link za nekoga bez naloga — fotografa ili čistačicu — da može da otvori vodič za pregled za ovu rezervaciju.",
+      "create": "Napravi link za pregled",
+      "creating": "Pravljenje…",
+      "created": "Link za pristup je napravljen",
+      "label": "Link za pristup",
+      "copy": "Kopiraj",
+      "copied": "Kopirano",
+      "copyError": "Link nije mogao da se kopira",
+      "createError": "Link nije mogao da se napravi",
+      "revoke": "Opozovi",
+      "revoking": "Opozivanje…",
+      "revoked": "Link za pristup je opozvan",
+      "revokeError": "Link nije mogao da se opozove",
+      "expiresHint": "Ovaj link automatski ističe. Pošaljite ga samo osobi kojoj je potreban."
+    },
     "other": {
       "title": "Ostalo",
       "platformId": "ID rezervacije platforme",

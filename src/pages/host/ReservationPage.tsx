@@ -8,6 +8,7 @@ import { ReservationActionsBar } from "@/components/host/ReservationActionsBar";
 import { ReservationTimeSection } from "@/components/host/ReservationTimeSection";
 import { ReservationProofSection } from "@/components/host/ReservationProofSection";
 import { ReservationIncidentSection } from "@/components/host/incident/ReservationIncidentSection";
+import { ReservationLinksSection } from "@/components/host/ReservationLinksSection";
 import { CopyMessageSection } from "@/components/shared/CopyMessageSection";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { useApartmentsHost } from "@/lib/api/queries/apartment";
@@ -90,6 +91,11 @@ export default function ReservationPage() {
           // D17: the page this action is standing on is gone once the reservation
           // is, so the apartment is the only destination that still exists.
           onDeleted={() => navigate(apartmentPath)}
+        />
+
+        <ReservationLinksSection
+          reservationId={reservationId}
+          apartmentId={id}
         />
 
         <ReservationProofSection

@@ -227,6 +227,23 @@
       "title": "Konuk mesajı",
       "hint": "Bu metni kopyalayıp rezervasyon platformunuzun mesaj alanında veya e-posta ile konuğa gönderin. Bağlantı sayesinde konuk varış teslimini tamamlayabilir."
     },
+    "links": {
+      "title": "Erişim bağlantıları",
+      "intro": "Hesabı olmayan biri — bir fotoğrafçı veya temizlikçi — için geçici bir bağlantı oluşturun, böylece bu rezervasyonun inceleme kılavuzunu açabilir.",
+      "create": "İnceleme bağlantısı oluştur",
+      "creating": "Oluşturuluyor…",
+      "created": "Erişim bağlantısı oluşturuldu",
+      "label": "Erişim bağlantısı",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "copyError": "Bağlantı kopyalanamadı",
+      "createError": "Bağlantı oluşturulamadı",
+      "revoke": "İptal et",
+      "revoking": "İptal ediliyor…",
+      "revoked": "Erişim bağlantısı iptal edildi",
+      "revokeError": "Bağlantı iptal edilemedi",
+      "expiresHint": "Bu bağlantının süresi otomatik olarak dolar. Yalnızca ihtiyacı olan kişiye gönderin."
+    },
     "other": {
       "title": "Diğer",
       "platformId": "Platform rezervasyon kimliği",

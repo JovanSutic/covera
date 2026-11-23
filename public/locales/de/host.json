@@ -227,6 +227,23 @@
       "title": "Gastnachricht",
       "hint": "Kopieren Sie diesen Text und senden Sie ihn dem Gast im Nachrichtenbereich Ihrer Buchungsplattform oder per E-Mail. Über den Link kann er die Ankunftsübergabe abschließen."
     },
+    "links": {
+      "title": "Zugriffslinks",
+      "intro": "Erstellen Sie einen temporären Link für jemanden ohne Konto — einen Fotografen oder eine Reinigungskraft —, damit er den Prüfleitfaden für diese Reservierung öffnen kann.",
+      "create": "Prüflink erstellen",
+      "creating": "Wird erstellt…",
+      "created": "Zugriffslink erstellt",
+      "label": "Zugriffslink",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "copyError": "Link konnte nicht kopiert werden",
+      "createError": "Link konnte nicht erstellt werden",
+      "revoke": "Widerrufen",
+      "revoking": "Wird widerrufen…",
+      "revoked": "Zugriffslink widerrufen",
+      "revokeError": "Link konnte nicht widerrufen werden",
+      "expiresHint": "Dieser Link läuft automatisch ab. Senden Sie ihn nur an die Person, die ihn braucht."
+    },
     "other": {
       "title": "Andere",
       "platformId": "Plattformreservierungs-ID",
