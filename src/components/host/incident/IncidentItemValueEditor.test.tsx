@@ -43,6 +43,7 @@ function item(overrides: Partial<IncidentItem> = {}): IncidentItem {
       roomLocation: "BEDROOM_PRIMARY",
     } as IncidentItem["asset"],
     evidence: [],
+    photoAllowance: { max: 4, required: 2, attached: 0, remaining: 4 },
     ...overrides,
   };
 }

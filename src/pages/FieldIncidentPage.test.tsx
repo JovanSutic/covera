@@ -43,6 +43,7 @@ function ingest(overrides: Partial<FieldIngest> = {}): FieldIngest {
     // The SERVER's answer, and the only source for "what must be shot" (D21).
     requiredEvidenceTypes: ["damage_photo_wide", "damage_photo_closeup"],
     attachedEvidenceCounts: {},
+    photoAllowance: { max: 4, required: 2, attached: 0, remaining: 4 },
     tokenExpiresAt: "2026-11-08T20:00:00.000Z",
     ...overrides,
   };

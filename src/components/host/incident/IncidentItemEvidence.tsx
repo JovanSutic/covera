@@ -43,6 +43,12 @@ interface IncidentItemEvidenceProps {
     evidenceType: EvidenceType,
     onCapture: (file: File) => void,
   ) => ReactNode;
+  /**
+   * D32 (feature/54): display-only. The claim page shows what an item has and offers no
+   * capture or delete control — that work moved to `/incident/:incidentId/proofs`. The
+   * mutations stay in this file because that page renders this same component.
+   */
+  readOnly?: boolean;
 }
 
 /**
@@ -64,6 +70,7 @@ export function IncidentItemEvidence({
   item,
   beforePhotos = [],
   renderCapture,
+  readOnly = false,
 }: IncidentItemEvidenceProps) {
   const { t } = useTranslation("host");
   const queryClient = useQueryClient();
@@ -136,49 +143,50 @@ export function IncidentItemEvidence({
 
   return (
     <div className="mt-3 border-t border-gray-100 pt-3 dark:border-gray-800">
-      {renderCapture ? (
-        <fieldset disabled={isBusy} className="contents">
-          {required.map((type) =>
-            renderCapture(type, (file) =>
-              uploadMutation.mutate({ evidenceType: type, file }),
-            ),
-          )}
-        </fieldset>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          {required.map((type) => (
-            <button
-              key={type}
-              type="button"
-              disabled={isBusy}
-              onClick={() => startCapture(type)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-            >
-              {uploadMutation.isPending && pendingType === type ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Camera className="h-3.5 w-3.5" />
-              )}
-              {activePhotoCount(item, type) > 0
-                ? t("incidentPage.evidence.retakeFor", {
-                    view: t(evidenceLabelKey(type)),
-                  })
-                : t("incidentPage.evidence.captureFor", {
-                    view: t(evidenceLabelKey(type)),
-                  })}
-            </button>
-          ))}
+      {!readOnly &&
+        (renderCapture ? (
+          <fieldset disabled={isBusy} className="contents">
+            {required.map((type) =>
+              renderCapture(type, (file) =>
+                uploadMutation.mutate({ evidenceType: type, file }),
+              ),
+            )}
+          </fieldset>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {required.map((type) => (
+              <button
+                key={type}
+                type="button"
+                disabled={isBusy}
+                onClick={() => startCapture(type)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                {uploadMutation.isPending && pendingType === type ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Camera className="h-3.5 w-3.5" />
+                )}
+                {activePhotoCount(item, type) > 0
+                  ? t("incidentPage.evidence.retakeFor", {
+                      view: t(evidenceLabelKey(type)),
+                    })
+                  : t("incidentPage.evidence.captureFor", {
+                      view: t(evidenceLabelKey(type)),
+                    })}
+              </button>
+            ))}
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-        </div>
-      )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
+        ))}
 
       {beforePhotos.length > 0 && (
         <div className="mt-3">
@@ -233,15 +241,17 @@ export function IncidentItemEvidence({
                   />
                 </button>
 
-                <button
-                  type="button"
-                  disabled={isBusy}
-                  onClick={() => deleteMutation.mutate(photo.id)}
-                  aria-label={t("incidentPage.evidence.remove")}
-                  className="absolute -right-1.5 -top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors hover:text-rose-600 disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
+                {!readOnly && (
+                  <button
+                    type="button"
+                    disabled={isBusy}
+                    onClick={() => deleteMutation.mutate(photo.id)}
+                    aria-label={t("incidentPage.evidence.remove")}
+                    className="absolute -right-1.5 -top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors hover:text-rose-600 disabled:opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                )}
               </li>
             );
           })}

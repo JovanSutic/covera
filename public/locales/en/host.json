@@ -138,6 +138,23 @@
       "title": "Guest message",
       "hint": "Copy this text and send it to the guest in your booking platform's message thread or by email. The link lets them complete their arrival handover."
     },
+    "links": {
+      "title": "Access links",
+      "intro": "Create a temporary link for someone without an account — a photographer or a cleaner — so they can open the inspection guide for this reservation.",
+      "create": "Create inspection link",
+      "creating": "Creating…",
+      "created": "Access link created",
+      "label": "Access link",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyError": "Failed to copy the link",
+      "createError": "Could not create the link",
+      "revoke": "Revoke",
+      "revoking": "Revoking…",
+      "revoked": "Access link revoked",
+      "revokeError": "Could not revoke the link",
+      "expiresHint": "This link expires automatically. Send it only to the person who needs it."
+    },
     "incident": {
       "title": "Damage claim",
       "loading": "Checking for a claim on this stay…",
@@ -167,6 +184,9 @@
     }
   },
   "inspectionGuidePage": {
+    "guest": {
+      "readOnly": "You can view the photos for this stay here. The host completes the final submission — you do not need to do anything else."
+    },
     "title": "Inspection guide",
     "subtitle": "Photo proofs for {{guestName}}",
     "loading": "Loading the guide…",
@@ -300,6 +320,7 @@
   "incidentPage": {
     "title": "Damage claim",
     "backToReservation": "Back to reservation",
+    "managePhotos": "Manage claim photos",
     "loading": "Loading the claim…",
     "listError": "Could not check for a claim on this stay. Reload to try again.",
     "notFound": {
@@ -371,6 +392,7 @@
       "subtitle": "What to do when an asset is damaged or stolen during a stay.",
       "link": "How the damage claim procedure works",
       "intro": "A damage claim has a fixed shape. These steps are in the order they matter: the first hours decide what evidence you still have.",
+      "backToDashboard": "Back to dashboard",
       "sections": {
         "immediate": {
           "title": "1. Record it as soon as you find it",
@@ -441,12 +463,12 @@
     },
     "message": {
       "header": "Damage claim for the stay at {{apartmentName}} (guest: {{guestName}}).",
-      "intro": "You were our guest at {{apartmentName}} from {{dates}}.",
-      "assetsIntro": "These are the assets that were damaged or stolen during your stay:",
-      "ask": "We hope you will accept this amount so we can settle it directly, without going through the longer claim procedure.",
+      "intro": "Thank you for staying at {{apartmentName}} from {{dates}} — we hope you enjoyed your time there.",
+      "assetsIntro": "After your stay we noticed a few items that were damaged or missing. We have listed them below so you can see exactly what we found:",
+      "ask": "We would much rather settle this with you directly than open a formal claim, which takes longer for everyone. If you can cover the amount below, we can close this today — and if anything here looks wrong to you, please just reply and tell us, and we will sort it out together.",
       "itemLine": "{{index}}. {{asset}} — {{room}} — {{type}} — estimated value {{value}}. Evidence attached: {{attached}}.",
       "totalLine": "Total requested: {{amount}}.",
-      "footer": "Photos of the items before your stay, and of the damage after it, are attached to this request.",
+      "footer": "For transparency we have attached the photos of these items from before your stay, along with photos of how we found them afterwards. Thank you for helping us resolve this quickly.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {
@@ -498,6 +520,28 @@
       "escalatedToAircover": "Escalated to AirCover",
       "resolved": "Resolved",
       "unfeasible": "Unfeasible"
+    }
+  },
+  "incidentProofsPage": {
+    "title": "Claim photos",
+    "subtitle": "Manage the photos for each asset in this claim.",
+    "loading": "Loading the claim…",
+    "notFound": {
+      "title": "Claim not found",
+      "subtitle": "This claim does not exist or you cannot open it."
+    },
+    "empty": "This claim has no assets yet. Add them on the claim page first.",
+    "backToClaim": "Back to the claim",
+    "before": {
+      "title": "Before photos",
+      "none": "No before photos were captured for this asset."
+    },
+    "slots": {
+      "title": "Photos for this asset"
+    },
+    "guestUnavailable": {
+      "title": "Not available yet",
+      "body": "Photo uploads through an access link are not open yet. Please ask the host to complete this step, or contact them for a new link."
     }
   }
 }

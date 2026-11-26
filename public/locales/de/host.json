@@ -227,6 +227,23 @@
       "title": "Gastnachricht",
       "hint": "Kopieren Sie diesen Text und senden Sie ihn dem Gast im Nachrichtenbereich Ihrer Buchungsplattform oder per E-Mail. Über den Link kann er die Ankunftsübergabe abschließen."
     },
+    "links": {
+      "title": "Zugriffslinks",
+      "intro": "Erstellen Sie einen temporären Link für jemanden ohne Konto — einen Fotografen oder eine Reinigungskraft —, damit er den Prüfleitfaden für diese Reservierung öffnen kann.",
+      "create": "Prüflink erstellen",
+      "creating": "Wird erstellt…",
+      "created": "Zugriffslink erstellt",
+      "label": "Zugriffslink",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "copyError": "Link konnte nicht kopiert werden",
+      "createError": "Link konnte nicht erstellt werden",
+      "revoke": "Widerrufen",
+      "revoking": "Wird widerrufen…",
+      "revoked": "Zugriffslink widerrufen",
+      "revokeError": "Link konnte nicht widerrufen werden",
+      "expiresHint": "Dieser Link läuft automatisch ab. Senden Sie ihn nur an die Person, die ihn braucht."
+    },
     "other": {
       "title": "Andere",
       "platformId": "Plattformreservierungs-ID",
@@ -277,6 +294,9 @@
     }
   },
   "inspectionGuidePage": {
+    "guest": {
+      "readOnly": "Sie können hier die Fotos für diesen Aufenthalt ansehen. Der Gastgeber übernimmt die endgültige Übermittlung — Sie müssen nichts weiter tun."
+    },
     "title": "Inspektionsleitfaden",
     "subtitle": "Fotonachweise für {{guestName}}",
     "loading": "Leitfaden wird geladen…",
@@ -300,6 +320,7 @@
   "incidentPage": {
     "title": "Schadensersatzanspruch",
     "backToReservation": "Zurück zur Reservierung",
+    "managePhotos": "Anspruchsfotos verwalten",
     "loading": "Anspruch wird geladen…",
     "listError": "Es konnte nicht nach einem Anspruch für diesen Aufenthalt gesucht werden. Neu laden, um es erneut zu versuchen.",
     "notFound": {
@@ -371,51 +392,52 @@
       "subtitle": "Was tun, wenn ein Vermögenswert während eines Aufenthalts beschädigt oder gestohlen wird?",
       "link": "So funktioniert das Schadensersatzverfahren",
       "intro": "Ein Schadensersatzanspruch hat eine feste Form. Diese Schritte sind in der Reihenfolge aufgeführt, in der sie wichtig sind: Die ersten Stunden entscheiden darüber, welche Beweise Sie noch haben.",
+      "backToDashboard": "Zurück zum Dashboard",
       "sections": {
         "immediate": {
           "title": "1. Nehmen Sie es auf, sobald Sie es finden.",
           "body": "Fotografieren Sie das Objekt, bevor Sie es bewegen, reinigen oder reparieren. Die Fotos sind der Anspruch.",
-          "points": {
-            "0": "Schreiben Sie auf, was passiert ist und wann Sie es gefunden haben.",
-            "1": "Entsorgen Sie den beschädigten Artikel nicht, bis der Anspruch abgeschlossen ist.",
-            "2": "Öffnen Sie den Anspruch für die Reservierung, damit die Daten in der Akte sind."
-          }
+          "points": [
+            "Schreiben Sie auf, was passiert ist und wann Sie es gefunden haben.",
+            "Entsorgen Sie den beschädigten Artikel nicht, bis der Anspruch abgeschlossen ist.",
+            "Öffnen Sie den Anspruch für die Reservierung, damit die Daten in der Akte sind."
+          ]
         },
         "photos": {
           "title": "2. Sammeln Sie die Fotos",
           "body": "Für jedes betroffene Objekt benötigen Sie eine Totalaufnahme und eine Nahaufnahme oder ein Foto von der Stelle, an der sich früher ein gestohlener Gegenstand befand.",
-          "points": {
-            "0": "Eine Totalaufnahme zeigt den Vermögenswert in seinem Raum.",
-            "1": "Eine Nahaufnahme zeigt den Schaden selbst.",
-            "2": "Fotografieren Sie bei einem Diebstahl den leeren Raum und die Umgebung."
-          }
+          "points": [
+            "Eine Totalaufnahme zeigt den Vermögenswert in seinem Raum.",
+            "Eine Nahaufnahme zeigt den Schaden selbst.",
+            "Fotografieren Sie bei einem Diebstahl den leeren Raum und die Umgebung."
+          ]
         },
         "costs": {
           "title": "3. Dokumentieren Sie das Geld",
           "body": "Ein Betrag ist nur dann glaubwürdig, wenn ein Dokument dahinter steht: ein Reparaturangebot, ein Ersatzangebot oder eine Kaufquittung.",
-          "points": {
-            "0": "Geben Sie den Betrag ein, den Sie für jeden betroffenen Vermögenswert verlangen.",
-            "1": "Behalten Sie das Angebot oder die Rechnung, die es unterstützt.",
-            "2": "Der Betrag kann nicht mehr geändert werden, sobald der Anspruch eingereicht wurde."
-          }
+          "points": [
+            "Geben Sie den Betrag ein, den Sie für jeden betroffenen Vermögenswert verlangen.",
+            "Behalten Sie das Angebot oder die Rechnung, die es unterstützt.",
+            "Der Betrag kann nicht mehr geändert werden, sobald der Anspruch eingereicht wurde."
+          ]
         },
         "deadlines": {
           "title": "4. Halten Sie die Fristen ein",
           "body": "Die Zeitfenster von Airbnb sind festgelegt und es gibt keine Pause.",
-          "points": {
-            "0": "Der Gast hat 24 Stunden Zeit, um zu antworten, sobald der Anspruch eingereicht wurde.",
-            "1": "Eskalieren Sie es an AirCover, wenn der Gast in diesem Fenster nicht antwortet.",
-            "2": "Das AirCover-Fenster schließt 30 Tage nach dem Check-out-Datum."
-          }
+          "points": [
+            "Der Gast hat 24 Stunden Zeit, um zu antworten, sobald der Anspruch eingereicht wurde.",
+            "Eskalieren Sie es an AirCover, wenn der Gast in diesem Fenster nicht antwortet.",
+            "Das AirCover-Fenster schließt 30 Tage nach dem Check-out-Datum."
+          ]
         },
         "airbnb": {
           "title": "5. Was passiert bei Airbnb",
           "body": "Sie reichen den Anspruch ein, fügen den vorbereiteten Antragstext in das Resolution Center ein und hängen dort die Fotos und Dokumente an.",
-          "points": {
-            "0": "Reichen Sie den Anspruch über die Anspruchsseite ein, sobald der Aufenthalt vorüber ist.",
-            "1": "Kopieren Sie den Anfragetext auf die für Sie vorbereitete Anspruchsseite.",
-            "2": "Hängen Sie die Vorher- und Nachher-Fotos an und warten Sie dann auf die Antwort des Gastes."
-          }
+          "points": [
+            "Reichen Sie den Anspruch über die Anspruchsseite ein, sobald der Aufenthalt vorüber ist.",
+            "Kopieren Sie den Anfragetext auf die für Sie vorbereitete Anspruchsseite.",
+            "Hängen Sie die Vorher- und Nachher-Fotos an und warten Sie dann auf die Antwort des Gastes."
+          ]
         }
       }
     },
@@ -441,12 +463,12 @@
     },
     "message": {
       "header": "Schadensersatzanspruch für den Aufenthalt bei {{apartmentName}} (Gast: {{guestName}}).",
-      "intro": "Sie waren unser Gast bei {{apartmentName}} von {{dates}}.",
-      "assetsIntro": "Dies sind die Vermögenswerte, die während Ihres Aufenthalts beschädigt oder gestohlen wurden:",
-      "ask": "Wir hoffen, dass Sie diesen Betrag akzeptieren, damit wir ihn direkt begleichen können, ohne das längere Reklamationsverfahren durchlaufen zu müssen.",
+      "intro": "Vielen Dank für Ihren Aufenthalt in {{apartmentName}} vom {{dates}} — wir hoffen, Sie haben die Zeit genossen.",
+      "assetsIntro": "Nach Ihrem Aufenthalt haben wir einige Gegenstände bemerkt, die beschädigt wurden oder fehlen. Wir haben sie unten aufgelistet, damit Sie genau sehen, was wir vorgefunden haben:",
+      "ask": "Wir würden das viel lieber direkt mit Ihnen klären, als eine formelle Forderung zu eröffnen, die für alle länger dauert. Wenn Sie den untenstehenden Betrag übernehmen können, können wir das heute abschließen — und falls Ihnen etwas daran falsch erscheint, antworten Sie uns bitte einfach, dann lösen wir es gemeinsam.",
       "itemLine": "{{index}}. {{asset}} – {{room}} – {{type}} – geschätzter Wert {{value}}. Beigefügte Beweise: {{attached}}.",
       "totalLine": "Insgesamt angefordert: {{amount}}.",
-      "footer": "Dieser Anfrage sind Fotos der Gegenstände vor Ihrem Aufenthalt und der Schäden danach beigefügt.",
+      "footer": "Zur Transparenz haben wir die Fotos dieser Gegenstände von vor Ihrem Aufenthalt beigefügt, zusammen mit Fotos, wie wir sie danach vorgefunden haben. Vielen Dank, dass Sie uns helfen, das schnell zu klären.",
       "missingEvidence": "{{evidence}}"
     },
     "filing": {
@@ -498,6 +520,28 @@
       "escalatedToAircover": "Eskaliert an AirCover",
       "resolved": "Gelöst",
       "unfeasible": "Undurchführbar"
+    }
+  },
+  "incidentProofsPage": {
+    "title": "Fotos zum Anspruch",
+    "subtitle": "Verwalten Sie die Fotos für jeden Gegenstand in diesem Anspruch.",
+    "loading": "Anspruch wird geladen…",
+    "notFound": {
+      "title": "Anspruch nicht gefunden",
+      "subtitle": "Dieser Anspruch existiert nicht oder Sie können ihn nicht öffnen."
+    },
+    "empty": "Dieser Anspruch hat noch keine Gegenstände. Fügen Sie sie zuerst auf der Anspruchsseite hinzu.",
+    "backToClaim": "Zurück zum Anspruch",
+    "before": {
+      "title": "Fotos vorher",
+      "none": "Für diesen Gegenstand wurden keine Vorher-Fotos aufgenommen."
+    },
+    "slots": {
+      "title": "Fotos für diesen Gegenstand"
+    },
+    "guestUnavailable": {
+      "title": "Noch nicht verfügbar",
+      "body": "Foto-Uploads über einen Zugriffslink sind noch nicht freigeschaltet. Bitten Sie den Gastgeber, diesen Schritt abzuschließen, oder fordern Sie einen neuen Link an."
     }
   }
 }

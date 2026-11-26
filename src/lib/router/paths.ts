@@ -123,6 +123,20 @@ export const appPaths = definePaths({
     requires: ["canOpenHost"],
     params: {},
   },
+  // D25 (feature/54): the claim's proof page. TOP LEVEL and `public`, not under `host` —
+  // a guest holding an access link must be able to open it, and a `host`-section route
+  // could only ever be host-only (routes/public.ts carries the same reasoning for
+  // `inspectionGuide`). The page itself enforces "host session OR accessId" (D26), because
+  // `ACCESS_RULES` are session-derived and cannot see a query parameter.
+  //
+  // The param is the INCIDENT id, not the reservation: every read and write the page makes
+  // is keyed by the claim, and passing the reservation would force the list-then-match dance
+  // the incident page already performs.
+  incidentProofs: {
+    pattern: "/incident/:incidentId/proofs",
+    requires: ["public"],
+    params: { incidentId: "uuid" },
+  },
   // D4/D6: the zero-auth field portal. `public` is the honest rule — the token in
   // the path IS the credential, and there is no session to check. It lives in
   // `outsideRoutes` (routes/public.ts), which is the tree rendered without the app

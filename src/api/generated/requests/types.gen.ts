@@ -357,6 +357,7 @@ export type IncidentItemWithToken = {
     updatedAt: string;
     asset: Asset;
     evidence: Array<IncidentEvidence>;
+    photoAllowance: PhotoAllowance;
 };
 
 export type IncidentEvidence = {
@@ -371,6 +372,25 @@ export type IncidentEvidence = {
     deletedAt: string | null;
     createdAt: string;
     kind: 'photo' | 'document';
+};
+
+export type PhotoAllowance = {
+    /**
+     * The most photos this item may hold.
+     */
+    max: number;
+    /**
+     * How many shots this item's incident type asks for.
+     */
+    required: number;
+    /**
+     * How many photos the item currently holds.
+     */
+    attached: number;
+    /**
+     * How many more photos may be attached.
+     */
+    remaining: number;
 };
 
 export type IncidentWithItems = Incident & {
@@ -390,6 +410,7 @@ export type IncidentItem = {
     updatedAt: string;
     asset: Asset;
     evidence: Array<IncidentEvidence>;
+    photoAllowance: PhotoAllowance;
 };
 
 export type Incident = {
@@ -523,6 +544,7 @@ export type FieldIngest = {
     attachedEvidenceCounts: {
         [key: string]: number;
     };
+    photoAllowance: PhotoAllowance;
     tokenExpiresAt: string;
 };
 
@@ -554,6 +576,40 @@ export type FieldSubmitPhoto = {
     capturedAt?: string;
     latitude?: number;
     longitude?: number;
+};
+
+export type CreateSpecialAccessResponse = {
+    access: SpecialAccess;
+};
+
+export type SpecialAccess = {
+    id: string;
+    accessId: string;
+    scope: AccessScope;
+    apartmentId: string;
+    reservationId: string | null;
+    incidentItemId: string | null;
+    expiresAt: string;
+    revokedAt: string | null;
+    usedAt: string | null;
+    createdAt: string;
+};
+
+/**
+ * The named resource group this link opens.
+ */
+export type AccessScope = 'inspection_proof' | 'damage_evidence';
+
+export type CreateSpecialAccess = {
+    scope: AccessScope;
+    reservationId?: string;
+    incidentItemId?: string;
+    expiresInHours?: number;
+};
+
+export type RevokeSpecialAccessResponse = {
+    success: true;
+    accessId: string;
 };
 
 export type GetUsersData = {
@@ -863,6 +919,10 @@ export type GetApartmentsByIdErrors = {
      * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
      */
     401: StandardError;
+    /**
+     * SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
+     */
+    403: StandardError;
     /**
      * APARTMENT_NOT_FOUND: Apartment does not exist.
      */
@@ -1575,7 +1635,7 @@ export type GetApartmentShotsApartmentByApartmentIdErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -1663,7 +1723,7 @@ export type PostInspectionsErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -1798,7 +1858,7 @@ export type GetInspectionsReservationByReservationIdErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -2297,7 +2357,7 @@ export type PostIncidentsByIdItemsByItemIdUploadTokensData = {
 
 export type PostIncidentsByIdItemsByItemIdUploadTokensErrors = {
     /**
-     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded.
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded. MAX_ITEM_PHOTOS_EXCEEDED: The per-item photo limit would be exceeded.
      */
     400: StandardError;
     /**
@@ -2356,7 +2416,7 @@ export type PostIncidentsByIdItemsByItemIdEvidenceData = {
 
 export type PostIncidentsByIdItemsByItemIdEvidenceErrors = {
     /**
-     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded.
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded. MAX_ITEM_PHOTOS_EXCEEDED: The per-item photo limit would be exceeded.
      */
     400: StandardError;
     /**
@@ -2414,7 +2474,7 @@ export type DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdData = {
 
 export type DeleteIncidentsByIdItemsByItemIdEvidenceByEvidenceIdErrors = {
     /**
-     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded.
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_METADATA_INVALID: The evidence carries metadata its type cannot have. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded. MAX_ITEM_PHOTOS_EXCEEDED: The per-item photo limit would be exceeded.
      */
     400: StandardError;
     /**
@@ -2649,7 +2709,7 @@ export type PostFieldIngestByTokenSubmitData = {
 
 export type PostFieldIngestByTokenSubmitErrors = {
     /**
-     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item.
+     * VALIDATION_ERROR: The request failed validation. EVIDENCE_TYPE_MISMATCH: The evidence type is not valid for this item. EVIDENCE_KEY_INVALID: The evidence storage key was not issued for this item. MAX_EVIDENCE_EXCEEDED: The per-item evidence limit would be exceeded. MAX_ITEM_PHOTOS_EXCEEDED: The per-item photo limit would be exceeded.
      */
     400: StandardError;
     /**
@@ -2672,3 +2732,87 @@ export type PostFieldIngestByTokenSubmitResponses = {
 };
 
 export type PostFieldIngestByTokenSubmitResponse = PostFieldIngestByTokenSubmitResponses[keyof PostFieldIngestByTokenSubmitResponses];
+
+export type PostSpecialAccessData = {
+    body?: CreateSpecialAccess;
+    path?: never;
+    query?: never;
+    url: '/special-access';
+};
+
+export type PostSpecialAccessErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. RESERVATION_NOT_FOUND: Reservation does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type PostSpecialAccessError = PostSpecialAccessErrors[keyof PostSpecialAccessErrors];
+
+export type PostSpecialAccessResponses = {
+    /**
+     * Access link created
+     */
+    201: CreateSpecialAccessResponse;
+};
+
+export type PostSpecialAccessResponse = PostSpecialAccessResponses[keyof PostSpecialAccessResponses];
+
+export type DeleteSpecialAccessByAccessIdData = {
+    body?: never;
+    path: {
+        accessId: string;
+    };
+    query?: never;
+    url: '/special-access/{accessId}';
+};
+
+export type DeleteSpecialAccessByAccessIdErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. SPECIAL_ACCESS_NOT_FOUND: The access grant does not exist.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type DeleteSpecialAccessByAccessIdError = DeleteSpecialAccessByAccessIdErrors[keyof DeleteSpecialAccessByAccessIdErrors];
+
+export type DeleteSpecialAccessByAccessIdResponses = {
+    /**
+     * Access link revoked
+     */
+    200: RevokeSpecialAccessResponse;
+};
+
+export type DeleteSpecialAccessByAccessIdResponse = DeleteSpecialAccessByAccessIdResponses[keyof DeleteSpecialAccessByAccessIdResponses];

@@ -65,6 +65,7 @@ function item(overrides: Partial<IncidentItem> = {}): IncidentItem {
     updatedAt: "2026-11-08T10:00:00.000Z",
     asset: ASSET,
     evidence: [],
+    photoAllowance: { max: 4, required: 2, attached: 0, remaining: 4 },
     ...overrides,
   };
 }

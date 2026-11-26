@@ -50,6 +50,13 @@ export default function Header() {
   // Update query param on select change
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedLang = e.target.value;
+
+    // Change the language FIRST. `currentLang`'s fallback is `i18n.language`, and for
+    // `en` the branch below REMOVES the param — so switching to `en` while `i18n` still
+    // held the old language made `currentLang` resolve back to it and the selection
+    // appeared to do nothing (prep 1). The effect above then sees no change to make.
+    void i18n.changeLanguage(selectedLang);
+
     const newParams = new URLSearchParams(searchParams);
 
     if (selectedLang === "en") {
