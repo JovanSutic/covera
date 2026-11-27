@@ -94,29 +94,52 @@ export function claimUrgency(incident: Incident, now: number): ClaimUrgency {
     : "normal";
 }
 
+/** D21: a claim may be opened this long before the stay's effective check-out. */
+export const CLAIM_OPEN_LEAD_MS = 60 * 60 * 1000;
+
+/** D20: the outer bound — 30 days after the effective check-out. */
+export const CLAIM_OPEN_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+
+export type ClaimOpenState = "NO_GATE" | "TOO_EARLY" | "OPEN" | "PAST_WINDOW";
+
 /**
- * D20/D21: may a claim be opened at `now`?
+ * D20/D21/D22: the ONE answer to "may a claim be opened at `now`, and if not, why" — ignoring
+ * any neighbouring stay, which this function cannot see. `getActionWindows` composes it with
+ * the next-stay bound; `canOpenClaimAt` is the boolean view of it.
  *
- * The backend enforces the UPPER bounds — 14 days after the effective check-out, and not
- * after the next guest's check-in — but it has no lower bound, so a claim can be opened
- * mid-stay today. Issue 10 asks for the missing half.
+ * The backend enforces its own upper bounds (14 days after the effective check-out, and not
+ * after the next guest's check-in) but has no lower bound, so a claim can be opened mid-stay.
+ * This is the frontend's rule, and it is deliberately WIDER than the backend's 14 days: the
+ * doc asks for 30, and the backend's own refusal is the authority if the two disagree.
  *
- * The alternative check-out wins when it parses: it is the date the host edited the stay
- * to, and the backend's own `effectiveCheckOut` prefers it
- * (`incidents.service.ts`), so this rule and the server's 14-day window must read the
- * same instant.
+ * The alternative check-out wins when it parses: it is the date the host edited the stay to,
+ * and the backend's own `effectiveCheckOut` prefers it, so this rule and the server's window
+ * must read the same instant.
  *
- * An unparseable check-out reads as "no gate" rather than "never" — a corrupt date must
- * not lock the host out of a claim they are entitled to file.
+ * An unparseable check-out reads as `NO_GATE` rather than "never" — a corrupt date must not
+ * lock the host out of a claim they are entitled to file.
  */
+export function claimOpenState(
+  checkOutDatetime: string | null,
+  alternativeCheckOutDatetime: string | null,
+  now: number,
+): ClaimOpenState {
+  const checkOut = toEpoch(alternativeCheckOutDatetime) ?? toEpoch(checkOutDatetime);
+
+  if (checkOut === null) return "NO_GATE";
+  if (now < checkOut - CLAIM_OPEN_LEAD_MS) return "TOO_EARLY";
+  if (now > checkOut + CLAIM_OPEN_WINDOW_MS) return "PAST_WINDOW";
+
+  return "OPEN";
+}
+
+/** The boolean view of `claimOpenState`, kept because two surfaces already call it by name. */
 export function canOpenClaimAt(
   checkOutDatetime: string | null,
   alternativeCheckOutDatetime: string | null,
   now: number,
 ): boolean {
-  const checkOut = toEpoch(alternativeCheckOutDatetime) ?? toEpoch(checkOutDatetime);
+  const state = claimOpenState(checkOutDatetime, alternativeCheckOutDatetime, now);
 
-  if (checkOut === null) return true;
-
-  return now >= checkOut;
+  return state === "OPEN" || state === "NO_GATE";
 }

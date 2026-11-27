@@ -2759,7 +2759,8 @@ export const CreateSpecialAccessSchema = {
     },
     required: [
         'scope'
-    ]
+    ],
+    description: 'Mints one access link. Exactly one subject is required, and which one depends on the scope: `inspection_proof` requires `reservationId`, `damage_evidence` requires `incidentItemId`, and supplying both is refused. That rule is enforced at runtime by `superRefine`, which JSON Schema cannot express — so this document shows only `scope` as required, and a `400 VALIDATION_ERROR` is the enforcement.'
 } as const;
 
 export const RevokeSpecialAccessResponseSchema = {
@@ -2779,4 +2780,45 @@ export const RevokeSpecialAccessResponseSchema = {
         'success',
         'accessId'
     ]
+} as const;
+
+export const SpecialAccessIntrospectionSchema = {
+    type: 'object',
+    properties: {
+        scope: {
+            $ref: '#/components/schemas/AccessScope'
+        },
+        apartmentId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        reservationId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        incidentItemId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        expiresAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'scope',
+        'apartmentId',
+        'reservationId',
+        'incidentItemId',
+        'expiresAt'
+    ]
+} as const;
+
+export const SpecialAccessListSchema = {
+    type: 'array',
+    items: {
+        $ref: '#/components/schemas/SpecialAccess'
+    }
 } as const;
