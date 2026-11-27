@@ -6,7 +6,8 @@ import { createElement, lazy, Suspense } from "react";
 
 import { areParamsValid, parseParams } from "./params";
 import type { ParamsDeclaration, ParsedParams } from "./params";
-import type { AccessSources, RuleName } from "./access";
+import type { AccessParamName, AccessSources, RuleName } from "./access";
+import { accessParamAdmits } from "./access";
 import { redirectResponse } from "./redirects";
 import type { DenyRedirect, RedirectSpec } from "./redirects";
 import { resolveResource } from "@/lib/api/queries/registry";
@@ -21,6 +22,8 @@ export interface GuardMeta {
   params: ParamsDeclaration;
   redirect?: RedirectSpec;
   preload?: (params: ParsedParams, searchParams: URLSearchParams) => void;
+  /** D1: carried from the route so the loader and preloader can read it. */
+  accessParam?: AccessParamName;
 }
 
 export interface Handle {
@@ -43,6 +46,13 @@ export interface RouteBase {
    * (login-redirect D10).
    */
   denyRedirect?: DenyRedirect;
+  /**
+   * D1: the query parameter that may stand in for a session on this route. Presence of the
+   * named parameter admits a visitor the `requires` rules would otherwise refuse. Declared
+   * here rather than as a rule name because `ACCESS_RULES` are session-derived and cannot see
+   * a URL parameter.
+   */
+  accessParam?: AccessParamName;
   handle?: { crumb?: Crumb };
 }
 
@@ -162,6 +172,7 @@ function buildLevel(
       params,
       redirect: isRedirect ? ((node as any).loader as RedirectSpec) : undefined,
       preload: buildPreload(node, deps),
+      accessParam: (node as any).accessParam as AccessParamName | undefined,
     };
 
     const handle: Handle = { guard, crumb: node.handle?.crumb };
@@ -267,7 +278,7 @@ function buildPreload(
   if (!loadModule && !prefetch && data.length === 0) return undefined;
 
   return (params: ParsedParams, searchParams: URLSearchParams) => {
-    if (!guardPasses(node, deps, params)) return;
+    if (!guardPasses(node, deps, params, searchParams)) return;
 
     for (const request of data) {
       const spec = resolveResource(request, params, searchParams);
@@ -279,11 +290,22 @@ function buildPreload(
   };
 }
 
-function guardPasses(node: RouteNode, deps: DefineRoutesDeps, params: ParsedParams): boolean {
+function guardPasses(
+  node: RouteNode,
+  deps: DefineRoutesDeps,
+  params: ParsedParams,
+  searchParams: URLSearchParams,
+): boolean {
   // The preloader (phase 6) already ran the rule and param checks for the whole
   // matched chain; this is the per-route re-check so preload can never start
   // work for a URL the user cannot open.
-  if (node.requires && !deps.isAllowed(node.requires)) return false;
+  if (
+    node.requires &&
+    !deps.isAllowed(node.requires) &&
+    !accessParamAdmits(node.accessParam, searchParams)
+  ) {
+    return false;
+  }
   const declared = node.params ?? {};
   return areParamsValid(
     Object.fromEntries(
@@ -307,8 +329,15 @@ function makeLoader(
   const declaredData = ((node as any).data ?? []) as readonly ResourceRequest[];
 
   return async ({ params, request }) => {
+    const searchParams = new URL(request.url).searchParams;
+    const accessGranted = accessParamAdmits(guard.accessParam, searchParams);
+
     for (const rule of guard.rules) {
       if (deps.isAllowed(rule)) continue;
+
+      // D1: a URL parameter may stand in for the session on a route that declares one.
+      // Presence only — the API judges validity per request.
+      if (accessGranted) continue;
 
       // A denied route may name where the visitor belongs instead (login-redirect
       // D10). `null` — the result for every route that declares nothing — keeps the
@@ -323,7 +352,6 @@ function makeLoader(
     if (!areParamsValid(params, guard.params)) throw data(null, { status: 404 });
 
     const parsed = parseParams(params, guard.params);
-    const searchParams = new URL(request.url).searchParams;
 
     // D2: the same work the intent path does, so a cold load (no hover) still
     // starts every request alongside the chunk instead of after it.

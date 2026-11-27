@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ACCESS_RULES, createAccess, selectSources } from "./access";
+import { ACCESS_RULES, accessParamAdmits, createAccess, selectSources } from "./access";
 import type { RuleName } from "./access";
 import type { SessionState } from "./session";
 import type { AuthenticatedUser, UserRole } from "@/lib/auth";
@@ -146,5 +146,35 @@ describe("createAccess", () => {
     state = stateFor("admin");
     access.syncFromState();
     expect(notifications).toBe(1);
+  });
+});
+
+describe("the access-parameter predicate", () => {
+  it("admits when the named parameter is present and non-empty", () => {
+    expect(
+      accessParamAdmits("accessId", new URLSearchParams("accessId=abc123")),
+    ).toBe(true);
+  });
+
+  it("refuses when the parameter is absent", () => {
+    expect(accessParamAdmits("accessId", new URLSearchParams("foo=bar"))).toBe(false);
+  });
+
+  it("refuses an empty value — `?accessId=` is not a credential", () => {
+    expect(accessParamAdmits("accessId", new URLSearchParams("accessId="))).toBe(false);
+  });
+
+  it("refuses on a route that declares no access parameter", () => {
+    expect(accessParamAdmits(undefined, new URLSearchParams("accessId=abc123"))).toBe(false);
+  });
+
+  it("is not a member of ACCESS_RULES — the rule set is unchanged", () => {
+    expect(Object.keys(ACCESS_RULES)).toEqual([
+      "public",
+      "isAnonymous",
+      "canUseApp",
+      "canOpenAdmin",
+      "canOpenHost",
+    ]);
   });
 });
