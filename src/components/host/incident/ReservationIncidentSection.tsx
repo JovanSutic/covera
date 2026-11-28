@@ -5,15 +5,13 @@ import { ActionButton } from "@/components/shared/ActionButton";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { ClaimGuideLink } from "./ClaimGuideLink";
 import { useIncidents } from "@/lib/api/queries/incidents";
-import {
-  canOpenClaimAt,
-  countdownParts,
-  getClaimDeadlineState,
-} from "@/lib/helpers/claimDeadline";
+import { getActionWindows } from "@/lib/helpers/actionWindows";
+import { countdownParts, getClaimDeadlineState } from "@/lib/helpers/claimDeadline";
 import { claimTotals, formatCents } from "@/lib/helpers/claimMoney";
 import { claimStatusCopy, findIncidentForReservation } from "@/lib/helpers/claimStatus";
 import { cn } from "@/lib/utils";
 import type { ClaimTone } from "@/lib/helpers/claimStatus";
+import type { SiblingStay } from "@/lib/helpers/actionWindows";
 import type { IncidentWithItems } from "@/api/generated/requests/types.gen";
 
 /**
@@ -72,6 +70,12 @@ interface ReservationIncidentSectionProps {
   /** The page owns navigation and the path build, exactly as `ReservationProofSection`
    *  owns `onTakeProofs`. */
   onOpenClaim: () => void;
+  /**
+   * D14: the apartment's other stays, which bound this stay's claim window in time. The
+   * page reads them for its links section already and passes the same array here, so
+   * this is a cache read and not a second request.
+   */
+  siblings: readonly SiblingStay[];
 }
 
 /**
@@ -99,15 +103,10 @@ export function ReservationIncidentSection({
   now,
   checkOutDatetime,
   alternativeCheckOutDatetime,
+  siblings,
   onOpenClaim,
 }: ReservationIncidentSectionProps) {
   const { t } = useTranslation("host");
-
-  const canOpenClaim = canOpenClaimAt(
-    checkOutDatetime,
-    alternativeCheckOutDatetime,
-    now,
-  );
 
   // Prefetched by the reservation route's `data:` declaration (phase 4), so on a
   // hover or an in-app navigation this is a cache read and starts no request.
@@ -117,6 +116,28 @@ export function ReservationIncidentSection({
     data?.data ?? [],
     reservationId,
   );
+
+  // Invariant 9: the ONE computation of the claim window. `now` is the page's single
+  // clock, and both the next-stay bound and the reason come from the helper — this
+  // section does no arithmetic of its own.
+  //
+  // The subject is built from the props this section already carries: button 3's rule
+  // (doc rule 3) reads the effective check-out, the siblings and the clock, so the
+  // check-in is not an input to the window rendered here.
+  const windows = getActionWindows({
+    reservation: {
+      id: reservationId,
+      checkInDatetime: null,
+      checkOutDatetime,
+      alternativeCheckOutDatetime,
+      // D16: "filed" is the deadline existing — the same test the guest-response clock
+      // below reads off `getClaimDeadlineState`.
+      claimFiled:
+        incident !== null && incident.guestResponseDeadlineAt !== null,
+    },
+    siblings,
+    now,
+  });
 
   if (isError && !incident) {
     // No CTA on this branch. Offering "start a claim" to a host who may already have
@@ -167,12 +188,12 @@ export function ReservationIncidentSection({
             size="md"
             icon={<ChevronRight className="h-4 w-4 shrink-0" />}
             label={t("reservationPage.incident.startClaim")}
-            disabled={!canOpenClaim}
+            disabled={!windows.startClaim.enabled}
             onClick={onOpenClaim}
           />
-          {!canOpenClaim && (
+          {!windows.startClaim.enabled && (
             <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              {t("reservationPage.incident.notYetCheckOut")}
+              {t(windows.startClaim.tooltipKey)}
             </p>
           )}
         </div>

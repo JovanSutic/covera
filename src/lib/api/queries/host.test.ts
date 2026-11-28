@@ -138,7 +138,7 @@ describe("the reservation page declares the claim list it renders", () => {
     { id: VALID_UUID, reservationId: VALID_UUID },
   );
 
-  it("keeps the three declarations it had, and adds the incidents read", () => {
+  it("keeps the four declarations it had, and adds the reservations read", () => {
     // The raw declarations, not the resolved keys: `inspection` and `reservationPhotos`
     // are declared-but-null (D10/D12), so `keys()` drops them by design. The route's
     // own list is where "kept" is visible.
@@ -147,9 +147,10 @@ describe("the reservation page declares the claim list it renders", () => {
       "apartments/:id/reservations/:reservationId",
     ).map((request) => request.resource);
 
-    expect(heads).toHaveLength(4);
+    expect(heads).toHaveLength(5);
     expect(heads).toContain("reservation");
     expect(heads).toContain("incidents");
+    expect(heads).toContain("reservations");
     expect(heads).toContain("inspection");
     expect(heads).toContain("reservationPhotos");
   });
@@ -168,32 +169,34 @@ describe("the reservation page declares the claim list it renders", () => {
   });
 });
 
-describe("the claim page declares five reads", () => {
+describe("the claim page declares six reads", () => {
   const declared = keys(
     deepDataOf(hostRoutes as Declaring, "apartments/:id/reservations/:reservationId/incident"),
     { id: VALID_UUID, reservationId: VALID_UUID },
   );
 
-  it("has five declarations, two of which resolve to null", () => {
+  it("has six declarations, two of which resolve to null", () => {
     const raw = deepDataOf(
       hostRoutes as Declaring,
       "apartments/:id/reservations/:reservationId/incident",
     );
 
-    expect(raw).toHaveLength(5);
-    // Three keys, not five: the incident's own id is not in the URL, so its
+    expect(raw).toHaveLength(6);
+    // Four keys, not six: the incident's own id is not in the URL, so its
     // declaration returns null and starts no request. The page's `useIncident`
     // owns that read once the list resolves (D11). `reservationPhotos` is
     // declared-but-null for the same reason (D8), so it starts no request either.
-    expect(declared).toHaveLength(3);
+    expect(declared).toHaveLength(4);
   });
 
-  it("covers reservation, assets and the apartment's claim list", () => {
+  it("covers reservation, assets, the apartment's claim list and the sibling stays", () => {
     const heads = declared.map((key) => key[0]);
 
     expect(heads).toContain(QUERY_ACTIONS.RESERVATIONS_GET_ID[0]);
     expect(heads).toContain(QUERY_ACTIONS.ASSETS_GET_BY_APARTMENT[0]);
     expect(heads).toContain(QUERY_ACTIONS.INCIDENTS_GET_BY_APARTMENT[0]);
+    // Phase 9: button 1's window is bounded by a newer stay in the same apartment.
+    expect(heads).toContain(QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT[0]);
   });
 
   it("keys each read off the parameter it actually needs", () => {

@@ -25,8 +25,9 @@ import { useIncident, incidentQueryKey } from "@/lib/api/queries/incident";
 import { useIncidents, incidentsQueryKey } from "@/lib/api/queries/incidents";
 import { useReservation } from "@/lib/api/queries/reservation";
 import { useReservationPhotos } from "@/lib/api/queries/reservationPhotos";
+import { useReservations } from "@/lib/api/queries/reservations";
+import { getActionWindows, SIBLING_LIMIT } from "@/lib/helpers/actionWindows";
 import { assetBeforePhotos } from "@/lib/helpers/assetBeforePhotos";
-import { canOpenClaimAt } from "@/lib/helpers/claimDeadline";
 import {
   claimStatusCopy,
   findIncidentForReservation,
@@ -116,6 +117,14 @@ export default function IncidentPage() {
     reservationId,
   );
 
+  // D14: the apartment's other stays, which bound button 1's window in time. Declared on
+  // this route (step 9.1), so on an in-app navigation this is a cache read and starts no
+  // request. `SIBLING_LIMIT` is the API's own maximum page size (D26).
+  const { data: siblingPage } = useReservations({
+    apartmentId: id,
+    limit: SIBLING_LIMIT,
+  });
+
   const { data: detail } = useIncident(listed?.id);
 
   const claim = detail ?? listed ?? null;
@@ -167,11 +176,21 @@ export default function IncidentPage() {
   }
 
   const editable = claim !== null && isIncidentEditable(claim);
-  const canOpenClaim = canOpenClaimAt(
-    reservation.checkOutDatetime,
-    reservation.alternativeCheckOutDatetime,
+
+  // Invariant 9: the ONE computation of both windows this page gates. `now` is the page's
+  // own single clock (`useClaimClock`, invariant 10) — this is not a second capture.
+  const windows = getActionWindows({
+    reservation: {
+      ...reservation,
+      id: reservationId,
+      hasInspection: Boolean(reservation.inspection?.id),
+      // D16: "filed" is `guestResponseDeadlineAt !== null` — the deadline existing IS the
+      // fact, so no status string is compared.
+      claimFiled: claim !== null && claim.guestResponseDeadlineAt !== null,
+    },
+    siblings: siblingPage?.data ?? [],
     now,
-  );
+  });
   const claimedAssetIds = claim?.items.map((item) => item.assetId) ?? [];
 
   return (
@@ -215,12 +234,12 @@ export default function IncidentPage() {
                 icon={<Plus className="h-4 w-4 shrink-0" />}
                 label={t("incidentPage.empty.create")}
                 loading={createMutation.isPending}
-                disabled={!canOpenClaim}
+                disabled={!windows.startClaim.enabled}
                 onClick={() => createMutation.mutate()}
               />
-              {!canOpenClaim && (
+              {!windows.startClaim.enabled && (
                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  {t("incidentPage.empty.notYetCheckOut")}
+                  {t(windows.startClaim.tooltipKey)}
                 </p>
               )}
             </div>
@@ -270,6 +289,9 @@ export default function IncidentPage() {
                   size="md"
                   icon={<Camera className="h-4 w-4 shrink-0" />}
                   label={t("incidentPage.managePhotos")}
+                  disabled={!windows.manageClaimPhotos.enabled}
+                  tooltip={t(windows.manageClaimPhotos.tooltipKey)}
+                  tooltipLabel={t("incidentPage.managePhotos")}
                   onClick={() =>
                     navigate(
                       withLang(

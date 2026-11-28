@@ -1,4 +1,21 @@
 {
+  "actionWindows": {
+    "tooltip": {
+      "manageClaimPhotos": "Collect and store the damage or theft photo proofs for this claim.",
+      "nextStayStarted": "A newer stay at this apartment has already started, so new proofs cannot be added.",
+      "claimFiled": "The claim has been filed and the guest response window has started, so new proofs cannot be added.",
+      "guestInspectionLink": "Create a link to send to the guest so they can verify the apartment's arrival state themselves.",
+      "notCovered": "The guest inspection link can only be created once this reservation is covered.",
+      "pastCheckInGrace": "The guest's check-in has passed, so the inspection link can no longer be created.",
+      "hasInspection": "The guest inspection link has already been created for this reservation.",
+      "startClaim": "Open a damage or theft claim for this stay.",
+      "tooEarly": "A claim can be opened from one hour before check-out.",
+      "past30Days": "More than 30 days have passed since check-out, so a claim can no longer be opened.",
+      "specialPhotoAccess": "Grant someone without an account access to photograph the apartment's state before this reservation.",
+      "noPrecedingCheckout": "There is no earlier reservation for this apartment, so there is no pre-reservation window to grant access for.",
+      "pastCheckIn": "This reservation's check-in has passed, so pre-reservation access can no longer be granted."
+    }
+  },
   "guestInspectionMessage": {
     "headerTitle": "Airbnb Guest Message",
     "copyButton": "Copy Message",
@@ -142,6 +159,8 @@
       "title": "Access links",
       "intro": "Create a temporary link for someone without an account — a photographer or a cleaner — so they can open the inspection guide for this reservation.",
       "create": "Create inspection link",
+      "grantSpecialAccess": "Grant special photo access",
+      "specialAccessIntro": "Give someone without an account — a cleaner or a photographer — access to photograph the apartment's state before this reservation begins.",
       "creating": "Creating…",
       "created": "Access link created",
       "label": "Access link",
@@ -153,7 +172,14 @@
       "revoking": "Revoking…",
       "revoked": "Access link revoked",
       "revokeError": "Could not revoke the link",
-      "expiresHint": "This link expires automatically. Send it only to the person who needs it."
+      "expiresHint": "This link expires automatically. Send it only to the person who needs it.",
+      "listError": "Could not load the access links for this reservation.",
+      "state": {
+        "active": "Active",
+        "used": "Used",
+        "revoked": "Revoked",
+        "expired": "Expired"
+      }
     },
     "incident": {
       "title": "Damage claim",

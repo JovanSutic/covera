@@ -56,6 +56,11 @@ export const hostRoutes: SectionRoute = {
         // hook the page reads — and a declaration with no consumer costs one request
         // on a navigation that is about to make it anyway.
         { resource: "incidents", params: (params) => ({ apartmentId: String(params.id) }) },
+        // D14 (this feature): the four action windows are bounded by a NEIGHBOURING stay in
+        // the same apartment, so the page reads the apartment's reservation list. Declared
+        // here because `prefetchCoverage.test.ts` requires a page's route chain to declare
+        // every hook the page reads.
+        { resource: "reservations", params: (params) => ({ apartmentId: String(params.id) }) },
         // The photo reads stay declared-but-null (D10/D12): loaded only when the host
         // opens the proof control, and a declaration that returns null is how this
         // registry says "not on this navigation" (registry.ts).
@@ -85,6 +90,11 @@ export const hostRoutes: SectionRoute = {
         { resource: "reservation", params: (params) => ({ id: String(params.reservationId) }) },
         { resource: "assets", params: (params) => ({ apartmentId: String(params.id) }) },
         { resource: "incidents", params: (params) => ({ apartmentId: String(params.id) }) },
+        // D14 (this feature): button 1's window is bounded by a newer stay in the same
+        // apartment, so the page reads the apartment's reservation list. Declared here
+        // because `prefetchCoverage.test.ts` requires a page's route chain to declare every
+        // hook the page reads.
+        { resource: "reservations", params: (params) => ({ apartmentId: String(params.id) }) },
         { resource: "incident", params: () => null },
         { resource: "reservationPhotos", params: () => null },
       ],

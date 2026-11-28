@@ -1,4 +1,21 @@
 {
+  "actionWindows": {
+    "tooltip": {
+      "manageClaimPhotos": "Prikupite i sačuvajte foto dokaze o šteti ili krađi za ovaj zahtev.",
+      "nextStayStarted": "Noviji boravak u ovom apartmanu je već počeo, tako da se novi dokazi ne mogu dodati.",
+      "claimFiled": "Zahtev je podnet i rok za odgovor gosta je počeo, tako da se novi dokazi ne mogu dodati.",
+      "guestInspectionLink": "Pravi vezu za slanje gostu kako bi on sam mogao da proveri stanje dolaska u apartman.",
+      "notCovered": "Veza za inspekciju gosta može se kreirati samo kada je rezervacija pokrivena.",
+      "pastCheckInGrace": "Prijava gosta je prošla, tako da se veza za inspekciju više ne može kreirati.",
+      "hasInspection": "Veza za inspekciju gosta je već kreirana za ovu rezervaciju.",
+      "startClaim": "Otvorite zahtev za štetu ili krađu za ovaj boravak.",
+      "tooEarly": "Zahtev se može otvoriti od jednog sata pre odjave.",
+      "past30Days": "Prošlo je više od 30 dana od odjave, tako da se zahtev više ne može otvoriti.",
+      "specialPhotoAccess": "Daje nekome bez naloga pristup da fotografiše stanje apartmana pre ove rezervacije.",
+      "noPrecedingCheckout": "Ne postoji ranija rezervacija za ovaj apartman, tako da nema perioda pre rezervacije za koji bi se pristup dodelio.",
+      "pastCheckIn": "Prijava za ovu rezervaciju je prošla, tako da se pristup pre rezervacije više ne može dodeliti."
+    }
+  },
   "guestInspectionMessage": {
     "headerTitle": "Airbnb poruka gosta",
     "copyButton": "Kopiraj poruku",
@@ -231,6 +248,8 @@
       "title": "Linkovi za pristup",
       "intro": "Napravite privremeni link za nekoga bez naloga — fotografa ili čistačicu — da može da otvori vodič za pregled za ovu rezervaciju.",
       "create": "Napravi link za pregled",
+      "grantSpecialAccess": "Dodeli poseban foto pristup",
+      "specialAccessIntro": "Dajte nekome bez naloga — čistačici ili fotografu — pristup da fotografiše stanje apartmana pre nego što ova rezervacija počne.",
       "creating": "Pravljenje…",
       "created": "Link za pristup je napravljen",
       "label": "Link za pristup",
@@ -242,7 +261,14 @@
       "revoking": "Opozivanje…",
       "revoked": "Link za pristup je opozvan",
       "revokeError": "Link nije mogao da se opozove",
-      "expiresHint": "Ovaj link automatski ističe. Pošaljite ga samo osobi kojoj je potreban."
+      "expiresHint": "Ovaj link automatski ističe. Pošaljite ga samo osobi kojoj je potreban.",
+      "listError": "Linkovi za pristup za ovu rezervaciju nisu mogli da se učitaju.",
+      "state": {
+        "active": "Aktivan",
+        "used": "Iskorišćen",
+        "revoked": "Opozvan",
+        "expired": "Istekao"
+      }
     },
     "other": {
       "title": "Ostalo",

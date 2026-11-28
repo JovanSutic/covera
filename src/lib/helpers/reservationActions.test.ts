@@ -25,55 +25,6 @@ const rule = (overrides = {}, inspectionId: string | null = null) =>
     now: NOW,
   });
 
-describe("create inspection link", () => {
-  it("enables for a covered, photo-backed reservation with no link yet", () => {
-    const result = rule();
-    expect(result.createInspection.enabled).toBe(true);
-    expect(result.createInspection.tooltipKey).toBe(
-      "reservationPage.actions.tooltip.createInspection",
-    );
-  });
-
-  it("disables once a link exists, and says so", () => {
-    const result = rule({}, "inspection-1");
-    expect(result.createInspection.enabled).toBe(false);
-    expect(result.createInspection.tooltipKey).toBe(
-      "reservationPage.actions.tooltip.hasInspection",
-    );
-  });
-
-  it("disables while the reservation is not COVERED", () => {
-    const result = rule({ status: "PENDING_PROOF" });
-    expect(result.createInspection.enabled).toBe(false);
-    expect(result.createInspection.tooltipKey).toBe(
-      "reservationPage.actions.tooltip.notCovered",
-    );
-  });
-
-  it("disables without a satisfied photo proof, which the backend also refuses", () => {
-    const result = rule({ hasPhotoProof: false });
-    expect(result.createInspection.enabled).toBe(false);
-    expect(result.createInspection.tooltipKey).toBe(
-      "reservationPage.actions.tooltip.noPhotoProof",
-    );
-  });
-
-  it("reports the past reason ahead of every other reason", () => {
-    const result = rule(
-      {
-        checkInDatetime: new Date(NOW - HOUR).toISOString(),
-        status: "PENDING_PROOF",
-        hasPhotoProof: false,
-      },
-      "inspection-1",
-    );
-    expect(result.createInspection.enabled).toBe(false);
-    expect(result.createInspection.tooltipKey).toBe(
-      "reservationPage.actions.tooltip.actionPast",
-    );
-  });
-});
-
 describe("copy guest message", () => {
   it("enables only with a link, COVERED, and before check-in", () => {
     expect(rule({}, "inspection-1").copyMessage.enabled).toBe(true);
@@ -106,7 +57,6 @@ describe("the effective check-in is the deadline, not the plain one", () => {
     });
 
     expect(result.delete.enabled).toBe(true);
-    expect(result.createInspection.enabled).toBe(true);
   });
 
   it("kills them once the alternative itself has passed", () => {
@@ -116,7 +66,6 @@ describe("the effective check-in is the deadline, not the plain one", () => {
     });
 
     expect(result.delete.enabled).toBe(false);
-    expect(result.createInspection.enabled).toBe(false);
     expect(result.copyMessage.enabled).toBe(false);
   });
 
@@ -124,7 +73,6 @@ describe("the effective check-in is the deadline, not the plain one", () => {
     const result = rule({ checkInDatetime: null });
     expect(result.delete.enabled).toBe(false);
     expect(result.copyMessage.enabled).toBe(false);
-    expect(result.createInspection.enabled).toBe(false);
   });
 });
 
