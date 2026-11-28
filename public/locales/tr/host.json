@@ -295,7 +295,7 @@
   },
   "inspectionGuidePage": {
     "guest": {
-      "readOnly": "Bu konaklamanın fotoğraflarını burada görüntüleyebilirsiniz. Son gönderimi ev sahibi tamamlar — başka bir şey yapmanıza gerek yok."
+      "canSubmit": "Bu fotoğrafları ev sahibi için topluyorsunuz. Her birini çekin, set tamamlandığında gönderin."
     },
     "title": "İnceleme kılavuzu",
     "subtitle": "{{guestName}} için fotoğraflı provalar",
@@ -304,6 +304,10 @@
     "notFound": {
       "title": "Rezervasyon bulunamadı",
       "subtitle": "Bu rezervasyon mevcut değil veya dairelerinizden birine ait değil."
+    },
+    "invalidLink": {
+      "title": "Bu bağlantı geçerli değil",
+      "subtitle": "Süresi dolmuş veya iptal edilmiş olabilir. Ev sahibinden yeni bir bağlantı göndermesini isteyin."
     },
     "unavailable": {
       "title": "Kanıtlar şu anda alınamıyor",
@@ -539,9 +543,9 @@
     "slots": {
       "title": "Bu eşyanın fotoğrafları"
     },
-    "guestUnavailable": {
-      "title": "Henüz kullanılamıyor",
-      "body": "Erişim bağlantısı üzerinden fotoğraf yükleme henüz açık değil. Lütfen ev sahibinden bu adımı tamamlamasını veya yeni bir bağlantı istemesini rica edin."
+    "invalidLink": {
+      "title": "Bu bağlantı geçerli değil",
+      "subtitle": "Süresi dolmuş veya iptal edilmiş olabilir. Ev sahibinden yeni bir bağlantı göndermesini isteyin."
     }
   }
 }

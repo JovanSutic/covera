@@ -295,7 +295,7 @@
   },
   "inspectionGuidePage": {
     "guest": {
-      "readOnly": "Sie können hier die Fotos für diesen Aufenthalt ansehen. Der Gastgeber übernimmt die endgültige Übermittlung — Sie müssen nichts weiter tun."
+      "canSubmit": "Sie sammeln diese Fotos für den Gastgeber. Nehmen Sie jedes einzelne auf und übermitteln Sie sie, wenn die Serie vollständig ist."
     },
     "title": "Inspektionsleitfaden",
     "subtitle": "Fotonachweise für {{guestName}}",
@@ -304,6 +304,10 @@
     "notFound": {
       "title": "Reservierung nicht gefunden",
       "subtitle": "Diese Reservierung existiert nicht oder sie gehört nicht zu einer Ihrer Wohnungen."
+    },
+    "invalidLink": {
+      "title": "Dieser Link ist nicht gültig",
+      "subtitle": "Er ist möglicherweise abgelaufen oder wurde widerrufen. Bitten Sie den Gastgeber, einen neuen zu senden."
     },
     "unavailable": {
       "title": "Es können derzeit keine Nachweise erstellt werden.",
@@ -539,9 +543,9 @@
     "slots": {
       "title": "Fotos für diesen Gegenstand"
     },
-    "guestUnavailable": {
-      "title": "Noch nicht verfügbar",
-      "body": "Foto-Uploads über einen Zugriffslink sind noch nicht freigeschaltet. Bitten Sie den Gastgeber, diesen Schritt abzuschließen, oder fordern Sie einen neuen Link an."
+    "invalidLink": {
+      "title": "Dieser Link ist nicht gültig",
+      "subtitle": "Er ist möglicherweise abgelaufen oder wurde widerrufen. Bitten Sie den Gastgeber, einen neuen zu senden."
     }
   }
 }

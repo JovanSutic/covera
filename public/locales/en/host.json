@@ -185,7 +185,7 @@
   },
   "inspectionGuidePage": {
     "guest": {
-      "readOnly": "You can view the photos for this stay here. The host completes the final submission — you do not need to do anything else."
+      "canSubmit": "You are collecting these photos for the host. Take each one, then submit them when the set is complete."
     },
     "title": "Inspection guide",
     "subtitle": "Photo proofs for {{guestName}}",
@@ -194,6 +194,10 @@
     "notFound": {
       "title": "Reservation not found",
       "subtitle": "This reservation does not exist, or it does not belong to one of your apartments."
+    },
+    "invalidLink": {
+      "title": "This link is not valid",
+      "subtitle": "It may have expired or been revoked. Ask the host to send a new one."
     },
     "unavailable": {
       "title": "Proofs cannot be taken right now",
@@ -539,9 +543,9 @@
     "slots": {
       "title": "Photos for this asset"
     },
-    "guestUnavailable": {
-      "title": "Not available yet",
-      "body": "Photo uploads through an access link are not open yet. Please ask the host to complete this step, or contact them for a new link."
+    "invalidLink": {
+      "title": "This link is not valid",
+      "subtitle": "It may have expired or been revoked. Ask the host to send a new one."
     }
   }
 }

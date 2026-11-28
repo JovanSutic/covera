@@ -13,7 +13,7 @@ import type {
   AttachEvidenceItem,
   CreateIncidentItem,
 } from "@/api/generated/requests/types.gen";
-import { withAuth } from "@/lib/api/api";
+import { publicApi, withAuth } from "@/lib/api/api";
 import type { EvidenceType } from "@/lib/helpers/incidentEvidence";
 
 /**
@@ -25,8 +25,12 @@ import type { EvidenceType } from "@/lib/helpers/incidentEvidence";
  * is the existing precedent for a write module living flat in `src/lib/api/`, beside
  * `api.ts` and outside `queries/`.
  *
- * Every call here authenticates with `withAuth()` — the host is signed in. The field
- * portal's three calls are the anonymous exception and they live in
+ * Every call here authenticates with `withAuth()` — the host is signed in — EXCEPT the evidence
+ * upload chain, whose optional `accessId` switches it to `publicApi()` for a guest holding a
+ * link (D3/D11). That is `attachIncidentEvidence` and `uploadIncidentEvidence`, which drives it.
+ * The evidence DELETE is NOT in that set: the backend does not token-enable it, so
+ * `removeIncidentEvidence` stays session-only and its control is not offered to a guest. The
+ * field portal's three calls are the other anonymous exception and they live in
  * `src/lib/api/fieldIncident.ts` (phase 9), not here (D12).
  *
  * Errors are NOT caught and re-worded here. The generated client is configured with
@@ -74,22 +78,39 @@ export async function addIncidentItem(
   return response.data;
 }
 
+/**
+ * D11: the guest's evidence write. `accessId` is optional and, when present, it is the ONLY
+ * credential — the token path and the session path are mutually exclusive, so the session is
+ * never read for a caller who arrived through a link (invariant 11).
+ */
 export async function attachIncidentEvidence(
   incidentId: string,
   itemId: string,
   evidence: AttachEvidenceItem[],
+  accessId?: string,
   signal?: AbortSignal,
 ) {
-  const config = await withAuth(signal ? { signal } : {});
+  const config = accessId
+    ? publicApi(signal ? { signal } : {})
+    : await withAuth(signal ? { signal } : {});
   const response = await postIncidentsByIdItemsByItemIdEvidence({
     ...config,
     path: { id: incidentId, itemId },
+    query: accessId ? { accessId } : undefined,
     body: { evidence },
   });
 
   return response.data;
 }
 
+/**
+ * NOT access-aware, deliberately: `DELETE /incidents/{id}/items/{itemId}/evidence/{evidenceId}`
+ * is the one evidence route the backend does NOT token-enable (verified against the deployed
+ * `openapi.json` on 2026-11-28 — it is the only one of the three that carries no `accessId`
+ * query parameter, and the generated type says so: `query?: never`). A guest's credential
+ * therefore cannot authorize it, and `IncidentItemEvidence` does not offer the control to a
+ * guest. Sending the parameter anyway would compile only behind a cast and 401 at runtime.
+ */
 export async function removeIncidentEvidence(
   incidentId: string,
   itemId: string,
@@ -131,21 +152,31 @@ export async function reissueItemToken(
  *
  * The `PUT` deliberately does NOT carry `withAuth()`'s header: the URL is presigned, so
  * its query string is the credential, and adding an Authorization header to a
- * third-party origin is both useless and a small leak of the session token.
+ * third-party origin is both useless and a small leak of the session token. The same is
+ * true of the guest's `PUT`, so the `accessId` never reaches it either.
+ *
+ * D3/D11: `accessId` is optional and decides the credential for the two API calls below. A
+ * guest holding a link captures evidence exactly as a host does; the third-party `PUT` is
+ * unchanged either way.
  */
 export async function uploadIncidentEvidence(
   incidentId: string,
   itemId: string,
   uploads: readonly { evidenceType: EvidenceType; file: File }[],
+  accessId?: string,
   signal?: AbortSignal,
 ) {
   if (uploads.length === 0) return null;
 
-  const config = await withAuth(signal ? { signal } : {});
+  // D11: the token path and the session path are mutually exclusive.
+  const config = accessId
+    ? publicApi(signal ? { signal } : {})
+    : await withAuth(signal ? { signal } : {});
 
   const tokensResponse = await postIncidentsByIdItemsByItemIdUploadTokens({
     ...config,
     path: { id: incidentId, itemId },
+    query: accessId ? { accessId } : undefined,
     body: {
       files: uploads.map((upload) => ({
         fileType: upload.file.type || "image/jpeg",
@@ -180,7 +211,7 @@ export async function uploadIncidentEvidence(
     }),
   );
 
-  return attachIncidentEvidence(incidentId, itemId, evidence, signal);
+  return attachIncidentEvidence(incidentId, itemId, evidence, accessId, signal);
 }
 
 /**

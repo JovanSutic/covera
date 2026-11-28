@@ -295,7 +295,7 @@
   },
   "inspectionGuidePage": {
     "guest": {
-      "readOnly": "Ovde možete da vidite fotografije za ovaj boravak. Domaćin završava konačno podnošenje — ne morate ništa drugo da radite."
+      "canSubmit": "Ove fotografije prikupljate za domaćina. Uslikajte svaku, a zatim ih pošaljite kada komplet bude gotov."
     },
     "title": "Vodič za inspekciju",
     "subtitle": "Probe fotografija za {{guestName}}",
@@ -304,6 +304,10 @@
     "notFound": {
       "title": "Rezervacija nije pronađena",
       "subtitle": "Ova rezervacija ne postoji, ili ne pripada nekom od vaših apartmana."
+    },
+    "invalidLink": {
+      "title": "Ovaj link nije važeći",
+      "subtitle": "Možda je istekao ili je opozvan. Zamolite domaćina da pošalje novi."
     },
     "unavailable": {
       "title": "Provere se trenutno ne mogu uzeti",
@@ -539,9 +543,9 @@
     "slots": {
       "title": "Fotografije za ovaj predmet"
     },
-    "guestUnavailable": {
-      "title": "Još nije dostupno",
-      "body": "Otpremanje fotografija preko linka za pristup još nije otvoreno. Zamolite domaćina da završi ovaj korak ili zatražite novi link."
+    "invalidLink": {
+      "title": "Ovaj link nije važeći",
+      "subtitle": "Možda je istekao ili je opozvan. Zamolite domaćina da pošalje novi."
     }
   }
 }

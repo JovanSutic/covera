@@ -54,19 +54,48 @@ import { withLang } from "@/lib/router/lang";
  * `prefetchCoverage.test.ts` only compares a page's imports *from registered modules* —
  * a locally-defined hook is invisible to it.
  */
+/**
+ * D3/D11: the guest's keys, each built in ONE place so the hook that reads it and the
+ * mutation that invalidates it cannot drift apart. The `accessId` is IN every key: two
+ * different links must not read each other's cache, and neither may share an entry with
+ * the authed key of the same resource.
+ */
+const guestReservationKey = (
+  accessId: string | null,
+  reservationId: string | undefined,
+) => [
+  ...QUERY_ACTIONS.RESERVATIONS_GET_ID,
+  "access",
+  accessId ?? "",
+  reservationId ?? "",
+];
+
+const guestShotsKey = (
+  accessId: string | null,
+  apartmentId: string | undefined,
+) => [
+  ...QUERY_ACTIONS.APARTMENT_SHOTS_GET_BY_APARTMENT,
+  "access",
+  accessId ?? "",
+  apartmentId ?? "",
+];
+
+const guestPhotosKey = (
+  accessId: string | null,
+  reservationId: string | undefined,
+) => [
+  ...QUERY_ACTIONS.RESERVATIONS_GET_PHOTOS,
+  "access",
+  accessId ?? "",
+  reservationId ?? "",
+];
+
 function useReservationWithAccess(
   reservationId: string | undefined,
   accessId: string | null,
 ) {
   return useQuery({
-    // The accessId is IN the key: two different links must not read each other's cache, and
-    // neither may share an entry with the authed `reservationQueryKey`.
-    queryKey: [
-      ...QUERY_ACTIONS.RESERVATIONS_GET_ID,
-      "access",
-      accessId ?? "",
-      reservationId ?? "",
-    ],
+    queryKey: guestReservationKey(accessId, reservationId),
     queryFn: ({ signal }) =>
       fetchReservationWithAccess(reservationId!, accessId!, signal),
     enabled: Boolean(reservationId) && Boolean(accessId),
@@ -79,12 +108,7 @@ function useShotsWithAccess(
   accessId: string | null,
 ) {
   return useQuery({
-    queryKey: [
-      ...QUERY_ACTIONS.APARTMENT_SHOTS_GET_BY_APARTMENT,
-      "access",
-      accessId ?? "",
-      apartmentId ?? "",
-    ],
+    queryKey: guestShotsKey(accessId, apartmentId),
     queryFn: ({ signal }) => fetchShotsWithAccess(apartmentId!, accessId!, signal),
     enabled: Boolean(apartmentId) && Boolean(accessId),
     staleTime: PREFETCH_STALE_TIME_MS,
@@ -96,12 +120,7 @@ function useReservationPhotosWithAccess(
   accessId: string | null,
 ) {
   return useQuery({
-    queryKey: [
-      ...QUERY_ACTIONS.RESERVATIONS_GET_PHOTOS,
-      "access",
-      accessId ?? "",
-      reservationId ?? "",
-    ],
+    queryKey: guestPhotosKey(accessId, reservationId),
     queryFn: ({ signal }) =>
       fetchReservationPhotosWithAccess(reservationId!, accessId!, signal),
     enabled: Boolean(reservationId) && Boolean(accessId),
@@ -152,6 +171,18 @@ export default function InspectionGuidePage() {
 
   const preparedShots = useMemo(() => addClientId(shots), [shots]);
 
+  /**
+   * D3/D4: the guest's own step list. Memoized on the READ's data rather than on a
+   * `?? []` fallback, which would be a new array on every render — for the same reason
+   * the host's is memoized: `addClientId` mints a fresh id per call, and a new id every
+   * render would remount every step of the flow.
+   */
+  const guestShotsData = guestShots.data;
+  const preparedGuestShots = useMemo(
+    () => addClientId(guestShotsData ?? []),
+    [guestShotsData],
+  );
+
   const reservationPath = withLang(
     buildPath(appPaths.hostReservation, {
       id: apartmentId,
@@ -166,6 +197,10 @@ export default function InspectionGuidePage() {
         apartmentId,
         reservationId,
         shots: completedShots,
+        // D11: present only on the guest branch, and it decides the credential for all
+        // three calls — with it `submitInspectionPhotos` uses `publicApi()` and never
+        // touches the session.
+        accessId: accessId ?? undefined,
       }),
     onSuccess: () => {
       // The same pair the reservation page's own actions invalidate: the detail
@@ -176,6 +211,26 @@ export default function InspectionGuidePage() {
       queryClient.invalidateQueries({
         queryKey: [...QUERY_ACTIONS.RESERVATIONS_GET_BY_APARTMENT, apartmentId],
       });
+
+      toast.success(t("inspectionGuidePage.toast.submitSuccess"));
+
+      // D3: a guest STAYS here. The reservation route is host-gated and a guest holds
+      // no session, so navigating to it would land on a refusal. What must re-run is
+      // this page's own three reads — the stay (now COVERED), the photos just
+      // uploaded, and the shots they were taken against.
+      if (isGuest) {
+        queryClient.invalidateQueries({
+          queryKey: guestReservationKey(accessId, reservationId),
+        });
+        queryClient.invalidateQueries({
+          queryKey: guestPhotosKey(accessId, reservationId),
+        });
+        queryClient.invalidateQueries({
+          queryKey: guestShotsKey(accessId, apartmentId),
+        });
+        return;
+      }
+
       // D28: the shots are read under this key, and the eager count phase 4 renders
       // comes from it. Without this the host returns to a stale "no photos captured
       // yet" — exactly the bug prep §4 asks to fix.
@@ -185,7 +240,6 @@ export default function InspectionGuidePage() {
           reservation?.inspection?.id ?? "",
         ],
       });
-      toast.success(t("inspectionGuidePage.toast.submitSuccess"));
       // D17's destination: the reservation the proofs belong to, which now renders
       // the "already submitted" state and the photo control.
       navigate(reservationPath);
@@ -199,13 +253,12 @@ export default function InspectionGuidePage() {
   });
 
   /**
-   * D38/D39: the guest branch. It returns BEFORE the host path's loading, error and
-   * proof-window branches, and it renders no control that cannot succeed:
+   * D38/D39 + D3: the guest branch. It returns BEFORE the host path's loading, error and
+   * proof-window branches.
    *
-   * - No submit. The submit path is three calls (`photos/upload-tokens`,
-   *   `photos/confirm`, `PATCH /reservations`) that all reject an access link (probed
-   *   2026-11-23), so `submitMutation` is unreachable from here by construction — the
-   *   flow that owns it is never rendered.
+   * - Submit IS available. The link is a credential on the whole submit chain (D11 —
+   *   `photos/upload-tokens`, `photos/confirm`, `PATCH /reservations` all take it), so the
+   *   flow that owns `submitMutation` is rendered here, fed by the guest's own reads.
    * - No proof-window gate. The window asks "may proofs be taken", which is the host's
    *   question; a guest reading an already-submitted stay must still be able to look.
    */
@@ -222,22 +275,21 @@ export default function InspectionGuidePage() {
       );
     }
 
-    // The backend answers an unknown or expired accessId with a `500`, not the
-    // documented `403 SPECIAL_ACCESS_INVALID` (spec §Behaviour, defect 1). The copy is
-    // therefore the page's own "could not be read" state: it does not claim the link is
-    // invalid, because the server did not say that (D45).
+    // D5: an unusable accessId answers `403 SPECIAL_ACCESS_INVALID` (fixed by feature/53),
+    // so the page can say the link is invalid instead of hedging. The copy is
+    // link-specific — a link holder has no reservation to "not find".
     if (guestReservation.isError || !guestReservation.data) {
       return (
         <PageLayout size="lg">
           <PageTitle
-            title={t("inspectionGuidePage.notFound.title")}
-            subtitle={t("inspectionGuidePage.notFound.subtitle")}
+            title={t("inspectionGuidePage.invalidLink.title")}
+            subtitle={t("inspectionGuidePage.invalidLink.subtitle")}
           />
         </PageLayout>
       );
     }
 
-    const guestShotsList = guestShots.data ?? [];
+    const guestShotsList = guestShotsData ?? [];
     const guestPhotoList = guestPhotos.data ?? [];
 
     return (
@@ -249,13 +301,23 @@ export default function InspectionGuidePage() {
           })}
         />
 
-        {/* D39: the honest statement of what this reader may do. The submit belongs to
-            the host, so the guest is told that rather than left hunting for a button. */}
+        {/* D3/D39: the honest statement of what this reader may do. The guest collects
+            the proofs AND submits them, so they are told that rather than left hunting
+            for a button. */}
         <p className="mb-6 rounded-xl bg-blue-50 p-3.5 text-sm leading-relaxed text-blue-800 dark:bg-blue-950/30 dark:text-blue-300">
-          {t("inspectionGuidePage.guest.readOnly")}
+          {t("inspectionGuidePage.guest.canSubmit")}
         </p>
 
         <div className="space-y-6">
+          {/* D3: the same flow the host runs, fed by the guest's own reads. The shots are
+              the link's answer to "what does this stay's proof set consist of", never the
+              authed hook's — a guest holds no session for it to read with. */}
+          <InspectionGuideFlow
+            initialShots={preparedGuestShots}
+            isSubmitting={submitMutation.isPending}
+            onSubmit={(completedShots) => submitMutation.mutate(completedShots)}
+          />
+
           {/* The shot plan: what the stay's proofs consist of. Read-only — the guest is
               collecting them for the host, not editing the apartment's configuration. */}
           <SectionCard title={t("assets:shotGuide.strip.ariaLabel")}>
