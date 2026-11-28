@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ClipboardPlus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 import { ActionButton } from "@/components/shared/ActionButton";
 import { ConfirmButton } from "@/components/shared/ConfirmButton";
@@ -14,8 +14,11 @@ interface ReservationActionsBarProps {
 }
 
 /**
- * The reservation page's general actions (prep §3, D17): three actions, one shape each,
- * all rendered through `ActionButton`, with delete going through `ConfirmButton`.
+ * The reservation page's general actions (prep §3, D17): delete only. The copy action
+ * lives in `CopyMessageSection` and the create-inspection action in
+ * `ReservationLinksSection` (D17) — both are access links, so they belong in the
+ * access-links section. What remains is rendered through `ActionButton`, with delete
+ * going through `ConfirmButton`.
  *
  * The row WRAPS rather than scrolls. `overflow-x-auto` was doing two bad things:
  * introducing the scrollbar prep §3 reports, and clipping the tooltip panels back to the strip's
@@ -43,47 +46,22 @@ export function ReservationActionsBar({
 }: ReservationActionsBarProps) {
   const { t } = useTranslation("host");
 
-  const { rules, deleteMutation, createInspectionMutation } =
-    useReservationActions({
-      reservation,
-      apartmentId,
-      inspectionId,
-      onDeleted,
-    });
+  const { rules, deleteMutation } = useReservationActions({
+    reservation,
+    apartmentId,
+    inspectionId,
+    onDeleted,
+  });
 
-  const createLabel = t("reservationPage.actions.createInspection");
   const deleteLabel = t("reservationPage.actions.delete");
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      {/* D18: the confirmation step is retained from the previous plan; only the
-          trigger's appearance changes — and `variant="success"` is why this confirm step
-          is emerald rather than the delete pattern's rose (D32). */}
-      <ConfirmButton
-        className="shrink-0"
-        variant="success"
-        confirmLabel={t("reservationActionsCell.confirm.createLabel")}
-        cancelLabel={t("reservationPage.actions.confirmCancel")}
-        icon={<ClipboardPlus className="h-3 w-3" />}
-        isLoading={createInspectionMutation.isPending}
-        disabled={!rules.createInspection.enabled}
-        onConfirm={() => createInspectionMutation.mutateAsync()}
-      >
-        <ActionButton
-          variant="neutral"
-          size="md"
-          className="shrink-0"
-          icon={<ClipboardPlus className="w-4 h-4 shrink-0" />}
-          label={createLabel}
-          disabled={!rules.createInspection.enabled}
-          tooltip={t(rules.createInspection.tooltipKey ?? "")}
-          tooltipLabel={createLabel}
-        />
-      </ConfirmButton>
-
       {/* The copy action moved to the page's `CopyMessageSection`, which shows the
-          message in place instead of behind a popover. This bar keeps the create and
-          delete actions only; the table's kebab menu still owns its own copy popover. */}
+          message in place instead of behind a popover. The create-inspection action moved
+          to `ReservationLinksSection` (D17), beside the special-access grant — both are
+          access links, so they belong in the access-links section. The table's kebab menu
+          still owns its own copy popover. */}
 
       {/* D4: styled exactly like the others — safety comes from the confirmation step,
           not from colour. NO tooltip (prep §2). `variant` defaults to `danger` on

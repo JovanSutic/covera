@@ -1,8 +1,12 @@
 import {
   deleteSpecialAccessByAccessId,
   getApartmentShotsApartmentByApartmentId,
+  getAssetsApartmentByApartmentId,
+  getIncidentsById,
   getReservationsById,
   getReservationsByIdPhotos,
+  getSpecialAccess,
+  getSpecialAccessByAccessId,
   postSpecialAccess,
 } from "@/api/generated/requests/sdk.gen";
 import type {
@@ -20,11 +24,8 @@ import { publicApi, withAuth } from "@/lib/api/api";
  *
  *     /inspection-guide/<apartmentId>/<reservationId>?accessId=<hex32>
  *
- * VERIFIED 2026-11-23 by probing the live API: `?accessId=x` is handled as an access attempt
- * (an unknown id answers 500) while `?foo=bar` is not (401 AUTH_TOKEN_MISSING). The
- * generated endpoint types pin `query?: never`, so passing it needs the `as never` cast
- * below — and the `url:` override does NOT compile (TS2353), which is why the cast is used
- * rather than a hand-built URL.
+ * An unusable `accessId` answers `403 SPECIAL_ACCESS_INVALID` (fixed by feature/53, verified
+ * 2026-11-26) — no longer the `500` this module used to work around.
  *
  * ONLY `inspection_proof` is offered by the UI. `damage_evidence` is in the `AccessScope`
  * enum but NO endpoint accepts it, so a link minted with it would open nothing.
@@ -83,17 +84,19 @@ export async function revokeSpecialAccess(
 
 /**
  * D36/D37: the guest's reads. Each takes the `accessId` and sends it as the query parameter
- * the backend reads (verified 2026-11-23).
+ * the backend reads.
  *
  * These use `publicApi()` and NEVER `withAuth()`. `withAuth()` reads the Supabase session and
  * sends `Authorization: Bearer undefined` for a caller with no account, which turns a working
  * anonymous read into a 401 — the exact failure `fieldIncident.ts` and `queries/inspection.ts`
- * document for the other anonymous surfaces (invariant 8).
+ * document for the other anonymous surfaces (invariant 11).
  *
- * The generated endpoint types pin `query?: never`, so the accessId needs the `as never` cast.
- * A `url:` override does NOT compile (TS2353) — verified by trial-compiling both.
+ * The `as never` cast that used to live here is GONE (2026-11-26): the regenerated client
+ * declares `accessId` as an optional query parameter on all thirteen token-enabled routes, so
+ * the parameter is typed for real and a backend rename is now a compile error rather than a
+ * silent 401.
  */
-const accessQuery = (accessId: string) => ({ accessId }) as never;
+const accessQuery = (accessId: string) => ({ accessId });
 
 export async function fetchReservationWithAccess(
   reservationId: string,
@@ -135,4 +138,65 @@ export async function fetchReservationPhotosWithAccess(
   });
 
   return response.data;
+}
+
+/** The claim read, for a guest holding a link (D3). */
+export async function fetchIncidentWithAccess(
+  incidentId: string,
+  accessId: string,
+  signal?: AbortSignal,
+) {
+  const response = await getIncidentsById({
+    ...publicApi(signal ? { signal } : {}),
+    path: { id: incidentId },
+    query: accessQuery(accessId),
+  });
+
+  return response.data;
+}
+
+/** The apartment's assets, for a guest holding a link (D3). */
+export async function fetchAssetsWithAccess(
+  apartmentId: string,
+  accessId: string,
+  signal?: AbortSignal,
+) {
+  const response = await getAssetsApartmentByApartmentId({
+    ...publicApi(signal ? { signal } : {}),
+    path: { apartmentId },
+    query: accessQuery(accessId),
+  });
+
+  return response.data ?? [];
+}
+
+/**
+ * D8: the introspection read. A host inspecting a link, or a guard validating one
+ * before render. It is anonymous — the `accessId` IS the credential — so it uses
+ * `publicApi()`, and it answers `403 SPECIAL_ACCESS_INVALID` for an unusable link.
+ */
+export async function introspectSpecialAccess(
+  accessId: string,
+  signal?: AbortSignal,
+) {
+  const response = await getSpecialAccessByAccessId({
+    ...publicApi(signal ? { signal } : {}),
+    path: { accessId },
+  });
+
+  return response.data;
+}
+
+/** D6: the host's list of grants for one reservation. Bearer-authorized. */
+export async function listSpecialAccess(
+  reservationId: string,
+  signal?: AbortSignal,
+) {
+  const config = await withAuth(signal ? { signal } : {});
+  const response = await getSpecialAccess({
+    ...config,
+    query: { reservationId },
+  });
+
+  return response.data ?? [];
 }

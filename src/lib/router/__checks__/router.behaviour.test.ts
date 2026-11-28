@@ -158,3 +158,49 @@ describe("routing behaviour on the real tree", () => {
     expect(router.state.matches.at(-1)?.route.path).toBe("*");
   });
 });
+
+describe("the access-parameter guard (D1)", () => {
+  const GUIDE =
+    "/inspection-guide/11111111-1111-1111-1111-111111111111/22222222-2222-2222-2222-222222222222";
+
+  async function statusAt(path: string, role: UserRole | null = null) {
+    const { router } = await buildRouter(role, path);
+    const error = Object.values(router.state.errors ?? {})[0] as {
+      status?: number;
+    };
+
+    return error?.status;
+  }
+
+  it("refuses an anonymous visitor with no parameter, in place", async () => {
+    expect(await statusAt(GUIDE)).toBe(403);
+  });
+
+  it("admits an anonymous visitor holding the parameter", async () => {
+    expect(await statusAt(`${GUIDE}?accessId=abc123`)).not.toBe(403);
+  });
+
+  it("refuses an empty parameter — `?accessId=` is not a credential", async () => {
+    expect(await statusAt(`${GUIDE}?accessId=`)).toBe(403);
+  });
+
+  it("still refuses an unrelated parameter", async () => {
+    expect(await statusAt(`${GUIDE}?foo=bar`)).toBe(403);
+  });
+
+  it("still 404s a malformed id even with the parameter present", async () => {
+    expect(
+      await statusAt(
+        `${GUIDE.replace("11111111-1111-1111-1111-111111111111", "not-a-uuid")}?accessId=abc123`,
+      ),
+    ).toBe(404);
+  });
+
+  it("leaves an unrelated host-only route refused", async () => {
+    expect(await statusAt("/host/dashboard?accessId=abc123")).toBe(403);
+  });
+
+  it("does not admit a signed-in guest-role user to a host route", async () => {
+    expect(await statusAt("/host/dashboard", "guest")).toBe(403);
+  });
+});

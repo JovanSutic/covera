@@ -600,6 +600,9 @@ export type SpecialAccess = {
  */
 export type AccessScope = 'inspection_proof' | 'damage_evidence';
 
+/**
+ * Mints one access link. Exactly one subject is required, and which one depends on the scope: `inspection_proof` requires `reservationId`, `damage_evidence` requires `incidentItemId`, and supplying both is refused. That rule is enforced at runtime by `superRefine`, which JSON Schema cannot express — so this document shows only `scope` as required, and a `400 VALIDATION_ERROR` is the enforcement.
+ */
 export type CreateSpecialAccess = {
     scope: AccessScope;
     reservationId?: string;
@@ -611,6 +614,16 @@ export type RevokeSpecialAccessResponse = {
     success: true;
     accessId: string;
 };
+
+export type SpecialAccessIntrospection = {
+    scope: AccessScope;
+    apartmentId: string;
+    reservationId: string | null;
+    incidentItemId: string | null;
+    expiresAt: string;
+};
+
+export type SpecialAccessList = Array<SpecialAccess>;
 
 export type GetUsersData = {
     body?: never;
@@ -906,7 +919,12 @@ export type GetApartmentsByIdData = {
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/apartments/{id}';
 };
 
@@ -951,7 +969,12 @@ export type PostApartmentsByIdPhotosUploadTokensData = {
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/apartments/{id}/photos/upload-tokens';
 };
 
@@ -965,7 +988,7 @@ export type PostApartmentsByIdPhotosUploadTokensErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -1006,7 +1029,12 @@ export type PostApartmentsByIdPhotosConfirmData = {
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/apartments/{id}/photos/confirm';
 };
 
@@ -1020,7 +1048,7 @@ export type PostApartmentsByIdPhotosConfirmErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -1200,7 +1228,12 @@ export type GetReservationsByIdData = {
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/reservations/{id}';
 };
 
@@ -1214,7 +1247,7 @@ export type GetReservationsByIdErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
      */
     403: StandardError;
     /**
@@ -1239,11 +1272,19 @@ export type GetReservationsByIdResponses = {
 export type GetReservationsByIdResponse = GetReservationsByIdResponses[keyof GetReservationsByIdResponses];
 
 export type PatchReservationsByIdData = {
+    /**
+     * The fields to change. A request carrying `?accessId=` may change ONLY `hasPhotoProof` and `status` (`COVERED`) — any other field is a `400 VALIDATION_ERROR`. The session path is unrestricted.
+     */
     body?: UpdateReservation;
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/reservations/{id}';
 };
 
@@ -1257,7 +1298,7 @@ export type PatchReservationsByIdErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -1290,7 +1331,12 @@ export type GetReservationsByIdPhotosData = {
     path: {
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/reservations/{id}/photos';
 };
 
@@ -1304,7 +1350,7 @@ export type GetReservationsByIdPhotosErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
      */
     403: StandardError;
     /**
@@ -1448,7 +1494,12 @@ export type GetAssetsApartmentByApartmentIdData = {
     path: {
         apartmentId: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/assets/apartment/{apartmentId}';
 };
 
@@ -1462,7 +1513,7 @@ export type GetAssetsApartmentByApartmentIdErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -1621,6 +1672,10 @@ export type GetApartmentShotsApartmentByApartmentIdData = {
          * Optional reservation ID to filter shots and assets created before or at reservation booking time
          */
         reservationId?: string;
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
     };
     url: '/apartment-shots/apartment/{apartmentId}';
 };
@@ -1709,7 +1764,12 @@ export type PutApartmentShotsApartmentByApartmentIdResponse = PutApartmentShotsA
 export type PostInspectionsData = {
     body?: CreateInspection;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/inspections';
 };
 
@@ -1844,7 +1904,12 @@ export type GetInspectionsReservationByReservationIdData = {
          */
         reservationId: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/inspections/reservation/{reservationId}';
 };
 
@@ -2093,7 +2158,12 @@ export type GetIncidentsByIdData = {
          */
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/incidents/{id}';
 };
 
@@ -2107,7 +2177,7 @@ export type GetIncidentsByIdErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
@@ -2351,7 +2421,12 @@ export type PostIncidentsByIdItemsByItemIdUploadTokensData = {
          */
         itemId: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/incidents/{id}/items/{itemId}/upload-tokens';
 };
 
@@ -2365,11 +2440,11 @@ export type PostIncidentsByIdItemsByItemIdUploadTokensErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
-     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. EVIDENCE_NOT_FOUND: Evidence does not exist.
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist.
      */
     404: StandardError;
     /**
@@ -2410,7 +2485,12 @@ export type PostIncidentsByIdItemsByItemIdEvidenceData = {
          */
         itemId: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * The access link's credential. Supplying it selects the token path — the bearer session is then not consulted, not even as a fallback. Omitting it (or sending it empty) uses the session path as before.
+         */
+        accessId?: string;
+    };
     url: '/incidents/{id}/items/{itemId}/evidence';
 };
 
@@ -2424,11 +2504,11 @@ export type PostIncidentsByIdItemsByItemIdEvidenceErrors = {
      */
     401: StandardError;
     /**
-     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment. SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked. SPECIAL_ACCESS_SCOPE_MISMATCH: The access link does not cover this resource.
      */
     403: StandardError;
     /**
-     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist. EVIDENCE_NOT_FOUND: Evidence does not exist.
+     * APARTMENT_NOT_FOUND: Apartment does not exist. INCIDENT_NOT_FOUND: Incident does not exist. INCIDENT_ITEM_NOT_FOUND: Incident item does not exist.
      */
     404: StandardError;
     /**
@@ -2733,6 +2813,52 @@ export type PostFieldIngestByTokenSubmitResponses = {
 
 export type PostFieldIngestByTokenSubmitResponse = PostFieldIngestByTokenSubmitResponses[keyof PostFieldIngestByTokenSubmitResponses];
 
+export type GetSpecialAccessData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * The reservation whose access links should be listed.
+         */
+        reservationId: string;
+    };
+    url: '/special-access';
+};
+
+export type GetSpecialAccessErrors = {
+    /**
+     * VALIDATION_ERROR: The request failed validation.
+     */
+    400: StandardError;
+    /**
+     * AUTH_TOKEN_MISSING: No authentication token was supplied. AUTH_TOKEN_INVALID: The authentication token is invalid.
+     */
+    401: StandardError;
+    /**
+     * FORBIDDEN_ROLE: The caller's role cannot access this endpoint. FORBIDDEN_APARTMENT_ACCESS: The caller does not own this apartment.
+     */
+    403: StandardError;
+    /**
+     * APARTMENT_NOT_FOUND: Apartment does not exist. RESERVATION_NOT_FOUND: Reservation does not exist.
+     */
+    404: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetSpecialAccessError = GetSpecialAccessErrors[keyof GetSpecialAccessErrors];
+
+export type GetSpecialAccessResponses = {
+    /**
+     * The access links minted for this reservation
+     */
+    200: SpecialAccessList;
+};
+
+export type GetSpecialAccessResponse = GetSpecialAccessResponses[keyof GetSpecialAccessResponses];
+
 export type PostSpecialAccessData = {
     body?: CreateSpecialAccess;
     path?: never;
@@ -2816,3 +2942,34 @@ export type DeleteSpecialAccessByAccessIdResponses = {
 };
 
 export type DeleteSpecialAccessByAccessIdResponse = DeleteSpecialAccessByAccessIdResponses[keyof DeleteSpecialAccessByAccessIdResponses];
+
+export type GetSpecialAccessByAccessIdData = {
+    body?: never;
+    path: {
+        accessId: string;
+    };
+    query?: never;
+    url: '/special-access/{accessId}';
+};
+
+export type GetSpecialAccessByAccessIdErrors = {
+    /**
+     * SPECIAL_ACCESS_INVALID: The access link is not valid, has expired, or has been revoked.
+     */
+    403: StandardError;
+    /**
+     * INTERNAL_SERVER_ERROR: An unexpected error occurred.
+     */
+    500: StandardError;
+};
+
+export type GetSpecialAccessByAccessIdError = GetSpecialAccessByAccessIdErrors[keyof GetSpecialAccessByAccessIdErrors];
+
+export type GetSpecialAccessByAccessIdResponses = {
+    /**
+     * The grant behind this link
+     */
+    200: SpecialAccessIntrospection;
+};
+
+export type GetSpecialAccessByAccessIdResponse = GetSpecialAccessByAccessIdResponses[keyof GetSpecialAccessByAccessIdResponses];

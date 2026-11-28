@@ -73,10 +73,13 @@ export const appRoutes: readonly RouteNode[] = [
     // D2/D8: TOP LEVEL, not under the `host` section. The section carries
     // `requires: "canOpenHost"` as a rule every child inherits, so a guide page
     // nested there could only ever be host-only without restructuring the section.
-    // At top level the route owns its own rule, and the future capability guard
-    // (the host-issued `?openFor=` identifier) replaces exactly this line.
+    //
+    // D1 (this feature): `accessParam` is the capability guard this comment used to
+    // anticipate as `?openFor=`. It is `?accessId=` — the parameter the backend actually
+    // reads — and it admits a visitor holding a link without a session.
     path: "inspection-guide/:apartmentId/:reservationId",
     requires: "canOpenHost",
+    accessParam: "accessId",
     params: { apartmentId: "uuid", reservationId: "uuid" },
     page: () => import("@/pages/InspectionGuidePage"),
     // Both reads are declared from URL params alone — which is the whole reason

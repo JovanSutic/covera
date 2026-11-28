@@ -10,6 +10,7 @@ import { defineRoutes } from "./defineRoutes";
 import type { DefineRoutesDeps, RouteNode } from "./defineRoutes";
 import { createNavigationTiming } from "./navigationTiming";
 import type { AccessLayer } from "./access";
+import { accessParamAdmits } from "./access";
 import type { SessionStore } from "./session";
 import { clearStaleChunkFlag } from "@/components/router/RouteError";
 
@@ -106,8 +107,14 @@ export function createAppRouter({
       const guard = (match.route.handle as { guard?: GuardMeta } | undefined)?.guard;
       if (!guard) continue;
 
+      // D1: a declared access parameter admits the visitor, so the chain is not denied.
+      const accessGranted = accessParamAdmits(guard.accessParam, url.searchParams);
+
       for (const rule of guard.rules) {
-        if (!access.isAllowed(rule)) return;
+        if (access.isAllowed(rule)) continue;
+        if (accessGranted) continue;
+
+        return;
       }
 
       const present: Record<string, string | undefined> = {};

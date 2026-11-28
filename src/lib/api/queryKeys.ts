@@ -21,8 +21,10 @@ export const QUERY_ACTIONS = {
   // D12: the field read is anonymous and keyed by the token itself, not by an id —
   // the token IS the credential, and there is nothing else to key it by.
   FIELD_INGEST_GET_BY_TOKEN: ["fieldIngest", "getByToken"],
-  // D20 (feature/54): access-link creation. There is deliberately no LIST key — the API
-  // exposes no way to enumerate a host's grants (`SpecialAccess` is only ever returned by
-  // the create call), so a list key would name a read that cannot happen.
+  // D20 (feature/54): access-link creation, and D6/D7 (this feature): the list.
+  // `SPECIAL_ACCESS_CREATE` is an invalidation key, not a read — nothing queries it.
+  // `SPECIAL_ACCESS_LIST` keys `GET /special-access?reservationId=…`, which the
+  // backend added on 2026-11-26 (feature/53), so the old "no list key" note is gone.
   SPECIAL_ACCESS_CREATE: ["specialAccess", "create"],
+  SPECIAL_ACCESS_LIST: ["specialAccess", "list"],
 } as const;

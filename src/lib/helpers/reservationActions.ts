@@ -22,7 +22,6 @@ export interface ActionAvailability {
 }
 
 export interface ReservationActionAvailability {
-  createInspection: ActionAvailability;
   copyMessage: ActionAvailability;
   delete: ActionAvailability;
 }
@@ -36,10 +35,6 @@ export interface ReservationActionParams {
 }
 
 const TOOLTIP = {
-  createInspection: "reservationPage.actions.tooltip.createInspection",
-  hasInspection: "reservationPage.actions.tooltip.hasInspection",
-  notCovered: "reservationPage.actions.tooltip.notCovered",
-  noPhotoProof: "reservationPage.actions.tooltip.noPhotoProof",
   copyGuestMessage: "reservationPage.actions.tooltip.copyGuestMessage",
   noInspection: "reservationPage.actions.tooltip.noInspection",
   copyNotCovered: "reservationPage.actions.tooltip.copyNotCovered",
@@ -55,17 +50,11 @@ export function getReservationActionAvailability({
 
   const hasInspection = Boolean(inspectionId);
   const isCovered = reservation.status === "COVERED";
-  const hasPhotoProof = Boolean(reservation.hasPhotoProof);
 
   // D8 / prep §7: every action dies at the EFFECTIVE check-in. `getProofWindowState` has
   // already resolved the alternative-over-plain precedence, so this is not a second
   // derivation and cannot disagree with the proof window's own answer.
   const isPast = window.checkInTime === null || window.checkInTime <= now;
-
-  // D2: exactly the backend's guard for POST /inspections
-  // (`covera-hono/src/core/utils/db-validator.ts` `assertCanCreateInspection`), so an
-  // enabled button cannot produce a 400.
-  const canCreateInspection = !isPast && !hasInspection && isCovered && hasPhotoProof;
 
   // D7 / prep §7: present but disabled without a link, and without COVERED.
   const canCopyMessage = !isPast && hasInspection && isCovered;
@@ -74,18 +63,6 @@ export function getReservationActionAvailability({
   const canDelete = !isPast;
 
   return {
-    createInspection: {
-      enabled: canCreateInspection,
-      tooltipKey: isPast
-        ? TOOLTIP.past
-        : hasInspection
-          ? TOOLTIP.hasInspection
-          : !isCovered
-            ? TOOLTIP.notCovered
-            : !hasPhotoProof
-              ? TOOLTIP.noPhotoProof
-              : TOOLTIP.createInspection,
-    },
     copyMessage: {
       enabled: canCopyMessage,
       tooltipKey: isPast

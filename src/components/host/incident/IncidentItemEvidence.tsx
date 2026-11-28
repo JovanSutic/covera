@@ -49,6 +49,17 @@ interface IncidentItemEvidenceProps {
    * mutations stay in this file because that page renders this same component.
    */
   readOnly?: boolean;
+  /**
+   * D3/D11 (feature/54): the guest's credential, present only when the proofs page was opened
+   * through an access link. The upload mutation below passes it straight through, which switches
+   * it from `withAuth()` to `publicApi()` — a guest holds no session, and `withAuth()` would
+   * send `Bearer undefined` and turn a working anonymous capture into a 401 (invariant 11).
+   *
+   * Its PRESENCE also gates the per-photo remove control: the backend's evidence DELETE is the
+   * one evidence route with no `?accessId=` path (verified 2026-11-28), so a guest cannot
+   * authorize a removal and is not offered one.
+   */
+  accessId?: string;
 }
 
 /**
@@ -71,6 +82,7 @@ export function IncidentItemEvidence({
   beforePhotos = [],
   renderCapture,
   readOnly = false,
+  accessId,
 }: IncidentItemEvidenceProps) {
   const { t } = useTranslation("host");
   const queryClient = useQueryClient();
@@ -86,13 +98,15 @@ export function IncidentItemEvidence({
 
   const invalidate = () => {
     queryClient.invalidateQueries({
+      // Prefix match: this invalidates the guest's access-aware key too, which is
+      // `[...incidentQueryKey(id), accessId]`. One invalidation covers both readers.
       queryKey: incidentQueryKey(incidentId),
     });
   };
 
   const uploadMutation = useMutation({
     mutationFn: (input: { evidenceType: EvidenceType; file: File }) =>
-      uploadIncidentEvidence(incidentId, item.id, [input]),
+      uploadIncidentEvidence(incidentId, item.id, [input], accessId),
     onSuccess: () => {
       invalidate();
       toast.success(t("incidentPage.evidence.toasts.uploaded"));
@@ -241,7 +255,11 @@ export function IncidentItemEvidence({
                   />
                 </button>
 
-                {!readOnly && (
+                {/* D3: `!accessId` as well as `!readOnly`. A guest captures and retakes but
+                    cannot REMOVE — the evidence DELETE is the one evidence route the backend
+                    does not token-enable, so the credential this page holds cannot authorize
+                    it. Rendering the control would be rendering a guaranteed 401. */}
+                {!readOnly && !accessId && (
                   <button
                     type="button"
                     disabled={isBusy}

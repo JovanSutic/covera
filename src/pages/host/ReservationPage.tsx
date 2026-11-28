@@ -13,7 +13,9 @@ import { CopyMessageSection } from "@/components/shared/CopyMessageSection";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { useApartmentsHost } from "@/lib/api/queries/apartment";
 import { useReservation } from "@/lib/api/queries/reservation";
+import { useReservations } from "@/lib/api/queries/reservations";
 import { absoluteUrl } from "@/lib/helpers/absoluteUrl";
+import { SIBLING_LIMIT } from "@/lib/helpers/actionWindows";
 import { getProofWindowState } from "@/lib/helpers/proofWindow";
 import { appPaths, buildPath, useRouteParams } from "@/lib/router";
 import { withLang } from "@/lib/router/lang";
@@ -34,6 +36,14 @@ export default function ReservationPage() {
   // chain, so this adds no gap.
   const { data: apartments } = useApartmentsHost();
   const apartment = apartments?.find((entry) => entry.id === reservation?.apartmentId);
+
+  // D14: the stay's neighbours in this apartment, which bound the four action windows.
+  // Declared on this route (step 8.1), so on an in-app navigation this is a cache read.
+  // `SIBLING_LIMIT` is the API's own maximum page size (D26).
+  const { data: siblingPage } = useReservations({
+    apartmentId: id,
+    limit: SIBLING_LIMIT,
+  });
 
   const apartmentPath = withLang(
     buildPath(appPaths.hostApartment, { id }),
@@ -93,9 +103,18 @@ export default function ReservationPage() {
           onDeleted={() => navigate(apartmentPath)}
         />
 
+        {/* D17/D18: both access-link affordances, each gated by its own window from the
+            ONE helper. `hasInspection` is derived here because the API's reservation
+            carries the inspection object, not the helper's flag. */}
         <ReservationLinksSection
           reservationId={reservationId}
           apartmentId={id}
+          reservation={{
+            ...reservation,
+            hasInspection: Boolean(reservation.inspection?.id),
+          }}
+          siblings={siblingPage?.data ?? []}
+          now={now}
         />
 
         <ReservationProofSection
@@ -148,6 +167,7 @@ export default function ReservationPage() {
           apartmentId={id}
           reservationId={reservationId}
           now={now}
+          siblings={siblingPage?.data ?? []}
           checkOutDatetime={reservation.checkOutDatetime}
           alternativeCheckOutDatetime={reservation.alternativeCheckOutDatetime}
           onOpenClaim={() =>

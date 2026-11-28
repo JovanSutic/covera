@@ -5,7 +5,7 @@ import {
   patchReservationsById,
 } from "@/api/generated/requests/services.gen";
 import type { ApartmentShot } from "@/api/generated/requests/types.gen";
-import { withAuth } from "./api";
+import { publicApi, withAuth } from "./api";
 
 export type CapturedApartmentShot = ApartmentShot & {
   capturedImageUrl?: string;
@@ -17,6 +17,12 @@ interface UploadParams {
   reservationId: string;
   shots: CapturedApartmentShot[];
   type?: "checkin_state" | "damage";
+  /**
+   * D11: when present, every call authenticates with the LINK, not the session. A guest must
+   * never reach `withAuth()` — it sends `Bearer undefined` for a caller with no account and
+   * turns a working anonymous write into a 401 (invariant 11).
+   */
+  accessId?: string;
 }
 
 export async function submitInspectionPhotos({
@@ -24,6 +30,7 @@ export async function submitInspectionPhotos({
   reservationId,
   shots,
   type = "checkin_state",
+  accessId,
 }: UploadParams) {
   const completedShots = shots.filter(
     (shot): shot is CapturedApartmentShot & { rawFile: File } =>
@@ -34,13 +41,18 @@ export async function submitInspectionPhotos({
     throw new Error("No photos to upload.");
   }
 
-  // Get auth headers/config for OpenAPI fetchers
-  const config = await withAuth();
+  // D11: the token path and the session path are mutually exclusive, and the presence of an
+  // accessId decides which. The backend never falls back to a session when the parameter is
+  // supplied, so sending a bearer token alongside it would be a second, ignored credential.
+  const config = accessId
+    ? publicApi()
+    : await withAuth();
 
   // 1. Get presigned upload tokens
   const tokensRes = await postApartmentsByIdPhotosUploadTokens({
     ...config,
     path: { id: apartmentId },
+    query: accessId ? { accessId } : undefined,
     body: {
       fileTypes: completedShots.map(
         (shot) => shot.rawFile.type || "image/jpeg",
@@ -87,6 +99,7 @@ export async function submitInspectionPhotos({
   const confirmRes = await postApartmentsByIdPhotosConfirm({
     ...config,
     path: { id: apartmentId },
+    query: accessId ? { accessId } : undefined,
     body: {
       reservationId,
       type,
@@ -105,6 +118,7 @@ export async function submitInspectionPhotos({
   const patchRes = await patchReservationsById({
     ...config,
     path: { id: reservationId },
+    query: accessId ? { accessId } : undefined,
     body: {
       hasPhotoProof: true,
       status: "COVERED",

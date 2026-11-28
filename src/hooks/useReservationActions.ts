@@ -2,13 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
-import {
-  deleteReservationsById,
-  postInspections,
-} from "@/api/generated/requests/services.gen";
+import { deleteReservationsById } from "@/api/generated/requests/services.gen";
 import { withAuth } from "@/lib/api/api";
 import { QUERY_ACTIONS } from "@/lib/api/queryKeys";
 import { absoluteUrl } from "@/lib/helpers/absoluteUrl";
+import { getActionWindows } from "@/lib/helpers/actionWindows";
+import type { SiblingStay } from "@/lib/helpers/actionWindows";
 import { getProofWindowState } from "@/lib/helpers/proofWindow";
 import type { ProofWindowSubject } from "@/lib/helpers/proofWindow";
 import { getReservationActionAvailability } from "@/lib/helpers/reservationActions";
@@ -33,6 +32,10 @@ export interface UseReservationActionsParams {
   inspectionId?: string | null;
   /** Called after a successful delete. The page navigates away; the table does nothing. */
   onDeleted?: () => void;
+  /** D14: every reservation for the same apartment, including this one. */
+  siblings?: readonly SiblingStay[];
+  /** D16: whether the claim on this stay has been filed. */
+  claimFiled?: boolean;
 }
 
 export function useReservationActions({
@@ -40,6 +43,8 @@ export function useReservationActions({
   apartmentId,
   inspectionId,
   onDeleted,
+  siblings,
+  claimFiled,
 }: UseReservationActionsParams) {
   const { t } = useTranslation("host");
   const queryClient = useQueryClient();
@@ -55,6 +60,14 @@ export function useReservationActions({
   const rules = getReservationActionAvailability({
     reservation,
     inspectionId,
+    now,
+  });
+
+  // D13: the four windows from the ONE helper. `now` is the same render-time value the proof
+  // window above was computed with (invariant 10) — this is not a second clock.
+  const actionWindows = getActionWindows({
+    reservation: { ...reservation, claimFiled },
+    siblings: siblings ?? [],
     now,
   });
 
@@ -100,27 +113,6 @@ export function useReservationActions({
     },
   });
 
-  const createInspectionMutation = useMutation({
-    mutationFn: async () => {
-      const config = await withAuth();
-      const response = await postInspections({
-        ...config,
-        body: { reservationId: reservation.id },
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      invalidateReservations();
-      toast.success(t("reservationActionsCell.toast.createSuccess"));
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (error: any) => {
-      toast.error(
-        error?.error?.message || t("reservationActionsCell.toast.createError"),
-      );
-    },
-  });
-
   /** The camera button's tooltip, derived from the helper's state — never recomputed. */
   const takeShotsTooltip = (): string => {
     switch (proofWindow.state) {
@@ -143,10 +135,10 @@ export function useReservationActions({
   return {
     window: proofWindow,
     rules,
+    actionWindows,
     hasInspection,
     guestInspectionUrl,
     takeShotsTooltip,
     deleteMutation,
-    createInspectionMutation,
   };
 }

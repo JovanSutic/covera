@@ -1,4 +1,21 @@
 {
+  "actionWindows": {
+    "tooltip": {
+      "manageClaimPhotos": "Bu talep için hasar veya hırsızlık fotoğraf kanıtlarını toplayın ve saklayın.",
+      "nextStayStarted": "Bu dairede daha yeni bir konaklama başladı, bu nedenle yeni kanıt eklenemez.",
+      "claimFiled": "Talep dosyalandı ve misafir yanıt süresi başladı, bu nedenle yeni kanıt eklenemez.",
+      "guestInspectionLink": "Dairenin varış durumunu kendisinin doğrulayabilmesi için misafire gönderilecek bir bağlantı oluşturur.",
+      "notCovered": "Misafir inceleme bağlantısı yalnızca rezervasyon tamamlandıktan sonra oluşturulabilir.",
+      "pastCheckInGrace": "Misafirin giriş saati geçti, bu nedenle inceleme bağlantısı artık oluşturulamaz.",
+      "hasInspection": "Bu rezervasyon için misafir inceleme bağlantısı zaten oluşturuldu.",
+      "startClaim": "Bu konaklama için hasar veya hırsızlık talebi açın.",
+      "tooEarly": "Talep, çıkıştan bir saat öncesinden itibaren açılabilir.",
+      "past30Days": "Çıkıştan bu yana 30 günden fazla zaman geçti, bu nedenle talep artık açılamaz.",
+      "specialPhotoAccess": "Hesabı olmayan birine bu rezervasyondan önce dairenin durumunu fotoğraflama erişimi verir.",
+      "noPrecedingCheckout": "Bu daire için daha önceki bir rezervasyon yok, bu nedenle erişim verilecek bir rezervasyon öncesi dönem bulunmuyor.",
+      "pastCheckIn": "Bu rezervasyonun giriş saati geçti, bu nedenle rezervasyon öncesi erişim artık verilemez."
+    }
+  },
   "guestInspectionMessage": {
     "headerTitle": "Airbnb Misafir Mesajı",
     "copyButton": "Mesajı Kopyala",
@@ -231,6 +248,8 @@
       "title": "Erişim bağlantıları",
       "intro": "Hesabı olmayan biri — bir fotoğrafçı veya temizlikçi — için geçici bir bağlantı oluşturun, böylece bu rezervasyonun inceleme kılavuzunu açabilir.",
       "create": "İnceleme bağlantısı oluştur",
+      "grantSpecialAccess": "Özel fotoğraf erişimi ver",
+      "specialAccessIntro": "Hesabı olmayan birine — bir temizlikçi veya fotoğrafçı — bu rezervasyon başlamadan önce dairenin durumunu fotoğraflama erişimi verin.",
       "creating": "Oluşturuluyor…",
       "created": "Erişim bağlantısı oluşturuldu",
       "label": "Erişim bağlantısı",
@@ -242,7 +261,14 @@
       "revoking": "İptal ediliyor…",
       "revoked": "Erişim bağlantısı iptal edildi",
       "revokeError": "Bağlantı iptal edilemedi",
-      "expiresHint": "Bu bağlantının süresi otomatik olarak dolar. Yalnızca ihtiyacı olan kişiye gönderin."
+      "expiresHint": "Bu bağlantının süresi otomatik olarak dolar. Yalnızca ihtiyacı olan kişiye gönderin.",
+      "listError": "Bu rezervasyonun erişim bağlantıları yüklenemedi.",
+      "state": {
+        "active": "Aktif",
+        "used": "Kullanıldı",
+        "revoked": "İptal edildi",
+        "expired": "Süresi doldu"
+      }
     },
     "other": {
       "title": "Diğer",
@@ -295,7 +321,7 @@
   },
   "inspectionGuidePage": {
     "guest": {
-      "readOnly": "Bu konaklamanın fotoğraflarını burada görüntüleyebilirsiniz. Son gönderimi ev sahibi tamamlar — başka bir şey yapmanıza gerek yok."
+      "canSubmit": "Bu fotoğrafları ev sahibi için topluyorsunuz. Her birini çekin, set tamamlandığında gönderin."
     },
     "title": "İnceleme kılavuzu",
     "subtitle": "{{guestName}} için fotoğraflı provalar",
@@ -304,6 +330,10 @@
     "notFound": {
       "title": "Rezervasyon bulunamadı",
       "subtitle": "Bu rezervasyon mevcut değil veya dairelerinizden birine ait değil."
+    },
+    "invalidLink": {
+      "title": "Bu bağlantı geçerli değil",
+      "subtitle": "Süresi dolmuş veya iptal edilmiş olabilir. Ev sahibinden yeni bir bağlantı göndermesini isteyin."
     },
     "unavailable": {
       "title": "Kanıtlar şu anda alınamıyor",
@@ -539,9 +569,9 @@
     "slots": {
       "title": "Bu eşyanın fotoğrafları"
     },
-    "guestUnavailable": {
-      "title": "Henüz kullanılamıyor",
-      "body": "Erişim bağlantısı üzerinden fotoğraf yükleme henüz açık değil. Lütfen ev sahibinden bu adımı tamamlamasını veya yeni bir bağlantı istemesini rica edin."
+    "invalidLink": {
+      "title": "Bu bağlantı geçerli değil",
+      "subtitle": "Süresi dolmuş veya iptal edilmiş olabilir. Ev sahibinden yeni bir bağlantı göndermesini isteyin."
     }
   }
 }

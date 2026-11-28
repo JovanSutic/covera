@@ -108,6 +108,7 @@ function renderSection(
           alternativeCheckOutDatetime={
             overrides.alternativeCheckOutDatetime ?? null
           }
+          siblings={[]}
           onOpenClaim={onOpenClaim}
         />
       </MemoryRouter>
@@ -204,8 +205,10 @@ describe("the check-out gate", () => {
     expect(
       screen.getByRole("button", { name: "reservationPage.incident.startClaim" }),
     ).toBeDisabled();
+    // Phase 9: the hint is the helper's own reason, not a single string that cannot say
+    // WHICH bound failed. 12:00 is more than an hour before the 18:00 check-out.
     expect(
-      screen.getByText("reservationPage.incident.notYetCheckOut"),
+      screen.getByText("actionWindows.tooltip.tooEarly"),
     ).toBeInTheDocument();
   });
 
@@ -216,7 +219,7 @@ describe("the check-out gate", () => {
       screen.getByRole("button", { name: "reservationPage.incident.startClaim" }),
     ).toBeEnabled();
     expect(
-      screen.queryByText("reservationPage.incident.notYetCheckOut"),
+      screen.queryByText("actionWindows.tooltip.tooEarly"),
     ).not.toBeInTheDocument();
   });
 });

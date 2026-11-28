@@ -1,4 +1,21 @@
 {
+  "actionWindows": {
+    "tooltip": {
+      "manageClaimPhotos": "Sammelt und speichert die Foto-Nachweise für Schäden oder Diebstahl zu diesem Anspruch.",
+      "nextStayStarted": "Ein neuerer Aufenthalt in diesem Apartment hat bereits begonnen, daher können keine neuen Nachweise hinzugefügt werden.",
+      "claimFiled": "Der Anspruch wurde eingereicht und die Antwortfrist des Gastes läuft, daher können keine neuen Nachweise hinzugefügt werden.",
+      "guestInspectionLink": "Erstellt einen Link, der an den Gast gesendet wird, damit dieser den Ankunftsstatus des Apartments selbst überprüfen kann.",
+      "notCovered": "Der Link zur Gästekontrolle kann erst erstellt werden, wenn die Reservierung gedeckt ist.",
+      "pastCheckInGrace": "Der Check-in des Gastes liegt zurück, daher kann der Inspektionslink nicht mehr erstellt werden.",
+      "hasInspection": "Der Link zur Gästebesichtigung wurde für diese Reservierung bereits erstellt.",
+      "startClaim": "Eröffnet einen Schadens- oder Diebstahlsanspruch für diesen Aufenthalt.",
+      "tooEarly": "Ein Anspruch kann ab einer Stunde vor dem Check-out eröffnet werden.",
+      "past30Days": "Seit dem Check-out sind mehr als 30 Tage vergangen, daher kann kein Anspruch mehr eröffnet werden.",
+      "specialPhotoAccess": "Gewährt jemandem ohne Konto Zugriff, den Zustand des Apartments vor dieser Reservierung zu fotografieren.",
+      "noPrecedingCheckout": "Es gibt keine frühere Reservierung für dieses Apartment, daher gibt es kein Fenster vor der Reservierung, für das Zugriff gewährt werden könnte.",
+      "pastCheckIn": "Der Check-in dieser Reservierung liegt zurück, daher kann kein Zugriff vor der Reservierung mehr gewährt werden."
+    }
+  },
   "guestInspectionMessage": {
     "headerTitle": "Airbnb-Gastnachricht",
     "copyButton": "Nachricht kopieren",
@@ -231,6 +248,8 @@
       "title": "Zugriffslinks",
       "intro": "Erstellen Sie einen temporären Link für jemanden ohne Konto — einen Fotografen oder eine Reinigungskraft —, damit er den Prüfleitfaden für diese Reservierung öffnen kann.",
       "create": "Prüflink erstellen",
+      "grantSpecialAccess": "Speziellen Fotozugriff gewähren",
+      "specialAccessIntro": "Geben Sie jemandem ohne Konto — einer Reinigungskraft oder einem Fotografen — Zugriff, den Zustand des Apartments vor Beginn dieser Reservierung zu fotografieren.",
       "creating": "Wird erstellt…",
       "created": "Zugriffslink erstellt",
       "label": "Zugriffslink",
@@ -242,7 +261,14 @@
       "revoking": "Wird widerrufen…",
       "revoked": "Zugriffslink widerrufen",
       "revokeError": "Link konnte nicht widerrufen werden",
-      "expiresHint": "Dieser Link läuft automatisch ab. Senden Sie ihn nur an die Person, die ihn braucht."
+      "expiresHint": "Dieser Link läuft automatisch ab. Senden Sie ihn nur an die Person, die ihn braucht.",
+      "listError": "Die Zugriffslinks für diese Reservierung konnten nicht geladen werden.",
+      "state": {
+        "active": "Aktiv",
+        "used": "Verwendet",
+        "revoked": "Widerrufen",
+        "expired": "Abgelaufen"
+      }
     },
     "other": {
       "title": "Andere",
@@ -295,7 +321,7 @@
   },
   "inspectionGuidePage": {
     "guest": {
-      "readOnly": "Sie können hier die Fotos für diesen Aufenthalt ansehen. Der Gastgeber übernimmt die endgültige Übermittlung — Sie müssen nichts weiter tun."
+      "canSubmit": "Sie sammeln diese Fotos für den Gastgeber. Nehmen Sie jedes einzelne auf und übermitteln Sie sie, wenn die Serie vollständig ist."
     },
     "title": "Inspektionsleitfaden",
     "subtitle": "Fotonachweise für {{guestName}}",
@@ -304,6 +330,10 @@
     "notFound": {
       "title": "Reservierung nicht gefunden",
       "subtitle": "Diese Reservierung existiert nicht oder sie gehört nicht zu einer Ihrer Wohnungen."
+    },
+    "invalidLink": {
+      "title": "Dieser Link ist nicht gültig",
+      "subtitle": "Er ist möglicherweise abgelaufen oder wurde widerrufen. Bitten Sie den Gastgeber, einen neuen zu senden."
     },
     "unavailable": {
       "title": "Es können derzeit keine Nachweise erstellt werden.",
@@ -539,9 +569,9 @@
     "slots": {
       "title": "Fotos für diesen Gegenstand"
     },
-    "guestUnavailable": {
-      "title": "Noch nicht verfügbar",
-      "body": "Foto-Uploads über einen Zugriffslink sind noch nicht freigeschaltet. Bitten Sie den Gastgeber, diesen Schritt abzuschließen, oder fordern Sie einen neuen Link an."
+    "invalidLink": {
+      "title": "Dieser Link ist nicht gültig",
+      "subtitle": "Er ist möglicherweise abgelaufen oder wurde widerrufen. Bitten Sie den Gastgeber, einen neuen zu senden."
     }
   }
 }

@@ -39,6 +39,44 @@ export const ACCESS_RULES = {
 
 export type RuleName = keyof typeof ACCESS_RULES;
 
+/**
+ * D1: the query parameters that may stand in for a session on a route that names one.
+ *
+ * This is NOT a member of `ACCESS_RULES`. Those rules read the session alone and are
+ * precomputed into a results map by `createAccess`, which is what keeps `isAllowed()`
+ * synchronous and request-free. A URL parameter is not session state, so it is evaluated
+ * where the URL already exists — in the loader, the preload check and the preloader.
+ *
+ * Presence only. The guard cannot judge validity: only the API can, and it answers
+ * `403 SPECIAL_ACCESS_INVALID` per request. A guard that tried to validate would have to
+ * make a request from a loader, which the preload path cannot afford.
+ */
+export type AccessParamName = "accessId";
+
+export const ACCESS_PARAM_NAMES: readonly AccessParamName[] = ["accessId"];
+
+export function hasAccessParam(
+  name: AccessParamName,
+  searchParams: URLSearchParams,
+): boolean {
+  const value = searchParams.get(name);
+
+  return value !== null && value !== "";
+}
+
+/**
+ * D1: does this route admit the visitor on the strength of a URL parameter alone?
+ *
+ * `rules` is the route's whole inherited chain. A route with no `accessParam` never admits
+ * this way, so declaring nothing changes nothing.
+ */
+export function accessParamAdmits(
+  accessParam: AccessParamName | undefined,
+  searchParams: URLSearchParams,
+): boolean {
+  return accessParam !== undefined && hasAccessParam(accessParam, searchParams);
+}
+
 export interface PathRequirement {
   pattern: string;
   requires: readonly RuleName[];

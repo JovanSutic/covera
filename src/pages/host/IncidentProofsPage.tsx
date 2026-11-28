@@ -6,6 +6,12 @@ import PageTitle from "@/components/PageTitle";
 import { IncidentItemEvidence } from "@/components/host/incident/IncidentItemEvidence";
 import { BackLink } from "@/components/shared/BackLink";
 import { SectionCard } from "@/components/shared/SectionCard";
+import {
+  useAssetsWithAccess,
+  useIncidentWithAccess,
+  useReservationPhotosWithAccess,
+  useReservationWithAccess,
+} from "@/lib/api/queries/access";
 import { useAssets } from "@/lib/api/queries/assets";
 import { useIncident } from "@/lib/api/queries/incident";
 import { useReservation } from "@/lib/api/queries/reservation";
@@ -20,20 +26,21 @@ import type { IncidentItem } from "@/api/generated/requests/types.gen";
  *
  * The read order is forced by the API and cannot be shortened:
  *
- *   1. `useIncident(incidentId)` — the URL param IS the claim id. `Incident` carries
- *      `reservationId` but NOT `apartmentId`, so neither of the other two ids is
- *      reachable from this read alone.
- *   2. `useReservation(claim.reservationId)` — where `apartmentId` comes from.
- *   3. `useAssets(apartmentId)` and `useReservationPhotos(reservationId)` — both held
- *      until step 2 has resolved.
+ *   1. the claim — the URL param IS the claim id. `Incident` carries `reservationId` but
+ *      NOT `apartmentId`, so neither of the other two ids is reachable from this read
+ *      alone.
+ *   2. the reservation — where `apartmentId` comes from.
+ *   3. the assets and the reservation photos — both held until step 2 has resolved.
  *
  * The claim id being in the URL is why this page never performs the list-then-match
  * dance `IncidentPage` needs (there is no incident-by-reservation endpoint, D11).
  *
- * The guest branch is checked FIRST, before the claim read's state branches, so a
- * visitor holding an access link sees the refusal immediately rather than a spinner
- * that cannot resolve — no `/incidents` endpoint accepts `?accessId=` (probed
- * 2026-11-23), so their claim read would never return anything.
+ * D3/D26: the page has TWO readers, and they are decided here rather than by a route rule —
+ * a rule name cannot see a query parameter. A host session reads through the authed hooks; a
+ * photographer holding `?accessId=` reads the same four resources through
+ * `@/lib/api/queries/access`, which uses `publicApi()` and never `withAuth()`. Capture is live
+ * for both (D3): the evidence writes carry the same credential down through
+ * `IncidentItemEvidence`.
  */
 export default function IncidentProofsPage() {
   const { t } = useTranslation("host");
@@ -45,37 +52,50 @@ export default function IncidentProofsPage() {
   const [searchParams] = useSearchParams();
   const accessId = searchParams.get("accessId");
 
-  const {
-    data: claim,
-    isLoading: isClaimLoading,
-    isError: isClaimError,
-  } = useIncident(incidentId);
+  /**
+   * D3/D11: the `accessId` is the guest's ONLY credential, and it decides which set of reads
+   * this page is allowed to make. A guest must never reach `withAuth()` — it sends
+   * `Bearer undefined` for a caller with no account and turns a working anonymous read into a
+   * 401 (invariant 11). The authed hooks are therefore DISABLED while a link is present,
+   * rather than merely unused.
+   */
+  const isGuest = accessId !== null;
 
-  const {
-    data: reservation,
-    isLoading: isReservationLoading,
-  } = useReservation(claim?.reservationId);
+  // 1. The claim — the only entry point into the chain on either path.
+  const hostClaim = useIncident(isGuest ? undefined : incidentId);
+  const guestClaim = useIncidentWithAccess(isGuest ? incidentId : undefined, accessId);
+  const claim = isGuest ? guestClaim.data : hostClaim.data;
 
-  const { data: assets } = useAssets(reservation?.apartmentId);
-  const { data: reservationPhotos } = useReservationPhotos(reservation?.id);
+  // 2. The stay, where `apartmentId` comes from. Both hooks are always called; the one
+  //    belonging to the other reader is disabled, so it issues no request.
+  const reservationId = claim?.reservationId;
 
-  // D31: the honest state for a guest. The route accepts `?accessId=` so the URL shape
-  // stays stable for when the backend lands, but no read on this page can be made with
-  // it, so the page says so instead of pretending to load. Rendered before any of the
-  // reads above can matter — and, because none of them is enabled without an id, this
-  // branch makes no anonymous request on the guest's behalf (invariant 8).
-  if (accessId) {
-    return (
-      <PageLayout size="lg">
-        <PageTitle
-          title={t("incidentProofsPage.guestUnavailable.title")}
-          subtitle={t("incidentProofsPage.guestUnavailable.body")}
-        />
-      </PageLayout>
-    );
-  }
+  const hostReservation = useReservation(isGuest ? undefined : reservationId);
+  const guestReservation = useReservationWithAccess(
+    isGuest ? reservationId : undefined,
+    accessId,
+  );
+  const reservation = isGuest ? guestReservation.data : hostReservation.data;
 
-  if (isClaimLoading || isReservationLoading) {
+  // 3. The apartment's assets (item names) and the stay's own photos (the before strip).
+  const apartmentId = reservation?.apartmentId;
+
+  const hostAssets = useAssets(isGuest ? undefined : apartmentId);
+  const guestAssets = useAssetsWithAccess(isGuest ? apartmentId : undefined, accessId);
+  const assets = isGuest ? guestAssets.data : hostAssets.data;
+
+  const hostReservationPhotos = useReservationPhotos(
+    isGuest ? undefined : reservationId,
+  );
+  const guestReservationPhotos = useReservationPhotosWithAccess(
+    isGuest ? reservationId : undefined,
+    accessId,
+  );
+  const reservationPhotos = isGuest
+    ? guestReservationPhotos.data
+    : hostReservationPhotos.data;
+
+  if (isGuest ? guestClaim.isLoading : hostClaim.isLoading || hostReservation.isLoading) {
     return (
       <PageLayout size="lg">
         <PageTitle title={t("incidentProofsPage.title")} />
@@ -87,12 +107,29 @@ export default function IncidentProofsPage() {
     );
   }
 
-  if (isClaimError || !claim) {
+  /**
+   * The two refusals are different sentences, and D5 is why.
+   *
+   * A guest holding an unusable link gets the link-specific copy: the backend answers
+   * `403 SPECIAL_ACCESS_INVALID` for it (probed 2026-11-26), and a link holder has no claim
+   * of their own to "not find". A host keeps the existing not-found branch. The bare `!claim`
+   * covers the host path's missing claim as it always did, and a guest whose read never ran
+   * because the URL carried no id.
+   */
+  if (!claim || (isGuest && guestClaim.isError) || (!isGuest && hostClaim.isError)) {
     return (
       <PageLayout size="lg">
         <PageTitle
-          title={t("incidentProofsPage.notFound.title")}
-          subtitle={t("incidentProofsPage.notFound.subtitle")}
+          title={t(
+            isGuest
+              ? "incidentProofsPage.invalidLink.title"
+              : "incidentProofsPage.notFound.title",
+          )}
+          subtitle={t(
+            isGuest
+              ? "incidentProofsPage.invalidLink.subtitle"
+              : "incidentProofsPage.notFound.subtitle",
+          )}
         />
       </PageLayout>
     );
@@ -168,8 +205,15 @@ export default function IncidentProofsPage() {
 
                 {/* D30: the capture seam is reused, not reimplemented. WITHOUT `readOnly`:
                     this is the page where capture and delete are live (prep 3). The page
-                    owns the before strip above, so none is passed here. */}
-                <IncidentItemEvidence incidentId={claim.id} item={item} />
+                    owns the before strip above, so none is passed here.
+
+                    D3: `accessId` is threaded through so a guest's upload and delete use
+                    `publicApi()` — the same component, the same controls, two credentials. */}
+                <IncidentItemEvidence
+                  incidentId={claim.id}
+                  item={item}
+                  accessId={accessId ?? undefined}
+                />
               </div>
             </SectionCard>
           );

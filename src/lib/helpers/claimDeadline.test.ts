@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   GUEST_RESPONSE_WINDOW_MS,
   canOpenClaimAt,
+  claimOpenState,
   claimUrgency,
   countdownParts,
   getClaimDeadlineState,
@@ -146,8 +147,15 @@ describe("claimUrgency", () => {
 });
 
 describe("canOpenClaimAt", () => {
-  it("refuses before the check-out", () => {
+  const CHECK_OUT_LEAD = "2026-11-08T11:30:00.000Z";
+
+  it("refuses more than an hour before the check-out", () => {
     expect(canOpenClaimAt("2026-11-08T18:00:00.000Z", null, NOW)).toBe(false);
+  });
+
+  it("allows within the hour before the check-out", () => {
+    // D21: the window opens one hour BEFORE the check-out, not at it.
+    expect(canOpenClaimAt(CHECK_OUT_LEAD, null, NOW)).toBe(true);
   });
 
   it("allows exactly at the check-out instant", () => {
@@ -156,6 +164,14 @@ describe("canOpenClaimAt", () => {
 
   it("allows after the check-out", () => {
     expect(canOpenClaimAt("2026-11-08T10:00:00.000Z", null, NOW)).toBe(true);
+  });
+
+  it("allows 29 days after the check-out", () => {
+    expect(canOpenClaimAt("2026-10-10T12:00:00.000Z", null, NOW)).toBe(true);
+  });
+
+  it("refuses 31 days after the check-out", () => {
+    expect(canOpenClaimAt("2026-10-08T12:00:00.000Z", null, NOW)).toBe(false);
   });
 
   it("prefers a real alternative check-out over the original", () => {
@@ -168,5 +184,39 @@ describe("canOpenClaimAt", () => {
 
   it("does not gate on a corrupt check-out with no alternative", () => {
     expect(canOpenClaimAt("garbage", null, NOW)).toBe(true);
+  });
+});
+
+describe("claimOpenState", () => {
+  const CHECK_OUT = "2026-06-15T12:00:00.000Z";
+  const at = (offsetMs: number) => Date.parse(CHECK_OUT) + offsetMs;
+  const HOUR = 60 * 60 * 1000;
+  const DAY = 24 * HOUR;
+
+  it("is NO_GATE without a usable check-out", () => {
+    expect(claimOpenState(null, null, at(0))).toBe("NO_GATE");
+    expect(claimOpenState("garbage", null, at(0))).toBe("NO_GATE");
+  });
+
+  it("is TOO_EARLY more than an hour before check-out", () => {
+    expect(claimOpenState(CHECK_OUT, null, at(-2 * HOUR))).toBe("TOO_EARLY");
+  });
+
+  it("is OPEN from an hour before check-out", () => {
+    expect(claimOpenState(CHECK_OUT, null, at(-30 * 60 * 1000))).toBe("OPEN");
+    expect(claimOpenState(CHECK_OUT, null, at(0))).toBe("OPEN");
+  });
+
+  it("is PAST_WINDOW after 30 days", () => {
+    expect(claimOpenState(CHECK_OUT, null, at(31 * DAY))).toBe("PAST_WINDOW");
+  });
+
+  it("prefers the alternative check-out when it parses", () => {
+    // The alternative wins, so the bounds are measured against it: at +31d this is PAST_WINDOW
+    // for the plain check-out (+0) and still OPEN for the alternative (+2d). An implementation
+    // that ignored the alternative would answer PAST_WINDOW here.
+    const alternative = new Date(at(2 * DAY)).toISOString();
+
+    expect(claimOpenState(CHECK_OUT, alternative, at(31 * DAY))).toBe("OPEN");
   });
 });
